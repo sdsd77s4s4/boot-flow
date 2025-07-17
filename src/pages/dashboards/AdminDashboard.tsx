@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NavLink } from "react-router-dom";
 
 const pageComponents = {
   dashboard: ((props) => (
@@ -100,11 +101,9 @@ const pageComponents = {
           </CardContent>
         </Card>
       </div>
+      {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card
-          className="cursor-pointer hover:shadow-glow transition-all duration-300"
-          onClick={props?.openIPTVModal}
-        >
+        <Card as={NavLink} to="/dashboard/admin/iptv" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Tv className="w-6 h-6 text-purple-500" />
@@ -112,21 +111,23 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Gerencie servidores, canais e configurações IPTV</p>
-            <div className="flex justify-between text-sm">
-              <span>Usuários Ativos:</span>
-              <span className="font-semibold">8.934</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Servidores Online:</span>
-              <span className="font-semibold text-green-500">12/12</span>
+            <p className="text-muted-foreground mb-4">
+              Gerencie servidores, canais e configurações IPTV
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Usuários Ativos:</span>
+                <span className="text-sm font-semibold">8.934</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Servidores Online:</span>
+                <span className="text-sm font-semibold text-green-600">12/12</span>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card
-          className="cursor-pointer hover:shadow-glow transition-all duration-300"
-          onClick={props?.openRadioModal}
-        >
+
+        <Card as={NavLink} to="/dashboard/admin/radio" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Radio className="w-6 h-6 text-blue-500" />
@@ -134,18 +135,23 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Configure rádios e integrações multicanal</p>
-            <div className="flex justify-between text-sm">
-              <span>Ouvintes Ativos:</span>
-              <span className="font-semibold">12.456</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Rádios Online:</span>
-              <span className="font-semibold text-green-500">8/8</span>
+            <p className="text-muted-foreground mb-4">
+              Configure rádios e integrações multicanal
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Ouvintes Ativos:</span>
+                <span className="text-sm font-semibold">12.456</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Rádios Online:</span>
+                <span className="text-sm font-semibold text-green-600">8/8</span>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card as={NavLink} to="/dashboard/admin/ecommerce" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <ShoppingCart className="w-6 h-6 text-green-500" />
@@ -153,18 +159,23 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Gerencie produtos e vendas da plataforma</p>
-            <div className="flex justify-between text-sm">
-              <span>Produtos Ativos:</span>
-              <span className="font-semibold">156</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Vendas Hoje:</span>
-              <span className="font-semibold text-green-500">R$ 12.845</span>
+            <p className="text-muted-foreground mb-4">
+              Gerencie produtos e vendas da plataforma
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Produtos Ativos:</span>
+                <span className="text-sm font-semibold">156</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Vendas Hoje:</span>
+                <span className="text-sm font-semibold text-green-600">R$ 12.845</span>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card as={NavLink} to="/dashboard/admin/games" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Gamepad2 className="w-6 h-6 text-orange-500" />
@@ -172,10 +183,23 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Configure regras de jogos e recompensas</p>
+            <p className="text-muted-foreground mb-4">
+              Configure regras de jogos e recompensas
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Jogadores Ativos:</span>
+                <span className="text-sm font-semibold">3.245</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Recompensas Ativas:</span>
+                <span className="text-sm font-semibold text-green-600">24</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card as={NavLink} to="/dashboard/admin/ai" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Brain className="w-6 h-6 text-indigo-500" />
@@ -183,10 +207,23 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Configure assistentes e vozes da IA</p>
+            <p className="text-muted-foreground mb-4">
+              Configure assistentes e vozes da IA
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Conversas Ativas:</span>
+                <span className="text-sm font-semibold">1.876</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Taxa de Resposta:</span>
+                <span className="text-sm font-semibold text-green-600">98.5%</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card as={NavLink} to="/dashboard/admin/analytics" className="cursor-pointer hover:shadow-glow transition-all duration-300">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <BarChart3 className="w-6 h-6 text-red-500" />
@@ -194,7 +231,19 @@ const pageComponents = {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">Relatórios detalhados e métricas em tempo real</p>
+            <p className="text-muted-foreground mb-4">
+              Relatórios detalhados e métricas em tempo real
+            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm">Eventos Hoje:</span>
+                <span className="text-sm font-semibold">45.678</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Conversão:</span>
+                <span className="text-sm font-semibold text-green-600">8.9%</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
