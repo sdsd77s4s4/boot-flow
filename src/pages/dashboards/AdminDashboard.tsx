@@ -103,7 +103,7 @@ const pageComponents = {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card
           className="cursor-pointer hover:shadow-glow transition-all duration-300"
-          onClick={props?.openIAModal}
+          onClick={props?.openIPTVModal}
         >
           <CardHeader>
             <div className="flex items-center space-x-2">
@@ -329,14 +329,72 @@ const menuKeys = [
 
 export default function AdminDashboard() {
   const [selectedPage, setSelectedPage] = useState("dashboard");
-  const [openModal, setOpenModal] = useState(null); // 'ia' | 'revendedor' | null
+  const [openModal, setOpenModal] = useState(null); // 'ia' | 'iptv' | 'revendedor' | null
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AdminSidebar selectedPage={selectedPage} onSelectPage={setSelectedPage} />
         <main className="flex-1 p-6">
-          {/* Modais */}
+          {/* Modal IPTV */}
+          <Dialog open={openModal === "iptv"} onOpenChange={v => setOpenModal(v ? "iptv" : null)}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Tv className="w-5 h-5" /> Gerenciamento IPTV
+                </DialogTitle>
+                <DialogDescription>
+                  Configure servidores e canais do sistema IPTV
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="serverName">Nome do Servidor</Label>
+                  <Input id="serverName" value="SaaS Pro IPTV" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="serverUrl">URL do Servidor</Label>
+                  <Input id="serverUrl" value="http://iptv.saaspro.com.br" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maxConnections">Máximo de Conexões por Usuário</Label>
+                  <Input id="maxConnections" type="number" value={5} />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableMovies">Filmes</Label>
+                    <Switch id="enableMovies" checked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableSeries">Séries</Label>
+                    <Switch id="enableSeries" checked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableLive">Canais Ao Vivo</Label>
+                    <Switch id="enableLive" checked />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status dos Servidores</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center p-2 border rounded-md">
+                      <Badge className="bg-green-500 mr-2">Online</Badge>
+                      <span>Servidor Principal</span>
+                    </div>
+                    <div className="flex items-center p-2 border rounded-md">
+                      <Badge className="bg-green-500 mr-2">Online</Badge>
+                      <span>Servidor Backup 1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="flex justify-between">
+                <Button variant="outline">Exportar M3U</Button>
+                <Button type="submit">Salvar Configurações</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* Modal IA */}
           <Dialog open={openModal === "ia"} onOpenChange={v => setOpenModal(v ? "ia" : null)}>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
@@ -388,27 +446,11 @@ export default function AdminDashboard() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Dialog open={openModal === "revendedor"} onOpenChange={v => setOpenModal(v ? "revendedor" : null)}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Novo Revendedor</DialogTitle>
-                <DialogDescription>
-                  Cadastre um novo revendedor para a plataforma.
-                </DialogDescription>
-              </DialogHeader>
-              {/* Conteúdo do modal de revendedor */}
-              <div className="py-4">(Aqui vai o formulário de cadastro de revendedor...)</div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <button className="btn btn-primary">Fechar</button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
           {/* Fim dos modais */}
           {selectedPage === "dashboard" ? (
             pageComponents.dashboard({
               openIAModal: () => setOpenModal("ia"),
+              openIPTVModal: () => setOpenModal("iptv"),
               openRevendedorModal: () => setOpenModal("revendedor")
             })
           ) : (
