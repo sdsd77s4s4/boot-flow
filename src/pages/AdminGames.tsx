@@ -1,10 +1,411 @@
-import React from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Gamepad2, Plus, Settings, Trophy, Star, Users, Target } from "lucide-react";
+
+interface Achievement {
+  id: number;
+  name: string;
+  description: string;
+  points: number;
+  icon: string;
+  unlocked: number;
+  total: number;
+}
+
+interface Leaderboard {
+  id: number;
+  name: string;
+  points: number;
+  level: number;
+  achievements: number;
+  rank: number;
+}
 
 export default function AdminGames() {
+  const [achievements, setAchievements] = useState<Achievement[]>([
+    { id: 1, name: "Primeiro Login", description: "Faça seu primeiro login no sistema", points: 10, icon: "🎯", unlocked: 156, total: 156 },
+    { id: 2, name: "Comprador Frequente", description: "Realize 10 compras", points: 50, icon: "🛒", unlocked: 45, total: 156 },
+    { id: 3, name: "Suporte Ativo", description: "Use o suporte 5 vezes", points: 30, icon: "💬", unlocked: 78, total: 156 },
+    { id: 4, name: "Streamer", description: "Assista 100 horas de conteúdo", points: 100, icon: "📺", unlocked: 23, total: 156 },
+    { id: 5, name: "Mestre da IA", description: "Interaja 50 vezes com a IA", points: 75, icon: "🤖", unlocked: 12, total: 156 },
+  ]);
+
+  const [leaderboard, setLeaderboard] = useState<Leaderboard[]>([
+    { id: 1, name: "João Silva", points: 1250, level: 15, achievements: 8, rank: 1 },
+    { id: 2, name: "Maria Santos", points: 980, level: 12, achievements: 6, rank: 2 },
+    { id: 3, name: "Pedro Oliveira", points: 850, level: 10, achievements: 5, rank: 3 },
+    { id: 4, name: "Ana Costa", points: 720, level: 9, achievements: 4, rank: 4 },
+    { id: 5, name: "Carlos Lima", points: 650, level: 8, achievements: 3, rank: 5 },
+  ]);
+
+  const [gamificationConfig, setGamificationConfig] = useState({
+    enabled: true,
+    pointsPerLogin: "10",
+    pointsPerPurchase: "50",
+    pointsPerSupport: "30",
+    enableLeaderboard: true,
+    enableAchievements: true,
+    enableLevels: true,
+    maxLevel: "100"
+  });
+
+  const [newAchievement, setNewAchievement] = useState({
+    name: "",
+    description: "",
+    points: "",
+    icon: "🏆"
+  });
+
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
+
+  const handleAddAchievement = () => {
+    if (newAchievement.name && newAchievement.description) {
+      const achievement: Achievement = {
+        id: achievements.length + 1,
+        name: newAchievement.name,
+        description: newAchievement.description,
+        points: parseInt(newAchievement.points) || 0,
+        icon: newAchievement.icon,
+        unlocked: 0,
+        total: 156
+      };
+      setAchievements([...achievements, achievement]);
+      setNewAchievement({ name: "", description: "", points: "", icon: "🏆" });
+      setIsAddDialogOpen(false);
+    }
+  };
+
+  const handleDeleteAchievement = (id: number) => {
+    setAchievements(achievements.filter(achievement => achievement.id !== id));
+  };
+
+  const totalPoints = achievements.reduce((sum, achievement) => sum + achievement.points, 0);
+  const totalUnlocked = achievements.reduce((sum, achievement) => sum + achievement.unlocked, 0);
+  const totalAchievements = achievements.length;
+
   return (
-    <div>
-      <h1>Gamificação</h1>
-      <p>Página de gerenciamento de gamificação.</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Gamificação</h1>
+          <p className="text-muted-foreground">Gerencie sistema de pontos, conquistas e rankings</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Configurações
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Configurações de Gamificação</DialogTitle>
+                <DialogDescription>
+                  Configure o sistema de gamificação
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="enabled">Habilitar Gamificação</Label>
+                  <Switch 
+                    id="enabled" 
+                    checked={gamificationConfig.enabled} 
+                    onCheckedChange={(checked) => setGamificationConfig({...gamificationConfig, enabled: checked})}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="pointsPerLogin">Pontos por Login</Label>
+                    <Input
+                      id="pointsPerLogin"
+                      type="number"
+                      value={gamificationConfig.pointsPerLogin}
+                      onChange={(e) => setGamificationConfig({...gamificationConfig, pointsPerLogin: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pointsPerPurchase">Pontos por Compra</Label>
+                    <Input
+                      id="pointsPerPurchase"
+                      type="number"
+                      value={gamificationConfig.pointsPerPurchase}
+                      onChange={(e) => setGamificationConfig({...gamificationConfig, pointsPerPurchase: e.target.value})}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="pointsPerSupport">Pontos por Suporte</Label>
+                  <Input
+                    id="pointsPerSupport"
+                    type="number"
+                    value={gamificationConfig.pointsPerSupport}
+                    onChange={(e) => setGamificationConfig({...gamificationConfig, pointsPerSupport: e.target.value})}
+                  />
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableLeaderboard">Habilitar Ranking</Label>
+                    <Switch 
+                      id="enableLeaderboard" 
+                      checked={gamificationConfig.enableLeaderboard} 
+                      onCheckedChange={(checked) => setGamificationConfig({...gamificationConfig, enableLeaderboard: checked})}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableAchievements">Habilitar Conquistas</Label>
+                    <Switch 
+                      id="enableAchievements" 
+                      checked={gamificationConfig.enableAchievements} 
+                      onCheckedChange={(checked) => setGamificationConfig({...gamificationConfig, enableAchievements: checked})}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableLevels">Habilitar Níveis</Label>
+                    <Switch 
+                      id="enableLevels" 
+                      checked={gamificationConfig.enableLevels} 
+                      onCheckedChange={(checked) => setGamificationConfig({...gamificationConfig, enableLevels: checked})}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="maxLevel">Nível Máximo</Label>
+                  <Input
+                    id="maxLevel"
+                    type="number"
+                    value={gamificationConfig.maxLevel}
+                    onChange={(e) => setGamificationConfig({...gamificationConfig, maxLevel: e.target.value})}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsConfigDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={() => setIsConfigDialogOpen(false)}>
+                  Salvar Configurações
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Nova Conquista
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Adicionar Nova Conquista</DialogTitle>
+                <DialogDescription>
+                  Crie uma nova conquista para os usuários
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="achievementName">Nome da Conquista</Label>
+                  <Input
+                    id="achievementName"
+                    value={newAchievement.name}
+                    onChange={(e) => setNewAchievement({...newAchievement, name: e.target.value})}
+                    placeholder="Ex: Primeiro Login"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="achievementDescription">Descrição</Label>
+                  <Input
+                    id="achievementDescription"
+                    value={newAchievement.description}
+                    onChange={(e) => setNewAchievement({...newAchievement, description: e.target.value})}
+                    placeholder="Ex: Faça seu primeiro login no sistema"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="achievementPoints">Pontos</Label>
+                    <Input
+                      id="achievementPoints"
+                      type="number"
+                      value={newAchievement.points}
+                      onChange={(e) => setNewAchievement({...newAchievement, points: e.target.value})}
+                      placeholder="10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="achievementIcon">Ícone</Label>
+                    <Input
+                      id="achievementIcon"
+                      value={newAchievement.icon}
+                      onChange={(e) => setNewAchievement({...newAchievement, icon: e.target.value})}
+                      placeholder="🏆"
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAddAchievement}>
+                  Adicionar Conquista
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Pontos</CardTitle>
+            <Star className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalPoints}</div>
+            <p className="text-xs text-muted-foreground">
+              Disponíveis
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Conquistas</CardTitle>
+            <Trophy className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalAchievements}</div>
+            <p className="text-xs text-muted-foreground">
+              {totalUnlocked} desbloqueadas
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Usuários Ativos</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">156</div>
+            <p className="text-xs text-muted-foreground">
+              Participando
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Nível Médio</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">8.5</div>
+            <p className="text-xs text-muted-foreground">
+              Dos usuários
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Conquistas</CardTitle>
+            <CardDescription>
+              Gerencie todas as conquistas do sistema
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Conquista</TableHead>
+                  <TableHead>Descrição</TableHead>
+                  <TableHead>Pontos</TableHead>
+                  <TableHead>Desbloqueios</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {achievements.map((achievement) => (
+                  <TableRow key={achievement.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{achievement.icon}</span>
+                        {achievement.name}
+                      </div>
+                    </TableCell>
+                    <TableCell>{achievement.description}</TableCell>
+                    <TableCell>{achievement.points}</TableCell>
+                    <TableCell>
+                      {achievement.unlocked}/{achievement.total}
+                    </TableCell>
+                    <TableCell>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDeleteAchievement(achievement.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Ranking</CardTitle>
+            <CardDescription>
+              Top 5 usuários com mais pontos
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Rank</TableHead>
+                  <TableHead>Usuário</TableHead>
+                  <TableHead>Pontos</TableHead>
+                  <TableHead>Nível</TableHead>
+                  <TableHead>Conquistas</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {leaderboard.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <Badge variant={user.rank === 1 ? "default" : "secondary"}>
+                        #{user.rank}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell>{user.points}</TableCell>
+                    <TableCell>{user.level}</TableCell>
+                    <TableCell>{user.achievements}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 } 
