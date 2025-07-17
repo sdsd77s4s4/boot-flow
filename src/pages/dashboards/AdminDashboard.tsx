@@ -365,7 +365,7 @@ export default function AdminDashboard() {
           </Dialog>
           {/* Fim dos modais */}
           {selectedPage === "dashboard" ? (
-            React.cloneElement(pageComponents.dashboard, {
+            pageComponents.dashboard({
               openIAModal: () => setOpenModal("ia"),
               openRevendedorModal: () => setOpenModal("revendedor")
             })
