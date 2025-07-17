@@ -123,7 +123,10 @@ const pageComponents = {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card
+          className="cursor-pointer hover:shadow-glow transition-all duration-300"
+          onClick={props?.openRadioModal}
+        >
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Radio className="w-6 h-6 text-blue-500" />
