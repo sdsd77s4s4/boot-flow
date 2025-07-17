@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -49,17 +49,16 @@ const App = () => (
           <Route path="/" element={<Index />} />
 
           {/* Admin Layout */}
-          <Route path="/dashboard/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="iptv" element={<AdminIPTV />} />
-            <Route path="radio" element={<AdminRadio />} />
-            <Route path="ai" element={<AdminAI />} />
-            <Route path="ecommerce" element={<AdminEcommerce />} />
-            <Route path="games" element={<AdminGames />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+          <Route path="/dashboard/admin" element={<AdminDashboard />} />
+          <Route path="/dashboard/admin/*" element={<Navigate to="/dashboard/admin" replace />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="iptv" element={<AdminIPTV />} />
+          <Route path="radio" element={<AdminRadio />} />
+          <Route path="ai" element={<AdminAI />} />
+          <Route path="ecommerce" element={<AdminEcommerce />} />
+          <Route path="games" element={<AdminGames />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="settings" element={<Settings />} />
 
           {/* Reseller Dashboard */}
           <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
