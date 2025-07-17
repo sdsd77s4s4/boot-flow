@@ -34,6 +34,9 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 const pageComponents = {
   dashboard: ((props) => (
@@ -330,19 +333,59 @@ export default function AdminDashboard() {
         <main className="flex-1 p-6">
           {/* Modais */}
           <Dialog open={openModal === "ia"} onOpenChange={v => setOpenModal(v ? "ia" : null)}>
-            <DialogContent>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Configurar IA</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <Tv className="w-5 h-5" /> Gerenciamento IPTV
+                </DialogTitle>
                 <DialogDescription>
-                  Configure as opções de Inteligência Artificial da plataforma.
+                  Configure servidores e canais do sistema IPTV
                 </DialogDescription>
               </DialogHeader>
-              {/* Conteúdo do modal de IA */}
-              <div className="py-4">(Aqui vai o formulário/configuração de IA...)</div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <button className="btn btn-primary">Fechar</button>
-                </DialogClose>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="serverName">Nome do Servidor</Label>
+                  <Input id="serverName" value="SaaS Pro IPTV" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="serverUrl">URL do Servidor</Label>
+                  <Input id="serverUrl" value="http://iptv.saaspro.com.br" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maxConnections">Máximo de Conexões por Usuário</Label>
+                  <Input id="maxConnections" type="number" value={5} />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableMovies">Filmes</Label>
+                    <Switch id="enableMovies" checked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableSeries">Séries</Label>
+                    <Switch id="enableSeries" checked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="enableLive">Canais Ao Vivo</Label>
+                    <Switch id="enableLive" checked />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status dos Servidores</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center p-2 border rounded-md">
+                      <Badge className="bg-green-500 mr-2">Online</Badge>
+                      <span>Servidor Principal</span>
+                    </div>
+                    <div className="flex items-center p-2 border rounded-md">
+                      <Badge className="bg-green-500 mr-2">Online</Badge>
+                      <span>Servidor Backup 1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="flex justify-between">
+                <Button variant="outline">Exportar M3U</Button>
+                <Button type="submit">Salvar Configurações</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
