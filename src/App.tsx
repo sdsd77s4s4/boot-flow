@@ -49,16 +49,17 @@ const App = () => (
           <Route path="/" element={<Index />} />
 
           {/* Admin Layout */}
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
-          <Route path="/dashboard/admin/*" element={<Navigate to="/dashboard/admin" replace />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="iptv" element={<AdminIPTV />} />
-          <Route path="radio" element={<AdminRadio />} />
-          <Route path="ai" element={<AdminAI />} />
-          <Route path="ecommerce" element={<AdminEcommerce />} />
-          <Route path="games" element={<AdminGames />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="/dashboard/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="iptv" element={<AdminIPTV />} />
+            <Route path="radio" element={<AdminRadio />} />
+            <Route path="ai" element={<AdminAI />} />
+            <Route path="ecommerce" element={<AdminEcommerce />} />
+            <Route path="games" element={<AdminGames />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
 
           {/* Reseller Dashboard */}
           <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
