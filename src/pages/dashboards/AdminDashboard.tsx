@@ -25,9 +25,18 @@ import {
   DollarSign,
   TrendingUp
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
 
 const pageComponents = {
-  dashboard: (
+  dashboard: ((props) => (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -35,11 +44,11 @@ const pageComponents = {
           <p className="text-muted-foreground">Gerencie toda a plataforma SaaS Pro</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={props?.openIAModal}>
             <Brain className="w-4 h-4 mr-2" />
             Configurar IA
           </Button>
-          <Button>
+          <Button onClick={props?.openRevendedorModal}>
             + Novo Revendedor
           </Button>
         </div>
@@ -287,7 +296,7 @@ const pageComponents = {
         </Card>
       </div>
     </div>
-  ),
+  )),
   users: <AdminUsers />, 
   iptv: <AdminIPTV />, 
   radio: <AdminRadio />, 
@@ -312,13 +321,57 @@ const menuKeys = [
 
 export default function AdminDashboard() {
   const [selectedPage, setSelectedPage] = useState("dashboard");
+  const [openModal, setOpenModal] = useState(null); // 'ia' | 'revendedor' | null
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AdminSidebar selectedPage={selectedPage} onSelectPage={setSelectedPage} />
         <main className="flex-1 p-6">
-          {pageComponents[selectedPage]}
+          {/* Modais */}
+          <Dialog open={openModal === "ia"} onOpenChange={v => setOpenModal(v ? "ia" : null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Configurar IA</DialogTitle>
+                <DialogDescription>
+                  Configure as opções de Inteligência Artificial da plataforma.
+                </DialogDescription>
+              </DialogHeader>
+              {/* Conteúdo do modal de IA */}
+              <div className="py-4">(Aqui vai o formulário/configuração de IA...)</div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <button className="btn btn-primary">Fechar</button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={openModal === "revendedor"} onOpenChange={v => setOpenModal(v ? "revendedor" : null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Novo Revendedor</DialogTitle>
+                <DialogDescription>
+                  Cadastre um novo revendedor para a plataforma.
+                </DialogDescription>
+              </DialogHeader>
+              {/* Conteúdo do modal de revendedor */}
+              <div className="py-4">(Aqui vai o formulário de cadastro de revendedor...)</div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <button className="btn btn-primary">Fechar</button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* Fim dos modais */}
+          {selectedPage === "dashboard" ? (
+            React.cloneElement(pageComponents.dashboard, {
+              openIAModal: () => setOpenModal("ia"),
+              openRevendedorModal: () => setOpenModal("revendedor")
+            })
+          ) : (
+            pageComponents[selectedPage]
+          )}
         </main>
       </div>
     </SidebarProvider>
