@@ -504,6 +504,49 @@ const AdminDashboard = () => {
                     </div>
                   </SortableContext>
                 </DndContext>
+                {/* Cards de métricas do Analytics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-6">
+                  <Card className="bg-[#1f2937] text-white">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</div>
+                      <p className="text-xs text-blue-400 mt-1">+12.5% em relação ao mês passado</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-[#1f2937] text-white">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-300">Receita Total</CardTitle>
+                      <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-white">R$ {stats.totalRevenue.toLocaleString()}</div>
+                      <p className="text-xs text-blue-400 mt-1">+15.3% em relação ao mês passado</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-[#1f2937] text-white">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-300">Revendedores Ativos</CardTitle>
+                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-white">{stats.activeResellers}</div>
+                      <p className="text-xs text-blue-400 mt-1">+8.2% em relação ao mês passado</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-[#1f2937] text-white">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-gray-300">Interações IA</CardTitle>
+                      <Brain className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-white">{stats.aiInteractions.toLocaleString()}</div>
+                      <p className="text-xs text-blue-400 mt-1">+23.1% em relação ao mês passado</p>
+                    </CardContent>
+                  </Card>
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card className="bg-[#1f2937]">
                     <CardHeader>
