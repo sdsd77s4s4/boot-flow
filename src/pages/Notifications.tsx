@@ -1,403 +1,210 @@
 import { useState } from "react";
-import { ArrowLeft, Bell, Check, Trash2, Filter, Search, BellRing, MessageSquare, Users, CreditCard } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/hooks/use-toast";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
 
-const Notifications = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "system",
-      title: "Sistema atualizado",
-      message: "Nova versão 2.1.0 disponível com melhorias na IA",
-      time: "há 2 horas",
-      read: false,
-      icon: BellRing
-    },
-    {
-      id: 2,
-      type: "payment",
-      title: "Pagamento processado",
-      message: "Cobrança de R$ 99,90 processada com sucesso",
-      time: "há 5 horas",
-      read: false,
-      icon: CreditCard
-    },
-    {
-      id: 3,
-      type: "user",
-      title: "Novo revendedor cadastrado",
-      message: "Maria Santos se cadastrou como revendedora",
-      time: "há 1 dia",
-      read: true,
-      icon: Users
-    },
-    {
-      id: 4,
-      type: "message",
-      title: "Nova mensagem de suporte",
-      message: "Você tem uma resposta do suporte técnico",
-      time: "há 2 dias",
-      read: true,
-      icon: MessageSquare
-    },
-    {
-      id: 5,
-      type: "system",
-      title: "Backup concluído",
-      message: "Backup automático dos dados foi realizado com sucesso",
-      time: "há 3 dias",
-      read: true,
-      icon: BellRing
-    }
-  ]);
+const templatesMock = [
+  { id: 1, nome: 'Confirmação de Agendamento', texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', variaveis: ['nome', 'servico', 'data', 'hora'], status: 'Ativo', envios: 1247, taxa: 98.5 },
+  { id: 2, nome: 'Lembrete de Agendamento', texto: 'Oi {nome}! Lembrete: você tem um agendamento amanhã às {hora} para {servico}. Confirme sua presença!', variaveis: ['nome', 'servico', 'hora'], status: 'Ativo', envios: 892, taxa: 97.2 },
+  { id: 3, nome: 'Cobrança Pendente', texto: 'Olá {nome}, você tem uma cobrança pendente de {valor} para {servico}. Pague via PIX: {pix}. Obrigado!', variaveis: ['nome', 'valor', 'servico', 'pix'], status: 'Ativo', envios: 445, taxa: 96.8 },
+  { id: 4, nome: 'Promoção Especial', texto: 'Olá {nome}, temos uma promoção especial para você! {promocao} com {desconto}% de desconto. Válido até {validade}.', variaveis: ['nome', 'promocao', 'desconto', 'validade'], status: 'Inativo', envios: 234, taxa: 95.1 },
+  { id: 5, nome: 'Aniversário', texto: 'Parabéns {nome}! Que seu dia seja especial! Como presente, você tem {desconto}% de desconto em qualquer serviço. Aproveite!', variaveis: ['nome', 'desconto'], status: 'Ativo', envios: 67, taxa: 99.2 },
+];
 
-  const [notificationSettings, setNotificationSettings] = useState({
-    system: true,
-    payments: true,
-    users: true,
-    messages: true,
-    marketing: false,
-    emails: true,
-    push: true,
-    sms: false
-  });
+const historicoMock = [
+  { id: 1, nome: 'Maria Silva', template: 'Confirmação de Agendamento', status: 'Entregue', data: '15/01/2025, 07:30' },
+  { id: 2, nome: 'João Santos', template: 'Lembrete de Agendamento', status: 'Lido', data: '15/01/2025, 06:15' },
+  { id: 3, nome: 'Ana Costa', template: 'Cobrança Pendente', status: 'Entregue', data: '15/01/2025, 05:45' },
+  { id: 4, nome: 'Pedro Lima', template: 'Promoção Especial', status: 'Falha', data: '14/01/2025, 18:00' },
+];
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+export default function Notifications() {
+  const [templates, setTemplates] = useState(templatesMock);
+  const [historico, setHistorico] = useState(historicoMock);
+  const [modal, setModal] = useState<{ type: null | 'novo' | 'editar' | 'enviar', template?: any }>({ type: null });
+  const [form, setForm] = useState({ nome: '', texto: '', variaveis: '', status: 'Ativo' });
 
-  const markAsRead = (id: number) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, read: true }
-          : notification
-      )
-    );
+  // Cards resumo
+  const enviados = historico.length;
+  const entregues = historico.filter(h => h.status === 'Entregue').length;
+  const lidos = historico.filter(h => h.status === 'Lido').length;
+  const falhas = historico.filter(h => h.status === 'Falha').length;
+  const taxaEntrega = enviados ? ((entregues / enviados) * 100).toFixed(1) : '0.0';
+
+  // Funções dos modais
+  const handleNovo = () => {
+    setTemplates([...templates, { id: templates.length + 1, nome: form.nome, texto: form.texto, variaveis: form.variaveis.split(','), status: form.status, envios: 0, taxa: 0 }]);
+    setForm({ nome: '', texto: '', variaveis: '', status: 'Ativo' });
+    setModal({ type: null });
   };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, read: true }))
-    );
-    toast({
-      title: "Notificações marcadas como lidas",
-      description: "Todas as notificações foram marcadas como lidas.",
-    });
+  const handleEditar = () => {
+    setTemplates(templates.map(t => t.id === modal.template.id ? { ...t, ...form, variaveis: form.variaveis.split(',') } : t));
+    setModal({ type: null });
   };
-
-  const deleteNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    toast({
-      title: "Notificação removida",
-      description: "A notificação foi removida com sucesso.",
-    });
-  };
-
-  const filteredNotifications = notifications.filter(notification =>
-    notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    notification.message.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "system": return "bg-info text-info-foreground";
-      case "payment": return "bg-success text-success-foreground";
-      case "user": return "bg-primary text-primary-foreground";
-      case "message": return "bg-warning text-warning-foreground";
-      default: return "bg-muted text-muted-foreground";
-    }
+  const handleEnviar = () => {
+    setHistorico([{ id: historico.length + 1, nome: 'Cliente Exemplo', template: modal.template.nome, status: 'Entregue', data: new Date().toLocaleString('pt-BR') }, ...historico]);
+    setModal({ type: null });
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold">Notificações</h1>
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="rounded-full">
-                  {unreadCount}
-                </Badge>
-              )}
-            </div>
-            <p className="text-muted-foreground">Gerencie suas notificações e alertas</p>
-          </div>
-          {unreadCount > 0 && (
-            <Button onClick={markAllAsRead} variant="outline" className="gap-2">
-              <Check className="h-4 w-4" />
-              Marcar todas como lidas
-            </Button>
-          )}
-        </div>
-
-        <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="notifications">Notificações</TabsTrigger>
-            <TabsTrigger value="settings">Configurações</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="notifications" className="space-y-6">
-            {/* Search and Filter */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Buscar notificações..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <Button variant="outline" className="gap-2">
-                    <Filter className="h-4 w-4" />
-                    Filtrar
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notifications List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Todas as Notificações</CardTitle>
-                <CardDescription>
-                  Suas notificações mais recentes
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-0">
-                  {filteredNotifications.map((notification, index) => {
-                    const IconComponent = notification.icon;
-                    return (
-                      <div key={notification.id}>
-                        <div 
-                          className={`p-4 flex items-start gap-4 hover:bg-muted/50 transition-colors ${
-                            !notification.read ? 'bg-muted/30' : ''
-                          }`}
-                        >
-                          <div className={`p-2 rounded-full ${getTypeColor(notification.type)}`}>
-                            <IconComponent className="h-4 w-4" />
-                          </div>
-                          
-                          <div className="flex-1 space-y-1">
-                            <div className="flex items-start justify-between">
-                              <h4 className={`font-medium ${!notification.read ? 'font-semibold' : ''}`}>
-                                {notification.title}
-                              </h4>
-                              <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-                                {notification.time}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              {notification.message}
-                            </p>
-                          </div>
-
-                          <div className="flex gap-1">
-                            {!notification.read && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => markAsRead(notification.id)}
-                                className="h-8 w-8"
-                              >
-                                <Check className="h-3 w-3" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => deleteNotification(notification.id)}
-                              className="h-8 w-8 text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
-                        {index < filteredNotifications.length - 1 && <Separator />}
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                {filteredNotifications.length === 0 && (
-                  <div className="p-8 text-center">
-                    <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="font-medium mb-2">Nenhuma notificação encontrada</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {searchTerm ? 'Tente ajustar sua busca' : 'Você está em dia com suas notificações!'}
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações de Notificação</CardTitle>
-                <CardDescription>
-                  Escolha que tipos de notificações você quer receber
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h4 className="font-medium">Tipos de Notificação</h4>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Sistema</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Atualizações, manutenção e avisos do sistema
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.system}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, system: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Pagamentos</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Cobranças, pagamentos e faturas
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.payments}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, payments: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Usuários</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Novos cadastros e atividades de usuários
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.users}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, users: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Mensagens</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Suporte, chat e mensagens diretas
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.messages}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, messages: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Marketing</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Ofertas, promoções e novidades
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.marketing}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, marketing: checked }))
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h4 className="font-medium">Canais de Entrega</h4>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Email</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Receber notificações por email
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.emails}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, emails: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">Push</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Notificações no navegador
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.push}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, push: checked }))
-                        }
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h5 className="font-medium">SMS</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Notificações por mensagem de texto
-                        </p>
-                      </div>
-                      <Switch
-                        checked={notificationSettings.sms}
-                        onCheckedChange={(checked) =>
-                          setNotificationSettings(prev => ({ ...prev, sms: checked }))
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-[#181e29] via-[#232a36] to-[#181e29]">
+      <div className="flex items-center gap-3 mb-2">
+        <MessageSquare className="w-7 h-7 text-purple-400" />
+        <h1 className="text-3xl font-bold text-purple-300">Notificações WhatsApp</h1>
       </div>
+      <p className="text-gray-400 mb-6">Gerencie templates e envie notificações para seus clientes</p>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <Card className="bg-[#232a36] border border-purple-700/40">
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-300">Total Enviados</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white">{enviados}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#232a36] border border-green-700/40">
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-300">Entregues</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-400">{entregues}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#232a36] border border-blue-700/40">
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-300">Lidos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-400">{lidos}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#232a36] border border-red-700/40">
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-300">Falhas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-400">{falhas}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#232a36] border border-yellow-700/40">
+          <CardHeader>
+            <CardTitle className="text-sm text-gray-300">Taxa Entrega</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-400">{taxaEntrega}%</div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex justify-end gap-2 mb-4">
+        <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setModal({ type: 'novo' })}><Plus className="w-4 h-4 mr-2" /> Novo Template</Button>
+        <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => setModal({ type: 'enviar', template: templates[0] })}><Send className="w-4 h-4 mr-2" /> Enviar Notificação</Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Templates */}
+        <Card className="bg-[#181e29] border border-purple-700/40">
+          <CardHeader>
+            <CardTitle className="text-white text-lg">Templates de Mensagem</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {templates.map(t => (
+              <div key={t.id} className="bg-[#232a36] rounded-xl p-4 border border-purple-700/30 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold text-white">{t.nome}</div>
+                  <Badge className={t.status === 'Ativo' ? 'bg-green-700 text-green-200' : 'bg-gray-700 text-gray-300'}>{t.status}</Badge>
+                </div>
+                <div className="text-gray-300 text-sm">{t.texto}</div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {t.variaveis.map((v: string) => (
+                    <span key={v} className="bg-gray-800 text-purple-300 rounded-full px-3 py-1 text-xs">{v}</span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                  <span>{t.envios} envios</span>
+                  <span>{t.taxa}% entrega</span>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-400" onClick={() => { setModal({ type: 'editar', template: t }); setForm({ nome: t.nome, texto: t.texto, variaveis: t.variaveis.join(','), status: t.status }); }}>Editar</Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+        {/* Histórico */}
+        <Card className="bg-[#181e29] border border-purple-700/40">
+          <CardHeader>
+            <CardTitle className="text-white text-lg">Histórico de Envios</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {historico.map(h => (
+              <div key={h.id} className="bg-[#232a36] rounded-xl p-4 border border-purple-700/30 flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold text-white">{h.nome}</div>
+                  <Badge className={h.status === 'Entregue' ? 'bg-green-700 text-green-200' : h.status === 'Lido' ? 'bg-blue-700 text-blue-200' : 'bg-red-700 text-red-200'}>{h.status}</Badge>
+                </div>
+                <div className="text-gray-300 text-xs">{h.template}</div>
+                <div className="text-gray-400 text-xs">{h.data}</div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+      {/* Modal Novo Template */}
+      <Dialog open={modal.type === 'novo'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Novo Template</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+            <Input placeholder="Texto da Mensagem" className="bg-gray-900 border border-gray-700 text-white" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
+            <Input placeholder="Variáveis (separadas por vírgula)" className="bg-gray-900 border border-gray-700 text-white" value={form.variaveis} onChange={e => setForm({ ...form, variaveis: e.target.value })} />
+            <select className="bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleNovo}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Modal Editar Template */}
+      <Dialog open={modal.type === 'editar'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Editar Template</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+            <Input placeholder="Texto da Mensagem" className="bg-gray-900 border border-gray-700 text-white" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
+            <Input placeholder="Variáveis (separadas por vírgula)" className="bg-gray-900 border border-gray-700 text-white" value={form.variaveis} onChange={e => setForm({ ...form, variaveis: e.target.value })} />
+            <select className="bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleEditar}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Modal Enviar Notificação */}
+      <Dialog open={modal.type === 'enviar'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle>Enviar Notificação</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">Notificação enviada com sucesso!</div>
+          <DialogFooter>
+            <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleEnviar}>OK</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
-
-export default Notifications;
+}
