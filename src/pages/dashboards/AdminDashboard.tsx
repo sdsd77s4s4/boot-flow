@@ -258,7 +258,7 @@ const AdminDashboard = () => {
 
   // Componente SortableCard
   function SortableCard({ id, content, body, onClick }: any) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+    const { attributes, setNodeRef, transform, transition, isDragging } = useSortable({ id });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -267,7 +267,7 @@ const AdminDashboard = () => {
       cursor: 'grab',
     };
     return (
-      <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="select-none">
+      <div ref={setNodeRef} style={style} {...attributes} className="select-none">
         <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={onClick} tabIndex={0} role="button" aria-pressed="false">
           {content}
           {body}
