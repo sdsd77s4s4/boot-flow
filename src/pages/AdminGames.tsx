@@ -92,7 +92,7 @@ export default function AdminGames() {
   const totalAchievements = achievements.length;
 
   return (
-    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
+    <div className="max-w-full w-full overflow-x-auto p-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">Gamificação</h1>
