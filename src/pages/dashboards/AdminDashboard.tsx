@@ -494,16 +494,6 @@ const AdminDashboard = () => {
                     </Button>
                   </div>
                 </div>
-                {/* Kanban funcional com drag-and-drop */}
-                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={kanbanCards} strategy={rectSortingStrategy}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-6">
-                      {kanbanCards.map(card => (
-                        <SortableCard key={card.id} id={card.id} content={card.content} body={card.body} onClick={card.onClick} />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
                 {/* Cards de métricas do Analytics */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-6">
                   <Card className="bg-[#1f2937] text-white">
@@ -547,6 +537,16 @@ const AdminDashboard = () => {
                     </CardContent>
                   </Card>
                 </div>
+                {/* Kanban funcional com drag-and-drop */}
+                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={kanbanCards} strategy={rectSortingStrategy}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-6">
+                      {kanbanCards.map(card => (
+                        <SortableCard key={card.id} id={card.id} content={card.content} body={card.body} onClick={card.onClick} />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card className="bg-[#1f2937]">
                     <CardHeader>
