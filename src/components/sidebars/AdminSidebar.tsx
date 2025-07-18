@@ -40,6 +40,7 @@ const menuItems = [
   { title: "Sistema IPTV", page: "iptv", icon: Tv },
   { title: "WhatsApp", page: "whatsapp", icon: MessageSquare },
   { title: "Cobranças", page: "cobrancas", icon: BarChart3 },
+  { title: "Notificações", page: "notificacoes", icon: MessageSquare },
   { title: "Customizar Marca", page: "branding", icon: Paintbrush },
   { title: "Gateways", page: "gateways", icon: Server },
   { title: "IA + Voz", page: "ai", icon: Brain },
