@@ -113,8 +113,47 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
             <Menu className="w-6 h-6" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="bg-[#232a36] text-white p-0">
-          {sidebarContent}
+        <DrawerContent className="bg-[#232a36] text-white p-0 w-full max-w-xs h-full fixed left-0 top-0 rounded-none overflow-y-auto">
+          <div className="p-4 flex items-center space-x-2 mb-4">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold">Admin</span>
+          </div>
+          <div className="h-full flex flex-col justify-between">
+            <div>
+              <SidebarGroup>
+                <SidebarGroupLabel>Administração</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {menuItems.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton 
+                          onClick={() => handlePageChange(item.page)}
+                          className={currentPage === item.page ? "bg-primary text-primary-foreground" : "hover:bg-accent"}
+                        >
+                          <item.icon className="mr-2 h-4 w-4" />
+                          <span>{item.title}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </div>
+            <div className="mb-4">
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton className="hover:bg-accent">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Sair</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </div>
+          </div>
         </DrawerContent>
       </Drawer>
     );
