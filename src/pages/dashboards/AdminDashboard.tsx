@@ -32,6 +32,9 @@ import { AdminSidebar } from "@/components/sidebars/AdminSidebar";
 import { AIModalManager } from "@/components/modals/AIModalManager";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Importando as páginas como componentes
 import AdminUsers from "../AdminUsers";
@@ -116,6 +119,157 @@ const AdminDashboard = () => {
     }
   };
 
+  // Kanban cards state
+  const initialKanbanCards = [
+    {
+      id: 'iptv',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Tv className="w-6 h-6 text-purple-500" />
+            <CardTitle>Sistema IPTV</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Gerencie servidores, canais e configurações IPTV</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Usuários Ativos:</span><span className="text-sm font-semibold">{stats.iptvUsers.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm">Servidores Online:</span><span className="text-sm font-semibold text-green-600">12/12</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => handleModalOpen("iptv_management")
+    },
+    {
+      id: 'branding',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Paintbrush className="w-6 h-6 text-purple-400" />
+            <CardTitle>Customizar Marca</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Personalize a aparência, identidade visual e configurações white label da sua plataforma</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Logo, cores, domínio, rodapé, etc.</span></div>
+            <div className="flex justify-between"><span className="text-sm">Configurações WhiteLabel exclusivas</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => setBrandingModal(true)
+    },
+    {
+      id: 'ecommerce',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <ShoppingCart className="w-6 h-6 text-green-500" />
+            <CardTitle>E-commerce</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Gerencie produtos, vendas e configurações</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Vendas Hoje:</span><span className="text-sm font-semibold">R$ 12.450</span></div>
+            <div className="flex justify-between"><span className="text-sm">Produtos Ativos:</span><span className="text-sm font-semibold text-green-600">24</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => handleModalOpen("ecommerce_management")
+    },
+    {
+      id: 'gamificacao',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Gamepad2 className="w-6 h-6 text-orange-500" />
+            <CardTitle>Gamificação</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Sistema de pontos, conquistas e rankings</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Usuários Ativos:</span><span className="text-sm font-semibold">8.234</span></div>
+            <div className="flex justify-between"><span className="text-sm">Conquistas:</span><span className="text-sm font-semibold text-green-600">15</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => handleModalOpen("gamification_management")
+    },
+    {
+      id: 'analytics',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <BarChart3 className="w-6 h-6 text-indigo-500" />
+            <CardTitle>Analytics</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Métricas, relatórios e insights</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Visualizações:</span><span className="text-sm font-semibold">45.678</span></div>
+            <div className="flex justify-between"><span className="text-sm">Conversão:</span><span className="text-sm font-semibold text-green-600">3.2%</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => handleModalOpen("analytics_management")
+    },
+    {
+      id: 'ai_voice',
+      content: (
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Brain className="w-6 h-6 text-pink-500" />
+            <CardTitle>IA + Voz</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent>
+          <p className="text-muted-foreground mb-4">Configurações de inteligência artificial</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm">Interações:</span><span className="text-sm font-semibold">{stats.aiInteractions.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm">Status:</span><span className="text-sm font-semibold text-green-600">Ativo</span></div>
+          </div>
+        </CardContent>
+      ),
+      onClick: () => handleModalOpen("ai_voice_config")
+    }
+  ];
+  const [kanbanCards, setKanbanCards] = useState(initialKanbanCards);
+
+  // Componente SortableCard
+  function SortableCard({ id, content, body, onClick }: any) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      zIndex: isDragging ? 50 : 1,
+      opacity: isDragging ? 0.7 : 1,
+      cursor: 'grab',
+    };
+    return (
+      <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="select-none">
+        <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={onClick}>
+          {content}
+          {body}
+        </Card>
+      </div>
+    );
+  }
+
   // Função para renderizar o conteúdo da página atual
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -196,149 +350,24 @@ const AdminDashboard = () => {
             </div>
 
             {/* Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => handleModalOpen("iptv_management")}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Tv className="w-6 h-6 text-purple-500" />
-                    <CardTitle>Sistema IPTV</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Gerencie servidores, canais e configurações IPTV
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Usuários Ativos:</span>
-                      <span className="text-sm font-semibold">{stats.iptvUsers.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Servidores Online:</span>
-                      <span className="text-sm font-semibold text-green-600">12/12</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => setBrandingModal(true)}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Paintbrush className="w-6 h-6 text-purple-400" />
-                    <CardTitle>Customizar Marca</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Personalize a aparência, identidade visual e configurações white label da sua plataforma
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Logo, cores, domínio, rodapé, etc.</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Configurações WhiteLabel exclusivas</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => handleModalOpen("ecommerce_management")}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <ShoppingCart className="w-6 h-6 text-green-500" />
-                    <CardTitle>E-commerce</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Gerencie produtos, vendas e configurações
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Vendas Hoje:</span>
-                      <span className="text-sm font-semibold">R$ 12.450</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Produtos Ativos:</span>
-                      <span className="text-sm font-semibold text-green-600">24</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => handleModalOpen("gamification_management")}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Gamepad2 className="w-6 h-6 text-orange-500" />
-                    <CardTitle>Gamificação</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Sistema de pontos, conquistas e rankings
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Usuários Ativos:</span>
-                      <span className="text-sm font-semibold">8.234</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Conquistas:</span>
-                      <span className="text-sm font-semibold text-green-600">15</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => handleModalOpen("analytics_management")}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <BarChart3 className="w-6 h-6 text-indigo-500" />
-                    <CardTitle>Analytics</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Métricas, relatórios e insights
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Visualizações:</span>
-                      <span className="text-sm font-semibold">45.678</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Conversão:</span>
-                      <span className="text-sm font-semibold text-green-600">3.2%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={() => handleModalOpen("ai_voice_config")}>
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <Brain className="w-6 h-6 text-pink-500" />
-                    <CardTitle>IA + Voz</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    Configurações de inteligência artificial
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Interações:</span>
-                      <span className="text-sm font-semibold">{stats.aiInteractions.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Status:</span>
-                      <span className="text-sm font-semibold text-green-600">Ativo</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <DndContext collisionDetection={closestCenter} onDragEnd={event => {
+              const { active, over } = event;
+              if (active.id !== over?.id) {
+                setKanbanCards((items) => {
+                  const oldIndex = items.findIndex(i => i.id === active.id);
+                  const newIndex = items.findIndex(i => i.id === over.id);
+                  return arrayMove(items, oldIndex, newIndex);
+                });
+              }
+            }}>
+              <SortableContext items={kanbanCards} strategy={verticalListSortingStrategy}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {kanbanCards.map(card => (
+                    <SortableCard key={card.id} id={card.id} content={card.content} body={card.body} onClick={card.onClick} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
 
             {/* Recent Activity & Online Users */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
