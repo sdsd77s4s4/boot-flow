@@ -22,7 +22,12 @@ interface Reseller {
   plan: string;
 }
 
-export default function AdminResellers() {
+interface AdminResellersProps {
+  resellers?: any[];
+  onAddReseller?: (reseller: any) => void;
+}
+
+export default function AdminResellers({ resellers: externalResellers, onAddReseller }: AdminResellersProps = {}) {
   const [resellers, setResellers] = useState<Reseller[]>([
     { id: 1, name: "Maria Santos", email: "maria@email.com", phone: "(11) 99999-9999", commission: 15, status: "Ativo", clients: 45, revenue: 12500, joinedDate: "2024-01-15", plan: "Premium" },
     { id: 2, name: "Carlos Lima", email: "carlos@email.com", phone: "(11) 88888-8888", commission: 12, status: "Ativo", clients: 32, revenue: 8900, joinedDate: "2024-01-10", plan: "Standard" },
@@ -30,6 +35,9 @@ export default function AdminResellers() {
     { id: 4, name: "Pedro Oliveira", email: "pedro@email.com", phone: "(11) 66666-6666", commission: 10, status: "Inativo", clients: 15, revenue: 3200, joinedDate: "2024-01-05", plan: "Basic" },
     { id: 5, name: "João Silva", email: "joao@email.com", phone: "(11) 55555-5555", commission: 20, status: "Ativo", clients: 67, revenue: 18900, joinedDate: "2024-01-12", plan: "Premium" },
   ]);
+
+  // Se receber revendedores externos, use eles
+  const allResellers = externalResellers ? [...resellers, ...externalResellers] : resellers;
 
   const [newReseller, setNewReseller] = useState({
     name: "",
@@ -43,7 +51,7 @@ export default function AdminResellers() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredResellers = resellers.filter(reseller =>
+  const filteredResellers = allResellers.filter(reseller =>
     reseller.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     reseller.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
