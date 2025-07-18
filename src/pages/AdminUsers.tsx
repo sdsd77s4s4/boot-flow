@@ -85,7 +85,7 @@ export default function AdminUsers() {
               Novo Usuário
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#1f2937] text-white max-w-lg p-0 rounded-xl shadow-xl border border-gray-700">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
