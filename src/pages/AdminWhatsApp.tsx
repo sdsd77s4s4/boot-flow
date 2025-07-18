@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, Download, Upload, Users } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const templatesMock = [
   {
@@ -66,6 +67,14 @@ const AdminWhatsApp: React.FC = () => {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [templateToDelete, setTemplateToDelete] = useState<any>(null);
+  const [configModalOpen, setConfigModalOpen] = useState(false);
+  const [configTab, setConfigTab] = useState('geral');
+  const [config, setConfig] = useState({
+    provider: 'Meta Cloud API',
+    number: '',
+    webhook: '',
+    autoReply: false
+  });
 
   // Abrir modal para novo template
   const handleNewTemplate = () => {
@@ -125,10 +134,65 @@ const AdminWhatsApp: React.FC = () => {
           <p className="text-gray-400 mt-1">Gerencie integrações, templates e automações do WhatsApp</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700"><Settings className="w-4 h-4 mr-2" />Configurar</Button>
+          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700" onClick={() => setConfigModalOpen(true)}><Settings className="w-4 h-4 mr-2" />Configurar</Button>
           <Button className="bg-green-600 hover:bg-green-700" onClick={handleNewTemplate}><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
         </div>
       </div>
+
+      {/* Modal de Configuração */}
+      <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
+        <DialogContent className="bg-[#181e29] border-gray-700 text-white max-w-2xl">
+          <DialogHeader>
+            <CardTitle className="text-2xl font-bold text-green-400 flex items-center gap-2"><Settings className="w-6 h-6 text-green-400" />Configuração do WhatsApp</CardTitle>
+            <DialogDescription className="text-gray-400">Configure as integrações e preferências do WhatsApp Business</DialogDescription>
+          </DialogHeader>
+          <Tabs value={configTab} onValueChange={setConfigTab} className="mt-4">
+            <TabsList className="flex bg-[#232a36] rounded-lg mb-4">
+              <TabsTrigger value="geral" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-white">Geral</TabsTrigger>
+              <TabsTrigger value="api" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-white">API</TabsTrigger>
+              <TabsTrigger value="templates" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-white">Templates</TabsTrigger>
+              <TabsTrigger value="horarios" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-white">Horários</TabsTrigger>
+            </TabsList>
+            <TabsContent value="geral">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-300 mb-1">Provedor</label>
+                  <select value={config.provider} onChange={e => setConfig({ ...config, provider: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white">
+                    <option>Meta Cloud API</option>
+                    <option>WPPConnect</option>
+                    <option>Z-API</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-1">Número do WhatsApp</label>
+                  <Input value={config.number} onChange={e => setConfig({ ...config, number: e.target.value })} placeholder="+55 11 99999-9999" className="bg-gray-800 border-gray-700 text-white" />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1">URL do Webhook</label>
+                <Input value={config.webhook} onChange={e => setConfig({ ...config, webhook: e.target.value })} placeholder="https://seu-dominio.com/webhook" className="bg-gray-800 border-gray-700 text-white" />
+              </div>
+              <div className="flex items-center gap-3 mb-6">
+                <Switch checked={config.autoReply} onCheckedChange={v => setConfig({ ...config, autoReply: v })} />
+                <span className="text-white">Ativar auto-resposta</span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setConfigModalOpen(false)}>Cancelar</Button>
+                <Button className="bg-green-600 hover:bg-green-700">Salvar Configurações</Button>
+              </div>
+            </TabsContent>
+            <TabsContent value="api">
+              <div className="text-gray-400">Configurações de API (em breve)</div>
+            </TabsContent>
+            <TabsContent value="templates">
+              <div className="text-gray-400">Gerenciamento de templates (em breve)</div>
+            </TabsContent>
+            <TabsContent value="horarios">
+              <div className="text-gray-400">Configuração de horários (em breve)</div>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
 
       {/* Cards de Métricas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
