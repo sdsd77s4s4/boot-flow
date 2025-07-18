@@ -12,7 +12,8 @@ import {
   LogOut,
   Building2,
   MessageSquare,
-  Paintbrush
+  Paintbrush,
+  Server
 } from "lucide-react";
 import {
   Sidebar,
@@ -39,7 +40,7 @@ const menuItems = [
   { title: "Sistema IPTV", page: "iptv", icon: Tv },
   { title: "WhatsApp", page: "whatsapp", icon: MessageSquare },
   { title: "Customizar Marca", page: "branding", icon: Paintbrush },
-  { title: "Rádio Web", page: "radio", icon: Radio },
+  { title: "Gateways", page: "gateways", icon: Server },
   { title: "IA + Voz", page: "ai", icon: Brain },
   { title: "E-commerce", page: "ecommerce", icon: ShoppingCart },
   { title: "Gamificação", page: "games", icon: Gamepad2 },
