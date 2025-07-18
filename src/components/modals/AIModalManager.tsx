@@ -13,9 +13,10 @@ import { Badge } from "@/components/ui/badge";
 interface AIModalManagerProps {
   activeModal: string | null;
   onClose: () => void;
+  onAddReseller?: (reseller: any) => void;
 }
 
-export function AIModalManager({ activeModal, onClose }: AIModalManagerProps) {
+export function AIModalManager({ activeModal, onClose, onAddReseller }: AIModalManagerProps) {
   const [aiConfig, setAiConfig] = useState({
     voiceEnabled: true,
     maleVoice: "Roger",
