@@ -285,10 +285,16 @@ const AdminDashboard = () => {
                 <h1 className="text-3xl font-bold text-white">Dashboard Admin</h1>
                 <p className="text-gray-400">Visão geral do sistema</p>
               </div>
-              <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
-                <Plus className="w-4 h-4 mr-2" />
-                Nova Ação
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handleModalOpen("ai_config")}> 
+                  <Brain className="w-4 h-4 mr-2" />
+                  Configurar IA
+                </Button>
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handleModalOpen("add_reseller")}> 
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Revendedor
+                </Button>
+              </div>
             </div>
 
             {/* Stats Cards */}
@@ -466,10 +472,16 @@ const AdminDashboard = () => {
                     <h1 className="text-3xl font-bold text-white">Dashboard Admin</h1>
                     <p className="text-gray-400">Visão geral do sistema</p>
                   </div>
-                  <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nova Ação
-                  </Button>
+                  <div className="flex items-center space-x-2">
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handleModalOpen("ai_config")}> 
+                      <Brain className="w-4 h-4 mr-2" />
+                      Configurar IA
+                    </Button>
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handleModalOpen("add_reseller")}> 
+                      <Plus className="w-4 h-4 mr-2" />
+                      Novo Revendedor
+                    </Button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {kanbanCards.map(card => (
