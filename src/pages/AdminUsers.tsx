@@ -86,7 +86,7 @@ export default function AdminUsers() {
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6 max-h-[80vh] overflow-y-auto">
+            <div className="p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Users className="w-6 h-6 text-green-500" />
