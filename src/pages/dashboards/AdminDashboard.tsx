@@ -631,6 +631,38 @@ const AdminDashboard = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Modais dos cards Kanban */}
+        <Dialog open={activeModal === 'iptv_management'} onOpenChange={handleModalClose}>
+          <DialogContent className="max-w-2xl bg-[#232a36] text-white">
+            <div className="font-bold text-xl mb-2">Gestão de IPTV</div>
+            <AdminIPTV />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={activeModal === 'ecommerce_management'} onOpenChange={handleModalClose}>
+          <DialogContent className="max-w-2xl bg-[#232a36] text-white">
+            <div className="font-bold text-xl mb-2">Gestão de E-commerce</div>
+            <AdminEcommerce />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={activeModal === 'gamification_management'} onOpenChange={handleModalClose}>
+          <DialogContent className="max-w-2xl bg-[#232a36] text-white">
+            <div className="font-bold text-xl mb-2">Gestão de Gamificação</div>
+            <AdminGames />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={activeModal === 'analytics_management'} onOpenChange={handleModalClose}>
+          <DialogContent className="max-w-2xl bg-[#232a36] text-white">
+            <div className="font-bold text-xl mb-2">Resumo de Analytics</div>
+            <AdminAnalytics />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={activeModal === 'ai_voice_config'} onOpenChange={handleModalClose}>
+          <DialogContent className="max-w-2xl bg-[#232a36] text-white">
+            <div className="font-bold text-xl mb-2">Configurações de IA + Voz</div>
+            <AdminAI />
+          </DialogContent>
+        </Dialog>
       </div>
     </SidebarProvider>
   );
