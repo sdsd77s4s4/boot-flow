@@ -113,18 +113,18 @@ const AdminBranding: React.FC = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-[#181e29] via-[#232a36] to-[#181e29]">
+    <div className="p-6 min-h-screen bg-[#09090b]">
       <div className="flex items-center space-x-3 mb-2">
         <Paintbrush className="w-7 h-7 text-purple-400" />
         <h1 className="text-3xl font-bold text-white">Customizar Marca</h1>
       </div>
       <p className="text-gray-400 mb-6">Personalize a aparência e identidade da sua plataforma</p>
       <Tabs value={tab} onValueChange={setTab} className="">
-        <TabsList className="flex bg-[#232a36] rounded-lg mb-6 w-fit">
-          <TabsTrigger value="marca" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Marca</TabsTrigger>
-          <TabsTrigger value="visual" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Visual</TabsTrigger>
-          <TabsTrigger value="avancado" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Avançado</TabsTrigger>
-          <TabsTrigger value="funcionalidades" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Funcionalidades</TabsTrigger>
+        <TabsList className="flex bg-[#1f2937] rounded-lg mb-6 w-fit">
+          <TabsTrigger value="marca" className="flex-1 data-[state=active]:bg-[#7e22ce] data-[state=active]:text-white">Marca</TabsTrigger>
+          <TabsTrigger value="visual" className="flex-1 data-[state=active]:bg-[#7e22ce] data-[state=active]:text-white">Visual</TabsTrigger>
+          <TabsTrigger value="avancado" className="flex-1 data-[state=active]:bg-[#7e22ce] data-[state=active]:text-white">Avançado</TabsTrigger>
+          <TabsTrigger value="funcionalidades" className="flex-1 data-[state=active]:bg-[#7e22ce] data-[state=active]:text-white">Funcionalidades</TabsTrigger>
           <TabsTrigger value="whitelabel" className="flex-1 data-[state=active]:bg-green-700 data-[state=active]:text-white">WhiteLabel settings</TabsTrigger>
         </TabsList>
         <TabsContent value="marca">
@@ -132,7 +132,7 @@ const AdminBranding: React.FC = () => {
             {/* Coluna principal */}
             <div className="lg:col-span-2 space-y-6">
               {/* Informações da Empresa */}
-              <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Informações da Empresa</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
@@ -164,7 +164,7 @@ const AdminBranding: React.FC = () => {
                 </div>
               </div>
               {/* Logos e Ícones */}
-              <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Logos e Ícones</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Logo */}
@@ -175,7 +175,7 @@ const AdminBranding: React.FC = () => {
                       <UploadCloud className="w-10 h-10 text-purple-400 mb-2" />
                     )}
                     <p className="text-gray-400 text-xs mb-2">Clique para fazer upload<br />PNG, JPG até 1MB</p>
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setLogoModal(true)}>Selecionar Logo</Button>
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setLogoModal(true)}>Selecionar Logo</Button>
                   </div>
                   {/* Favicon */}
                   <div className="flex flex-col items-center justify-center border-2 border-dashed border-purple-500/40 rounded-xl p-6 bg-[#181e29]">
@@ -185,14 +185,14 @@ const AdminBranding: React.FC = () => {
                       <UploadCloud className="w-10 h-10 text-purple-400 mb-2" />
                     )}
                     <p className="text-gray-400 text-xs mb-2">Clique para fazer upload<br />ICO, PNG até 1MB</p>
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setFaviconModal(true)}>Selecionar Favicon</Button>
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setFaviconModal(true)}>Selecionar Favicon</Button>
                   </div>
                 </div>
               </div>
             </div>
             {/* Coluna Preview */}
             <div className="space-y-6">
-              <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg min-w-[260px]">
+              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg min-w-[260px]">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Preview</span>
                 <div className="bg-[#181e29] rounded-lg p-4 flex flex-col items-center">
                   <div className="flex gap-2 mb-2">
