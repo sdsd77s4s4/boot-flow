@@ -27,121 +27,121 @@ const ClientDashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-[#09090b]">
         <ClientSidebar />
         
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold">Minha Central</h1>
-                <p className="text-muted-foreground">Seus serviços e entretenimento</p>
+                <h1 className="text-3xl font-bold text-white">Minha Central</h1>
+                <p className="text-gray-400">Seus serviços e entretenimento</p>
               </div>
-              <Button>
+              <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Chat IA
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] hover:shadow-glow transition-all duration-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Horas IPTV</CardTitle>
-                  <Tv className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-white">Horas IPTV</CardTitle>
+                  <Tv className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.iptvHours}h</div>
-                  <p className="text-xs text-muted-foreground">Este mês</p>
+                  <div className="text-2xl font-bold text-white">{stats.iptvHours}h</div>
+                  <p className="text-xs text-gray-400">Este mês</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] hover:shadow-glow transition-all duration-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Horas Rádio</CardTitle>
-                  <Radio className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-white">Horas Rádio</CardTitle>
+                  <Radio className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.radioHours}h</div>
-                  <p className="text-xs text-muted-foreground">Este mês</p>
+                  <div className="text-2xl font-bold text-white">{stats.radioHours}h</div>
+                  <p className="text-xs text-gray-400">Este mês</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] hover:shadow-glow transition-all duration-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Conversas IA</CardTitle>
-                  <Brain className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-white">Conversas IA</CardTitle>
+                  <Brain className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.aiChats}</div>
-                  <p className="text-xs text-muted-foreground">Este mês</p>
+                  <div className="text-2xl font-bold text-white">{stats.aiChats}</div>
+                  <p className="text-xs text-gray-400">Este mês</p>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] hover:shadow-glow transition-all duration-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pontos Game</CardTitle>
-                  <Gamepad2 className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-white">Pontos Game</CardTitle>
+                  <Gamepad2 className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.gamePoints}</div>
-                  <p className="text-xs text-muted-foreground">Nível 5</p>
+                  <div className="text-2xl font-bold text-white">{stats.gamePoints}</div>
+                  <p className="text-xs text-gray-400">Nível 5</p>
                 </CardContent>
               </Card>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] cursor-pointer hover:shadow-glow transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Tv className="w-6 h-6 text-purple-500" />
-                    <CardTitle>IPTV Player</CardTitle>
+                    <CardTitle className="text-white">IPTV Player</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Assista seus canais favoritos
                   </p>
-                  <Button className="w-full">
+                  <Button className="w-full bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                     <Play className="w-4 h-4 mr-2" />
                     Abrir Player
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] cursor-pointer hover:shadow-glow transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Radio className="w-6 h-6 text-blue-500" />
-                    <CardTitle>Rádio Web</CardTitle>
+                    <CardTitle className="text-white">Rádio Web</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Ouça suas rádios favoritas
                   </p>
-                  <Button className="w-full">
+                  <Button className="w-full bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                     <Play className="w-4 h-4 mr-2" />
                     Ouvir Agora
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="cursor-pointer hover:shadow-glow transition-all duration-300">
+              <Card className="bg-[#1f2937] cursor-pointer hover:shadow-glow transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Gamepad2 className="w-6 h-6 text-orange-500" />
-                    <CardTitle>Startup Game</CardTitle>
+                    <CardTitle className="text-white">Startup Game</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-gray-400 mb-4">
                     Construa seu império digital
                   </p>
                   <div className="flex items-center space-x-2 mb-4">
                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="text-sm">Nível 5 - CEO</span>
+                    <span className="text-sm text-white">Nível 5 - CEO</span>
                   </div>
-                  <Button className="w-full">
+                  <Button className="w-full bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                     <Play className="w-4 h-4 mr-2" />
                     Jogar
                   </Button>
