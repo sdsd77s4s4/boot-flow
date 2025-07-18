@@ -80,21 +80,21 @@ export default function AdminIPTV() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Sistema IPTV</h1>
-          <p className="text-muted-foreground">Gerencie canais e configurações do IPTV</p>
+          <h1 className="text-3xl font-bold text-white">Sistema IPTV</h1>
+          <p className="text-gray-400">Gerencie canais e configurações do IPTV</p>
         </div>
         <div className="flex items-center gap-2">
           <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" className="flex items-center gap-2 bg-[#1f2937] text-white border-none">
                 <Settings className="w-4 h-4" />
                 Configurações
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="bg-[#1f2937] text-white max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Configurações do Servidor IPTV</DialogTitle>
                 <DialogDescription>
@@ -104,34 +104,37 @@ export default function AdminIPTV() {
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="serverName">Nome do Servidor</Label>
+                    <Label htmlFor="serverName" className="text-gray-300">Nome do Servidor</Label>
                     <Input
                       id="serverName"
                       value={serverConfig.serverName}
                       onChange={(e) => setServerConfig({...serverConfig, serverName: e.target.value})}
+                      className="bg-[#1f2937] border border-gray-700 text-white"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="serverUrl">URL do Servidor</Label>
+                    <Label htmlFor="serverUrl" className="text-gray-300">URL do Servidor</Label>
                     <Input
                       id="serverUrl"
                       value={serverConfig.serverUrl}
                       onChange={(e) => setServerConfig({...serverConfig, serverUrl: e.target.value})}
+                      className="bg-[#1f2937] border border-gray-700 text-white"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="maxConnections">Máximo de Conexões</Label>
+                  <Label htmlFor="maxConnections" className="text-gray-300">Máximo de Conexões</Label>
                   <Input
                     id="maxConnections"
                     type="number"
                     value={serverConfig.maxConnections}
                     onChange={(e) => setServerConfig({...serverConfig, maxConnections: e.target.value})}
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableMovies">Habilitar Filmes</Label>
+                    <Label htmlFor="enableMovies" className="text-gray-300">Habilitar Filmes</Label>
                     <Switch 
                       id="enableMovies" 
                       checked={serverConfig.enableMovies} 
@@ -139,7 +142,7 @@ export default function AdminIPTV() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableSeries">Habilitar Séries</Label>
+                    <Label htmlFor="enableSeries" className="text-gray-300">Habilitar Séries</Label>
                     <Switch 
                       id="enableSeries" 
                       checked={serverConfig.enableSeries} 
@@ -147,7 +150,7 @@ export default function AdminIPTV() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableLive">Habilitar TV ao Vivo</Label>
+                    <Label htmlFor="enableLive" className="text-gray-300">Habilitar TV ao Vivo</Label>
                     <Switch 
                       id="enableLive" 
                       checked={serverConfig.enableLive} 
@@ -157,10 +160,10 @@ export default function AdminIPTV() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsConfigDialogOpen(false)}>
+                <Button variant="outline" className="bg-[#1f2937] text-white" onClick={() => setIsConfigDialogOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={() => setIsConfigDialogOpen(false)}>
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setIsConfigDialogOpen(false)}>
                   Salvar Configurações
                 </Button>
               </DialogFooter>
@@ -168,12 +171,12 @@ export default function AdminIPTV() {
           </Dialog>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                 <Plus className="w-4 h-4" />
                 Novo Canal
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-[#1f2937] text-white">
               <DialogHeader>
                 <DialogTitle>Adicionar Novo Canal</DialogTitle>
                 <DialogDescription>
@@ -182,21 +185,23 @@ export default function AdminIPTV() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="channelName">Nome do Canal</Label>
+                  <Label htmlFor="channelName" className="text-gray-300">Nome do Canal</Label>
                   <Input
                     id="channelName"
                     value={newChannel.name}
                     onChange={(e) => setNewChannel({...newChannel, name: e.target.value})}
                     placeholder="Ex: Globo"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="channelCategory">Categoria</Label>
+                  <Label htmlFor="channelCategory" className="text-gray-300">Categoria</Label>
                   <Input
                     id="channelCategory"
                     value={newChannel.category}
                     onChange={(e) => setNewChannel({...newChannel, category: e.target.value})}
                     placeholder="Ex: Entretenimento"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-2">
@@ -206,6 +211,7 @@ export default function AdminIPTV() {
                     value={newChannel.url}
                     onChange={(e) => setNewChannel({...newChannel, url: e.target.value})}
                     placeholder="http://stream.exemplo.com"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-2">
@@ -215,6 +221,7 @@ export default function AdminIPTV() {
                     value={newChannel.logo}
                     onChange={(e) => setNewChannel({...newChannel, logo: e.target.value})}
                     placeholder="http://exemplo.com/logo.png"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
               </div>
@@ -232,7 +239,7 @@ export default function AdminIPTV() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Canais</CardTitle>
             <Tv className="h-4 w-4 text-muted-foreground" />
@@ -244,7 +251,7 @@ export default function AdminIPTV() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Conexões Ativas</CardTitle>
             <Play className="h-4 w-4 text-muted-foreground" />
@@ -256,7 +263,7 @@ export default function AdminIPTV() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Status do Servidor</CardTitle>
             <Badge className="bg-green-100 text-green-800">Online</Badge>
@@ -270,7 +277,7 @@ export default function AdminIPTV() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="bg-[#1f2937] text-white">
         <CardHeader>
           <CardTitle>Lista de Canais</CardTitle>
           <CardDescription>
