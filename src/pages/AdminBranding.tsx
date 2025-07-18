@@ -126,6 +126,7 @@ const AdminBranding: React.FC = () => {
           <TabsTrigger value="avancado" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Avançado</TabsTrigger>
           <TabsTrigger value="funcionalidades" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Funcionalidades</TabsTrigger>
           <TabsTrigger value="dashboard" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Dashboard</TabsTrigger>
+          <TabsTrigger value="whitelabel" className="flex-1 data-[state=active]:bg-green-700 data-[state=active]:text-white">WhiteLabel settings</TabsTrigger>
         </TabsList>
         <TabsContent value="marca">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -437,6 +438,47 @@ const AdminBranding: React.FC = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+        </TabsContent>
+
+        {/* WhiteLabel settings */}
+        <TabsContent value="whitelabel">
+          <div className="max-w-2xl space-y-6">
+            <div className="rounded-2xl border border-green-700/40 bg-[#232a36] p-6 shadow-lg">
+              <span className="block text-green-300 font-semibold mb-4 text-lg">Configurações WhiteLabel</span>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Remover menção à plataforma original</label>
+                <input type="checkbox" className="accent-green-500" />
+                <span className="ml-2 text-gray-400 text-sm">Oculta qualquer referência à Symphonic Growth Hub</span>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Domínio personalizado exclusivo</label>
+                <Input placeholder="https://seudominioexclusivo.com" className="bg-gray-900 border border-gray-700 text-white" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">E-mail de suporte personalizado</label>
+                <Input placeholder="suporte@seudominio.com" className="bg-gray-900 border border-gray-700 text-white" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Rodapé customizado</label>
+                <textarea className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[60px]" placeholder="Texto do rodapé, links, copyright..."></textarea>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Cores e logotipo exclusivos</label>
+                <div className="flex gap-4 items-center mt-2">
+                  <input type="color" className="w-10 h-10 p-0 border-none bg-transparent" />
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">Upload Logo</Button>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Remover links de documentação padrão</label>
+                <input type="checkbox" className="accent-green-500" />
+              </div>
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" className="bg-gray-700 text-white px-6 py-2 rounded font-semibold">Cancelar</Button>
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Salvar WhiteLabel</Button>
+              </div>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 
