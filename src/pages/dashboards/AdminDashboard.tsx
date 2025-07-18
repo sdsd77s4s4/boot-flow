@@ -682,7 +682,7 @@ const AdminDashboard = () => {
 
         {/* Modais para cada card */}
         <Dialog open={activeModal === 'iptv'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">Sistema IPTV</h2>
               <p className="text-gray-400 mb-4 text-center">Gerencie canais, servidores e configurações do IPTV.</p>
@@ -695,7 +695,7 @@ const AdminDashboard = () => {
           </DialogContent>
         </Dialog>
         <Dialog open={activeModal === 'branding'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">Customizar Marca</h2>
               <p className="text-gray-400 mb-4 text-center">Personalize a aparência, identidade visual e configurações white label da sua plataforma.</p>
@@ -708,7 +708,7 @@ const AdminDashboard = () => {
           </DialogContent>
         </Dialog>
         <Dialog open={activeModal === 'ecommerce'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">E-commerce</h2>
               <p className="text-gray-400 mb-4 text-center">Gerencie produtos, vendas e configurações.</p>
@@ -721,7 +721,7 @@ const AdminDashboard = () => {
           </DialogContent>
         </Dialog>
         <Dialog open={activeModal === 'gamificacao'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">Gamificação</h2>
               <p className="text-gray-400 mb-4 text-center">Sistema de pontos, conquistas e rankings.</p>
@@ -734,7 +734,7 @@ const AdminDashboard = () => {
           </DialogContent>
         </Dialog>
         <Dialog open={activeModal === 'analytics'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">Analytics</h2>
               <p className="text-gray-400 mb-4 text-center">Métricas, relatórios e insights.</p>
@@ -747,7 +747,7 @@ const AdminDashboard = () => {
           </DialogContent>
         </Dialog>
         <Dialog open={activeModal === 'ai'} onOpenChange={() => setActiveModal(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">IA + Voz</h2>
               <p className="text-gray-400 mb-4 text-center">Configurações de inteligência artificial.</p>
