@@ -107,7 +107,7 @@ export default function AdminAI() {
   };
 
   return (
-    <div className="max-w-full w-full overflow-x-auto p-4">
+    <div className="max-w-full w-full h-full overflow-auto p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-3xl font-bold text-white">Voice Center</h1>
