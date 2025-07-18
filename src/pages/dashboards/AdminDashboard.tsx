@@ -784,12 +784,111 @@ const AdminDashboard = () => {
           <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">E-commerce</h2>
-              <p className="text-gray-400 mb-4 text-center">Gerencie produtos, vendas e configurações.</p>
-              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
-                <span className="text-center">Vendas Hoje: <span className="font-semibold">R$ 12.450</span></span>
-                <span className="text-center">Produtos Ativos: <span className="font-semibold text-green-400">24</span></span>
+              <p className="text-gray-400 mb-4 text-center">Gerencie produtos, vendas e configurações da loja.</p>
+              <div className="w-full max-w-lg space-y-2 mb-4">
+                <div className="flex justify-between"><span className="text-gray-300">Loja:</span><span className="font-semibold">SaaS Pro Store</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Moeda:</span><span className="font-semibold">BRL</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Taxa de Imposto:</span><span className="font-semibold">10%</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Avaliações:</span><span className="font-semibold text-green-400">Ativado</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Lista de Desejos:</span><span className="font-semibold text-green-400">Ativado</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Cupons:</span><span className="font-semibold text-green-400">Ativado</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Estoque Automático:</span><span className="font-semibold text-green-400">Ativado</span></div>
               </div>
-              <Button className="mt-6 bg-green-600 hover:bg-green-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
+              <div className="w-full max-w-lg mb-4">
+                <h3 className="text-lg font-semibold mb-2">Produtos</h3>
+                <div className="overflow-x-auto rounded border border-gray-700">
+                  <table className="min-w-full text-sm text-left">
+                    <thead className="bg-[#23272f]">
+                      <tr>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Nome</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Categoria</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Preço</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Plano Básico</td>
+                        <td className="px-2 py-1">Planos</td>
+                        <td className="px-2 py-1">R$ 29,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Plano Pro</td>
+                        <td className="px-2 py-1">Planos</td>
+                        <td className="px-2 py-1">R$ 59,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Plano Enterprise</td>
+                        <td className="px-2 py-1">Planos</td>
+                        <td className="px-2 py-1">R$ 99,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Suporte Premium</td>
+                        <td className="px-2 py-1">Serviços</td>
+                        <td className="px-2 py-1">R$ 149,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Consultoria</td>
+                        <td className="px-2 py-1">Serviços</td>
+                        <td className="px-2 py-1">R$ 299,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="w-full max-w-lg mb-4">
+                <h3 className="text-lg font-semibold mb-2">Vendas Recentes</h3>
+                <div className="overflow-x-auto rounded border border-gray-700">
+                  <table className="min-w-full text-sm text-left">
+                    <thead className="bg-[#23272f]">
+                      <tr>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Cliente</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Produto</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Valor</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">João Silva</td>
+                        <td className="px-2 py-1">Plano Pro</td>
+                        <td className="px-2 py-1">R$ 59,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Pago</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Maria Santos</td>
+                        <td className="px-2 py-1">Plano Básico</td>
+                        <td className="px-2 py-1">R$ 29,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Pago</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Pedro Oliveira</td>
+                        <td className="px-2 py-1">Suporte Premium</td>
+                        <td className="px-2 py-1">R$ 149,90</td>
+                        <td className="px-2 py-1"><span className="text-yellow-400">Pendente</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Ana Costa</td>
+                        <td className="px-2 py-1">Plano Enterprise</td>
+                        <td className="px-2 py-1">R$ 99,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Pago</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Carlos Lima</td>
+                        <td className="px-2 py-1">Consultoria</td>
+                        <td className="px-2 py-1">R$ 299,90</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Pago</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <Button className="mt-2 bg-green-600 hover:bg-green-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
