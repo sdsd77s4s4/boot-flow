@@ -72,20 +72,20 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Gerenciamento de Usuários</h1>
-          <p className="text-muted-foreground">Gerencie todos os usuários do sistema</p>
+          <h1 className="text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
+          <p className="text-gray-400">Gerencie todos os usuários do sistema</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
+            <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
               <Plus className="w-4 h-4" />
               Novo Usuário
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#181e29] text-white max-w-lg p-0 rounded-xl shadow-xl border border-gray-700">
+          <DialogContent className="bg-[#1f2937] text-white max-w-lg p-0 rounded-xl shadow-xl border border-gray-700">
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -94,8 +94,8 @@ export default function AdminUsers() {
                   <span className="ml-2 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold">Novo</span>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="bg-gray-800 text-white border border-gray-700 px-3 py-1 rounded text-sm">Importar</Button>
-                  <Button variant="outline" className="bg-gray-800 text-white border border-gray-700 px-3 py-1 rounded text-sm">Modelo</Button>
+                  <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Importar</Button>
+                  <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Modelo</Button>
                 </div>
               </div>
               <p className="text-gray-400 text-sm mb-2">Preencha os dados do novo cliente para adicioná-lo à base de dados</p>
@@ -110,38 +110,38 @@ export default function AdminUsers() {
                   <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm">Extrair</Button>
                 </div>
                 <p className="text-xs text-blue-300 mb-2">Serve para importar dados automaticamente a partir de uma URL.</p>
-                <Input placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..." className="bg-gray-800 border border-blue-800 text-white" />
+                <Input placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..." className="bg-[#1f2937] border border-blue-800 text-white" />
               </div>
               {/* Informações Básicas */}
-              <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-4">
+              <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
                 <span className="block text-white font-semibold mb-2">Informações Básicas</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Nome completo *</label>
-                    <Input placeholder="Nome completo" className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input placeholder="Nome completo" className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Senha *</label>
-                    <Input type="password" placeholder="Senha" className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input type="password" placeholder="Senha" className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">E-mail *</label>
-                    <Input placeholder="email@exemplo.com" className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input placeholder="email@exemplo.com" className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Telefone *</label>
-                    <Input placeholder="(11) 99999-9999" className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input placeholder="(11) 99999-9999" className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                 </div>
               </div>
               {/* Configuração de Serviço */}
-              <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-4">
+              <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
                 <span className="block text-purple-400 font-semibold mb-2">Configuração de Serviço</span>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Classe de Serviço</label>
                     <Select>
-                      <SelectTrigger className="bg-gray-900 border border-gray-700 text-white">
+                      <SelectTrigger className="bg-[#1f2937] border border-gray-700 text-white">
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent>
@@ -153,7 +153,7 @@ export default function AdminUsers() {
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Plano</label>
                     <Select>
-                      <SelectTrigger className="bg-gray-900 border border-gray-700 text-white">
+                      <SelectTrigger className="bg-[#1f2937] border border-gray-700 text-white">
                         <SelectValue placeholder="Mensal" />
                       </SelectTrigger>
                       <SelectContent>
@@ -165,7 +165,7 @@ export default function AdminUsers() {
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Status</label>
                     <Select>
-                      <SelectTrigger className="bg-gray-900 border border-gray-700 text-white">
+                      <SelectTrigger className="bg-[#1f2937] border border-gray-700 text-white">
                         <SelectValue placeholder="Ativo" />
                       </SelectTrigger>
                       <SelectContent>
@@ -178,25 +178,25 @@ export default function AdminUsers() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Data de Renovação</label>
-                    <Input type="date" className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input type="date" className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Número de Dispositivos</label>
-                    <Input type="number" min={1} className="bg-gray-900 border border-gray-700 text-white" />
+                    <Input type="number" min={1} className="bg-[#1f2937] border border-gray-700 text-white" />
                   </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Créditos</label>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" className="bg-gray-700 text-white px-2 py-1">-</Button>
-                      <Input type="number" min={0} className="w-16 bg-gray-900 border border-gray-700 text-white" />
-                      <Button variant="outline" className="bg-gray-700 text-white px-2 py-1">+</Button>
+                      <Button variant="outline" className="bg-[#1f2937] text-white px-2 py-1">-</Button>
+                      <Input type="number" min={0} className="w-16 bg-[#1f2937] border border-gray-700 text-white" />
+                      <Button variant="outline" className="bg-[#1f2937] text-white px-2 py-1">+</Button>
                       <span className="text-xs text-gray-400">valor entre 0 e 500€</span>
                     </div>
                   </div>
                 </div>
               </div>
               {/* Informações Adicionais */}
-              <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-4">
+              <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
                 <span className="block text-white font-semibold mb-2">Informações Adicionais</span>
                 <div className="flex items-center gap-2 mb-2">
                   <input type="checkbox" className="accent-green-500" />
@@ -204,7 +204,7 @@ export default function AdminUsers() {
                 </div>
                 <div>
                   <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
-                  <textarea className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[60px]" placeholder="Anotações..."></textarea>
+                  <textarea className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-2 min-h-[60px]" placeholder="Anotações..."></textarea>
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-6">
