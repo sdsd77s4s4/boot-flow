@@ -54,6 +54,7 @@ const AdminBranding: React.FC = () => {
           <TabsTrigger value="visual" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Visual</TabsTrigger>
           <TabsTrigger value="avancado" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Avançado</TabsTrigger>
           <TabsTrigger value="funcionalidades" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Funcionalidades</TabsTrigger>
+          <TabsTrigger value="dashboard" className="flex-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">Dashboard</TabsTrigger>
         </TabsList>
         <TabsContent value="marca">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -154,14 +155,147 @@ const AdminBranding: React.FC = () => {
           </div>
         </TabsContent>
         {/* Outras abas podem ser implementadas depois */}
+        {/* Visual */}
         <TabsContent value="visual">
-          <div className="text-gray-400">Configurações visuais em breve...</div>
+          <div className="max-w-2xl space-y-6">
+            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <span className="block text-purple-300 font-semibold mb-4 text-lg">Cores e Aparência</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Cor Primária</label>
+                  <input type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
+                </div>
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Cor Secundária</label>
+                  <input type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Fonte</label>
+                  <select className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2">
+                    <option>Inter</option>
+                    <option>Roboto</option>
+                    <option>Montserrat</option>
+                    <option>Poppins</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-3 mt-6">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-gray-300">Modo escuro</span>
+                </div>
+              </div>
+              <div className="mt-6">
+                <span className="block text-gray-400 mb-2">Preview</span>
+                <div className="rounded-lg bg-[#181e29] p-4 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-purple-600" />
+                  <div className="flex-1">
+                    <div className="h-3 w-2/3 bg-purple-400 rounded mb-1" />
+                    <div className="h-3 w-1/2 bg-purple-200 rounded" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </TabsContent>
+
+        {/* Avançado */}
         <TabsContent value="avancado">
-          <div className="text-gray-400">Configurações avançadas em breve...</div>
+          <div className="max-w-2xl space-y-6">
+            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <span className="block text-purple-300 font-semibold mb-4 text-lg">Configurações Avançadas</span>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Domínio Personalizado</label>
+                <Input placeholder="https://seudominio.com" className="bg-gray-900 border border-gray-700 text-white" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Google Analytics</label>
+                <Input placeholder="UA-XXXXXX-X" className="bg-gray-900 border border-gray-700 text-white" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Scripts Customizados</label>
+                <textarea className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[60px]" placeholder="Cole aqui seu script..."></textarea>
+              </div>
+              <div className="flex items-center gap-3 mt-2">
+                <input type="checkbox" className="accent-purple-500" />
+                <span className="text-gray-300">Ativar CDN de performance</span>
+              </div>
+            </div>
+          </div>
         </TabsContent>
+
+        {/* Funcionalidades */}
         <TabsContent value="funcionalidades">
-          <div className="text-gray-400">Funcionalidades extras em breve...</div>
+          <div className="max-w-2xl space-y-6">
+            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <span className="block text-purple-300 font-semibold mb-4 text-lg">Módulos e Funcionalidades</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <span className="text-gray-300">E-commerce</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <span className="text-gray-300">Gamificação</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-gray-300">Notificações</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-gray-300">Exportação de Dados</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-gray-300">Relatórios Avançados</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <span className="text-gray-300">Chatbot IA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Dashboard */}
+        <TabsContent value="dashboard">
+          <div className="max-w-2xl space-y-6">
+            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+              <span className="block text-purple-300 font-semibold mb-4 text-lg">Customização do Dashboard</span>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Layout</label>
+                <select className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2">
+                  <option>Padrão</option>
+                  <option>Compacto</option>
+                  <option>Cards Grandes</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Widgets Visíveis</label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Button variant="outline" className="bg-gray-900 text-white border border-gray-700 rounded-full px-4 py-1">Métricas</Button>
+                  <Button variant="outline" className="bg-gray-900 text-white border border-gray-700 rounded-full px-4 py-1">Gráficos</Button>
+                  <Button variant="outline" className="bg-gray-900 text-white border border-gray-700 rounded-full px-4 py-1">Atividades Recentes</Button>
+                  <Button variant="outline" className="bg-gray-900 text-white border border-gray-700 rounded-full px-4 py-1">Notificações</Button>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-1 font-medium">Ordem dos Cards</label>
+                <ol className="list-decimal ml-6 text-gray-400">
+                  <li>Métricas</li>
+                  <li>Gráficos</li>
+                  <li>Atividades Recentes</li>
+                  <li>Notificações</li>
+                </ol>
+              </div>
+              <div className="flex items-center gap-3 mt-2">
+                <input type="checkbox" className="accent-purple-500" defaultChecked />
+                <span className="text-gray-300">Exibir métricas em tempo real</span>
+              </div>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 
