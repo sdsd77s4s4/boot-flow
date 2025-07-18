@@ -50,6 +50,7 @@ import AdminWhatsApp from '../AdminWhatsApp';
 import AdminBranding from '../AdminBranding';
 import AdminGateways from "../AdminGateways";
 import AdminCobrancas from "../AdminCobrancas";
+import Notifications from "../Notifications";
 
 const AdminDashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -450,6 +451,8 @@ const AdminDashboard = () => {
         return <AdminGateways />;
       case "cobrancas":
         return <AdminCobrancas />;
+      case "notificacoes":
+        return <Notifications />;
       default:
         return <div>Página não encontrada</div>;
     }
