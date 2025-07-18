@@ -36,6 +36,7 @@ const menuItems = [
   { title: "Usuários", page: "users", icon: Users },
   { title: "Revendas", page: "resellers", icon: Building2 },
   { title: "Sistema IPTV", page: "iptv", icon: Tv },
+  { title: "WhatsApp", page: "whatsapp", icon: MessageSquare },
   { title: "Rádio Web", page: "radio", icon: Radio },
   { title: "IA + Voz", page: "ai", icon: Brain },
   { title: "E-commerce", page: "ecommerce", icon: ShoppingCart },
@@ -93,22 +94,6 @@ export function AdminSidebar({ onPageChange, currentPage }: AdminSidebarProps) {
                   <LogOut className="mr-2 h-4 w-4" />
                   {!collapsed && <span>Sair</span>}
                 </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <button
-                  className={`flex items-center w-full px-4 py-2 text-left transition-colors rounded-md hover:bg-gray-700/50 ${currentPage === 'whatsapp' ? 'bg-gray-700/70 text-green-400' : 'text-gray-200'}`}
-                  onClick={() => onPageChange('whatsapp')}
-                >
-                  <MessageSquare className="w-5 h-5 mr-2 text-green-400" />
-                  WhatsApp
-                </button>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
