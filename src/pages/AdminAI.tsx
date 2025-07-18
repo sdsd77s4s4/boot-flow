@@ -30,9 +30,49 @@ export default function AdminAI() {
   const [texto, setTexto] = useState('');
   const [velocidade, setVelocidade] = useState(1);
   const [tom, setTom] = useState(1);
-  const [modal, setModal] = useState<{ type: null | 'upload' | 'novaVoz' | 'testarVoz' | 'detalhes', data?: any }>({ type: null });
+  const [modal, setModal] = useState<{ type: null | 'upload' | 'novaVoz' | 'testarVoz' | 'detalhes' | 'editarVoz' | 'excluirVoz', data?: any }>({ type: null });
   const [perfis, setPerfis] = useState(perfisMock);
   const [transcricoes, setTranscricoes] = useState(transcricoesMock);
+  const [novoPerfil, setNovoPerfil] = useState({ nome: '', genero: '', tom: '', status: 'ativa' });
+  const [editPerfil, setEditPerfil] = useState({ nome: '', genero: '', tom: '', status: 'ativa' });
+  const [loadingAudio, setLoadingAudio] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  // CRUD Perfis de Voz
+  const handleAddPerfil = () => {
+    setPerfis([
+      ...perfis,
+      { id: Date.now(), ...novoPerfil, uso: 0, desc: '', status: novoPerfil.status }
+    ]);
+    setNovoPerfil({ nome: '', genero: '', tom: '', status: 'ativa' });
+    setModal({ type: null });
+  };
+  const handleEditPerfil = () => {
+    setPerfis(perfis.map(p => p.id === modal.data.id ? { ...p, ...editPerfil } : p));
+    setModal({ type: null });
+  };
+  const handleExcluirPerfil = () => {
+    setPerfis(perfis.filter(p => p.id !== modal.data.id));
+    setModal({ type: null });
+  };
+  const handleToggleAtivo = (id: number) => {
+    setPerfis(perfis.map(p => p.id === id ? { ...p, status: p.status === 'ativa' ? 'inativa' : 'ativa' } : p));
+  };
+
+  // Simulação de geração de áudio
+  const handleGerarAudio = () => {
+    setLoadingAudio(true);
+    setTimeout(() => {
+      setAudioUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+      setLoadingAudio(false);
+    }, 1500);
+  };
+  const handlePreviewAudio = () => {
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play();
+    }
+  };
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] dark:from-[#181e29] dark:via-[#232a36] dark:to-[#181e29]">
@@ -85,9 +125,9 @@ export default function AdminAI() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white">Gerar Áudio</Button>
-              <Button variant="outline" className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white">Preview</Button>
-              <Button variant="outline" className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white">Download</Button>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleGerarAudio} disabled={loadingAudio}>{loadingAudio ? 'Gerando...' : 'Gerar Áudio'}</Button>
+              <Button variant="outline" className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white" onClick={handlePreviewAudio} disabled={!audioUrl}>Preview</Button>
+              <Button variant="outline" className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white" disabled={!audioUrl}>Download</Button>
               <Button variant="outline" className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white" onClick={() => setModal({ type: 'testarVoz' })}>Testar Vozes</Button>
             </div>
           </CardContent>
@@ -99,11 +139,17 @@ export default function AdminAI() {
             <p className="text-gray-500 dark:text-gray-400">Suas vozes personalizadas</p>
           </CardHeader>
           <CardContent className="space-y-4">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white w-full mb-2" onClick={() => setModal({ type: 'novaVoz' })}>Adicionar Nova Voz</Button>
             {perfis.map(p => (
               <div key={p.id} className="bg-[#f1f5f9] dark:bg-[#181e29] rounded-xl p-3 border border-green-700/20 flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <div className="font-semibold text-gray-900 dark:text-white">{p.nome}</div>
-                  <Badge className="bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200">{p.status}</Badge>
+                  <div className="flex gap-2 items-center">
+                    <Badge className={p.status === 'ativa' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : 'bg-gray-700 text-gray-300'}>{p.status}</Badge>
+                    <Button size="icon" variant="ghost" onClick={() => handleToggleAtivo(p.id)} title={p.status === 'ativa' ? 'Desativar' : 'Ativar'}>
+                      <CheckCircle2 className={p.status === 'ativa' ? 'text-green-400' : 'text-gray-400'} />
+                    </Button>
+                  </div>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-300">{p.desc}</div>
                 <div className="flex flex-wrap gap-2 text-xs text-gray-400 mt-1">
@@ -114,6 +160,8 @@ export default function AdminAI() {
                 </div>
                 <div className="flex gap-2 mt-2">
                   <Button size="sm" variant="outline" className="border-blue-600 text-blue-400" onClick={() => setModal({ type: 'testarVoz', data: p })}><Play className="w-4 h-4 mr-1" /> Teste</Button>
+                  <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-400" onClick={() => { setEditPerfil({ nome: p.nome, genero: p.genero, tom: p.tom, status: p.status }); setModal({ type: 'editarVoz', data: p }); }}>Editar</Button>
+                  <Button size="sm" variant="outline" className="border-red-600 text-red-400" onClick={() => setModal({ type: 'excluirVoz', data: p })}>Excluir</Button>
                 </div>
               </div>
             ))}
@@ -168,12 +216,39 @@ export default function AdminAI() {
             <DialogTitle>Nova Voz IA</DialogTitle>
           </DialogHeader>
           <div className="py-4 space-y-2">
-            <Input placeholder="Nome da Voz" className="bg-gray-900 border border-gray-700 text-white" />
-            <Input placeholder="Gênero" className="bg-gray-900 border border-gray-700 text-white" />
-            <Input placeholder="Tom" className="bg-gray-900 border border-gray-700 text-white" />
+            <Input placeholder="Nome da Voz" className="bg-gray-900 border border-gray-700 text-white" value={novoPerfil.nome} onChange={e => setNovoPerfil({ ...novoPerfil, nome: e.target.value })} />
+            <Input placeholder="Gênero" className="bg-gray-900 border border-gray-700 text-white" value={novoPerfil.genero} onChange={e => setNovoPerfil({ ...novoPerfil, genero: e.target.value })} />
+            <Input placeholder="Tom" className="bg-gray-900 border border-gray-700 text-white" value={novoPerfil.tom} onChange={e => setNovoPerfil({ ...novoPerfil, tom: e.target.value })} />
           </div>
           <DialogFooter>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setModal({ type: null })}>Salvar</Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleAddPerfil}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={modal.type === 'editarVoz'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Perfil de Voz</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-2">
+            <Input placeholder="Nome da Voz" className="bg-gray-900 border border-gray-700 text-white" value={editPerfil.nome} onChange={e => setEditPerfil({ ...editPerfil, nome: e.target.value })} />
+            <Input placeholder="Gênero" className="bg-gray-900 border border-gray-700 text-white" value={editPerfil.genero} onChange={e => setEditPerfil({ ...editPerfil, genero: e.target.value })} />
+            <Input placeholder="Tom" className="bg-gray-900 border border-gray-700 text-white" value={editPerfil.tom} onChange={e => setEditPerfil({ ...editPerfil, tom: e.target.value })} />
+          </div>
+          <DialogFooter>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleEditPerfil}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={modal.type === 'excluirVoz'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle>Excluir Perfil de Voz</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">Tem certeza que deseja excluir este perfil de voz?</div>
+          <DialogFooter>
+            <Button className="bg-gray-700 text-white" onClick={() => setModal({ type: null })}>Cancelar</Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleExcluirPerfil}>Excluir</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
