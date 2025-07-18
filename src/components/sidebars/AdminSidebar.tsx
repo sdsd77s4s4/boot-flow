@@ -113,7 +113,7 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
             <Menu className="w-6 h-6" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="bg-[#232a36] text-white p-0 w-full max-w-xs h-full fixed left-0 top-0 rounded-none overflow-y-auto">
+        <DrawerContent className="bg-[#232a36] text-white p-0 w-72 max-w-xs h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[9999]">
           <div className="p-4 flex items-center space-x-2 mb-4">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
