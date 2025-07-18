@@ -40,7 +40,7 @@ import AdminAI from "../AdminAI";
 import AdminEcommerce from "../AdminEcommerce";
 import AdminGames from "../AdminGames";
 import AdminAnalytics from "../AdminAnalytics";
-import Settings from "../Settings";
+import SettingsPage from "../Settings";
 
 const AdminDashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -407,7 +407,7 @@ const AdminDashboard = () => {
       case "analytics":
         return <AdminAnalytics />;
       case "settings":
-        return <Settings />;
+        return <SettingsPage />;
       default:
         return <div>Página não encontrada</div>;
     }
