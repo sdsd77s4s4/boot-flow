@@ -303,9 +303,21 @@ const AdminDashboard = () => {
       // Prevenir clique durante o drag
       if (isDragging) {
         e.preventDefault();
+        e.stopPropagation();
         return;
       }
-      onClick && onClick();
+      
+      // Adicionar log para debug
+      console.log('Card clicked:', id, 'isDragging:', isDragging);
+      
+      if (onClick) {
+        onClick();
+        // Mostrar toast de confirmação
+        toast.success(`Abrindo ${id}...`, {
+          description: `Modal aberto com sucesso`,
+          duration: 1500,
+        });
+      }
     };
     
     return (
@@ -313,7 +325,6 @@ const AdminDashboard = () => {
         ref={setNodeRef} 
         style={style} 
         {...attributes} 
-        {...listeners}
         className="select-none touch-manipulation"
         data-card-id={id}
       >
@@ -322,6 +333,18 @@ const AdminDashboard = () => {
             isDragging ? 'shadow-2xl scale-110 rotate-2 z-50' : ''
           }`} 
           onClick={handleClick} 
+          onMouseDown={(e) => {
+            // Aplicar listeners de drag apenas no mouse down
+            if (listeners.onMouseDown) {
+              listeners.onMouseDown(e);
+            }
+          }}
+          onTouchStart={(e) => {
+            // Aplicar listeners de touch apenas no touch start
+            if (listeners.onTouchStart) {
+              listeners.onTouchStart(e);
+            }
+          }}
           tabIndex={0} 
           role="button" 
           aria-pressed="false"
@@ -336,6 +359,16 @@ const AdminDashboard = () => {
             <div className="w-6 h-6 bg-gray-600/80 rounded-full flex items-center justify-center backdrop-blur-sm">
               <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 6h8v2H8V6zm0 5h8v2H8v-2zm0 5h8v2H8v-2z"/>
+              </svg>
+            </div>
+          </div>
+          
+          {/* Click indicator */}
+          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="w-6 h-6 bg-blue-600/80 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             </div>
           </div>
