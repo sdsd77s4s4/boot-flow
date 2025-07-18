@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 const perfisMock = {
   nome: 'João',
@@ -15,6 +17,22 @@ const perfisMock = {
 export default function Settings() {
   const [tab, setTab] = useState('perfil');
   const [perfil, setPerfil] = useState(perfisMock);
+  // Notificações
+  const [notificacoes, setNotificacoes] = useState({ email: true, whatsapp: true, push: false, sms: false, clientes: true, cobrancas: true, promocoes: false });
+  // Integrações
+  const [integracoes, setIntegracoes] = useState({ whatsapp: false, google: false, zapier: false });
+  const [modalIntegracao, setModalIntegracao] = useState<string | null>(null);
+  // Faturamento
+  const [plano, setPlano] = useState('Pro');
+  const [faturas] = useState([
+    { id: 1, data: '10/06/2024', valor: 'R$ 99,90', status: 'Paga' },
+    { id: 2, data: '10/05/2024', valor: 'R$ 99,90', status: 'Paga' },
+    { id: 3, data: '10/04/2024', valor: 'R$ 99,90', status: 'Paga' },
+  ]);
+  // Segurança
+  const [senha, setSenha] = useState({ atual: '', nova: '', confirmar: '' });
+  const [modal2FA, setModal2FA] = useState(false);
+  const [modalExcluir, setModalExcluir] = useState(false);
 
   const handleChange = (e: any) => {
     setPerfil({ ...perfil, [e.target.name]: e.target.value });
@@ -71,16 +89,169 @@ export default function Settings() {
             </div>
           </TabsContent>
           <TabsContent value="notificacoes">
-            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4 text-gray-400 text-center">Em breve: configurações de notificações.</div>
+            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Notificações</h2>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Gerencie como deseja ser avisado</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">E-mail</span>
+                  <Switch checked={notificacoes.email} onCheckedChange={v => setNotificacoes(n => ({ ...n, email: v }))} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">WhatsApp</span>
+                  <Switch checked={notificacoes.whatsapp} onCheckedChange={v => setNotificacoes(n => ({ ...n, whatsapp: v }))} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Push</span>
+                  <Switch checked={notificacoes.push} onCheckedChange={v => setNotificacoes(n => ({ ...n, push: v }))} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">SMS</span>
+                  <Switch checked={notificacoes.sms} onCheckedChange={v => setNotificacoes(n => ({ ...n, sms: v }))} />
+                </div>
+              </div>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Alertas</span>
+                <div className="flex items-center gap-4 mb-2">
+                  <Switch checked={notificacoes.clientes} onCheckedChange={v => setNotificacoes(n => ({ ...n, clientes: v }))} />
+                  <span className="text-gray-700 dark:text-gray-300">Novos clientes</span>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <Switch checked={notificacoes.cobrancas} onCheckedChange={v => setNotificacoes(n => ({ ...n, cobrancas: v }))} />
+                  <span className="text-gray-700 dark:text-gray-300">Cobranças</span>
+                </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <Switch checked={notificacoes.promocoes} onCheckedChange={v => setNotificacoes(n => ({ ...n, promocoes: v }))} />
+                  <span className="text-gray-700 dark:text-gray-300">Promoções</span>
+                </div>
+              </div>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white mt-4">Salvar Preferências</Button>
+            </div>
           </TabsContent>
           <TabsContent value="integracoes">
-            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4 text-gray-400 text-center">Em breve: integrações com outros sistemas.</div>
+            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Integrações</h2>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Conecte com outros sistemas</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">WhatsApp</span>
+                  <Button size="sm" className={integracoes.whatsapp ? 'bg-green-600' : 'bg-gray-700'} onClick={() => setModalIntegracao('whatsapp')}>{integracoes.whatsapp ? 'Desconectar' : 'Conectar'}</Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Google Calendar</span>
+                  <Button size="sm" className={integracoes.google ? 'bg-green-600' : 'bg-gray-700'} onClick={() => setModalIntegracao('google')}>{integracoes.google ? 'Desconectar' : 'Conectar'}</Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Zapier</span>
+                  <Button size="sm" className={integracoes.zapier ? 'bg-green-600' : 'bg-gray-700'} onClick={() => setModalIntegracao('zapier')}>{integracoes.zapier ? 'Desconectar' : 'Conectar'}</Button>
+                </div>
+              </div>
+              <Dialog open={!!modalIntegracao} onOpenChange={() => setModalIntegracao(null)}>
+                <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Configurar Integração</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Input placeholder="Token/API Key" className="bg-gray-900 border border-gray-700 text-white" />
+                  </div>
+                  <DialogFooter>
+                    <Button className="bg-gray-700 text-white" onClick={() => setModalIntegracao(null)}>Cancelar</Button>
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => { setIntegracoes(i => ({ ...i, [modalIntegracao!]: !i[modalIntegracao!] })); setModalIntegracao(null); }}>{integracoes[modalIntegracao!] ? 'Desconectar' : 'Conectar'}</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </TabsContent>
           <TabsContent value="faturamento">
-            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4 text-gray-400 text-center">Em breve: informações de faturamento.</div>
+            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Faturamento</h2>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Gerencie seu plano e pagamentos</p>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-1">Plano Atual</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-600 font-bold">{plano}</span>
+                  <Button size="sm" variant="outline" className="border-purple-600 text-purple-600">Alterar Plano</Button>
+                </div>
+              </div>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-1">Histórico de Faturas</span>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-gray-400">
+                        <th className="px-2 py-1 text-left">Data</th>
+                        <th className="px-2 py-1 text-left">Valor</th>
+                        <th className="px-2 py-1 text-left">Status</th>
+                        <th className="px-2 py-1 text-left">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {faturas.map(f => (
+                        <tr key={f.id} className="border-b border-gray-700/20">
+                          <td className="px-2 py-1">{f.data}</td>
+                          <td className="px-2 py-1">{f.valor}</td>
+                          <td className="px-2 py-1">{f.status}</td>
+                          <td className="px-2 py-1"><Button size="sm" variant="outline" className="border-blue-600 text-blue-600">Download</Button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white">Atualizar Dados de Pagamento</Button>
+            </div>
           </TabsContent>
           <TabsContent value="seguranca">
-            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4 text-gray-400 text-center">Em breve: configurações de segurança.</div>
+            <div className="bg-white dark:bg-[#232a36] rounded-xl p-6 border border-gray-200 dark:border-purple-700/40 mt-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Segurança</h2>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Proteja sua conta</p>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-1">Alterar Senha</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                  <Input type="password" placeholder="Senha Atual" value={senha.atual} onChange={e => setSenha(s => ({ ...s, atual: e.target.value }))} />
+                  <Input type="password" placeholder="Nova Senha" value={senha.nova} onChange={e => setSenha(s => ({ ...s, nova: e.target.value }))} />
+                  <Input type="password" placeholder="Confirmar Nova Senha" value={senha.confirmar} onChange={e => setSenha(s => ({ ...s, confirmar: e.target.value }))} />
+                </div>
+                <Button className="bg-purple-600 hover:bg-purple-700 text-white">Salvar Nova Senha</Button>
+              </div>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-1">Autenticação 2FA</span>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setModal2FA(true)}>Ativar 2FA</Button>
+              </div>
+              <div className="mb-4">
+                <span className="block text-gray-700 dark:text-gray-300 font-medium mb-1">Exportar Dados</span>
+                <Button className="bg-gray-700 text-white">Exportar</Button>
+              </div>
+              <div className="mb-4">
+                <span className="block text-red-600 font-medium mb-1">Excluir Conta</span>
+                <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setModalExcluir(true)}>Excluir Conta</Button>
+              </div>
+              {/* Modal 2FA */}
+              <Dialog open={modal2FA} onOpenChange={setModal2FA}>
+                <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Ativar Autenticação 2FA</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">Escaneie o QR Code no seu app autenticador.</div>
+                  <DialogFooter>
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setModal2FA(false)}>OK</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              {/* Modal Excluir Conta */}
+              <Dialog open={modalExcluir} onOpenChange={setModalExcluir}>
+                <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Excluir Conta</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.</div>
+                  <DialogFooter>
+                    <Button className="bg-gray-700 text-white" onClick={() => setModalExcluir(false)}>Cancelar</Button>
+                    <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setModalExcluir(false)}>Excluir</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
