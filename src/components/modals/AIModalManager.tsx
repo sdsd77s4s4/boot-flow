@@ -257,40 +257,92 @@ export function AIModalManager({ activeModal, onClose, onAddReseller }: AIModalM
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome Completo</Label>
-                <Input id="name" placeholder="Ex: João Silva" />
+                <Input 
+                  id="name" 
+                  placeholder="Ex: João Silva"
+                  value={newReseller.name}
+                  onChange={(e) => setNewReseller({...newReseller, name: e.target.value})}
+                />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="Ex: joao@email.com" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="Ex: joao@email.com"
+                  value={newReseller.email}
+                  onChange={(e) => setNewReseller({...newReseller, email: e.target.value})}
+                />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="phone">Telefone</Label>
-                <Input id="phone" placeholder="Ex: (11) 99999-9999" />
+                <Input 
+                  id="phone" 
+                  placeholder="Ex: (11) 99999-9999"
+                  value={newReseller.phone}
+                  onChange={(e) => setNewReseller({...newReseller, phone: e.target.value})}
+                />
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="plan">Plano</Label>
-                <Select defaultValue="professional">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="starter">Starter</SelectItem>
-                    <SelectItem value="professional">Professional</SelectItem>
-                    <SelectItem value="enterprise">Enterprise</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="plan">Plano</Label>
+                  <Select 
+                    value={newReseller.plan} 
+                    onValueChange={(value) => setNewReseller({...newReseller, plan: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Basic">Basic</SelectItem>
+                      <SelectItem value="Standard">Standard</SelectItem>
+                      <SelectItem value="Premium">Premium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="commission">Comissão (%)</Label>
+                  <Input 
+                    id="commission" 
+                    type="number"
+                    placeholder="15"
+                    value={newReseller.commission}
+                    onChange={(e) => setNewReseller({...newReseller, commission: e.target.value})}
+                  />
+                </div>
               </div>
               
               <div className="flex items-center justify-between">
                 <Label htmlFor="active">Ativar Imediatamente</Label>
-                <Switch id="active" defaultChecked />
+                <Switch 
+                  id="active" 
+                  checked={newReseller.status === "Ativo"}
+                  onCheckedChange={(checked) => setNewReseller({...newReseller, status: checked ? "Ativo" : "Inativo"})}
+                />
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={onClose}>Adicionar Revendedor</Button>
+              <Button 
+                onClick={() => {
+                  if (newReseller.name && newReseller.email && onAddReseller) {
+                    onAddReseller({
+                      ...newReseller,
+                      id: Date.now(),
+                      clients: 0,
+                      revenue: 0,
+                      joinedDate: new Date().toISOString().split('T')[0]
+                    });
+                    setNewReseller({ name: "", email: "", phone: "", plan: "professional", commission: "15", status: "Ativo" });
+                    onClose();
+                  }
+                }}
+              >
+                Adicionar Revendedor
+              </Button>
             </DialogFooter>
           </>
         );

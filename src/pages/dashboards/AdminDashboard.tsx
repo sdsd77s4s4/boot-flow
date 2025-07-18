@@ -45,6 +45,7 @@ import Settings from "../Settings";
 const AdminDashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
+  const [resellers, setResellers] = useState<any[]>([]);
   const [stats] = useState({
     totalUsers: 15847,
     totalRevenue: 487230,
