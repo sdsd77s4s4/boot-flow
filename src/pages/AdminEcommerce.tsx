@@ -117,21 +117,21 @@ export default function AdminEcommerce() {
   const activeProducts = products.filter(product => product.status === "Ativo").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">E-commerce</h1>
-          <p className="text-muted-foreground">Gerencie produtos, vendas e configurações da loja</p>
+          <h1 className="text-3xl font-bold text-white">E-commerce</h1>
+          <p className="text-gray-400">Gerencie produtos, vendas e configurações da loja</p>
         </div>
         <div className="flex items-center gap-2">
           <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" className="flex items-center gap-2 bg-[#1f2937] text-white border-none">
                 <Settings className="w-4 h-4" />
                 Configurações
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="bg-[#1f2937] text-white max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Configurações da Loja</DialogTitle>
                 <DialogDescription>
@@ -141,34 +141,37 @@ export default function AdminEcommerce() {
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="storeName">Nome da Loja</Label>
+                    <Label htmlFor="storeName" className="text-gray-300">Nome da Loja</Label>
                     <Input
                       id="storeName"
                       value={ecommerceConfig.storeName}
                       onChange={(e) => setEcommerceConfig({...ecommerceConfig, storeName: e.target.value})}
+                      className="bg-[#1f2937] border border-gray-700 text-white"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="currency">Moeda</Label>
+                    <Label htmlFor="currency" className="text-gray-300">Moeda</Label>
                     <Input
                       id="currency"
                       value={ecommerceConfig.currency}
                       onChange={(e) => setEcommerceConfig({...ecommerceConfig, currency: e.target.value})}
+                      className="bg-[#1f2937] border border-gray-700 text-white"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="taxRate">Taxa de Imposto (%)</Label>
+                  <Label htmlFor="taxRate" className="text-gray-300">Taxa de Imposto (%)</Label>
                   <Input
                     id="taxRate"
                     type="number"
                     value={ecommerceConfig.taxRate}
                     onChange={(e) => setEcommerceConfig({...ecommerceConfig, taxRate: e.target.value})}
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableReviews">Habilitar Avaliações</Label>
+                    <Label htmlFor="enableReviews" className="text-gray-300">Habilitar Avaliações</Label>
                     <Switch 
                       id="enableReviews" 
                       checked={ecommerceConfig.enableReviews} 
@@ -176,7 +179,7 @@ export default function AdminEcommerce() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableWishlist">Habilitar Lista de Desejos</Label>
+                    <Label htmlFor="enableWishlist" className="text-gray-300">Habilitar Lista de Desejos</Label>
                     <Switch 
                       id="enableWishlist" 
                       checked={ecommerceConfig.enableWishlist} 
@@ -184,7 +187,7 @@ export default function AdminEcommerce() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="enableCoupons">Habilitar Cupons</Label>
+                    <Label htmlFor="enableCoupons" className="text-gray-300">Habilitar Cupons</Label>
                     <Switch 
                       id="enableCoupons" 
                       checked={ecommerceConfig.enableCoupons} 
@@ -192,7 +195,7 @@ export default function AdminEcommerce() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="autoStock">Controle Automático de Estoque</Label>
+                    <Label htmlFor="autoStock" className="text-gray-300">Controle Automático de Estoque</Label>
                     <Switch 
                       id="autoStock" 
                       checked={ecommerceConfig.autoStock} 
@@ -202,10 +205,10 @@ export default function AdminEcommerce() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsConfigDialogOpen(false)}>
+                <Button variant="outline" className="bg-[#1f2937] text-white" onClick={() => setIsConfigDialogOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={() => setIsConfigDialogOpen(false)}>
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setIsConfigDialogOpen(false)}>
                   Salvar Configurações
                 </Button>
               </DialogFooter>
@@ -213,12 +216,12 @@ export default function AdminEcommerce() {
           </Dialog>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
                 <Plus className="w-4 h-4" />
                 Novo Produto
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-[#1f2937] text-white">
               <DialogHeader>
                 <DialogTitle>Adicionar Novo Produto</DialogTitle>
                 <DialogDescription>
@@ -227,52 +230,53 @@ export default function AdminEcommerce() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="productName">Nome do Produto</Label>
+                  <Label htmlFor="productName" className="text-gray-300">Nome do Produto</Label>
                   <Input
                     id="productName"
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                    placeholder="Ex: Plano Premium"
+                    placeholder="Ex: Plano Pro"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="productCategory">Categoria</Label>
+                  <Label htmlFor="productCategory" className="text-gray-300">Categoria</Label>
                   <Input
                     id="productCategory"
                     value={newProduct.category}
                     onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                    placeholder="Ex: Planos, Serviços"
+                    placeholder="Ex: Planos"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="productPrice">Preço</Label>
-                    <Input
-                      id="productPrice"
-                      type="number"
-                      step="0.01"
-                      value={newProduct.price}
-                      onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="productStock">Estoque</Label>
-                    <Input
-                      id="productStock"
-                      type="number"
-                      value={newProduct.stock}
-                      onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                      placeholder="0"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="productPrice" className="text-gray-300">Preço</Label>
+                  <Input
+                    id="productPrice"
+                    type="number"
+                    value={newProduct.price}
+                    onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+                    placeholder="Ex: 59.90"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="productStock" className="text-gray-300">Estoque</Label>
+                  <Input
+                    id="productStock"
+                    type="number"
+                    value={newProduct.stock}
+                    onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
+                    placeholder="Ex: 100"
+                    className="bg-[#1f2937] border border-gray-700 text-white"
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button variant="outline" className="bg-[#1f2937] text-white" onClick={() => setIsAddDialogOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleAddProduct}>
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={handleAddProduct}>
                   Adicionar Produto
                 </Button>
               </DialogFooter>
@@ -284,48 +288,48 @@ export default function AdminEcommerce() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Receita Total</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R$ {totalRevenue.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">R$ {totalRevenue.toFixed(2)}</div>
+            <p className="text-xs text-gray-400">
               Este mês
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Produtos</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Produtos</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{totalProducts}</div>
+            <p className="text-xs text-gray-400">
               {activeProducts} ativos
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vendas</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Vendas</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{recentSales.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{recentSales.length}</div>
+            <p className="text-xs text-gray-400">
               Este mês
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Clientes</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Clientes</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">156</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">156</div>
+            <p className="text-xs text-gray-400">
               Ativos
             </p>
           </CardContent>
@@ -356,7 +360,7 @@ export default function AdminEcommerce() {
               <TableBody>
                 {products.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell className="font-medium text-white">{product.name}</TableCell>
                     <TableCell>{product.category}</TableCell>
                     <TableCell>R$ {product.price.toFixed(2)}</TableCell>
                     <TableCell>{product.stock}</TableCell>
@@ -412,7 +416,7 @@ export default function AdminEcommerce() {
               <TableBody>
                 {recentSales.map((sale) => (
                   <TableRow key={sale.id}>
-                    <TableCell className="font-medium">{sale.customer}</TableCell>
+                    <TableCell className="font-medium text-white">{sale.customer}</TableCell>
                     <TableCell>{sale.product}</TableCell>
                     <TableCell>R$ {sale.amount.toFixed(2)}</TableCell>
                     <TableCell>{sale.date}</TableCell>
