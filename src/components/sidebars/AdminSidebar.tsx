@@ -113,14 +113,24 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
             <Menu className="w-6 h-6" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="bg-[#232a36] text-white p-0 w-72 max-w-xs h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[9999]">
-          <div className="p-4 flex items-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
+        <DrawerContent className="bg-[#232a36] text-white p-0 w-full h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[9999] flex flex-col">
+          <div className="flex items-center justify-between p-4 mb-2 border-b border-gray-700">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold">Admin</span>
             </div>
-            <span className="text-xl font-bold">Admin</span>
+            <DrawerClose asChild>
+              <Button variant="ghost" size="icon" className="text-white">
+                <span className="sr-only">Fechar menu</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Button>
+            </DrawerClose>
           </div>
-          <div className="h-full flex flex-col justify-between">
+          <div className="flex-1 flex flex-col justify-between px-4 pb-4">
             <div>
               <SidebarGroup>
                 <SidebarGroupLabel>Administração</SidebarGroupLabel>
@@ -141,7 +151,7 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
                 </SidebarGroupContent>
               </SidebarGroup>
             </div>
-            <div className="mb-4">
+            <div className="mt-6">
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
