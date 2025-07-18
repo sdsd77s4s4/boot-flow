@@ -116,21 +116,96 @@ export default function AdminUsers() {
               <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
                 <span className="block text-white font-semibold mb-2">Informações Básicas</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium">Nome completo *</label>
-                    <Input placeholder="Nome completo" className="bg-[#1f2937] border border-gray-700 text-white" />
+                  {/* Servidor */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Servidor *</label>
+                    <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                      <option>IPTV 2</option>
+                    </select>
+                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                      O servidor não pode ser alterado aqui. Para mudar o servidor, você precisa migrar para outro servidor usando o ícone Migrar Servidor.
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium">Senha *</label>
-                    <Input type="password" placeholder="Senha" className="bg-[#1f2937] border border-gray-700 text-white" />
+                  {/* Plano */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Plano *</label>
+                    <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                      <option>🟧 TESTE - COMPLETO</option>
+                    </select>
+                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                      O plano não pode ser alterado aqui. Para alterar o plano, selecione Ações na lista de clientes e escolha Alterar Plano.
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium">E-mail *</label>
-                    <Input placeholder="email@exemplo.com" className="bg-[#1f2937] border border-gray-700 text-white" />
+                  {/* Usuário */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Usuário *</label>
+                    <div className="relative flex items-center">
+                      <input disabled value="768431151" className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2 pr-8" />
+                      <span className="absolute right-2 text-gray-500 cursor-pointer"><svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" x2="12" y1="4" y2="16"/></svg></span>
+                    </div>
+                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                      A edição do usuário foi desativada pelo administrador.
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium">Telefone *</label>
-                    <Input placeholder="(11) 99999-9999" className="bg-[#1f2937] border border-gray-700 text-white" />
+                  {/* Senha */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Senha</label>
+                    <div className="relative flex items-center">
+                      <input disabled value="186184082" className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2 pr-8" />
+                      <span className="absolute right-2 text-gray-500 cursor-pointer"><svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" x2="12" y1="4" y2="16"/></svg></span>
+                    </div>
+                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                      A edição da senha foi desativada pelo administrador.
+                    </div>
+                    <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
+                      <div>A senha só pode ter letras, números, traços e underline.</div>
+                      <div>A senha deve conter apenas letras e números e ter no mínimo 9 caracteres.</div>
+                      <div>A senha precisa ter no mínimo 8 caracteres.</div>
+                    </div>
+                  </div>
+                  {/* Vencimento */}
+                  <div className="col-span-2">
+                    <label className="block text-gray-300 mb-1 font-medium">Vencimento (Opcional)</label>
+                    <div className="bg-red-900/40 border border-red-700 text-red-400 text-xs rounded mt-2 p-2 mb-2">
+                      Você será cobrado 0,033 créditos por dia (1 crédito dividido por 30), arredondado para 0,033 mais próximo a partir da data de vencimento atual, multiplicado pelo número de conexões.
+                    </div>
+                    <input type="datetime-local" value="2025-07-18T22:27:33" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" />
+                  </div>
+                  {/* Bouquets */}
+                  <div className="col-span-2">
+                    <label className="block text-gray-300 mb-1 font-medium">Bouquets</label>
+                    <select className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                      <option>Padrão do Plano</option>
+                    </select>
+                    <div className="bg-green-900/40 border border-green-700 text-green-400 text-xs rounded mt-2 p-2">
+                      Apenas você pode visualizar os dados pessoais deste cliente.
+                    </div>
+                  </div>
+                  {/* Nome */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Nome</label>
+                    <input placeholder="Opcional" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" />
+                  </div>
+                  {/* E-mail */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">E-mail</label>
+                    <input placeholder="Opcional" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" />
+                  </div>
+                  {/* Telegram */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">Telegram</label>
+                    <input placeholder="Opcional" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" />
+                  </div>
+                  {/* WhatsApp */}
+                  <div className="col-span-1">
+                    <label className="block text-gray-300 mb-1 font-medium">WhatsApp</label>
+                    <input placeholder="Opcional" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" />
+                    <span className="text-xs text-gray-400 mt-1 block">Incluindo o código do país - com ou sem espaço e traços - ex. 55 11 99999 3333</span>
+                  </div>
+                  {/* Observações */}
+                  <div className="col-span-2">
+                    <label className="block text-gray-300 mb-1 font-medium">Observações</label>
+                    <textarea placeholder="Opcional" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]" />
                   </div>
                 </div>
               </div>
