@@ -681,82 +681,81 @@ const AdminDashboard = () => {
         </Dialog>
 
         {/* Modais para cada card */}
-        <Dialog open={modalOpen === 'iptv'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            {/* Resumo ou principais informações do Sistema IPTV extraídas de AdminIPTV */}
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Sistema IPTV</h2>
-              <p className="text-gray-400 mb-4">Gerencie canais, servidores e configurações do IPTV.</p>
-              <div className="flex flex-col gap-2">
-                <span>Usuários Ativos: <span className="font-semibold">8.934</span></span>
-                <span>Servidores Online: <span className="font-semibold text-green-400">12/12</span></span>
+        <Dialog open={activeModal === 'iptv'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">Sistema IPTV</h2>
+              <p className="text-gray-400 mb-4 text-center">Gerencie canais, servidores e configurações do IPTV.</p>
+              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+                <span className="text-center">Usuários Ativos: <span className="font-semibold">8.934</span></span>
+                <span className="text-center">Servidores Online: <span className="font-semibold text-green-400">12/12</span></span>
               </div>
-              <Button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
-        <Dialog open={modalOpen === 'branding'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Customizar Marca</h2>
-              <p className="text-gray-400 mb-4">Personalize a aparência, identidade visual e configurações white label da sua plataforma.</p>
-              <ul className="list-disc pl-5 text-gray-300">
+        <Dialog open={activeModal === 'branding'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">Customizar Marca</h2>
+              <p className="text-gray-400 mb-4 text-center">Personalize a aparência, identidade visual e configurações white label da sua plataforma.</p>
+              <ul className="list-disc pl-5 text-gray-300 w-full max-w-md mx-auto">
                 <li>Logo, cores, domínio, rodapé, etc.</li>
                 <li>Configurações WhiteLabel exclusivas</li>
               </ul>
-              <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
-        <Dialog open={modalOpen === 'ecommerce'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">E-commerce</h2>
-              <p className="text-gray-400 mb-4">Gerencie produtos, vendas e configurações.</p>
-              <div className="flex flex-col gap-2">
-                <span>Vendas Hoje: <span className="font-semibold">R$ 12.450</span></span>
-                <span>Produtos Ativos: <span className="font-semibold text-green-400">24</span></span>
+        <Dialog open={activeModal === 'ecommerce'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">E-commerce</h2>
+              <p className="text-gray-400 mb-4 text-center">Gerencie produtos, vendas e configurações.</p>
+              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+                <span className="text-center">Vendas Hoje: <span className="font-semibold">R$ 12.450</span></span>
+                <span className="text-center">Produtos Ativos: <span className="font-semibold text-green-400">24</span></span>
               </div>
-              <Button className="mt-6 bg-green-600 hover:bg-green-700 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-green-600 hover:bg-green-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
-        <Dialog open={modalOpen === 'gamificacao'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Gamificação</h2>
-              <p className="text-gray-400 mb-4">Sistema de pontos, conquistas e rankings.</p>
-              <div className="flex flex-col gap-2">
-                <span>Usuários Ativos: <span className="font-semibold">8.234</span></span>
-                <span>Conquistas: <span className="font-semibold text-green-400">15</span></span>
+        <Dialog open={activeModal === 'gamificacao'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">Gamificação</h2>
+              <p className="text-gray-400 mb-4 text-center">Sistema de pontos, conquistas e rankings.</p>
+              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+                <span className="text-center">Usuários Ativos: <span className="font-semibold">8.234</span></span>
+                <span className="text-center">Conquistas: <span className="font-semibold text-green-400">15</span></span>
               </div>
-              <Button className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
-        <Dialog open={modalOpen === 'analytics'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Analytics</h2>
-              <p className="text-gray-400 mb-4">Métricas, relatórios e insights.</p>
-              <div className="flex flex-col gap-2">
-                <span>Visualizações: <span className="font-semibold">45.678</span></span>
-                <span>Conversão: <span className="font-semibold text-green-400">3.2%</span></span>
+        <Dialog open={activeModal === 'analytics'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">Analytics</h2>
+              <p className="text-gray-400 mb-4 text-center">Métricas, relatórios e insights.</p>
+              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+                <span className="text-center">Visualizações: <span className="font-semibold">45.678</span></span>
+                <span className="text-center">Conversão: <span className="font-semibold text-green-400">3.2%</span></span>
               </div>
-              <Button className="mt-6 bg-red-600 hover:bg-red-700 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-red-600 hover:bg-red-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
-        <Dialog open={modalOpen === 'ai'} onOpenChange={() => setModalOpen(null)}>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">IA + Voz</h2>
-              <p className="text-gray-400 mb-4">Configurações de inteligência artificial.</p>
-              <div className="flex flex-col gap-2">
-                <span>Interações: <span className="font-semibold">45.678</span></span>
-                <span>Status: <span className="font-semibold text-green-400">Ativo</span></span>
+        <Dialog open={activeModal === 'ai'} onOpenChange={() => setActiveModal(null)}>
+          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+            <div className="p-6 w-full flex flex-col items-center">
+              <h2 className="text-2xl font-bold mb-2 text-center">IA + Voz</h2>
+              <p className="text-gray-400 mb-4 text-center">Configurações de inteligência artificial.</p>
+              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+                <span className="text-center">Interações: <span className="font-semibold">45.678</span></span>
+                <span className="text-center">Status: <span className="font-semibold text-green-400">Ativo</span></span>
               </div>
-              <Button className="mt-6 bg-gray-700 hover:bg-gray-800 text-white" onClick={() => setModalOpen(null)}>Fechar</Button>
+              <Button className="mt-6 bg-gray-700 hover:bg-gray-800 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
