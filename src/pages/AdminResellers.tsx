@@ -275,7 +275,7 @@ const AdminResellers: React.FC = () => {
 
       {/* Cards de Métricas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-400">
               Total de Revendedores
@@ -288,7 +288,7 @@ const AdminResellers: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-400">
               Receita Total
@@ -303,7 +303,7 @@ const AdminResellers: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-400">
               Clientes Atendidos
@@ -316,7 +316,7 @@ const AdminResellers: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-400">
               Taxa Média
@@ -331,7 +331,7 @@ const AdminResellers: React.FC = () => {
       </div>
 
       {/* Lista de Revendedores */}
-      <Card className="bg-gray-800 border-gray-700">
+      <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
