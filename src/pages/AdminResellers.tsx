@@ -522,93 +522,287 @@ const AdminResellers: React.FC = () => {
 
       {/* Modal de Edição */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Editar Revendedor</DialogTitle>
-            <DialogDescription className="text-gray-400">
-              Atualize as informações do revendedor
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name" className="text-gray-300">Nome Completo</Label>
-                <Input
-                  id="edit-name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="bg-gray-700 border-gray-600 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-email" className="text-gray-300">Email</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="bg-gray-700 border-gray-600 text-white"
-                />
+        <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
+          <div className="p-6 w-full">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Editar Revenda</h2>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </Button>
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                </Button>
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                </Button>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+
+            {/* Form */}
+            <form className="space-y-6">
+              {/* Primeira linha */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Usuário */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">
+                    Usuário <span className="text-red-500">*</span>
+                  </label>
+                  <Input 
+                    value={selectedReseller?.name || ''}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                  />
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-blue-400 text-xs">
+                      <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
+                      <span>O campo usuário só pode conter letras, números e traços.</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-400 text-xs">
+                      <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
+                      <span>O usuário precisa ter no mínimo 6 caracteres.</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Senha */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">
+                    Senha <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Digite a nova senha"
+                      className="bg-[#23272f] border-gray-600 text-white flex-1 placeholder-gray-400 focus:border-blue-500"
+                    />
+                    <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </Button>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-blue-400 text-xs">
+                      <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
+                      <span>A senha precisa ter no mínimo 8 caracteres.</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-400 text-xs">
+                      <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
+                      <span>Pelo menos 8 caracteres de comprimento, mas 14 ou mais é melhor.</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-400 text-xs">
+                      <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
+                      <span>Uma combinação de letras maiúsculas, letras minúsculas, números e símbolos.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Checkbox Forçar mudança de senha */}
+              <div className="flex items-center space-x-2">
+                <input type="checkbox" id="forcePasswordChange" className="rounded border-gray-600 bg-[#23272f] text-blue-500 focus:ring-blue-500" />
+                <label htmlFor="forcePasswordChange" className="text-sm text-gray-300">
+                  Forçar revenda a mudar a senha no próximo login
+                </label>
+              </div>
+
+              {/* Segunda linha */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Permissão */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">
+                    Permissão <span className="text-red-500">*</span>
+                  </label>
+                  <select 
+                    value={selectedReseller?.plan || ''}
+                    onChange={(e) => setFormData({...formData, plan: e.target.value as any})}
+                    className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="">Selecione</option>
+                    <option value="Premium">Premium</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Basic">Basic</option>
+                  </select>
+                </div>
+
+                {/* Créditos */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">
+                    Créditos <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                      </svg>
+                    </Button>
+                    <Input 
+                      value={selectedReseller?.commission || 0}
+                      onChange={(e) => setFormData({...formData, commission: e.target.value})}
+                      className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
+                    />
+                    <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </Button>
+                  </div>
+                  <div className="text-blue-400 text-xs">Mínimo de 10 créditos</div>
+                </div>
+              </div>
+
+              {/* Servidores */}
               <div className="space-y-2">
-                <Label htmlFor="edit-phone" className="text-gray-300">Telefone</Label>
-                <Input
-                  id="edit-phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="bg-gray-700 border-gray-600 text-white"
+                <label className="text-sm font-medium text-white">Servidores (Opcional)</label>
+                <select className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none">
+                  <option value="">Opcional</option>
+                  <option value="server1">Servidor 1</option>
+                  <option value="server2">Servidor 2</option>
+                  <option value="server3">Servidor 3</option>
+                </select>
+                <div className="text-blue-400 text-xs">
+                  Selecione os servidores que esse revenda pode ter acesso. Deixe em branco para permitir todos os servidores. Essa configuração afeta tanto a revenda quanto as subrevendas.
+                </div>
+              </div>
+
+              {/* Terceira linha */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Revenda Master */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">Revenda Master</label>
+                  <Input 
+                    placeholder="Nome da revenda master"
+                    className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Desativar login se não recarregar */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white">
+                    Desativar login se não recarregar - em dias
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                      </svg>
+                    </Button>
+                    <Input 
+                      placeholder="0"
+                      className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
+                    />
+                    <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </Button>
+                  </div>
+                  <div className="text-blue-400 text-xs">Deixe 0 para desativar essa opção</div>
+                </div>
+              </div>
+
+              {/* Configuração de Revenda Mensalista */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" id="monthlyReseller" className="rounded border-gray-600 bg-[#23272f] text-blue-500 focus:ring-blue-500" />
+                  <label htmlFor="monthlyReseller" className="text-sm text-gray-300">
+                    Configuração de Revenda Mensalista
+                  </label>
+                </div>
+                <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-3">
+                  <div className="text-green-400 text-sm">
+                    Apenas você pode visualizar os detalhes pessoais deste revenda.
+                  </div>
+                </div>
+              </div>
+
+              {/* Informações Pessoais */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-white">Informações Pessoais (Opcional)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">Nome</label>
+                    <Input 
+                      value={selectedReseller?.name || ''}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">E-mail</label>
+                    <Input 
+                      value={selectedReseller?.email || ''}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">Telegram</label>
+                    <Input 
+                      placeholder="@usuario"
+                      className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">WhatsApp</label>
+                    <Input 
+                      value={selectedReseller?.phone || ''}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                    />
+                    <div className="text-blue-400 text-xs">
+                      Incluindo o código do país - com ou sem espaço e traços - ex. 55 11 99999 3333
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Observações */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-white">Observações (Opcional)</label>
+                <textarea 
+                  rows={4}
+                  placeholder="Adicione observações sobre este revendedor..."
+                  className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none placeholder-gray-400 resize-none"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-commission" className="text-gray-300">Comissão (%)</Label>
-                <Input
-                  id="edit-commission"
-                  type="number"
-                  value={formData.commission}
-                  onChange={(e) => setFormData({...formData, commission: e.target.value})}
-                  className="bg-gray-700 border-gray-600 text-white"
-                />
+
+              {/* Botões */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-700">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setEditModalOpen(false)}
+                  className="border-gray-600 text-gray-400 hover:text-white"
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={handleSaveEdit}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Salvar Alterações
+                </Button>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-plan" className="text-gray-300">Plano</Label>
-                <Select value={formData.plan} onValueChange={(value: any) => setFormData({...formData, plan: value})}>
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="Basic">Basic</SelectItem>
-                    <SelectItem value="Standard">Standard</SelectItem>
-                    <SelectItem value="Premium">Premium</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-status" className="text-gray-300">Status</Label>
-                <Select value={formData.status} onValueChange={(value: any) => setFormData({...formData, status: value})}>
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="Ativo">Ativo</SelectItem>
-                    <SelectItem value="Pendente">Pendente</SelectItem>
-                    <SelectItem value="Inativo">Inativo</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            </form>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-700 text-xs text-gray-500">
+              <span>2025© ALLEZCONECCT v3.50</span>
+              <span>Powered by Sigma | Notificações</span>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditModalOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSaveEdit} className="bg-purple-600 hover:bg-purple-700">
-              Salvar Alterações
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
