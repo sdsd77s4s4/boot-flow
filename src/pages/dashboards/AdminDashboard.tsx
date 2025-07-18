@@ -84,6 +84,7 @@ const AdminDashboard = () => {
   ]);
 
   const [brandingModal, setBrandingModal] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleModalOpen = (modalType: string) => {
     setActiveModal(modalType);
