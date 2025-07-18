@@ -472,7 +472,14 @@ const AdminDashboard = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-[#09090b]">
-        <AdminSidebar onPageChange={handlePageChange} currentPage={currentPage} />
+        {/* Menu lateral desktop */}
+        <div className="hidden lg:block">
+          <AdminSidebar onPageChange={handlePageChange} currentPage={currentPage} />
+        </div>
+        {/* Menu mobile com Drawer/hamburguer */}
+        <div className="lg:hidden fixed top-4 left-4 z-50">
+          <AdminSidebar onPageChange={handlePageChange} currentPage={currentPage} isMobile onClose={() => setDrawerOpen(false)} />
+        </div>
         
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
