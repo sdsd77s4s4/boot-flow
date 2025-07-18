@@ -33,7 +33,7 @@ import { AIModalManager } from "@/components/modals/AIModalManager";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { DndContext, closestCenter } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 // Importando as páginas como componentes
@@ -360,7 +360,7 @@ const AdminDashboard = () => {
                 });
               }
             }}>
-              <SortableContext items={kanbanCards} strategy={verticalListSortingStrategy}>
+              <SortableContext items={kanbanCards} strategy={rectSortingStrategy}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {kanbanCards.map(card => (
                     <SortableCard key={card.id} id={card.id} content={card.content} body={card.body} onClick={card.onClick} />
