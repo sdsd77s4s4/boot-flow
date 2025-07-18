@@ -81,7 +81,6 @@ const AdminDashboard = () => {
 
   const handleModalOpen = (modalType: string) => {
     setActiveModal(modalType);
-    toast.success(`Modal ${modalType} aberto com sucesso!`);
   };
 
   const handleModalClose = () => {
