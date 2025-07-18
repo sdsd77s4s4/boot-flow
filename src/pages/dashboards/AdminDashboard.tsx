@@ -146,7 +146,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => handleModalOpen("iptv_management")
+      onClick: () => handleModalOpen("iptv")
     },
     {
       id: 'branding',
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => setBrandingModal(true)
+      onClick: () => handleModalOpen("branding")
     },
     {
       id: 'ecommerce',
@@ -188,7 +188,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => handleModalOpen("ecommerce_management")
+      onClick: () => handleModalOpen("ecommerce")
     },
     {
       id: 'gamificacao',
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => handleModalOpen("gamification_management")
+      onClick: () => handleModalOpen("gamificacao")
     },
     {
       id: 'analytics',
@@ -230,7 +230,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => handleModalOpen("analytics_management")
+      onClick: () => handleModalOpen("analytics")
     },
     {
       id: 'ai',
@@ -251,7 +251,7 @@ const AdminDashboard = () => {
           </div>
         </CardContent>
       ),
-      onClick: () => handleModalOpen("ai_voice_config")
+      onClick: () => handleModalOpen("ai")
     }
   ];
   const [kanbanCards, setKanbanCards] = useState(initialKanbanCards);
@@ -268,7 +268,7 @@ const AdminDashboard = () => {
     };
     return (
       <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="select-none">
-        <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={onClick}>
+        <Card className="cursor-pointer hover:shadow-glow transition-all duration-300" onClick={onClick} tabIndex={0} role="button" aria-pressed="false">
           {content}
           {body}
         </Card>
