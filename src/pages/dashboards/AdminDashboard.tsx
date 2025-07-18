@@ -551,11 +551,59 @@ const AdminDashboard = () => {
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
-    if (active.id !== over?.id) {
-      setKanbanCards((items) => {
-        const oldIndex = items.findIndex(i => i.id === active.id);
-        const newIndex = items.findIndex(i => i.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+    
+    if (!active || !over) return;
+    
+    const activeId = active.id;
+    const overId = over.id;
+    
+    // Se o card foi solto sobre outro card
+    if (activeId !== overId) {
+      setKanbanColumns(prevColumns => {
+        const newColumns = { ...prevColumns };
+        
+        // Encontrar a coluna de origem e destino
+        let sourceColumnId = null;
+        let targetColumnId = null;
+        let sourceCardIndex = -1;
+        let targetCardIndex = -1;
+        
+        // Procurar o card ativo nas colunas
+        Object.keys(newColumns).forEach(columnId => {
+          const cardIndex = newColumns[columnId].cards.findIndex(card => card.id === activeId);
+          if (cardIndex !== -1) {
+            sourceColumnId = columnId;
+            sourceCardIndex = cardIndex;
+          }
+        });
+        
+        // Procurar o card de destino nas colunas
+        Object.keys(newColumns).forEach(columnId => {
+          const cardIndex = newColumns[columnId].cards.findIndex(card => card.id === overId);
+          if (cardIndex !== -1) {
+            targetColumnId = columnId;
+            targetCardIndex = cardIndex;
+          }
+        });
+        
+        // Se encontrou ambos, mover o card
+        if (sourceColumnId && targetColumnId) {
+          const cardToMove = newColumns[sourceColumnId].cards[sourceCardIndex];
+          
+          // Remover da coluna de origem
+          newColumns[sourceColumnId].cards.splice(sourceCardIndex, 1);
+          
+          // Adicionar na coluna de destino
+          if (sourceColumnId === targetColumnId) {
+            // Mesma coluna, apenas reordenar
+            newColumns[targetColumnId].cards.splice(targetCardIndex, 0, cardToMove);
+          } else {
+            // Colunas diferentes, adicionar no final da coluna de destino
+            newColumns[targetColumnId].cards.push(cardToMove);
+          }
+        }
+        
+        return newColumns;
       });
     }
   };
