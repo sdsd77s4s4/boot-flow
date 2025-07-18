@@ -447,7 +447,10 @@ const AdminDashboard = () => {
                         </div>
                         
                         {/* Column Cards */}
-                        <div className="space-y-4 min-h-[200px] bg-[#1f2937]/50 rounded-lg p-4 border border-gray-700">
+                        <div 
+                          className="space-y-4 min-h-[200px] bg-[#1f2937]/50 rounded-lg p-4 border border-gray-700 transition-all duration-200 hover:border-gray-600"
+                          data-column-id={column.id}
+                        >
                           {column.cards.map(card => (
                             <SortableCard 
                               key={card.id} 
@@ -458,8 +461,13 @@ const AdminDashboard = () => {
                             />
                           ))}
                           {column.cards.length === 0 && (
-                            <div className="flex items-center justify-center h-32 text-gray-500 border-2 border-dashed border-gray-600 rounded-lg">
-                              <p className="text-sm">Solte um card aqui</p>
+                            <div className="flex items-center justify-center h-32 text-gray-500 border-2 border-dashed border-gray-600 rounded-lg transition-all duration-200 hover:border-blue-500 hover:text-blue-400">
+                              <div className="text-center">
+                                <svg className="w-8 h-8 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                                <p className="text-sm">Solte um card aqui</p>
+                              </div>
                             </div>
                           )}
                         </div>
