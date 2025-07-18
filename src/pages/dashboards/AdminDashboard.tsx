@@ -686,11 +686,56 @@ const AdminDashboard = () => {
             <div className="p-6 w-full flex flex-col items-center">
               <h2 className="text-2xl font-bold mb-2 text-center">Sistema IPTV</h2>
               <p className="text-gray-400 mb-4 text-center">Gerencie canais, servidores e configurações do IPTV.</p>
-              <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
-                <span className="text-center">Usuários Ativos: <span className="font-semibold">8.934</span></span>
-                <span className="text-center">Servidores Online: <span className="font-semibold text-green-400">12/12</span></span>
+              <div className="w-full max-w-lg space-y-2 mb-4">
+                <div className="flex justify-between"><span className="text-gray-300">Servidor:</span><span className="font-semibold">SaaS Pro IPTV</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">URL:</span><span className="font-semibold">http://iptv.saaspro.com.br</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Máx. Conexões:</span><span className="font-semibold">5</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Filmes:</span><span className="font-semibold text-green-400">Ativado</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">Séries:</span><span className="font-semibold text-green-400">Ativado</span></div>
+                <div className="flex justify-between"><span className="text-gray-300">TV ao Vivo:</span><span className="font-semibold text-green-400">Ativado</span></div>
               </div>
-              <Button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
+              <div className="w-full max-w-lg mb-4">
+                <h3 className="text-lg font-semibold mb-2">Canais</h3>
+                <div className="overflow-x-auto rounded border border-gray-700">
+                  <table className="min-w-full text-sm text-left">
+                    <thead className="bg-[#23272f]">
+                      <tr>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Nome</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Categoria</th>
+                        <th className="px-2 py-1 text-gray-400 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Globo</td>
+                        <td className="px-2 py-1">Entretenimento</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">SBT</td>
+                        <td className="px-2 py-1">Entretenimento</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Record</td>
+                        <td className="px-2 py-1">Entretenimento</td>
+                        <td className="px-2 py-1"><span className="text-red-400">Inativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">Band</td>
+                        <td className="px-2 py-1">Entretenimento</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                      <tr className="border-t border-gray-700">
+                        <td className="px-2 py-1">CNN Brasil</td>
+                        <td className="px-2 py-1">Notícias</td>
+                        <td className="px-2 py-1"><span className="text-green-400">Ativo</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <Button className="mt-2 bg-purple-600 hover:bg-purple-700 text-white w-40" onClick={() => setActiveModal(null)}>Fechar</Button>
             </div>
           </DialogContent>
         </Dialog>
