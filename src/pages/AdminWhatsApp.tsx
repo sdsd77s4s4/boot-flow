@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, Download, Upload, Users, Check, XCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, Download, Upload, Users } from 'lucide-react';
 
 const templatesMock = [
   {
@@ -53,9 +56,62 @@ const templatesMock = [
   }
 ];
 
+const initialForm = { id: null, title: '', status: 'Ativo', tag: '', content: '', variables: 1 };
+
 const AdminWhatsApp: React.FC = () => {
   const [autoReply, setAutoReply] = useState(false);
   const [templates, setTemplates] = useState(templatesMock);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(initialForm);
+  const [templateToDelete, setTemplateToDelete] = useState<any>(null);
+
+  // Abrir modal para novo template
+  const handleNewTemplate = () => {
+    setEditing(false);
+    setForm({ ...initialForm, id: null });
+    setModalOpen(true);
+  };
+
+  // Abrir modal para editar
+  const handleEditTemplate = (tpl: any) => {
+    setEditing(true);
+    setForm({ ...tpl });
+    setModalOpen(true);
+  };
+
+  // Salvar novo ou editar
+  const handleSaveTemplate = () => {
+    if (!form.title.trim() || !form.tag.trim() || !form.content.trim()) {
+      toast.error('Preencha todos os campos obrigatórios!');
+      return;
+    }
+    if (editing) {
+      setTemplates((prev) => prev.map((tpl) => tpl.id === form.id ? { ...form } : tpl));
+      toast.success('Template atualizado com sucesso!');
+    } else {
+      setTemplates((prev) => [
+        ...prev,
+        { ...form, id: Date.now(), sent: 0, delivery: 0, variables: form.variables || 1, status: 'Ativo', read: false }
+      ]);
+      toast.success('Template criado com sucesso!');
+    }
+    setModalOpen(false);
+  };
+
+  // Abrir modal de confirmação de exclusão
+  const handleDeleteTemplate = (tpl: any) => {
+    setTemplateToDelete(tpl);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirmar exclusão
+  const confirmDeleteTemplate = () => {
+    setTemplates((prev) => prev.filter((tpl) => tpl.id !== templateToDelete.id));
+    setDeleteModalOpen(false);
+    toast.success('Template excluído com sucesso!');
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -70,7 +126,7 @@ const AdminWhatsApp: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700"><Settings className="w-4 h-4 mr-2" />Configurar</Button>
-          <Button className="bg-green-600 hover:bg-green-700"><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
+          <Button className="bg-green-600 hover:bg-green-700" onClick={handleNewTemplate}><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
         </div>
       </div>
 
@@ -82,7 +138,7 @@ const AdminWhatsApp: React.FC = () => {
             <MessageSquare className="h-5 w-5 text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">1.247</div>
+            <div className="text-2xl font-bold text-green-400">{templates.reduce((acc, t) => acc + t.sent, 0)}</div>
           </CardContent>
         </Card>
         <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
@@ -91,7 +147,7 @@ const AdminWhatsApp: React.FC = () => {
             <CheckCircle className="h-5 w-5 text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">95.3%</div>
+            <div className="text-2xl font-bold text-green-400">{templates.length ? (templates.reduce((acc, t) => acc + t.delivery, 0) / templates.length).toFixed(1) : '0'}%</div>
           </CardContent>
         </Card>
         <Card className="border-gray-700" style={{ backgroundColor: '#1F2937' }}>
@@ -124,7 +180,7 @@ const AdminWhatsApp: React.FC = () => {
                 <MessageSquare className="h-5 w-5 text-green-400" />
                 <CardTitle className="text-white">Templates de Mensagem</CardTitle>
               </div>
-              <Button className="bg-green-600 hover:bg-green-700"><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
+              <Button className="bg-green-600 hover:bg-green-700" onClick={handleNewTemplate}><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
             </CardHeader>
             <CardContent className="space-y-4">
               {templates.map((tpl) => (
@@ -136,8 +192,8 @@ const AdminWhatsApp: React.FC = () => {
                       <Badge className="bg-gray-700 text-gray-300 border-gray-600">{tpl.tag}</Badge>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon" className="text-gray-400 hover:text-green-400"><Edit className="w-4 h-4" /></Button>
-                      <Button variant="ghost" size="icon" className="text-red-400 hover:text-red-300"><Trash2 className="w-4 h-4" /></Button>
+                      <Button variant="ghost" size="icon" className="text-gray-400 hover:text-green-400" onClick={() => handleEditTemplate(tpl)}><Edit className="w-4 h-4" /></Button>
+                      <Button variant="ghost" size="icon" className="text-red-400 hover:text-red-300" onClick={() => handleDeleteTemplate(tpl)}><Trash2 className="w-4 h-4" /></Button>
                     </div>
                   </div>
                   <div className="text-gray-300 mb-2 text-sm">{tpl.content}</div>
@@ -196,13 +252,62 @@ const AdminWhatsApp: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-gray-300">
               <div className="flex items-center justify-between"><span>Clientes Ativos</span><span className="font-bold text-white">234</span></div>
-              <div className="flex items-center justify-between"><span>Templates Ativos</span><span className="font-bold text-white">8</span></div>
+              <div className="flex items-center justify-between"><span>Templates Ativos</span><span className="font-bold text-white">{templates.filter(t => t.status === 'Ativo').length}</span></div>
               <div className="flex items-center justify-between"><span>Última Sincronização</span><span className="text-gray-400">2min atrás</span></div>
               <div className="flex items-center justify-between"><span>Próximo Backup</span><span className="text-gray-400">23:00</span></div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Modal de Criar/Editar Template */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent className="bg-[#232a36] border-gray-700 text-white max-w-lg">
+          <DialogHeader>
+            <CardTitle className="text-xl font-bold">{editing ? 'Editar Template' : 'Novo Template'}</CardTitle>
+            <DialogDescription className="text-gray-400">Preencha os campos obrigatórios</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-300 mb-1">Título *</label>
+              <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="bg-gray-700 border-gray-600 text-white" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Tag *</label>
+              <Input value={form.tag} onChange={e => setForm({ ...form, tag: e.target.value })} className="bg-gray-700 border-gray-600 text-white" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Conteúdo *</label>
+              <Textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} className="bg-gray-700 border-gray-600 text-white min-h-[80px]" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Variáveis</label>
+              <Input type="number" min={1} value={form.variables} onChange={e => setForm({ ...form, variables: Number(e.target.value) })} className="bg-gray-700 border-gray-600 text-white w-24" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveTemplate} className="bg-green-600 hover:bg-green-700">{editing ? 'Salvar' : 'Criar'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="bg-[#232a36] border-gray-700 text-white max-w-md">
+          <DialogHeader>
+            <CardTitle className="text-xl font-bold">Excluir Template</CardTitle>
+            <DialogDescription className="text-gray-400">Tem certeza que deseja excluir este template?</DialogDescription>
+          </DialogHeader>
+          <div className="my-4">
+            <span className="font-semibold text-green-400">{templateToDelete?.title}</span>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>Cancelar</Button>
+            <Button onClick={confirmDeleteTemplate} className="bg-red-600 hover:bg-red-700">Excluir</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
