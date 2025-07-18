@@ -86,6 +86,7 @@ const AdminDashboard = () => {
   const [brandingModal, setBrandingModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'kanban' | 'grid'>('kanban');
 
   const handleModalOpen = (modalType: string) => {
     setActiveModal(modalType);
