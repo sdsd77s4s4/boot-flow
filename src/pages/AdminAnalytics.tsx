@@ -35,25 +35,25 @@ export default function AdminAnalytics() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Analytics</h1>
-          <p className="text-muted-foreground">Acompanhe métricas e performance do sistema</p>
+          <h1 className="text-3xl font-bold text-white">Analytics</h1>
+          <p className="text-gray-400">Acompanhe métricas e performance do sistema</p>
         </div>
         <div className="flex items-center gap-2">
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-32 bg-[#1f2937] text-white border-none">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-[#1f2937] text-white">
               <SelectItem value="1d">Hoje</SelectItem>
               <SelectItem value="7d">7 dias</SelectItem>
               <SelectItem value="30d">30 dias</SelectItem>
               <SelectItem value="90d">90 dias</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white border-none">
             <Download className="w-4 h-4" />
             Exportar
           </Button>
@@ -61,69 +61,69 @@ export default function AdminAnalytics() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.totalUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">{metrics.totalUsers.toLocaleString()}</div>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <p className="text-xs text-green-600">+{metrics.growth}%</p>
-              <p className="text-xs text-muted-foreground">vs. período anterior</p>
+              <p className="text-xs text-gray-400">vs. período anterior</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuários Ativos</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Usuários Ativos</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.activeUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">{metrics.activeUsers.toLocaleString()}</div>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <p className="text-xs text-green-600">+8.2%</p>
-              <p className="text-xs text-muted-foreground">vs. período anterior</p>
+              <p className="text-xs text-gray-400">vs. período anterior</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Receita</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Receita</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R$ {metrics.revenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">R$ {metrics.revenue.toLocaleString()}</div>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <p className="text-xs text-green-600">+{metrics.growth}%</p>
-              <p className="text-xs text-muted-foreground">vs. período anterior</p>
+              <p className="text-xs text-gray-400">vs. período anterior</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Visualizações</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-300">Visualizações</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.pageViews.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-white">{metrics.pageViews.toLocaleString()}</div>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <p className="text-xs text-green-600">+15.3%</p>
-              <p className="text-xs text-muted-foreground">vs. período anterior</p>
+              <p className="text-xs text-gray-400">vs. período anterior</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader>
-            <CardTitle>Páginas Mais Visitadas</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white">Páginas Mais Visitadas</CardTitle>
+            <CardDescription className="text-gray-400">
               Top 5 páginas com mais visualizações
             </CardDescription>
           </CardHeader>
@@ -132,10 +132,10 @@ export default function AdminAnalytics() {
               {topPages.map((page, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline">#{index + 1}</Badge>
+                    <Badge variant="outline" className="border-blue-600 text-blue-400">#{index + 1}</Badge>
                     <div>
-                      <p className="font-medium">{page.name}</p>
-                      <p className="text-sm text-muted-foreground">{page.views.toLocaleString()} visualizações</p>
+                      <p className="font-medium text-white">{page.name}</p>
+                      <p className="text-sm text-gray-400">{page.views.toLocaleString()} visualizações</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -150,10 +150,10 @@ export default function AdminAnalytics() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader>
-            <CardTitle>Atividade por Hora</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white">Atividade por Hora</CardTitle>
+            <CardDescription className="text-gray-400">
               Usuários ativos por hora do dia
             </CardDescription>
           </CardHeader>
@@ -163,16 +163,16 @@ export default function AdminAnalytics() {
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">{activity.hour}</span>
+                    <span className="font-medium text-white">{activity.hour}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-32 bg-gray-200 rounded-full h-2">
+                    <div className="w-32 bg-gray-700 rounded-full h-2">
                       <div 
                         className="bg-blue-600 h-2 rounded-full" 
                         style={{ width: `${(activity.users / 250) * 100}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm text-muted-foreground w-12 text-right">
+                    <span className="text-sm text-gray-400 w-12 text-right">
                       {activity.users}
                     </span>
                   </div>
@@ -184,86 +184,86 @@ export default function AdminAnalytics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader>
-            <CardTitle>Taxa de Conversão</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white">Taxa de Conversão</CardTitle>
+            <CardDescription className="text-gray-400">
               Conversões de visitantes em usuários
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-600">{metrics.conversionRate}%</div>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm text-gray-400 mt-2">
                 {Math.round(metrics.pageViews * (metrics.conversionRate / 100)).toLocaleString()} conversões
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader>
-            <CardTitle>Distribuição de Usuários</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white">Distribuição de Usuários</CardTitle>
+            <CardDescription className="text-gray-400">
               Por tipo de plano
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Plano Básico</span>
+                <span className="text-sm text-gray-400">Plano Básico</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div className="w-20 bg-gray-700 rounded-full h-2">
                     <div className="bg-green-600 h-2 rounded-full" style={{ width: '60%' }}></div>
                   </div>
-                  <span className="text-sm font-medium">60%</span>
+                  <span className="text-sm font-medium text-green-400">60%</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Plano Pro</span>
+                <span className="text-sm text-gray-400">Plano Pro</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div className="w-20 bg-gray-700 rounded-full h-2">
                     <div className="bg-blue-600 h-2 rounded-full" style={{ width: '30%' }}></div>
                   </div>
-                  <span className="text-sm font-medium">30%</span>
+                  <span className="text-sm font-medium text-blue-400">30%</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Plano Enterprise</span>
+                <span className="text-sm text-gray-400">Plano Enterprise</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div className="w-20 bg-gray-700 rounded-full h-2">
                     <div className="bg-purple-600 h-2 rounded-full" style={{ width: '10%' }}></div>
                   </div>
-                  <span className="text-sm font-medium">10%</span>
+                  <span className="text-sm font-medium text-purple-400">10%</span>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[#1f2937] text-white">
           <CardHeader>
-            <CardTitle>Performance do Sistema</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white">Performance do Sistema</CardTitle>
+            <CardDescription className="text-gray-400">
               Métricas de performance
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Tempo de Resposta</span>
+                <span className="text-sm text-gray-400">Tempo de Resposta</span>
                 <Badge className="bg-green-100 text-green-800">245ms</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Uptime</span>
+                <span className="text-sm text-gray-400">Uptime</span>
                 <Badge className="bg-green-100 text-green-800">99.9%</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Erros</span>
+                <span className="text-sm text-gray-400">Erros</span>
                 <Badge className="bg-red-100 text-red-800">0.1%</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Sessões Ativas</span>
+                <span className="text-sm text-gray-400">Sessões Ativas</span>
                 <Badge className="bg-blue-100 text-blue-800">892</Badge>
               </div>
             </div>
