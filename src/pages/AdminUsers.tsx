@@ -1476,6 +1476,83 @@ export default function AdminUsers() {
         </DialogContent>
       </Dialog>
 
+      {/* Modal de Confirmação para Copiar Clientes */}
+      <AlertDialog open={isCopyDialogOpen} onOpenChange={setIsCopyDialogOpen}>
+        <AlertDialogContent className="bg-[#1f2937] text-white border border-gray-700">
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                <Copy className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <AlertDialogTitle className="text-xl font-bold text-white">Copiar Clientes da Cobranças</AlertDialogTitle>
+                <AlertDialogDescription className="text-gray-400">
+                  Esta ação irá copiar todos os clientes da página de Cobranças para a página de Clientes.
+                </AlertDialogDescription>
+              </div>
+            </div>
+          </AlertDialogHeader>
+          
+          <div className="bg-[#23272f] rounded-lg p-4 mb-4">
+            <h3 className="text-lg font-semibold text-white mb-2">Resumo da operação:</h3>
+            <div className="space-y-2">
+              <p className="text-white">
+                <span className="text-gray-400">Clientes na Cobranças:</span> {cobrancasUsers.length}
+              </p>
+              <p className="text-white">
+                <span className="text-gray-400">Clientes atuais:</span> {users.length}
+              </p>
+              <p className="text-white">
+                <span className="text-gray-400">Clientes a serem copiados:</span> {
+                  cobrancasUsers.filter(user => 
+                    !users.map(u => u.email.toLowerCase()).includes(user.email.toLowerCase())
+                  ).length
+                }
+              </p>
+            </div>
+            
+            {/* Progresso da cópia */}
+            {isCopyingUsers && (
+              <div className="mt-4">
+                <div className="flex justify-between text-sm text-gray-400 mb-2">
+                  <span>Copiando clientes...</span>
+                  <span>{Math.round(copyProgress)}%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${copyProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+            
+            {/* Sucesso da cópia */}
+            {copySuccess && (
+              <div className="mt-4 bg-green-900/40 border border-green-700 text-green-300 text-sm rounded p-3">
+                ✅ Clientes copiados com sucesso!
+              </div>
+            )}
+          </div>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              className="bg-gray-700 text-white border border-gray-600 hover:bg-gray-600"
+              disabled={isCopyingUsers}
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleCopyAllUsersFromCobrancas}
+              className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={isCopyingUsers}
+            >
+              {isCopyingUsers ? 'Copiando...' : 'Copiar Clientes'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Modal de Confirmação de Exclusão */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent className="bg-[#1f2937] text-white border border-gray-700">
