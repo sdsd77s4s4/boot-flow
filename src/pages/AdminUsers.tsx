@@ -103,23 +103,15 @@ export default function AdminUsers() {
     }
   };
 
-  // Sistema de Proxy CORS Multi-Fallback
+  // Sistema de Proxy CORS Multi-Fallback (apenas os mais confiáveis)
   const corsProxies = [
     {
       name: "api.allorigins.win",
       url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
     },
     {
-      name: "cors-anywhere.herokuapp.com",
-      url: (targetUrl: string) => `https://cors-anywhere.herokuapp.com/${targetUrl}`
-    },
-    {
       name: "api.codetabs.com",
       url: (targetUrl: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
-    },
-    {
-      name: "cors-proxy.htmldriven.com",
-      url: (targetUrl: string) => `https://cors-proxy.htmldriven.com/?url=${encodeURIComponent(targetUrl)}`
     }
   ];
 
