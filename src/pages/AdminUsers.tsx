@@ -538,13 +538,21 @@ export default function AdminUsers() {
             {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
           </p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
-              <Plus className="w-4 h-4" />
-              Novo Usuário
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button 
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => setIsCopyDialogOpen(true)}
+          >
+            <Copy className="w-4 h-4" />
+            Copiar da Cobranças
+          </Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
+                <Plus className="w-4 h-4" />
+                Novo Usuário
+              </Button>
+            </DialogTrigger>
           <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
             <DialogHeader className="sr-only">
               <DialogTitle>Adicionar Cliente</DialogTitle>
