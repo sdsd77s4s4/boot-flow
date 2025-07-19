@@ -103,6 +103,191 @@ export default function AdminUsers() {
     }
   };
 
+  // Função para extrair dados M3U
+  const extractM3UData = async () => {
+    if (!m3uUrl.trim()) {
+      setExtractionError("Por favor, insira uma URL M3U válida.");
+      return;
+    }
+
+    setIsExtracting(true);
+    setExtractionError("");
+    setExtractionResult(null);
+    setExtractedUsers([]);
+    setSelectedExtractedUser(null);
+
+    try {
+      // Simular requisição HTTP (em produção, seria uma chamada real)
+      const response = await fetch(m3uUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+      }
+
+      const content = await response.text();
+      
+      // Parsear conteúdo M3U
+      const parsedData = parseM3UContent(content);
+      
+      if (parsedData.users.length === 0) {
+        throw new Error("Nenhum usuário encontrado no arquivo M3U.");
+      }
+
+      setExtractedUsers(parsedData.users);
+      
+      if (parsedData.users.length === 1) {
+        // Se só há um usuário, seleciona automaticamente
+        setSelectedExtractedUser(parsedData.users[0]);
+        applyExtractedData(parsedData.users[0]);
+      } else {
+        // Se há múltiplos usuários, mostra seleção
+        setExtractionResult(parsedData);
+      }
+
+    } catch (error: any) {
+      console.error("Erro na extração M3U:", error);
+      setExtractionError(error.message || "Erro ao processar arquivo M3U.");
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  // Função para parsear conteúdo M3U
+  const parseM3UContent = (content: string) => {
+    const lines = content.split('\n').filter(line => line.trim());
+    const users: any[] = [];
+    let currentUser: any = {};
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      if (line.startsWith('#EXTINF:')) {
+        // Parsear informações do canal
+        const channelInfo = parseChannelInfo(line);
+        currentUser = { ...currentUser, ...channelInfo };
+      } else if (line.startsWith('http')) {
+        // Parsear URL do stream
+        const streamInfo = parseStreamUrl(line);
+        currentUser = { ...currentUser, ...streamInfo };
+        
+        // Se temos dados suficientes, adicionar usuário
+        if (currentUser.username || currentUser.name) {
+          users.push({ ...currentUser });
+          currentUser = {};
+        }
+      }
+    }
+
+    return {
+      users,
+      totalUsers: users.length,
+      fileType: content.includes('#EXTM3U') ? 'M3U' : 'M3U8'
+    };
+  };
+
+  // Função para parsear informações do canal
+  const parseChannelInfo = (line: string) => {
+    const info: any = {};
+    
+    // Extrair nome do canal
+    const nameMatch = line.match(/,(.+)$/);
+    if (nameMatch) {
+      info.name = nameMatch[1].trim();
+    }
+
+    // Extrair atributos
+    const attributes = line.match(/[a-zA-Z-]+="[^"]*"/g);
+    if (attributes) {
+      attributes.forEach(attr => {
+        const [key, value] = attr.split('=');
+        const cleanValue = value.replace(/"/g, '');
+        
+        switch (key) {
+          case 'tvg-name':
+            info.channelName = cleanValue;
+            break;
+          case 'tvg-logo':
+            info.logo = cleanValue;
+            break;
+          case 'group-title':
+            info.bouquet = cleanValue;
+            break;
+        }
+      });
+    }
+
+    return info;
+  };
+
+  // Função para parsear URL do stream
+  const parseStreamUrl = (url: string) => {
+    const info: any = {};
+    
+    try {
+      const urlObj = new URL(url);
+      
+      // Extrair username e password da URL
+      if (urlObj.username) {
+        info.username = urlObj.username;
+      }
+      if (urlObj.password) {
+        info.password = urlObj.password;
+      }
+
+      // Extrair parâmetros da URL
+      const params = urlObj.searchParams;
+      if (params.get('username')) {
+        info.username = params.get('username');
+      }
+      if (params.get('password')) {
+        info.password = params.get('password');
+      }
+      if (params.get('user')) {
+        info.username = params.get('user');
+      }
+      if (params.get('pass')) {
+        info.password = params.get('pass');
+      }
+
+      // Extrair informações adicionais
+      if (params.get('expires')) {
+        info.expires = params.get('expires');
+      }
+      if (params.get('token')) {
+        info.token = params.get('token');
+      }
+
+    } catch (error) {
+      console.warn("Erro ao parsear URL:", error);
+    }
+
+    return info;
+  };
+
+  // Função para aplicar dados extraídos ao formulário
+  const applyExtractedData = (userData: any) => {
+    setNewUser(prev => ({
+      ...prev,
+      name: userData.name || userData.channelName || userData.username || "",
+      email: userData.email || "",
+      plan: userData.bouquet || "Cliente",
+      status: "Ativo"
+    }));
+
+    // Atualizar outros campos do formulário se necessário
+    setExtractionResult({
+      success: true,
+      message: `Dados extraídos com sucesso: ${userData.name || userData.username}`,
+      userData
+    });
+  };
+
+  // Função para selecionar usuário extraído
+  const selectExtractedUser = (user: any) => {
+    setSelectedExtractedUser(user);
+    applyExtractedData(user);
+  };
+
   return (
     <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
       <div className="flex items-center justify-between">
