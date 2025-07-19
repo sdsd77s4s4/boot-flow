@@ -573,26 +573,279 @@ export default function AdminCobrancas() {
       </Dialog>
       {/* Modal Editar */}
       <Dialog open={!!modalEditar} onOpenChange={() => setModalEditar(null)}>
-        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Editar Cobrança</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <Input placeholder="Cliente" className="bg-gray-900 border border-gray-700 text-white" value={edit.cliente} onChange={e => setEdit({ ...edit, cliente: e.target.value })} />
-            <Input placeholder="E-mail" className="bg-gray-900 border border-gray-700 text-white" value={edit.email} onChange={e => setEdit({ ...edit, email: e.target.value })} />
-            <Input placeholder="Descrição" className="bg-gray-900 border border-gray-700 text-white" value={edit.descricao} onChange={e => setEdit({ ...edit, descricao: e.target.value })} />
-            <Input placeholder="Valor" className="bg-gray-900 border border-gray-700 text-white" type="number" value={edit.valor} onChange={e => setEdit({ ...edit, valor: e.target.value })} />
-            <Input placeholder="Vencimento" className="bg-gray-900 border border-gray-700 text-white" type="date" value={edit.vencimento} onChange={e => setEdit({ ...edit, vencimento: e.target.value })} />
-            <select className="bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" value={edit.status} onChange={e => setEdit({ ...edit, status: e.target.value })}>
-              <option value="Pendente">Pendente</option>
-              <option value="Vencida">Vencida</option>
-              <option value="Paga">Paga</option>
-            </select>
+        <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
+          <div className="p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-yellow-500" />
+                <span className="text-lg font-semibold text-white">Editar Cobrança</span>
+                <span className="ml-2 px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-semibold">Editar</span>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Histórico</Button>
+                <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Duplicar</Button>
+              </div>
+            </div>
+            <p className="text-gray-400 text-sm mb-2">Edite os dados da cobrança e do cliente</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-yellow-400 text-xs font-medium">• Campos obrigatórios marcados com *</span>
+              <span className="text-blue-400 text-xs font-medium">• Dados serão sincronizados automaticamente</span>
+            </div>
+
+            {/* Informações Básicas */}
+            <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+              <span className="block text-white font-semibold mb-2">Informações Básicas</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Cliente */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Cliente *</label>
+                  <select 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.cliente}
+                    onChange={e => {
+                      const selectedUser = users.find(user => user.id.toString() === e.target.value);
+                      if (selectedUser) {
+                        setEdit({
+                          ...edit,
+                          cliente: e.target.value,
+                          nomeCliente: selectedUser.name,
+                          email: selectedUser.email,
+                          telefone: selectedUser.phone || '',
+                          telegram: selectedUser.telegram || '',
+                          whatsapp: selectedUser.whatsapp || '',
+                          devices: selectedUser.devices || 1,
+                          credits: selectedUser.credits || 0,
+                          renewalDate: selectedUser.renewalDate || '',
+                          notes: selectedUser.notes || ''
+                        });
+                      }
+                    }}
+                  >
+                    <option value="">Selecione um cliente</option>
+                    {users.map(user => (
+                      <option key={user.id} value={user.id.toString()}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Nome */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Nome</label>
+                  <input 
+                    placeholder="Nome do cliente" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.nomeCliente}
+                    onChange={e => setEdit({ ...edit, nomeCliente: e.target.value })}
+                  />
+                </div>
+                {/* E-mail */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">E-mail *</label>
+                  <input 
+                    placeholder="Email do cliente" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.email}
+                    onChange={e => setEdit({ ...edit, email: e.target.value })}
+                  />
+                </div>
+                {/* Telefone */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Telefone</label>
+                  <input 
+                    placeholder="(11) 99999-9999" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.telefone}
+                    onChange={e => setEdit({ ...edit, telefone: e.target.value })}
+                  />
+                </div>
+                {/* Telegram */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Telegram</label>
+                  <input 
+                    placeholder="@usuario" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.telegram}
+                    onChange={e => setEdit({ ...edit, telegram: e.target.value })}
+                  />
+                </div>
+                {/* WhatsApp */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">WhatsApp</label>
+                  <input 
+                    placeholder="+55 11 99999-9999" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.whatsapp}
+                    onChange={e => setEdit({ ...edit, whatsapp: e.target.value })}
+                  />
+                  <span className="text-xs text-gray-400 mt-1 block">Incluindo o código do país - com ou sem espaço e traços</span>
+                </div>
+                {/* Descrição */}
+                <div className="col-span-2">
+                  <label className="block text-gray-300 mb-1 font-medium">Descrição *</label>
+                  <textarea 
+                    placeholder="Descrição da cobrança" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
+                    value={edit.descricao}
+                    onChange={e => setEdit({ ...edit, descricao: e.target.value })}
+                  />
+                </div>
+                {/* Valor */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Valor *</label>
+                  <input 
+                    placeholder="R$ 0,00" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.valor}
+                    onChange={e => setEdit({ ...edit, valor: e.target.value })}
+                  />
+                </div>
+                {/* Status */}
+                <div className="col-span-1">
+                  <label className="block text-gray-300 mb-1 font-medium">Status</label>
+                  <select 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.status}
+                    onChange={e => setEdit({ ...edit, status: e.target.value })}
+                  >
+                    <option value="Pendente">Pendente</option>
+                    <option value="Vencida">Vencida</option>
+                    <option value="Paga">Paga</option>
+                  </select>
+                </div>
+                {/* Data de Vencimento */}
+                <div className="col-span-2">
+                  <label className="block text-gray-300 mb-1 font-medium">Data de Vencimento *</label>
+                  <input 
+                    type="date"
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.vencimento}
+                    onChange={e => setEdit({ ...edit, vencimento: e.target.value })}
+                  />
+                </div>
+                {/* Observações */}
+                <div className="col-span-2">
+                  <label className="block text-gray-300 mb-1 font-medium">Observações</label>
+                  <textarea 
+                    placeholder="Observações sobre a cobrança" 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
+                    value={edit.observacoes}
+                    onChange={e => setEdit({ ...edit, observacoes: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Configuração de Serviço */}
+            <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+              <span className="block text-purple-400 font-semibold mb-2">Configuração de Serviço</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                {/* Classe de Serviço */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Classe de Serviço</label>
+                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                    <option value="">Selecione</option>
+                    <option value="basico">Básico</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </div>
+                {/* Plano */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Plano</label>
+                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                    <option value="mensal">Mensal</option>
+                    <option value="anual">Anual</option>
+                  </select>
+                </div>
+                {/* Status */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Status</label>
+                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                {/* Data de Renovação */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Data de Renovação</label>
+                  <input 
+                    type="date"
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.renewalDate}
+                    onChange={e => setEdit({ ...edit, renewalDate: e.target.value })}
+                  />
+                </div>
+                {/* Número de Dispositivos */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Número de Dispositivos</label>
+                  <input 
+                    type="number" 
+                    min={1} 
+                    className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                    value={edit.devices}
+                    onChange={e => setEdit({ ...edit, devices: parseInt(e.target.value) || 1 })}
+                  />
+                </div>
+                {/* Créditos */}
+                <div>
+                  <label className="block text-gray-300 mb-1 font-medium">Créditos</label>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      type="button" 
+                      className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
+                      onClick={() => setEdit({ ...edit, credits: Math.max(0, edit.credits - 1) })}
+                    >
+                      -
+                    </button>
+                    <input 
+                      type="number" 
+                      min={0} 
+                      className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                      value={edit.credits}
+                      onChange={e => setEdit({ ...edit, credits: parseInt(e.target.value) || 0 })}
+                    />
+                    <button 
+                      type="button" 
+                      className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
+                      onClick={() => setEdit({ ...edit, credits: Math.min(500, edit.credits + 1) })}
+                    >
+                      +
+                    </button>
+                    <span className="text-xs text-gray-400 ml-2">valor<br/>entre 0<br/>e 500€</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Informações Adicionais */}
+            <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+              <span className="block text-white font-semibold mb-2">Informações Adicionais</span>
+              <div className="flex items-center gap-2 mb-2">
+                <input type="checkbox" className="accent-green-500" />
+                <span className="text-gray-300 text-sm">Notificações via WhatsApp</span>
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
+                <textarea 
+                  className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-2 min-h-[60px]" 
+                  placeholder="Anotações..."
+                  value={edit.notes}
+                  onChange={e => setEdit({ ...edit, notes: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <Button variant="outline" onClick={() => setModalEditar(null)} className="bg-gray-700 text-white px-6 py-2 rounded font-semibold">
+                Cancelar
+              </Button>
+              <Button onClick={handleSalvarEdit} className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded font-semibold">
+                Salvar Alterações
+              </Button>
+            </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setModalEditar(null)} className="bg-gray-700 text-white">Cancelar</Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleSalvarEdit}>Salvar</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
       {/* Modal Excluir */}
