@@ -67,16 +67,16 @@ export default function AdminUsers() {
         
         // Adicionar usuário
         addUser({
-          name: newUser.name,
-          email: newUser.email,
-          plan: newUser.plan,
-          status: newUser.status,
+        name: newUser.name,
+        email: newUser.email,
+        plan: newUser.plan,
+        status: newUser.status,
           telegram: newUser.telegram || '',
           observations: newUser.observations || '',
           expirationDate: newUser.expirationDate || '',
           password: newUser.password || '',
           bouquets: newUser.bouquets || '',
-          createdAt: new Date().toISOString().split('T')[0]
+        createdAt: new Date().toISOString().split('T')[0]
         });
         
         setAddUserSuccess(true);

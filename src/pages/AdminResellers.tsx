@@ -551,20 +551,20 @@ const AdminResellers: React.FC = () => {
               {/* Primeira linha */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Usuário */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Usuário <span className="text-red-500">*</span>
                   </label>
-                  <Input 
+                <Input
                     value={selectedReseller?.name || ''}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                  />
+                />
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>O campo usuário só pode conter letras, números e traços.</span>
-                    </div>
+              </div>
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>O usuário precisa ter no mínimo 6 caracteres.</span>
@@ -573,12 +573,12 @@ const AdminResellers: React.FC = () => {
                 </div>
 
                 {/* Senha */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Senha <span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-2">
-                    <Input 
+                <Input
                       placeholder="Digite a nova senha"
                       className="bg-[#23272f] border-gray-600 text-white flex-1 placeholder-gray-400 focus:border-blue-500"
                     />
@@ -587,12 +587,12 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                     </Button>
-                  </div>
+              </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>A senha precisa ter no mínimo 8 caracteres.</span>
-                    </div>
+            </div>
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>Pelo menos 8 caracteres de comprimento, mas 14 ou mais é melhor.</span>
@@ -616,7 +616,7 @@ const AdminResellers: React.FC = () => {
               {/* Segunda linha */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Permissão */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Permissão <span className="text-red-500">*</span>
                   </label>
@@ -643,7 +643,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </Button>
-                    <Input 
+                <Input
                       value={selectedReseller?.commission || 0}
                       onChange={(e) => setFormData({...formData, commission: e.target.value})}
                       className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
@@ -653,7 +653,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </Button>
-                  </div>
+              </div>
                   <div className="text-blue-400 text-xs">Mínimo de 10 créditos</div>
                 </div>
               </div>
@@ -677,11 +677,11 @@ const AdminResellers: React.FC = () => {
                 {/* Revenda Master */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white">Revenda Master</label>
-                  <Input 
+                <Input
                     placeholder="Nome da revenda master"
                     className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                  />
-                </div>
+                />
+              </div>
 
                 {/* Desativar login se não recarregar */}
                 <div className="space-y-2">
@@ -703,7 +703,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </Button>
-                  </div>
+            </div>
                   <div className="text-blue-400 text-xs">Deixe 0 para desativar essa opção</div>
                 </div>
               </div>
@@ -727,29 +727,29 @@ const AdminResellers: React.FC = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white">Informações Pessoais (Opcional)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+              <div className="space-y-2">
                     <label className="text-sm font-medium text-white">Nome</label>
                     <Input 
                       value={selectedReseller?.name || ''}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
-                  <div className="space-y-2">
+              </div>
+              <div className="space-y-2">
                     <label className="text-sm font-medium text-white">E-mail</label>
                     <Input 
                       value={selectedReseller?.email || ''}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
+              </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white">Telegram</label>
                     <Input 
                       placeholder="@usuario"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
+            </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white">WhatsApp</label>
                     <Input 
@@ -759,7 +759,7 @@ const AdminResellers: React.FC = () => {
                     />
                     <div className="text-blue-400 text-xs">
                       Incluindo o código do país - com ou sem espaço e traços - ex. 55 11 99999 3333
-                    </div>
+          </div>
                   </div>
                 </div>
               </div>
@@ -782,8 +782,8 @@ const AdminResellers: React.FC = () => {
                   onClick={() => setEditModalOpen(false)}
                   className="border-gray-600 text-gray-400 hover:text-white"
                 >
-                  Cancelar
-                </Button>
+              Cancelar
+            </Button>
                 <Button 
                   type="button" 
                   onClick={handleSaveEdit}
@@ -792,8 +792,8 @@ const AdminResellers: React.FC = () => {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Salvar Alterações
-                </Button>
+              Salvar Alterações
+            </Button>
               </div>
             </form>
 
@@ -837,11 +837,11 @@ const AdminResellers: React.FC = () => {
               {/* Primeira linha */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Usuário */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Usuário <span className="text-red-500">*</span>
                   </label>
-                  <Input 
+                <Input
                     placeholder="Obrigatório" 
                     className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                   />
@@ -849,7 +849,7 @@ const AdminResellers: React.FC = () => {
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>O campo usuário só pode conter letras, números e traços.</span>
-                    </div>
+              </div>
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>O usuário precisa ter no mínimo 6 caracteres.</span>
@@ -858,12 +858,12 @@ const AdminResellers: React.FC = () => {
                 </div>
 
                 {/* Senha */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Senha <span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-2">
-                    <Input 
+                <Input
                       placeholder="Digite a senha"
                       className="bg-[#23272f] border-gray-600 text-white flex-1 placeholder-gray-400 focus:border-blue-500"
                     />
@@ -872,12 +872,12 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                     </Button>
-                  </div>
+              </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>A senha precisa ter no mínimo 8 caracteres.</span>
-                    </div>
+            </div>
                     <div className="flex items-center gap-2 text-blue-400 text-xs">
                       <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
                       <span>Pelo menos 8 caracteres de comprimento, mas 14 ou mais é melhor.</span>
@@ -901,7 +901,7 @@ const AdminResellers: React.FC = () => {
               {/* Segunda linha */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Permissão */}
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label className="text-sm font-medium text-white">
                     Permissão <span className="text-red-500">*</span>
                   </label>
@@ -924,7 +924,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </Button>
-                    <Input 
+                <Input
                       placeholder="0"
                       className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
                     />
@@ -933,7 +933,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </Button>
-                  </div>
+              </div>
                   <div className="text-blue-400 text-xs">Mínimo de 10 créditos</div>
                 </div>
               </div>
@@ -957,11 +957,11 @@ const AdminResellers: React.FC = () => {
                 {/* Revenda Master */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white">Revenda Master</label>
-                  <Input 
+                <Input
                     placeholder="Nome da revenda master"
                     className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                  />
-                </div>
+                />
+              </div>
 
                 {/* Desativar login se não recarregar */}
                 <div className="space-y-2">
@@ -983,7 +983,7 @@ const AdminResellers: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </Button>
-                  </div>
+            </div>
                   <div className="text-blue-400 text-xs">Deixe 0 para desativar essa opção</div>
                 </div>
               </div>
@@ -1007,27 +1007,27 @@ const AdminResellers: React.FC = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white">Informações Pessoais (Opcional)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+              <div className="space-y-2">
                     <label className="text-sm font-medium text-white">Nome</label>
                     <Input 
                       placeholder="Nome completo"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
-                  <div className="space-y-2">
+              </div>
+              <div className="space-y-2">
                     <label className="text-sm font-medium text-white">E-mail</label>
                     <Input 
                       placeholder="email@exemplo.com"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
+              </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white">Telegram</label>
                     <Input 
                       placeholder="@usuario"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                     />
-                  </div>
+            </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-white">WhatsApp</label>
                     <Input 
@@ -1036,7 +1036,7 @@ const AdminResellers: React.FC = () => {
                     />
                     <div className="text-blue-400 text-xs">
                       Incluindo o código do país - com ou sem espaço e traços - ex. 55 11 99999 3333
-                    </div>
+          </div>
                   </div>
                 </div>
               </div>
@@ -1059,8 +1059,8 @@ const AdminResellers: React.FC = () => {
                   onClick={() => setAddModalOpen(false)}
                   className="border-gray-600 text-gray-400 hover:text-white"
                 >
-                  Cancelar
-                </Button>
+              Cancelar
+            </Button>
                 <Button 
                   type="submit" 
                   className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -1069,7 +1069,7 @@ const AdminResellers: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                   </svg>
                   Salvar
-                </Button>
+            </Button>
               </div>
             </form>
 

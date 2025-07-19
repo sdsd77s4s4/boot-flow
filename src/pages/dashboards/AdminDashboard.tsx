@@ -133,46 +133,46 @@ const AdminDashboard = () => {
       title: 'Serviços Principais',
       color: 'bg-blue-600',
       cards: [
-        {
-          id: 'iptv',
-          content: (
-            <CardHeader className="bg-gradient-to-r from-purple-700 to-purple-500 rounded-t-lg">
-              <div className="flex items-center space-x-2">
-                <Tv className="w-6 h-6 text-purple-200" />
-                <CardTitle className="text-white">Sistema IPTV</CardTitle>
-              </div>
-            </CardHeader>
-          ),
-          body: (
-            <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Gerencie servidores, canais e configurações IPTV</p>
-              <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Usuários Ativos:</span><span className="text-sm font-semibold text-white">{stats.iptvUsers.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Servidores Online:</span><span className="text-sm font-semibold text-green-400">12/12</span></div>
-              </div>
-            </CardContent>
-          ),
+    {
+      id: 'iptv',
+      content: (
+        <CardHeader className="bg-gradient-to-r from-purple-700 to-purple-500 rounded-t-lg">
+          <div className="flex items-center space-x-2">
+            <Tv className="w-6 h-6 text-purple-200" />
+            <CardTitle className="text-white">Sistema IPTV</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent className="bg-[#1f2937] rounded-b-lg">
+          <p className="text-gray-300 mb-4">Gerencie servidores, canais e configurações IPTV</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Usuários Ativos:</span><span className="text-sm font-semibold text-white">{stats.iptvUsers.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Servidores Online:</span><span className="text-sm font-semibold text-green-400">12/12</span></div>
+          </div>
+        </CardContent>
+      ),
           onClick: () => handleModalOpen("iptv")
-        },
-        {
-          id: 'ecommerce',
-          content: (
-            <CardHeader className="bg-gradient-to-r from-green-700 to-green-500 rounded-t-lg">
-              <div className="flex items-center space-x-2">
-                <ShoppingCart className="w-6 h-6 text-green-200" />
-                <CardTitle className="text-white">E-commerce</CardTitle>
-              </div>
-            </CardHeader>
-          ),
-          body: (
-            <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Gerencie produtos, vendas e configurações</p>
-              <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Vendas Hoje:</span><span className="text-sm font-semibold text-white">R$ 12.450</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Produtos Ativos:</span><span className="text-sm font-semibold text-green-400">24</span></div>
-              </div>
-            </CardContent>
-          ),
+    },
+    {
+      id: 'ecommerce',
+      content: (
+        <CardHeader className="bg-gradient-to-r from-green-700 to-green-500 rounded-t-lg">
+          <div className="flex items-center space-x-2">
+            <ShoppingCart className="w-6 h-6 text-green-200" />
+            <CardTitle className="text-white">E-commerce</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent className="bg-[#1f2937] rounded-b-lg">
+          <p className="text-gray-300 mb-4">Gerencie produtos, vendas e configurações</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Vendas Hoje:</span><span className="text-sm font-semibold text-white">R$ 12.450</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Produtos Ativos:</span><span className="text-sm font-semibold text-green-400">24</span></div>
+          </div>
+        </CardContent>
+      ),
           onClick: () => handleModalOpen("ecommerce")
         }
       ]
@@ -182,25 +182,25 @@ const AdminDashboard = () => {
       title: 'Personalização',
       color: 'bg-purple-600',
       cards: [
-        {
+    {
           id: 'branding',
-          content: (
+      content: (
             <CardHeader className="bg-gradient-to-r from-blue-700 to-blue-500 rounded-t-lg">
-              <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
                 <Paintbrush className="w-6 h-6 text-blue-200" />
                 <CardTitle className="text-white">Customizar Marca</CardTitle>
-              </div>
-            </CardHeader>
-          ),
-          body: (
-            <CardContent className="bg-[#1f2937] rounded-b-lg">
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent className="bg-[#1f2937] rounded-b-lg">
               <p className="text-gray-300 mb-4">Personalize a aparência, identidade visual e configurações white label da sua plataforma</p>
-              <div className="space-y-2">
+          <div className="space-y-2">
                 <div className="flex justify-between"><span className="text-sm text-gray-400">Logo, cores, domínio, rodapé, etc.</span></div>
                 <div className="flex justify-between"><span className="text-sm text-gray-400">Configurações WhiteLabel exclusivas</span></div>
-              </div>
-            </CardContent>
-          ),
+          </div>
+        </CardContent>
+      ),
           onClick: () => handleModalOpen("branding")
         }
       ]
@@ -212,44 +212,44 @@ const AdminDashboard = () => {
       cards: [
         {
           id: 'analytics-card',
-          content: (
-            <CardHeader className="bg-gradient-to-r from-red-700 to-red-500 rounded-t-lg">
-              <div className="flex items-center space-x-2">
-                <BarChart3 className="w-6 h-6 text-red-200" />
-                <CardTitle className="text-white">Analytics</CardTitle>
-              </div>
-            </CardHeader>
-          ),
-          body: (
-            <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Métricas, relatórios e insights</p>
-              <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Visualizações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Conversão:</span><span className="text-sm font-semibold text-green-400">3.2%</span></div>
-              </div>
-            </CardContent>
-          ),
+      content: (
+        <CardHeader className="bg-gradient-to-r from-red-700 to-red-500 rounded-t-lg">
+          <div className="flex items-center space-x-2">
+            <BarChart3 className="w-6 h-6 text-red-200" />
+            <CardTitle className="text-white">Analytics</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent className="bg-[#1f2937] rounded-b-lg">
+          <p className="text-gray-300 mb-4">Métricas, relatórios e insights</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Visualizações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Conversão:</span><span className="text-sm font-semibold text-green-400">3.2%</span></div>
+          </div>
+        </CardContent>
+      ),
           onClick: () => handleModalOpen("analytics")
-        },
-        {
-          id: 'ai',
-          content: (
-            <CardHeader className="bg-gradient-to-r from-gray-800 to-gray-600 rounded-t-lg">
-              <div className="flex items-center space-x-2">
-                <Brain className="w-6 h-6 text-gray-200" />
-                <CardTitle className="text-white">IA + Voz</CardTitle>
-              </div>
-            </CardHeader>
-          ),
-          body: (
-            <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Configurações de inteligência artificial</p>
-              <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Interações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Status:</span><span className="text-sm font-semibold text-green-400">Ativo</span></div>
-              </div>
-            </CardContent>
-          ),
+    },
+    {
+      id: 'ai',
+      content: (
+        <CardHeader className="bg-gradient-to-r from-gray-800 to-gray-600 rounded-t-lg">
+          <div className="flex items-center space-x-2">
+            <Brain className="w-6 h-6 text-gray-200" />
+            <CardTitle className="text-white">IA + Voz</CardTitle>
+          </div>
+        </CardHeader>
+      ),
+      body: (
+        <CardContent className="bg-[#1f2937] rounded-b-lg">
+          <p className="text-gray-300 mb-4">Configurações de inteligência artificial</p>
+          <div className="space-y-2">
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Interações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Status:</span><span className="text-sm font-semibold text-green-400">Ativo</span></div>
+          </div>
+        </CardContent>
+      ),
           onClick: () => handleModalOpen("ai")
         }
       ]
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
             </CardContent>
           ),
           onClick: () => handleModalOpen("gamificacao")
-        }
+    }
       ]
     }
   });
@@ -585,7 +585,7 @@ const AdminDashboard = () => {
                 /* Layout Grid Original */
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={Object.values(kanbanColumns).flatMap(column => column.cards).map(card => card.id)} strategy={rectSortingStrategy}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {Object.values(kanbanColumns).flatMap(column => column.cards).map(card => (
                         <SortableCard 
                           key={card.id} 
@@ -594,10 +594,10 @@ const AdminDashboard = () => {
                           body={card.body} 
                           onClick={card.onClick} 
                         />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
               )}
             </div>
 
@@ -908,7 +908,7 @@ const AdminDashboard = () => {
                   </div>
                   
                   {viewMode === 'kanban' ? (
-                    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                       <SortableContext items={Object.values(kanbanColumns).flatMap(column => column.cards).map(card => card.id)} strategy={rectSortingStrategy}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                           {Object.values(kanbanColumns).map(column => (
@@ -950,10 +950,10 @@ const AdminDashboard = () => {
                                 )}
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </SortableContext>
-                    </DndContext>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
                   ) : (
                     /* Layout Grid Original */
                     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -1849,6 +1849,6 @@ const AdminDashboard = () => {
       </div>
     </SidebarProvider>
   );
-  };
-  
-  export default AdminDashboard;
+};
+
+export default AdminDashboard;

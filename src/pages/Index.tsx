@@ -313,10 +313,10 @@ const Index = () => {
                     <span className="text-white font-bold">{testimonial.avatar}</span>
                   </div>
                   <p className="text-muted-foreground mb-4">"{testimonial.content}"</p>
-                  <div>
+                    <div>
                     <div className="font-semibold">{testimonial.name}</div>
                     <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
+                    </div>
                   <div className="flex justify-center mt-4">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -371,38 +371,38 @@ const Index = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Nome</Label>
-                      <Input 
+                <Input 
                         id="name" 
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
                         placeholder="Seu nome completo"
-                      />
+                />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input 
+                <Input 
                         id="email" 
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                         placeholder="seu@email.com"
-                      />
+                />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Mensagem</Label>
-                    <Textarea 
+                <Textarea 
                       id="message"
-                      value={formData.message}
-                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
                       placeholder="Como podemos ajudar?"
                       rows={4}
-                    />
+                />
                   </div>
                   <Button type="submit" className="w-full">
                     <Mail className="w-4 h-4 mr-2" />
-                    Enviar Mensagem
-                  </Button>
+                  Enviar Mensagem
+                </Button>
                 </form>
               </CardContent>
             </Card>
