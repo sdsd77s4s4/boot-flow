@@ -120,42 +120,44 @@ export default function AdminUsers() {
     }
   };
 
-  const handleEditUser = () => {
+  const handleEditUser = async () => {
     if (editingUser) {
       console.log('Salvando alterações do usuário:', editingUser);
       
-      // Preparar dados para atualização
+      // Preparar dados para atualização no Neon
       const updatedUserData = {
         name: editingUser.name,
         email: editingUser.email,
-        plan: editingUser.plan,
-        status: editingUser.status,
-        telegram: editingUser.telegram || '',
-        observations: editingUser.observations || '',
-        expirationDate: editingUser.expirationDate || '',
         password: editingUser.password || '',
+        m3u_url: editingUser.plan || '', // usando plan como m3u_url
         bouquets: editingUser.bouquets || '',
-        phone: editingUser.phone || '',
-        whatsapp: editingUser.whatsapp || '',
-        notes: editingUser.notes || '',
-        devices: editingUser.devices || 0,
-        credits: editingUser.credits || 0,
-        renewalDate: editingUser.renewalDate || ''
+        expiration_date: editingUser.expirationDate || null,
+        observations: editingUser.observations || ''
       };
       
       console.log('Dados preparados para atualização:', updatedUserData);
       
-      updateUser(editingUser.id, updatedUserData);
-      setEditingUser(null);
-      setIsEditDialogOpen(false);
+      const success = await updateUser(editingUser.id, updatedUserData);
+      
+      if (success) {
+        setEditingUser(null);
+        setIsEditDialogOpen(false);
+      } else {
+        alert('Erro ao atualizar usuário. Verifique os dados.');
+      }
     }
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = async () => {
     if (deletingUser) {
-      deleteUser(deletingUser.id);
-      setDeletingUser(null);
-      setIsDeleteDialogOpen(false);
+      const success = await deleteUser(deletingUser.id);
+      
+      if (success) {
+        setDeletingUser(null);
+        setIsDeleteDialogOpen(false);
+      } else {
+        alert('Erro ao deletar usuário. Tente novamente.');
+      }
     }
   };
 
@@ -433,10 +435,30 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
+      {/* Indicadores de status */}
+      {loading && (
+        <div className="bg-blue-900/40 border border-blue-700 text-blue-300 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-300"></div>
+            <span>Carregando usuários do banco de dados...</span>
+          </div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="bg-red-900/40 border border-red-700 text-red-300 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <span>❌ Erro: {error}</span>
+          </div>
+        </div>
+      )}
+      
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
-          <p className="text-gray-400">Gerencie todos os usuários do sistema</p>
+          <p className="text-gray-400">
+            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
+          </p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
