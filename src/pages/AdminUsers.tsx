@@ -12,6 +12,7 @@ import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, A
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import React from "react";
+import { useUsers, User } from "@/hooks/useUsers";
 
 interface User {
   id: number;
