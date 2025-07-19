@@ -4,23 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-// import { useToast } from '@/hooks/use-toast';
 import { 
   Tv, 
   User, 
   Calendar, 
   Users, 
-  Globe, 
   Link2, 
-  CheckCircle, 
   XCircle, 
-  AlertTriangle,
   Info,
   Loader2,
-  Copy,
-  ExternalLink
+  Copy
 } from 'lucide-react';
 
 interface UserInfo {
@@ -65,9 +59,7 @@ interface AnalysisResult {
 const IPTVAnalyzer: React.FC = () => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentProxy, setCurrentProxy] = useState<string>('');
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  // const { toast } = useToast();
 
   const extractCredentialsFromUrl = (inputUrl: string) => {
     try {
@@ -82,10 +74,8 @@ const IPTVAnalyzer: React.FC = () => {
     }
   };
 
-  const fetchIPTVData = async (baseUrl: string, username: string, password: string) => {
-    // Simulação instantânea de dados para demonstração
+  const simulateIPTVData = async (baseUrl: string, username: string, password: string) => {
     console.log(`Simulando análise para: ${baseUrl}`);
-    setCurrentProxy('Processando dados...');
     
     // Dados simulados para demonstração
     const mockData = {
@@ -116,11 +106,9 @@ const IPTVAnalyzer: React.FC = () => {
     return mockData;
   };
 
-  const fetchContentCounts = async (baseUrl: string, username: string, password: string) => {
-    // Simulação instantânea de estatísticas
+  const simulateContentCounts = async () => {
     console.log('Simulando estatísticas de conteúdo...');
     
-    // Estatísticas simuladas
     return {
       channelsCount: 15,
       vodCount: 8,
@@ -145,8 +133,8 @@ const IPTVAnalyzer: React.FC = () => {
       }
 
       const [userData, contentCounts] = await Promise.all([
-        fetchIPTVData(baseUrl, username, password),
-        fetchContentCounts(baseUrl, username, password)
+        simulateIPTVData(baseUrl, username, password),
+        simulateContentCounts()
       ]);
 
       setResult({
@@ -173,7 +161,6 @@ const IPTVAnalyzer: React.FC = () => {
       console.log("Erro na análise:", errorMessage);
     } finally {
       setLoading(false);
-      setCurrentProxy('');
     }
   };
 
@@ -190,7 +177,7 @@ const IPTVAnalyzer: React.FC = () => {
 
   const getStatusBadge = (status: string, auth: number) => {
     if (auth === 1 && status === 'Active') {
-      return <Badge variant="default" className="bg-success">Ativo</Badge>;
+      return <Badge variant="default" className="bg-green-500">Ativo</Badge>;
     } else {
       return <Badge variant="destructive">Inativo</Badge>;
     }
@@ -213,11 +200,11 @@ const IPTVAnalyzer: React.FC = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Analisador IPTV
         </h1>
         <p className="text-muted-foreground">
-          Ferramenta completa para análise de contas IPTV
+          Ferramenta completa para análise de contas IPTV (Modo Demonstração)
         </p>
       </div>
 
@@ -245,8 +232,7 @@ const IPTVAnalyzer: React.FC = () => {
           <Button 
             onClick={analyzeIPTV} 
             disabled={loading || !url.trim()}
-            className="w-full"
-            variant="gradient"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -291,7 +277,7 @@ const IPTVAnalyzer: React.FC = () => {
                     <tr>
                       <td className="py-3 px-4 font-medium text-sm">Usuário</td>
                       <td className="py-3 px-4">
-                        <code className="bg-muted px-2 py-1 rounded text-sm">
+                        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
                           {result.userData.user_info.username}
                         </code>
                       </td>
@@ -308,7 +294,7 @@ const IPTVAnalyzer: React.FC = () => {
                     <tr>
                       <td className="py-3 px-4 font-medium text-sm">Senha</td>
                       <td className="py-3 px-4">
-                        <code className="bg-muted px-2 py-1 rounded text-sm">
+                        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
                           {result.userData.user_info.password}
                         </code>
                       </td>
@@ -332,7 +318,7 @@ const IPTVAnalyzer: React.FC = () => {
                     <tr>
                       <td className="py-3 px-4 font-medium text-sm">Tipo de Conta</td>
                       <td className="py-3 px-4">
-                        <Badge variant={result.userData.user_info.is_trial === '1' ? 'warning' : 'default'}>
+                        <Badge variant={result.userData.user_info.is_trial === '1' ? 'secondary' : 'default'}>
                           {result.userData.user_info.is_trial === '1' ? 'Trial' : 'Normal'}
                         </Badge>
                       </td>
@@ -413,7 +399,7 @@ const IPTVAnalyzer: React.FC = () => {
                         <tr>
                           <td className="py-3 px-4 font-medium text-sm">M3U (TS)</td>
                           <td className="py-3 px-4">
-                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
                               {links.m3u}
                             </code>
                           </td>
@@ -430,7 +416,7 @@ const IPTVAnalyzer: React.FC = () => {
                         <tr>
                           <td className="py-3 px-4 font-medium text-sm">HLS (M3U8)</td>
                           <td className="py-3 px-4">
-                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
                               {links.hls}
                             </code>
                           </td>
@@ -447,7 +433,7 @@ const IPTVAnalyzer: React.FC = () => {
                         <tr>
                           <td className="py-3 px-4 font-medium text-sm">EPG</td>
                           <td className="py-3 px-4">
-                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
                               {links.epg}
                             </code>
                           </td>
@@ -479,8 +465,8 @@ const IPTVAnalyzer: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gradient-surface rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
+                <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     {result.channelsCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -488,8 +474,8 @@ const IPTVAnalyzer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-surface rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
+                <div className="text-center p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {result.vodCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -497,8 +483,8 @@ const IPTVAnalyzer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-surface rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
+                <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                     {result.seriesCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
