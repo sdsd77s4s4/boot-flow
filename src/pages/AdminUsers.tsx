@@ -256,16 +256,44 @@ export default function AdminUsers() {
 
           console.log(`Sucesso com proxy: ${proxy.name}`);
           
+          // Buscar dados de bouquets
+          let bouquetsData = [];
+          try {
+            const bouquetsResponse = await fetch(bouquetsUrl);
+            if (bouquetsResponse.ok) {
+              const bouquetsText = await bouquetsResponse.text();
+              try {
+                bouquetsData = JSON.parse(bouquetsText);
+              } catch (e) {
+                console.log('Erro ao parsear bouquets:', e);
+              }
+            }
+          } catch (e) {
+            console.log('Erro ao buscar bouquets:', e);
+          }
+
+          // Preparar observações com dados reais
+          const observations = [];
+          if (data.user_info.username) observations.push(`Usuário: ${data.user_info.username}`);
+          if (data.user_info.password) observations.push(`Senha: ${data.user_info.password}`);
+          if (data.user_info.exp_date) {
+            const expDate = new Date(parseInt(data.user_info.exp_date) * 1000);
+            observations.push(`Expira: ${expDate.toLocaleDateString('pt-BR')}`);
+          }
+          if (data.user_info.max_connections) observations.push(`Conexões: ${data.user_info.max_connections}`);
+          if (data.user_info.active_cons) observations.push(`Ativas: ${data.user_info.active_cons}`);
+
           // Aplicar dados extraídos ao formulário
           setNewUser({
             name: data.user_info.username || username,
             email: `${data.user_info.username || username}@iptv.com`,
             plan: data.user_info.is_trial === '1' ? 'Trial' : 'Premium',
             status: data.user_info.status === 'Active' ? 'Ativo' : 'Inativo',
-            telegram: `@${data.user_info.username || username}`,
-            observations: `Conta IPTV - Usuário: ${data.user_info.username || username} - Senha: ${data.user_info.password || password} - Expira: ${data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toLocaleDateString('pt-BR') : 'Não definido'}`,
+            telegram: data.user_info.username ? `@${data.user_info.username}` : '',
+            observations: observations.length > 0 ? observations.join(' | ') : '',
             expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
-            password: data.user_info.password || password
+            password: data.user_info.password || password,
+            bouquets: Array.isArray(bouquetsData) ? bouquetsData.map(b => b.category_name).join(', ') : ''
           });
           
           setExtractionResult({
