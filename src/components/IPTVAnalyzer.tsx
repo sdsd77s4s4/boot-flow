@@ -4,17 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Tv, 
   User, 
   Calendar, 
   Users, 
+  Globe, 
   Link2, 
+  CheckCircle, 
   XCircle, 
+  AlertTriangle,
   Info,
   Loader2,
-  Copy
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 
 interface UserInfo {
@@ -59,7 +65,9 @@ interface AnalysisResult {
 const IPTVAnalyzer: React.FC = () => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [currentProxy, setCurrentProxy] = useState<string>('');
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const { toast } = useToast();
 
   const extractCredentialsFromUrl = (inputUrl: string) => {
     try {
@@ -74,51 +82,144 @@ const IPTVAnalyzer: React.FC = () => {
     }
   };
 
-  const simulateIPTVData = async (baseUrl: string, username: string, password: string) => {
-    console.log(`Simulando análise para: ${baseUrl}`);
+  const fetchIPTVData = async (baseUrl: string, username: string, password: string) => {
+    const apiUrl = `${baseUrl}/player_api.php?username=${username}&password=${password}`;
     
-    // Dados simulados para demonstração
-    const mockData = {
-      user_info: {
-        username: username,
-        password: password,
-        auth: 1,
-        status: 'Active',
-        exp_date: '1735689600', // 2025-01-01
-        is_trial: '0',
-        active_cons: '2',
-        created_at: '1704067200', // 2024-01-01
-        max_connections: '5',
-        allowed_output_formats: ['m3u8', 'ts', 'mp4']
-      },
-      server_info: {
-        url: baseUrl,
-        port: '80',
-        https_port: '443',
-        server_protocol: 'http',
-        rtmp_port: '1935',
-        timezone: 'America/Sao_Paulo',
-        timestamp_now: Math.floor(Date.now() / 1000)
+    // Lista de proxies CORS para tentar
+    const corsProxies = [
+      'https://api.allorigins.win/raw?url=',
+      'https://cors-anywhere.herokuapp.com/',
+      'https://api.codetabs.com/v1/proxy?quest=',
+      'https://cors-proxy.htmldriven.com/?url='
+    ];
+    
+    for (let i = 0; i < corsProxies.length; i++) {
+      const proxy = corsProxies[i];
+      const proxiedUrl = `${proxy}${encodeURIComponent(apiUrl)}`;
+      
+      try {
+        console.log(`Tentando proxy ${i + 1}/${corsProxies.length}: ${proxy}`);
+        setCurrentProxy(`Testando proxy ${i + 1}/${corsProxies.length}...`);
+        
+        const response = await fetch(proxiedUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors'
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error('Acesso negado. Verifique suas credenciais.');
+          } else if (response.status === 404) {
+            throw new Error('Servidor IPTV não encontrado.');
+          } else {
+            throw new Error(`Erro HTTP: ${response.status}`);
+          }
+        }
+
+        const text = await response.text();
+        let data;
+        
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          throw new Error('Resposta não é um JSON válido.');
+        }
+        
+        if (!data.user_info) {
+          throw new Error('Dados do usuário não encontrados na resposta.');
+        }
+
+        console.log(`Sucesso com proxy: ${proxy}`);
+        return data;
+        
+      } catch (error) {
+        console.log(`Falha com proxy ${proxy}:`, error);
+        
+        // Se for o último proxy, lance o erro
+        if (i === corsProxies.length - 1) {
+          if (error instanceof Error && error.message.includes('Acesso negado')) {
+            throw error;
+          }
+          throw new Error('Todos os proxies falharam. Verifique sua conexão e tente novamente.');
+        }
+        
+        // Continue para o próximo proxy
+        continue;
       }
-    };
-    
-    console.log('Dados simulados gerados com sucesso');
-    return mockData;
+    }
   };
 
-  const simulateContentCounts = async () => {
-    console.log('Simulando estatísticas de conteúdo...');
-    
-    return {
-      channelsCount: 15,
-      vodCount: 8,
-      seriesCount: 12,
+  const fetchContentCounts = async (baseUrl: string, username: string, password: string) => {
+    const corsProxies = [
+      'https://api.allorigins.win/raw?url=',
+      'https://cors-anywhere.herokuapp.com/',
+      'https://api.codetabs.com/v1/proxy?quest=',
+      'https://cors-proxy.htmldriven.com/?url='
+    ];
+
+    const fetchWithProxy = async (endpoint: string) => {
+      for (const proxy of corsProxies) {
+        try {
+          const proxiedUrl = `${proxy}${encodeURIComponent(endpoint)}`;
+          const response = await fetch(proxiedUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            mode: 'cors'
+          });
+          
+          if (response.ok) {
+            const text = await response.text();
+            try {
+              return JSON.parse(text);
+            } catch {
+              return [];
+            }
+          }
+        } catch (error) {
+          console.log(`Proxy falhou para ${endpoint}:`, error);
+          continue;
+        }
+      }
+      return [];
     };
+
+    try {
+      // Fetch channels, VOD e series counts usando proxies
+      const [channelsData, vodData, seriesData] = await Promise.all([
+        fetchWithProxy(`${baseUrl}/player_api.php?username=${username}&password=${password}&action=get_live_categories`),
+        fetchWithProxy(`${baseUrl}/player_api.php?username=${username}&password=${password}&action=get_vod_categories`),
+        fetchWithProxy(`${baseUrl}/player_api.php?username=${username}&password=${password}&action=get_series_categories`)
+      ]);
+
+      return {
+        channelsCount: Array.isArray(channelsData) ? channelsData.length : 0,
+        vodCount: Array.isArray(vodData) ? vodData.length : 0,
+        seriesCount: Array.isArray(seriesData) ? seriesData.length : 0,
+      };
+    } catch (error) {
+      console.log('Erro ao buscar estatísticas:', error);
+      return {
+        channelsCount: 0,
+        vodCount: 0,
+        seriesCount: 0,
+      };
+    }
   };
 
   const analyzeIPTV = async () => {
     if (!url.trim()) {
-      console.log("Erro: Por favor, insira uma URL M3U válida.");
+      toast({
+        title: "Erro",
+        description: "Por favor, insira uma URL M3U válida.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -133,8 +234,8 @@ const IPTVAnalyzer: React.FC = () => {
       }
 
       const [userData, contentCounts] = await Promise.all([
-        simulateIPTVData(baseUrl, username, password),
-        simulateContentCounts()
+        fetchIPTVData(baseUrl, username, password),
+        fetchContentCounts(baseUrl, username, password)
       ]);
 
       setResult({
@@ -144,7 +245,10 @@ const IPTVAnalyzer: React.FC = () => {
         credentials: { username, password }
       });
 
-      console.log("Sucesso: Análise IPTV concluída com sucesso.");
+      toast({
+        title: "Sucesso!",
+        description: "Análise IPTV concluída com sucesso.",
+      });
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -158,15 +262,23 @@ const IPTVAnalyzer: React.FC = () => {
         error: errorMessage
       });
 
-      console.log("Erro na análise:", errorMessage);
+      toast({
+        title: "Erro na análise",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
+      setCurrentProxy('');
     }
   };
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    console.log(`${label} copiado para a área de transferência.`);
+    toast({
+      title: "Copiado!",
+      description: `${label} copiado para a área de transferência.`,
+    });
   };
 
   const formatDate = (timestamp: string) => {
@@ -177,7 +289,7 @@ const IPTVAnalyzer: React.FC = () => {
 
   const getStatusBadge = (status: string, auth: number) => {
     if (auth === 1 && status === 'Active') {
-      return <Badge variant="default" className="bg-green-500">Ativo</Badge>;
+      return <Badge variant="default" className="bg-success">Ativo</Badge>;
     } else {
       return <Badge variant="destructive">Inativo</Badge>;
     }
@@ -200,11 +312,11 @@ const IPTVAnalyzer: React.FC = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
           Analisador IPTV
         </h1>
         <p className="text-muted-foreground">
-          Ferramenta completa para análise de contas IPTV (Modo Demonstração)
+          Ferramenta completa para análise de contas IPTV
         </p>
       </div>
 
@@ -232,12 +344,20 @@ const IPTVAnalyzer: React.FC = () => {
           <Button 
             onClick={analyzeIPTV} 
             disabled={loading || !url.trim()}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full"
+            variant="gradient"
           >
             {loading ? (
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Analisando...
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Analisando...
+                </div>
+                {currentProxy && (
+                  <div className="text-xs text-muted-foreground">
+                    {currentProxy}
+                  </div>
+                )}
               </div>
             ) : (
               'Analisar IPTV'
@@ -263,111 +383,73 @@ const IPTVAnalyzer: React.FC = () => {
                 Informações do Usuário
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-3 px-4 font-medium text-sm">Campo</th>
-                      <th className="text-left py-3 px-4 font-medium text-sm">Valor</th>
-                      <th className="text-left py-3 px-4 font-medium text-sm">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y">
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Usuário</td>
-                      <td className="py-3 px-4">
-                        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
-                          {result.userData.user_info.username}
-                        </code>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyToClipboard(result.userData.user_info.username, 'Usuário')}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Senha</td>
-                      <td className="py-3 px-4">
-                        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">
-                          {result.userData.user_info.password}
-                        </code>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyToClipboard(result.userData.user_info.password, 'Senha')}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Status</td>
-                      <td className="py-3 px-4">
-                        {getStatusBadge(result.userData.user_info.status, result.userData.user_info.auth)}
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Tipo de Conta</td>
-                      <td className="py-3 px-4">
-                        <Badge variant={result.userData.user_info.is_trial === '1' ? 'secondary' : 'default'}>
-                          {result.userData.user_info.is_trial === '1' ? 'Trial' : 'Normal'}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Data de Expiração</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          <span className="text-sm">
-                            {formatDate(result.userData.user_info.exp_date)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Conexões Máximas</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          <span className="text-sm">
-                            {result.userData.user_info.max_connections}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Conexões Ativas</td>
-                      <td className="py-3 px-4">
-                        <span className="text-sm">
-                          {result.userData.user_info.active_cons}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-medium text-sm">Data de Criação</td>
-                      <td className="py-3 px-4">
-                        <span className="text-sm">
-                          {formatDate(result.userData.user_info.created_at)}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4"></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Usuário</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="bg-muted px-2 py-1 rounded text-sm">
+                      {result.userData.user_info.username}
+                    </code>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(result.userData.user_info.username, 'Usuário')}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Senha</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="bg-muted px-2 py-1 rounded text-sm">
+                      {result.userData.user_info.password}
+                    </code>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(result.userData.user_info.password, 'Senha')}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Status</Label>
+                  <div>
+                    {getStatusBadge(result.userData.user_info.status, result.userData.user_info.auth)}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Tipo de Conta</Label>
+                  <Badge variant={result.userData.user_info.is_trial === '1' ? 'warning' : 'default'}>
+                    {result.userData.user_info.is_trial === '1' ? 'Trial' : 'Normal'}
+                  </Badge>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Data de Expiração</Label>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span className="text-sm">
+                      {formatDate(result.userData.user_info.exp_date)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Conexões Máximas</Label>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span className="text-sm">
+                      {result.userData.user_info.max_connections}
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -380,75 +462,54 @@ const IPTVAnalyzer: React.FC = () => {
                 Links Úteis
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               {(() => {
                 const links = generateLinks();
                 if (!links) return null;
 
                 return (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-medium text-sm">Tipo de Link</th>
-                          <th className="text-left py-3 px-4 font-medium text-sm">URL</th>
-                          <th className="text-left py-3 px-4 font-medium text-sm">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y">
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-sm">M3U (TS)</td>
-                          <td className="py-3 px-4">
-                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
-                              {links.m3u}
-                            </code>
-                          </td>
-                          <td className="py-3 px-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => copyToClipboard(links.m3u, 'Link M3U')}
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-sm">HLS (M3U8)</td>
-                          <td className="py-3 px-4">
-                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
-                              {links.hls}
-                            </code>
-                          </td>
-                          <td className="py-3 px-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => copyToClipboard(links.hls, 'Link HLS')}
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-sm">EPG</td>
-                          <td className="py-3 px-4">
-                            <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">
-                              {links.epg}
-                            </code>
-                          </td>
-                          <td className="py-3 px-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => copyToClipboard(links.epg, 'Link EPG')}
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Link M3U (TS)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input value={links.m3u} readOnly className="text-xs" />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(links.m3u, 'Link M3U')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Link HLS (M3U8)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input value={links.hls} readOnly className="text-xs" />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(links.hls, 'Link HLS')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Link EPG</Label>
+                      <div className="flex items-center gap-2">
+                        <Input value={links.epg} readOnly className="text-xs" />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(links.epg, 'Link EPG')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 );
               })()}
@@ -465,8 +526,8 @@ const IPTVAnalyzer: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                <div className="text-center p-4 bg-gradient-surface rounded-lg">
+                  <div className="text-2xl font-bold text-primary">
                     {result.channelsCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -474,8 +535,8 @@ const IPTVAnalyzer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <div className="text-center p-4 bg-gradient-surface rounded-lg">
+                  <div className="text-2xl font-bold text-primary">
                     {result.vodCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -483,8 +544,8 @@ const IPTVAnalyzer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <div className="text-center p-4 bg-gradient-surface rounded-lg">
+                  <div className="text-2xl font-bold text-primary">
                     {result.seriesCount}
                   </div>
                   <div className="text-sm text-muted-foreground">
