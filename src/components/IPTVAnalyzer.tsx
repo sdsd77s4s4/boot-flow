@@ -67,7 +67,7 @@ const IPTVAnalyzer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [currentProxy, setCurrentProxy] = useState<string>('');
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   const extractCredentialsFromUrl = (inputUrl: string) => {
     try {
@@ -215,11 +215,7 @@ const IPTVAnalyzer: React.FC = () => {
 
   const analyzeIPTV = async () => {
     if (!url.trim()) {
-      toast({
-        title: "Erro",
-        description: "Por favor, insira uma URL M3U válida.",
-        variant: "destructive",
-      });
+      console.log("Erro: Por favor, insira uma URL M3U válida.");
       return;
     }
 
