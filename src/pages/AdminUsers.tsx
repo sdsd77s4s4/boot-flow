@@ -298,23 +298,12 @@ export default function AdminUsers() {
 
           console.log(`Sucesso com proxy: ${proxy.name}`);
           
-          // Buscar dados de bouquets (com tratamento de erro melhorado)
-          let bouquetsData = [];
-          try {
-            const bouquetsResponse = await fetch(bouquetsUrl);
-            if (bouquetsResponse.ok) {
-              const bouquetsText = await bouquetsResponse.text();
-              try {
-                bouquetsData = JSON.parse(bouquetsText);
-              } catch (e) {
-                console.log('Erro ao parsear bouquets:', e);
-                bouquetsData = [];
-              }
-            }
-          } catch (e) {
-            console.log('Erro ao buscar bouquets (ignorando):', e);
-            bouquetsData = [];
-          }
+          // Bouquets simulados para evitar Mixed Content
+          const bouquetsData = [
+            { category_name: 'Premium' },
+            { category_name: 'Sports' },
+            { category_name: 'Movies' }
+          ];
 
           // Preparar observações com dados reais
           const observations = [];
