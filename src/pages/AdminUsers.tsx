@@ -25,7 +25,8 @@ export default function AdminUsers() {
     status: "Ativo",
     telegram: "",
     observations: "",
-    expirationDate: ""
+    expirationDate: "",
+    password: ""
   });
 
   // Estados para a extração M3U
@@ -253,13 +254,14 @@ export default function AdminUsers() {
           
           // Aplicar dados extraídos ao formulário
           setNewUser({
-            name: data.user_info.username,
-            email: `${data.user_info.username}@iptv.com`,
+            name: data.user_info.username || username,
+            email: `${data.user_info.username || username}@iptv.com`,
             plan: data.user_info.is_trial === '1' ? 'Trial' : 'Premium',
             status: data.user_info.status === 'Active' ? 'Ativo' : 'Inativo',
-            telegram: `@${data.user_info.username}`,
-            observations: `Conta IPTV - Expira: ${data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toLocaleDateString('pt-BR') : 'Não definido'}`,
-            expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : ''
+            telegram: `@${data.user_info.username || username}`,
+            observations: `Conta IPTV - Usuário: ${data.user_info.username || username} - Senha: ${data.user_info.password || password} - Expira: ${data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toLocaleDateString('pt-BR') : 'Não definido'}`,
+            expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
+            password: data.user_info.password || password
           });
           
           setExtractionResult({
