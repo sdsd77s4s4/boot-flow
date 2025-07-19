@@ -17,6 +17,19 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    // Verificar se as variáveis de ambiente do Neon estão disponíveis
+    if (!process.env.NETLIFY_DATABASE_URL) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: 'Variável de ambiente NETLIFY_DATABASE_URL não encontrada',
+          error: 'Database configuration missing'
+        })
+      };
+    }
+
     const sql = neon();
     
     // Criar tabela de revendedores se não existir
