@@ -383,73 +383,111 @@ const IPTVAnalyzer: React.FC = () => {
                 Informações do Usuário
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Usuário</Label>
-                  <div className="flex items-center gap-2">
-                    <code className="bg-muted px-2 py-1 rounded text-sm">
-                      {result.userData.user_info.username}
-                    </code>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToClipboard(result.userData.user_info.username, 'Usuário')}
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Senha</Label>
-                  <div className="flex items-center gap-2">
-                    <code className="bg-muted px-2 py-1 rounded text-sm">
-                      {result.userData.user_info.password}
-                    </code>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToClipboard(result.userData.user_info.password, 'Senha')}
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Status</Label>
-                  <div>
-                    {getStatusBadge(result.userData.user_info.status, result.userData.user_info.auth)}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Tipo de Conta</Label>
-                  <Badge variant={result.userData.user_info.is_trial === '1' ? 'warning' : 'default'}>
-                    {result.userData.user_info.is_trial === '1' ? 'Trial' : 'Normal'}
-                  </Badge>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Data de Expiração</Label>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span className="text-sm">
-                      {formatDate(result.userData.user_info.exp_date)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Conexões Máximas</Label>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span className="text-sm">
-                      {result.userData.user_info.max_connections}
-                    </span>
-                  </div>
-                </div>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium text-sm">Campo</th>
+                      <th className="text-left py-3 px-4 font-medium text-sm">Valor</th>
+                      <th className="text-left py-3 px-4 font-medium text-sm">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Usuário</td>
+                      <td className="py-3 px-4">
+                        <code className="bg-muted px-2 py-1 rounded text-sm">
+                          {result.userData.user_info.username}
+                        </code>
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(result.userData.user_info.username, 'Usuário')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Senha</td>
+                      <td className="py-3 px-4">
+                        <code className="bg-muted px-2 py-1 rounded text-sm">
+                          {result.userData.user_info.password}
+                        </code>
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(result.userData.user_info.password, 'Senha')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Status</td>
+                      <td className="py-3 px-4">
+                        {getStatusBadge(result.userData.user_info.status, result.userData.user_info.auth)}
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Tipo de Conta</td>
+                      <td className="py-3 px-4">
+                        <Badge variant={result.userData.user_info.is_trial === '1' ? 'warning' : 'default'}>
+                          {result.userData.user_info.is_trial === '1' ? 'Trial' : 'Normal'}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Data de Expiração</td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span className="text-sm">
+                            {formatDate(result.userData.user_info.exp_date)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Conexões Máximas</td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          <span className="text-sm">
+                            {result.userData.user_info.max_connections}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Conexões Ativas</td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm">
+                          {result.userData.user_info.active_cons}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-medium text-sm">Data de Criação</td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm">
+                          {formatDate(result.userData.user_info.created_at)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4"></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>
