@@ -753,7 +753,7 @@ export default function AdminUsers() {
       {addUserSuccess && (
         <div className="mb-4 p-4 bg-green-900/40 border border-green-700 text-green-300 rounded-lg">
           <div className="flex items-center gap-2">
-            <Check className="w-5 h-5" />
+            <CheckCircle className="w-5 h-5" />
             <span className="font-medium">Cliente adicionado com sucesso!</span>
           </div>
         </div>
