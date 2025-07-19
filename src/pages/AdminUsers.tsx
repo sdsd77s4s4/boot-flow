@@ -366,7 +366,7 @@ export default function AdminUsers() {
             setExtractionError('Proxies falharam, usando dados simulados...');
             
             // Simular dados baseados na URL
-            setNewUser({
+            const extractedData = {
               name: username,
               email: `${username}@iptv.com`,
               plan: 'Premium',
@@ -376,7 +376,14 @@ export default function AdminUsers() {
               expirationDate: '',
               password: password,
               bouquets: ''
-            });
+            };
+
+            // Aplicar aos formulários baseado no modal aberto
+            if (isEditDialogOpen && editingUser) {
+              setEditingUser({...editingUser, ...extractedData});
+            } else {
+              setNewUser(extractedData);
+            }
             
             setExtractionResult({
               success: true,
