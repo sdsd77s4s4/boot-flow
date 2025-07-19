@@ -147,7 +147,38 @@ export default function AdminCobrancas() {
     setModalNova(false);
   };
   const handleSalvarEdit = () => {
-    setCobrancas(cobrancas.map(c => c.id === modalEditar?.id ? { ...c, ...edit, valor: Number(edit.valor) } : c));
+    if (!edit.cliente || !edit.nomeCliente || !edit.email || !edit.descricao || !edit.valor || !edit.vencimento) {
+      alert('Preencha todos os campos obrigatórios!');
+      return;
+    }
+    
+    setCobrancas(cobrancas.map(c => c.id === modalEditar?.id ? { 
+      ...c, 
+      cliente: edit.nomeCliente,
+      email: edit.email,
+      descricao: edit.descricao, 
+      valor: Number(edit.valor),
+      vencimento: edit.vencimento,
+      status: edit.status as 'Pendente' | 'Vencida' | 'Paga'
+    } : c));
+    
+    setEdit({ 
+      cliente: '', 
+      nomeCliente: '', 
+      email: '', 
+      telefone: '', 
+      descricao: '', 
+      valor: '', 
+      status: 'Pendente', 
+      vencimento: '', 
+      observacoes: '',
+      telegram: '',
+      whatsapp: '',
+      devices: 1,
+      credits: 0,
+      renewalDate: '',
+      notes: ''
+    });
     setModalEditar(null);
   };
   const handleExcluir = () => {
@@ -186,6 +217,29 @@ export default function AdminCobrancas() {
   // Função para obter usuário por ID
   const getUserById = (id: number) => {
     return users.find(user => user.id === id);
+  };
+
+  // Função para abrir modal de edição com dados preenchidos
+  const openEditModal = (cobranca: Cobranca) => {
+    const user = users.find(u => u.name === cobranca.cliente);
+    setEdit({
+      cliente: user?.id.toString() || '',
+      nomeCliente: cobranca.cliente,
+      email: cobranca.email,
+      telefone: user?.phone || '',
+      descricao: cobranca.descricao,
+      valor: cobranca.valor.toString(),
+      status: cobranca.status,
+      vencimento: cobranca.vencimento,
+      observacoes: '',
+      telegram: user?.telegram || '',
+      whatsapp: user?.whatsapp || '',
+      devices: user?.devices || 1,
+      credits: user?.credits || 0,
+      renewalDate: user?.renewalDate || '',
+      notes: user?.notes || ''
+    });
+    setModalEditar(cobranca);
   };
 
   return (
