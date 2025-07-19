@@ -52,6 +52,12 @@ export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [addUserSuccess, setAddUserSuccess] = useState(false);
+  
+  // Estados para copiar clientes da página de Cobranças
+  const [isCopyDialogOpen, setIsCopyDialogOpen] = useState(false);
+  const [isCopyingUsers, setIsCopyingUsers] = useState(false);
+  const [copyProgress, setCopyProgress] = useState(0);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
