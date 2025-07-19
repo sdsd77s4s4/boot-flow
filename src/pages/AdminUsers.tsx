@@ -56,8 +56,8 @@ export default function AdminUsers() {
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.plan) {
+  const handleAddUser = async () => {
+    if (newUser.name && newUser.email) {
       setIsAddingUser(true);
       setAddUserSuccess(false);
       
@@ -65,50 +65,51 @@ export default function AdminUsers() {
         // Debug: mostrar dados que serão adicionados
         console.log('Dados do usuário a ser adicionado:', newUser);
         
-        // Preparar dados do usuário
+        // Preparar dados do usuário para o Neon
         const userData = {
           name: newUser.name,
           email: newUser.email,
-          plan: newUser.plan,
-          status: newUser.status,
-          telegram: newUser.telegram || '',
-          observations: newUser.observations || '',
-          expirationDate: newUser.expirationDate || '',
           password: newUser.password || '',
+          m3u_url: newUser.plan || '', // usando plan como m3u_url
           bouquets: newUser.bouquets || '',
-          createdAt: new Date().toISOString().split('T')[0]
+          expiration_date: newUser.expirationDate || null,
+          observations: newUser.observations || ''
         };
         
         console.log('Dados preparados para adicionar:', userData);
         
-        // Adicionar usuário
-        addUser(userData);
+        // Adicionar usuário usando o hook do Neon
+        const success = await createUser(userData);
         
-        setAddUserSuccess(true);
-        
-        // Limpar formulário
-        setNewUser({ 
-          name: "", 
-          email: "", 
-          plan: "", 
-          status: "Ativo",
-          telegram: "",
-          observations: "",
-          expirationDate: "",
-          password: "",
-          bouquets: ""
-        });
-        
-        // Limpar dados de extração
-        setM3uUrl("");
-        setExtractionResult(null);
-        setExtractionError("");
-        
-        // Fechar modal após 1 segundo
-        setTimeout(() => {
-          setIsAddDialogOpen(false);
-          setAddUserSuccess(false);
-        }, 1000);
+        if (success) {
+          setAddUserSuccess(true);
+          
+          // Limpar formulário
+          setNewUser({ 
+            name: "", 
+            email: "", 
+            plan: "", 
+            status: "Ativo",
+            telegram: "",
+            observations: "",
+            expirationDate: "",
+            password: "",
+            bouquets: ""
+          });
+          
+          // Limpar dados de extração
+          setM3uUrl("");
+          setExtractionResult(null);
+          setExtractionError("");
+          
+          // Fechar modal após 1 segundo
+          setTimeout(() => {
+            setIsAddDialogOpen(false);
+            setAddUserSuccess(false);
+          }, 1000);
+        } else {
+          alert('Erro ao adicionar usuário. Verifique os dados.');
+        }
         
       } catch (error) {
         console.error('Erro ao adicionar usuário:', error);
