@@ -446,9 +446,31 @@ const AdminWhatsApp: React.FC = () => {
               </div>
               
               {isConnected ? (
-                <span className="inline-block px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold border border-green-500/30">
-                  Conectado
-                </span>
+                <div className="space-y-3">
+                  <span className="inline-block px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold border border-green-500/30">
+                    Conectado
+                  </span>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs" 
+                      size="sm"
+                      onClick={() => {
+                        setIsConnected(false);
+                        setConnectionStatus('disconnected');
+                        toast.info('WhatsApp desconectado');
+                      }}
+                    >
+                      Desconectar
+                    </Button>
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs" 
+                      size="sm"
+                      onClick={handleTestConnection}
+                    >
+                      Verificar Status
+                    </Button>
+                  </div>
+                </div>
               ) : (
                 <div className="space-y-4">
                   <div className="bg-orange-500/20 border border-orange-500/30 rounded-lg p-4">
