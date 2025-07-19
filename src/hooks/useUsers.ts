@@ -14,6 +14,10 @@ export interface User {
   devices?: number;
   credits?: number;
   renewalDate?: string;
+  password?: string;
+  observations?: string;
+  expirationDate?: string;
+  bouquets?: string;
 }
 
 // Dados mockados dos usuários (em produção viria de uma API)
