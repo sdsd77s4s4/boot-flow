@@ -78,20 +78,33 @@ export default function AdminCobrancas() {
 
   // Funções auxiliares
   const handleSalvarNova = () => {
-    if (!nova.cliente || !nova.email || !nova.descricao || !nova.valor || !nova.vencimento) return;
+    if (!nova.cliente || !nova.nomeCliente || !nova.email || !nova.descricao || !nova.valor || !nova.vencimento) {
+      alert('Preencha todos os campos obrigatórios!');
+      return;
+    }
     setCobrancas([
       ...cobrancas,
       {
         id: cobrancas.length + 1,
-        cliente: nova.cliente,
+        cliente: nova.nomeCliente,
         email: nova.email,
         descricao: nova.descricao,
         valor: Number(nova.valor),
         vencimento: nova.vencimento,
-        status: 'Pendente',
+        status: nova.status as 'Pendente' | 'Vencida' | 'Paga',
       },
     ]);
-    setNova({ cliente: '', email: '', descricao: '', valor: '', vencimento: '' });
+    setNova({ 
+      cliente: '', 
+      nomeCliente: '', 
+      email: '', 
+      telefone: '', 
+      descricao: '', 
+      valor: '', 
+      status: 'Pendente', 
+      vencimento: '', 
+      observacoes: '' 
+    });
     setModalNova(false);
   };
   const handleSalvarEdit = () => {
