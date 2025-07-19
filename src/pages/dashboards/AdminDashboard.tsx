@@ -802,7 +802,7 @@ const AdminDashboard = () => {
                       <Brain className="w-4 h-4 mr-2" />
                       Configurar IA
                     </Button>
-                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handleModalOpen("add_reseller")}> 
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handlePageChange("resellers")}> 
                       <Plus className="w-4 h-4 mr-2" />
                       Novo Revendedor
                     </Button>
