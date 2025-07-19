@@ -347,13 +347,25 @@ export default function AdminUsers() {
               <div className="bg-blue-900/30 border border-blue-800 rounded-lg p-4 mb-4">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-blue-300 font-medium">Extração M3U</span>
-                  <Button 
-                    className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm"
-                    onClick={extractM3UData}
-                    disabled={isExtracting}
-                  >
-                    {isExtracting ? "Extraindo..." : "Extrair"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="bg-green-600 text-white hover:bg-green-700 px-3 py-1 rounded text-xs"
+                      onClick={() => {
+                        setM3uUrl('http://ztech.blog/get.php?username=268262713&password=936365120&type=m3u_plus&output=mpegts');
+                        setExtractionError('URL de teste carregada! Clique em Extrair.');
+                      }}
+                      disabled={isExtracting}
+                    >
+                      Teste
+                    </Button>
+                    <Button 
+                      className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm"
+                      onClick={extractM3UData}
+                      disabled={isExtracting}
+                    >
+                      {isExtracting ? "Extraindo..." : "Extrair"}
+                    </Button>
+                  </div>
                 </div>
                 <p className="text-xs text-blue-300 mb-2">Serve para importar dados automaticamente a partir de uma URL.</p>
                 <Input 
