@@ -65,19 +65,24 @@ export default function AdminUsers() {
         // Debug: mostrar dados que serão adicionados
         console.log('Dados do usuário a ser adicionado:', newUser);
         
-        // Adicionar usuário
-        addUser({
-        name: newUser.name,
-        email: newUser.email,
-        plan: newUser.plan,
-        status: newUser.status,
+        // Preparar dados do usuário
+        const userData = {
+          name: newUser.name,
+          email: newUser.email,
+          plan: newUser.plan,
+          status: newUser.status,
           telegram: newUser.telegram || '',
           observations: newUser.observations || '',
           expirationDate: newUser.expirationDate || '',
           password: newUser.password || '',
           bouquets: newUser.bouquets || '',
-        createdAt: new Date().toISOString().split('T')[0]
-        });
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+        
+        console.log('Dados preparados para adicionar:', userData);
+        
+        // Adicionar usuário
+        addUser(userData);
         
         setAddUserSuccess(true);
         
