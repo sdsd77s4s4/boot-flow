@@ -42,15 +42,13 @@ export default function AdminUsers() {
 
   const handleAddUser = () => {
     if (newUser.name && newUser.email && newUser.plan) {
-      const user: User = {
-        id: users.length + 1,
+      addUser({
         name: newUser.name,
         email: newUser.email,
         plan: newUser.plan,
         status: newUser.status,
         createdAt: new Date().toISOString().split('T')[0]
-      };
-      setUsers([...users, user]);
+      });
       setNewUser({ name: "", email: "", plan: "", status: "Ativo" });
       setIsAddDialogOpen(false);
     }
@@ -58,9 +56,7 @@ export default function AdminUsers() {
 
   const handleEditUser = () => {
     if (editingUser) {
-      setUsers(users.map(user => 
-        user.id === editingUser.id ? editingUser : user
-      ));
+      updateUser(editingUser.id, editingUser);
       setEditingUser(null);
       setIsEditDialogOpen(false);
     }
@@ -68,7 +64,7 @@ export default function AdminUsers() {
 
   const handleDeleteUser = () => {
     if (deletingUser) {
-      setUsers(users.filter(user => user.id !== deletingUser.id));
+      deleteUser(deletingUser.id);
       setDeletingUser(null);
       setIsDeleteDialogOpen(false);
     }
