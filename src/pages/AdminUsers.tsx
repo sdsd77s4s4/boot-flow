@@ -103,7 +103,27 @@ export default function AdminUsers() {
     }
   };
 
-  // Função para extrair dados M3U
+  // Sistema de Proxy CORS Multi-Fallback
+  const corsProxies = [
+    {
+      name: "api.allorigins.win",
+      url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+    },
+    {
+      name: "cors-anywhere.herokuapp.com",
+      url: (targetUrl: string) => `https://cors-anywhere.herokuapp.com/${targetUrl}`
+    },
+    {
+      name: "api.codetabs.com",
+      url: (targetUrl: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
+    },
+    {
+      name: "cors-proxy.htmldriven.com",
+      url: (targetUrl: string) => `https://cors-proxy.htmldriven.com/?url=${encodeURIComponent(targetUrl)}`
+    }
+  ];
+
+  // Função para extrair dados M3U com sistema multi-fallback
   const extractM3UData = async () => {
     if (!m3uUrl.trim()) {
       setExtractionError("Por favor, insira uma URL M3U válida.");
@@ -116,51 +136,84 @@ export default function AdminUsers() {
     setExtractedUsers([]);
     setSelectedExtractedUser(null);
 
+    // Tentar primeiro a URL direta (se for HTTPS)
     try {
-      // Verificar se a URL é HTTPS
       const url = new URL(m3uUrl);
-      if (url.protocol === 'http:' && window.location.protocol === 'https:') {
-        // Converter HTTP para HTTPS se possível
-        url.protocol = 'https:';
-        const httpsUrl = url.toString();
-        
-        try {
-          const response = await fetch(httpsUrl);
-          if (response.ok) {
-            const content = await response.text();
-            processM3UContent(content);
-            return;
-          }
-        } catch (httpsError) {
-          console.warn("HTTPS falhou, tentando proxy CORS:", httpsError);
+      if (url.protocol === 'https:') {
+        const response = await fetch(m3uUrl);
+        if (response.ok) {
+          const content = await response.text();
+          processM3UContent(content);
+          return;
         }
       }
-
-      // Tentar com proxy CORS para evitar Mixed Content
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(m3uUrl)}`;
-      const response = await fetch(proxyUrl);
-      
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
-      }
-
-      const content = await response.text();
-      processM3UContent(content);
-
-    } catch (error: any) {
-      console.error("Erro na extração M3U:", error);
-      
-      // Mensagens de erro mais específicas
-      if (error.message.includes('Failed to fetch')) {
-        setExtractionError("Erro de conexão. Verifique se a URL é válida e acessível.");
-      } else if (error.message.includes('Mixed Content')) {
-        setExtractionError("URL HTTP não permitida em HTTPS. Use uma URL HTTPS válida.");
-      } else {
-        setExtractionError(error.message || "Erro ao processar arquivo M3U.");
-      }
-    } finally {
-      setIsExtracting(false);
+    } catch (directError) {
+      console.log("Tentativa direta falhou, iniciando sistema de proxies...");
     }
+
+    // Sistema de fallback com múltiplos proxies
+    for (let i = 0; i < corsProxies.length; i++) {
+      const proxy = corsProxies[i];
+      
+      try {
+        // Atualizar feedback visual
+        setExtractionError(`Testando proxy ${i + 1}/4: ${proxy.name}...`);
+        
+        console.log(`🔄 Tentando proxy ${i + 1}/4: ${proxy.name}`);
+        
+        const proxyUrl = proxy.url(m3uUrl);
+        const response = await fetch(proxyUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'text/plain,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+          },
+          timeout: 10000 // 10 segundos de timeout
+        });
+
+        if (!response.ok) {
+          throw new Error(`Proxy ${proxy.name} retornou status ${response.status}`);
+        }
+
+        const content = await response.text();
+        
+        // Verificar se o conteúdo é válido
+        if (!content || content.length < 10) {
+          throw new Error(`Proxy ${proxy.name} retornou conteúdo vazio`);
+        }
+
+        // Verificar se é JSON de erro
+        try {
+          const jsonCheck = JSON.parse(content);
+          if (jsonCheck.error || jsonCheck.message) {
+            throw new Error(`Proxy ${proxy.name} retornou erro: ${jsonCheck.error || jsonCheck.message}`);
+          }
+        } catch (jsonError) {
+          // Se não é JSON, é conteúdo válido
+        }
+
+        console.log(`✅ Proxy ${proxy.name} funcionou! Processando conteúdo...`);
+        
+        // Limpar mensagem de erro e processar
+        setExtractionError("");
+        processM3UContent(content);
+        return;
+
+      } catch (proxyError: any) {
+        console.error(`❌ Proxy ${proxy.name} falhou:`, proxyError.message);
+        
+        // Se é o último proxy, mostrar erro final
+        if (i === corsProxies.length - 1) {
+          setExtractionError(`Todos os proxies falharam. Último erro: ${proxyError.message}`);
+          console.error("🚨 Todos os proxies falharam!");
+        }
+      }
+    }
+
+    setIsExtracting(false);
   };
 
   // Função para processar conteúdo M3U
@@ -400,10 +453,14 @@ http://exemplo.com/stream?username=premium789&password=senha789&expires=2024-12-
                   onChange={(e) => setM3uUrl(e.target.value)}
                 />
                 
-                {/* Erro de extração */}
+                {/* Status de extração */}
                 {extractionError && (
-                  <div className="bg-red-900/40 border border-red-700 text-red-300 text-xs rounded p-2 mb-2">
-                    ❌ {extractionError}
+                  <div className={`border text-xs rounded p-2 mb-2 ${
+                    extractionError.includes('Testando proxy') 
+                      ? 'bg-blue-900/40 border-blue-700 text-blue-300' 
+                      : 'bg-red-900/40 border-red-700 text-red-300'
+                  }`}>
+                    {extractionError.includes('Testando proxy') ? '🔄' : '❌'} {extractionError}
                   </div>
                 )}
 
