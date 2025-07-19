@@ -781,6 +781,8 @@ export default function AdminUsers() {
                       'bg-gray-700 text-gray-300'
                     }>{user.status}</Badge>
                   </TableCell>
+                  <TableCell className="text-gray-300">{user.telegram || '-'}</TableCell>
+                  <TableCell className="text-gray-300">{user.expirationDate || '-'}</TableCell>
                   <TableCell className="text-gray-400">{user.createdAt}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
