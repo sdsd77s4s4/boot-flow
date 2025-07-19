@@ -5,9 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Calendar, Plus, Search, Filter, Edit, Trash2, Eye, Copy, Mail, MessageSquare, BarChart3 } from 'lucide-react';
+import { Calendar, Plus, Search, Filter, Edit, Trash2, Eye, Copy, Mail, MessageSquare, BarChart3, Users } from 'lucide-react';
 import { useUsers } from '@/hooks/useUsers';
 import type { User } from '@/hooks/useUsers';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import React from "react";
 
 interface Cobranca {
   id: number;
@@ -560,5 +563,97 @@ export default function AdminCobrancas() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function VencimentoDatePicker() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [time, setTime] = React.useState<string>("");
+
+  function handleDateSelect(selected: Date | undefined) {
+    setDate(selected);
+    setOpen(false);
+  }
+
+  function handleTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setTime(e.target.value);
+  }
+
+  function formatDate(d?: Date) {
+    if (!d) return "";
+    return d.toLocaleDateString("pt-BR");
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className="flex gap-2">
+          <input
+            readOnly
+            value={date ? formatDate(date) : ""}
+            placeholder="Selecione a data"
+            className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 cursor-pointer"
+            onClick={() => setOpen(true)}
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={handleTimeChange}
+            className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+          />
+        </div>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto p-0 bg-[#1f2937] border border-gray-700">
+        <CalendarComponent
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md bg-[#1f2937] text-white"
+        />
+        <div className="flex justify-end p-2">
+          <Button size="sm" onClick={() => setOpen(false)}>
+            OK
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function RenovacaoDatePicker() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+
+  function formatDate(d?: Date) {
+    if (!d) return "";
+    return d.toLocaleDateString("pt-BR");
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <input
+          readOnly
+          value={date ? formatDate(date) : ""}
+          placeholder="dd/mm/aaaa"
+          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 cursor-pointer"
+          onClick={() => setOpen(true)}
+        />
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto p-0 bg-[#1f2937] border border-gray-700">
+        <CalendarComponent
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md bg-[#1f2937] text-white"
+        />
+        <div className="flex justify-end p-2">
+          <Button size="sm" onClick={() => setOpen(false)}>
+            OK
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 } 
