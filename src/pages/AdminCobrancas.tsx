@@ -315,12 +315,14 @@ export default function AdminCobrancas() {
                 <select 
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
                   value={nova.cliente}
-                  onChange={e => setNova({ ...nova, cliente: e.target.value })}
+                  onChange={e => handleClienteChange(e.target.value)}
                 >
                   <option value="">Selecione um cliente</option>
-                  <option value="cliente1">Cliente 1</option>
-                  <option value="cliente2">Cliente 2</option>
-                  <option value="cliente3">Cliente 3</option>
+                  {getActiveUsers().map(user => (
+                    <option key={user.id} value={user.id.toString()}>
+                      {user.name} - {user.email}
+                    </option>
+                  ))}
                 </select>
               </div>
 
