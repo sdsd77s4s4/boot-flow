@@ -290,7 +290,7 @@ export default function AdminUsers() {
     }
   };
 
-      ...prev,
+
       name: userData.name || userData.channelName || userData.username || "",
       email: userData.email || "",
       plan: userData.bouquet || "Cliente",
