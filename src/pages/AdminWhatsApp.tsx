@@ -145,55 +145,73 @@ const AdminWhatsApp: React.FC = () => {
 
       {/* Modal de Configuração */}
       <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
-        <DialogContent className="bg-white text-gray-900 max-w-md p-0 rounded-xl shadow-xl">
-          <div className="p-6">
+        <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
+          <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex items-center gap-2 mb-1">
               <MessageSquare className="w-6 h-6 text-green-500" />
-              <span className="text-lg font-semibold text-gray-900">Configurar WhatsApp Business</span>
+              <span className="text-lg font-semibold text-white">Configurar WhatsApp Business</span>
             </div>
-            <p className="text-gray-500 text-sm mb-6">Envio de mensagens via WhatsApp</p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+            <p className="text-gray-400 text-sm mb-6">Envio de mensagens via WhatsApp</p>
+            <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-700 font-medium">Status da Integração</span>
-                <Button className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-1 rounded" size="sm">Testar Conexão</Button>
+                <span className="text-gray-300 font-medium">Status da Integração</span>
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" size="sm">Testar Conexão</Button>
               </div>
-              <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">conectado</span>
+              <span className="inline-block px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold border border-green-500/30">conectado</span>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 mb-1 font-medium">Token do WhatsApp Business</label>
-              <Input value={config.apiToken || ''} onChange={e => setConfig({ ...config, apiToken: e.target.value })} placeholder="Insira sua chave/token..." className="bg-gray-100 border border-gray-200 text-gray-900" />
+              <label className="block text-gray-300 mb-1 font-medium">Token do WhatsApp Business</label>
+              <Input 
+                value={config.apiToken || ''} 
+                onChange={e => setConfig({ ...config, apiToken: e.target.value })} 
+                placeholder="Insira sua chave/token..." 
+                className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500" 
+              />
             </div>
             <div className="mb-6">
-              <label className="block text-gray-700 mb-1 font-medium">URL do Webhook</label>
-              <Input value={config.apiEndpoint || ''} onChange={e => setConfig({ ...config, apiEndpoint: e.target.value })} placeholder="https://sua-api.com/webhook" className="bg-gray-100 border border-gray-200 text-gray-900" />
+              <label className="block text-gray-300 mb-1 font-medium">URL do Webhook</label>
+              <Input 
+                value={config.apiEndpoint || ''} 
+                onChange={e => setConfig({ ...config, apiEndpoint: e.target.value })} 
+                placeholder="https://sua-api.com/webhook" 
+                className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500" 
+              />
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-              <span className="block text-gray-800 font-semibold mb-3">Configurações Avançadas</span>
+            <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+              <span className="block text-white font-semibold mb-3">Configurações Avançadas</span>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <span className="block text-gray-800 font-medium">Auto-resposta</span>
-                  <span className="block text-xs text-gray-500">Respostas automáticas quando offline</span>
+                  <span className="block text-gray-300 font-medium">Auto-resposta</span>
+                  <span className="block text-xs text-gray-400">Respostas automáticas quando offline</span>
                 </div>
                 <Switch checked={config.autoReply} onCheckedChange={v => setConfig({ ...config, autoReply: v })} />
               </div>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <span className="block text-gray-800 font-medium">Logs detalhados</span>
-                  <span className="block text-xs text-gray-500">Registrar todas as interações</span>
+                  <span className="block text-gray-300 font-medium">Logs detalhados</span>
+                  <span className="block text-xs text-gray-400">Registrar todas as interações</span>
                 </div>
                 <Switch checked={config.logsDetalhados || false} onCheckedChange={v => setConfig({ ...config, logsDetalhados: v })} />
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-gray-800 font-medium">Modo de produção</span>
-                  <span className="block text-xs text-gray-500">Usar configurações de produção</span>
+                  <span className="block text-gray-300 font-medium">Modo de produção</span>
+                  <span className="block text-xs text-gray-400">Usar configurações de produção</span>
                 </div>
                 <Switch checked={config.modoProducao || false} onCheckedChange={v => setConfig({ ...config, modoProducao: v })} />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-6">
-              <Button variant="outline" onClick={() => setConfigModalOpen(false)} className="bg-black text-white px-6 py-2 rounded font-semibold">Cancelar</Button>
-              <Button className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded font-semibold">Salvar Integração</Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setConfigModalOpen(false)} 
+                className="border-gray-600 text-gray-400 hover:text-white px-6 py-2 rounded font-semibold"
+              >
+                Cancelar
+              </Button>
+              <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">
+                Salvar Integração
+              </Button>
             </div>
           </div>
         </DialogContent>
