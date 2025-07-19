@@ -175,15 +175,23 @@ export const useUsers = () => {
 
   // Carregar usuários do localStorage se disponível
   useEffect(() => {
-    const savedUsers = localStorage.getItem('users');
-    if (savedUsers) {
-      setUsers(JSON.parse(savedUsers));
+    try {
+      const savedUsers = localStorage.getItem('users');
+      if (savedUsers) {
+        setUsers(JSON.parse(savedUsers));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar usuários do localStorage:', error);
     }
   }, []);
 
   // Salvar usuários no localStorage quando houver mudanças
   useEffect(() => {
-    localStorage.setItem('users', JSON.stringify(users));
+    try {
+      localStorage.setItem('users', JSON.stringify(users));
+    } catch (error) {
+      console.error('Erro ao salvar usuários no localStorage:', error);
+    }
   }, [users]);
 
   const addUser = (user: Omit<User, 'id'>) => {
