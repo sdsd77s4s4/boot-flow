@@ -500,54 +500,75 @@ const IPTVAnalyzer: React.FC = () => {
                 Links Úteis
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent>
               {(() => {
                 const links = generateLinks();
                 if (!links) return null;
 
                 return (
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Link M3U (TS)</Label>
-                      <div className="flex items-center gap-2">
-                        <Input value={links.m3u} readOnly className="text-xs" />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => copyToClipboard(links.m3u, 'Link M3U')}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Link HLS (M3U8)</Label>
-                      <div className="flex items-center gap-2">
-                        <Input value={links.hls} readOnly className="text-xs" />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => copyToClipboard(links.hls, 'Link HLS')}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Link EPG</Label>
-                      <div className="flex items-center gap-2">
-                        <Input value={links.epg} readOnly className="text-xs" />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => copyToClipboard(links.epg, 'Link EPG')}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-3 px-4 font-medium text-sm">Tipo de Link</th>
+                          <th className="text-left py-3 px-4 font-medium text-sm">URL</th>
+                          <th className="text-left py-3 px-4 font-medium text-sm">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-sm">M3U (TS)</td>
+                          <td className="py-3 px-4">
+                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                              {links.m3u}
+                            </code>
+                          </td>
+                          <td className="py-3 px-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyToClipboard(links.m3u, 'Link M3U')}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-sm">HLS (M3U8)</td>
+                          <td className="py-3 px-4">
+                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                              {links.hls}
+                            </code>
+                          </td>
+                          <td className="py-3 px-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyToClipboard(links.hls, 'Link HLS')}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-sm">EPG</td>
+                          <td className="py-3 px-4">
+                            <code className="bg-muted px-2 py-1 rounded text-xs break-all">
+                              {links.epg}
+                            </code>
+                          </td>
+                          <td className="py-3 px-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyToClipboard(links.epg, 'Link EPG')}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 );
               })()}
