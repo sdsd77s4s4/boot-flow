@@ -48,38 +48,67 @@ export default function AdminUsers() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddingUser, setIsAddingUser] = useState(false);
+  const [addUserSuccess, setAddUserSuccess] = useState(false);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     if (newUser.name && newUser.email && newUser.plan) {
-      addUser({
-        name: newUser.name,
-        email: newUser.email,
-        plan: newUser.plan,
-        status: newUser.status,
-        telegram: newUser.telegram,
-        observations: newUser.observations,
-        expirationDate: newUser.expirationDate,
-        password: newUser.password,
-        bouquets: newUser.bouquets,
-        createdAt: new Date().toISOString().split('T')[0]
-      });
-      setNewUser({ 
-        name: "", 
-        email: "", 
-        plan: "", 
-        status: "Ativo",
-        telegram: "",
-        observations: "",
-        expirationDate: "",
-        password: "",
-        bouquets: ""
-      });
-      setIsAddDialogOpen(false);
+      setIsAddingUser(true);
+      setAddUserSuccess(false);
+      
+      try {
+        // Simular um pequeno delay para mostrar o loading
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        addUser({
+          name: newUser.name,
+          email: newUser.email,
+          plan: newUser.plan,
+          status: newUser.status,
+          telegram: newUser.telegram,
+          observations: newUser.observations,
+          expirationDate: newUser.expirationDate,
+          password: newUser.password,
+          bouquets: newUser.bouquets,
+          createdAt: new Date().toISOString().split('T')[0]
+        });
+        
+        setAddUserSuccess(true);
+        
+        // Limpar formulário
+        setNewUser({ 
+          name: "", 
+          email: "", 
+          plan: "", 
+          status: "Ativo",
+          telegram: "",
+          observations: "",
+          expirationDate: "",
+          password: "",
+          bouquets: ""
+        });
+        
+        // Limpar dados de extração
+        setM3uUrl("");
+        setExtractionResult(null);
+        setExtractionError("");
+        
+        // Fechar modal após 1 segundo
+        setTimeout(() => {
+          setIsAddDialogOpen(false);
+          setAddUserSuccess(false);
+        }, 1000);
+        
+      } catch (error) {
+        console.error('Erro ao adicionar usuário:', error);
+      } finally {
+        setIsAddingUser(false);
+      }
     }
   };
 
@@ -663,7 +692,13 @@ export default function AdminUsers() {
               </div>
               <div className="flex justify-end gap-2 mt-6">
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="bg-gray-700 text-white px-6 py-2 rounded font-semibold">Fechar</Button>
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold">Adicionar Cliente</Button>
+                <Button 
+                  onClick={handleAddUser}
+                  disabled={!newUser.name || !newUser.email || !newUser.plan}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold disabled:bg-gray-600 disabled:cursor-not-allowed"
+                >
+                  Adicionar Cliente
+                </Button>
               </div>
             </div>
           </DialogContent>
