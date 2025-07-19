@@ -28,6 +28,7 @@ import Channels from "./pages/Channels";
 import VoiceCampaigns from "./pages/VoiceCampaigns";
 import Export from "./pages/Export";
 import AIConfiguration from "./pages/AIConfiguration";
+import AdminResellers from "./pages/AdminResellers";
 
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const App = () => (
           <Route path="/voice-campaigns" element={<VoiceCampaigns />} />
           <Route path="/export" element={<Export />} />
           <Route path="/ai-config" element={<AIConfiguration />} />
+          <Route path="/admin/resellers" element={<AdminResellers />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
