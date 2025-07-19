@@ -613,152 +613,275 @@ export default function AdminUsers() {
 
       {/* Modal de Edição */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-          <div className="p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
-            <DialogHeader>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center">
-                  <Edit className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <DialogTitle className="text-xl font-bold text-white">Editar Usuário</DialogTitle>
-                  <DialogDescription className="text-gray-400">
-                    Modifique as informações do usuário
-                  </DialogDescription>
-                </div>
+        <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
+          <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-yellow-500" />
+                <span className="text-lg font-semibold text-white">Editar Cliente</span>
+                <span className="ml-2 px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-semibold">Editar</span>
               </div>
-            </DialogHeader>
+              <div className="flex gap-2">
+                <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Importar</Button>
+                <Button variant="outline" className="bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm">Modelo</Button>
+              </div>
+            </div>
+            <p className="text-gray-400 text-sm mb-2">Modifique os dados do cliente para atualizar suas informações na base de dados</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-green-400 text-xs font-medium">• Campos obrigatórios marcados com *</span>
+              <span className="text-blue-400 text-xs font-medium">• Dados serão sincronizados automaticamente</span>
+            </div>
             
             {editingUser && (
-              <div className="space-y-6">
+              <>
+                {/* Extração M3U */}
+                <div className="bg-blue-900/30 border border-blue-800 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-blue-300 font-medium">Extração M3U</span>
+                    <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm">Extrair</Button>
+                  </div>
+                  <p className="text-xs text-blue-300 mb-2">Serve para importar dados automaticamente a partir de uma URL.</p>
+                  <Input placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..." className="bg-[#1f2937] border border-blue-800 text-white" />
+                </div>
+                
                 {/* Informações Básicas */}
-                <div className="bg-[#23272f] rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">Informações Básicas</h3>
+                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+                  <span className="block text-white font-semibold mb-2">Informações Básicas</span>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-gray-300">Nome</Label>
-                      <Input 
+                    {/* Servidor */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Servidor *</label>
+                      <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                        <option>IPTV 2</option>
+                      </select>
+                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                        O servidor não pode ser alterado aqui. Para mudar o servidor, você precisa migrar para outro servidor usando o ícone Migrar Servidor.
+                      </div>
+                    </div>
+                    {/* Plano */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Plano *</label>
+                      <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                        <option>🟧 TESTE - COMPLETO</option>
+                      </select>
+                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
+                        O plano não pode ser alterado aqui. Para alterar o plano, selecione Ações na lista de clientes e escolha Alterar Plano.
+                      </div>
+                    </div>
+                    {/* Usuário */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Usuário *</label>
+                      <div className="relative flex items-center">
+                        <input 
+                          value={editingUser.name}
+                          onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
+                          placeholder="Usuário" 
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8" 
+                        />
+                        <span className="absolute right-2 text-gray-500 cursor-pointer">
+                          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                            <polyline points="7 9 12 4 17 9"/>
+                            <line x1="12" x2="12" y1="4" y2="16"/>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                    {/* Senha */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Senha</label>
+                      <div className="relative flex items-center">
+                        <input type="password" placeholder="Nova senha" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8" />
+                        <span className="absolute right-2 text-gray-500 cursor-pointer">
+                          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                            <polyline points="7 9 12 4 17 9"/>
+                            <line x1="12" x2="12" y1="4" y2="16"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
+                        <div>A senha só pode ter letras, números, traços e underline.</div>
+                        <div>A senha deve conter apenas letras e números e ter no mínimo 9 caracteres.</div>
+                        <div>A senha precisa ter no mínimo 8 caracteres.</div>
+                      </div>
+                    </div>
+                    {/* Vencimento */}
+                    <div className="col-span-2">
+                      <label className="block text-gray-300 mb-1 font-medium">Vencimento (Opcional)</label>
+                      <VencimentoDatePicker />
+                    </div>
+                    {/* Bouquets */}
+                    <div className="col-span-2">
+                      <label className="block text-gray-300 mb-1 font-medium">Bouquets</label>
+                      <select className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
+                        <option value="">Selecione um bouquet</option>
+                        <option value="completo-sem-adultos">COMPLETO SEM ADULTOS</option>
+                        <option value="completo-com-adultos">COMPLETO COM ADULTOS</option>
+                        <option value="canais-mais-18">CANAIS +18</option>
+                        <option value="vods">Vods</option>
+                        <option value="canais-menos-18">CANAIS -18</option>
+                        <option value="restream">Restream</option>
+                        <option value="24hrs">24hrs</option>
+                        <option value="ppv">PPV</option>
+                      </select>
+                      <div className="bg-green-900/40 border border-green-700 text-green-400 text-xs rounded mt-2 p-2">
+                        Apenas você pode visualizar os dados pessoais deste cliente.
+                      </div>
+                    </div>
+                    {/* Nome */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Nome</label>
+                      <input 
                         value={editingUser.name}
                         onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
-                        className="bg-[#1f2937] border border-gray-700 text-white"
+                        placeholder="Opcional" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                       />
                     </div>
-                    <div>
-                      <Label className="text-gray-300">Email</Label>
-                      <Input 
+                    {/* E-mail */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">E-mail</label>
+                      <input 
                         value={editingUser.email}
                         onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
-                        className="bg-[#1f2937] border border-gray-700 text-white"
+                        placeholder="Opcional" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                       />
                     </div>
-                    <div>
-                      <Label className="text-gray-300">Plano</Label>
-                      <Select value={editingUser.plan} onValueChange={(value) => setEditingUser({...editingUser, plan: value})}>
-                        <SelectTrigger className="bg-[#1f2937] border border-gray-700 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#23272f] border border-gray-700">
-                          <SelectItem value="Cliente">Cliente</SelectItem>
-                          <SelectItem value="Revendedor">Revendedor</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-gray-300">Status</Label>
-                      <Select value={editingUser.status} onValueChange={(value) => setEditingUser({...editingUser, status: value})}>
-                        <SelectTrigger className="bg-[#1f2937] border border-gray-700 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#23272f] border border-gray-700">
-                          <SelectItem value="Ativo">Ativo</SelectItem>
-                          <SelectItem value="Inativo">Inativo</SelectItem>
-                          <SelectItem value="Pendente">Pendente</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contatos */}
-                <div className="bg-[#23272f] rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">Contatos</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-gray-300">Telefone</Label>
-                      <Input 
-                        value={editingUser.phone || ""}
-                        onChange={(e) => setEditingUser({...editingUser, phone: e.target.value})}
-                        placeholder="+55 11 99999-9999"
-                        className="bg-[#1f2937] border border-gray-700 text-white"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-gray-300">Telegram</Label>
-                      <Input 
+                    {/* Telegram */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">Telegram</label>
+                      <input 
                         value={editingUser.telegram || ""}
                         onChange={(e) => setEditingUser({...editingUser, telegram: e.target.value})}
-                        placeholder="@usuario"
-                        className="bg-[#1f2937] border border-gray-700 text-white"
+                        placeholder="Opcional" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                       />
                     </div>
-                    <div>
-                      <Label className="text-gray-300">WhatsApp</Label>
-                      <Input 
+                    {/* WhatsApp */}
+                    <div className="col-span-1">
+                      <label className="block text-gray-300 mb-1 font-medium">WhatsApp</label>
+                      <input 
                         value={editingUser.whatsapp || ""}
                         onChange={(e) => setEditingUser({...editingUser, whatsapp: e.target.value})}
-                        placeholder="+55 11 99999-9999"
-                        className="bg-[#1f2937] border border-gray-700 text-white"
+                        placeholder="Opcional" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
+                      />
+                      <span className="text-xs text-gray-400 mt-1 block">Incluindo o código do país - com ou sem espaço e traços - ex. 55 11 99999 3333</span>
+                    </div>
+                    {/* Observações */}
+                    <div className="col-span-2">
+                      <label className="block text-gray-300 mb-1 font-medium">Observações</label>
+                      <textarea 
+                        value={editingUser.notes || ""}
+                        onChange={(e) => setEditingUser({...editingUser, notes: e.target.value})}
+                        placeholder="Opcional" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]" 
                       />
                     </div>
                   </div>
                 </div>
-
-                {/* Configurações */}
-                <div className="bg-[#23272f] rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">Configurações</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Configuração de Serviço */}
+                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+                  <span className="block text-purple-400 font-semibold mb-2">Configuração de Serviço</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                    {/* Classe de Serviço */}
                     <div>
-                      <Label className="text-gray-300">Número de Dispositivos</Label>
-                      <Input 
-                        type="number"
+                      <label className="block text-gray-300 mb-1 font-medium">Classe de Serviço</label>
+                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                        <option value="">Selecione</option>
+                        <option value="basico">Básico</option>
+                        <option value="premium">Premium</option>
+                      </select>
+                    </div>
+                    {/* Plano */}
+                    <div>
+                      <label className="block text-gray-300 mb-1 font-medium">Plano</label>
+                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                        <option value="mensal">Mensal</option>
+                        <option value="anual">Anual</option>
+                      </select>
+                    </div>
+                    {/* Status */}
+                    <div>
+                      <label className="block text-gray-300 mb-1 font-medium">Status</label>
+                      <select 
+                        value={editingUser.status}
+                        onChange={(e) => setEditingUser({...editingUser, status: e.target.value})}
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                      >
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                        <option value="Pendente">Pendente</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                    {/* Data de Renovação */}
+                    <div>
+                      <label className="block text-gray-300 mb-1 font-medium">Data de Renovação</label>
+                      <RenovacaoDatePicker />
+                    </div>
+                    {/* Número de Dispositivos */}
+                    <div>
+                      <label className="block text-gray-300 mb-1 font-medium">Número de Dispositivos</label>
+                      <input 
+                        type="number" 
+                        min={1} 
                         value={editingUser.devices || 0}
                         onChange={(e) => setEditingUser({...editingUser, devices: parseInt(e.target.value) || 0})}
-                        className="bg-[#1f2937] border border-gray-700 text-white"
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                       />
                     </div>
+                    {/* Créditos */}
                     <div>
-                      <Label className="text-gray-300">Créditos (€)</Label>
-                      <Input 
-                        type="number"
-                        value={editingUser.credits || 0}
-                        onChange={(e) => setEditingUser({...editingUser, credits: parseInt(e.target.value) || 0})}
-                        className="bg-[#1f2937] border border-gray-700 text-white"
-                      />
+                      <label className="block text-gray-300 mb-1 font-medium">Créditos</label>
+                      <div className="flex items-center gap-2">
+                        <button type="button" className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700">-</button>
+                        <input 
+                          type="number" 
+                          min={0} 
+                          value={editingUser.credits || 0}
+                          onChange={(e) => setEditingUser({...editingUser, credits: parseInt(e.target.value) || 0})}
+                          className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
+                        />
+                        <button type="button" className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700">+</button>
+                        <span className="text-xs text-gray-400 ml-2">valor<br/>entre 0<br/>e 500€</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Observações */}
-                <div className="bg-[#23272f] rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">Observações</h3>
-                  <textarea 
-                    value={editingUser.notes || ""}
-                    onChange={(e) => setEditingUser({...editingUser, notes: e.target.value})}
-                    placeholder="Adicione observações sobre o usuário..."
-                    className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-3 min-h-[100px]"
-                  />
+                
+                {/* Informações Adicionais */}
+                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
+                  <span className="block text-white font-semibold mb-2">Informações Adicionais</span>
+                  <div className="flex items-center gap-2 mb-2">
+                    <input type="checkbox" className="accent-green-500" />
+                    <span className="text-gray-300 text-sm">Notificações via WhatsApp</span>
+                  </div>
+                  <div>
+                    <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
+                    <textarea 
+                      value={editingUser.notes || ""}
+                      onChange={(e) => setEditingUser({...editingUser, notes: e.target.value})}
+                      className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-2 min-h-[60px]" 
+                      placeholder="Anotações..."
+                    />
+                  </div>
                 </div>
-              </div>
+                
+                <div className="flex justify-end gap-2 mt-6">
+                  <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} className="bg-gray-700 text-white px-6 py-2 rounded font-semibold">
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleEditUser} className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded font-semibold">
+                    Salvar Alterações
+                  </Button>
+                </div>
+              </>
             )}
-
-            <DialogFooter className="mt-6">
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} className="bg-gray-700 text-white">
-                Cancelar
-              </Button>
-              <Button onClick={handleEditUser} className="bg-yellow-600 hover:bg-yellow-700 text-white">
-                Salvar Alterações
-              </Button>
-            </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
