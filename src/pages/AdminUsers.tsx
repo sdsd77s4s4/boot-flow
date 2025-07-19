@@ -329,7 +329,7 @@ export default function AdminUsers() {
           if (data.user_info.active_cons) observations.push(`Ativas: ${data.user_info.active_cons}`);
 
           // Aplicar dados extraídos ao formulário
-          setNewUser({
+          const extractedData = {
             name: data.user_info.username || username,
             email: `${data.user_info.username || username}@iptv.com`,
             plan: data.user_info.is_trial === '1' ? 'Trial' : 'Premium',
@@ -339,7 +339,14 @@ export default function AdminUsers() {
             expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
             password: data.user_info.password || password,
             bouquets: Array.isArray(bouquetsData) ? bouquetsData.map(b => b.category_name).join(', ') : ''
-          });
+          };
+
+          // Aplicar aos formulários baseado no modal aberto
+          if (isEditDialogOpen && editingUser) {
+            setEditingUser({...editingUser, ...extractedData});
+          } else {
+            setNewUser(extractedData);
+          }
           
           setExtractionResult({
             success: true,
