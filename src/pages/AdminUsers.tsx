@@ -1065,7 +1065,13 @@ export default function AdminUsers() {
                     <div className="col-span-1">
                       <label className="block text-gray-300 mb-1 font-medium">Senha</label>
                       <div className="relative flex items-center">
-                        <input type="password" placeholder="Nova senha" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8" />
+                        <input 
+                          type="text" 
+                          value={editingUser.password || ""}
+                          onChange={(e) => setEditingUser({...editingUser, password: e.target.value})}
+                          placeholder="Senha" 
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8" 
+                        />
                         <span className="absolute right-2 text-gray-500 cursor-pointer">
                           <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
@@ -1075,15 +1081,18 @@ export default function AdminUsers() {
                         </span>
                       </div>
                       <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
-                        <div>A senha só pode ter letras, números, traços e underline.</div>
-                        <div>A senha deve conter apenas letras e números e ter no mínimo 9 caracteres.</div>
-                        <div>A senha precisa ter no mínimo 8 caracteres.</div>
+                        <div>Senha extraída automaticamente da URL M3U</div>
                       </div>
                     </div>
                     {/* Vencimento */}
                     <div className="col-span-2">
                       <label className="block text-gray-300 mb-1 font-medium">Vencimento (Opcional)</label>
-                      <VencimentoDatePicker />
+                      <input 
+                        type="date" 
+                        value={editingUser.expirationDate || ""}
+                        onChange={(e) => setEditingUser({...editingUser, expirationDate: e.target.value})}
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                      />
                     </div>
                     {/* Bouquets */}
                     <div className="col-span-2">
