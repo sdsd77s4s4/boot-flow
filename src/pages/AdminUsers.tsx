@@ -288,8 +288,9 @@ export default function AdminUsers() {
               plan: 'Premium',
               status: 'Ativo',
               telegram: `@${username}`,
-              observations: `Conta IPTV - Dados simulados`,
-              expirationDate: ''
+              observations: `Conta IPTV - Usuário: ${username} - Senha: ${password} - Dados simulados`,
+              expirationDate: '',
+              password: password
             });
             
             setExtractionResult({
@@ -462,18 +463,16 @@ export default function AdminUsers() {
                     <label className="block text-gray-300 mb-1 font-medium">Senha</label>
                     <div className="relative flex items-center">
                       <input 
-                        type="password" 
+                        type="text" 
                         placeholder="Senha" 
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
-                        value={newUser.email}
-                        onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                        value={newUser.password}
+                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
                       />
                       <span className="absolute right-2 text-gray-500 cursor-pointer"><svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" x2="12" y1="4" y2="16"/></svg></span>
                     </div>
                     <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
-                      <div>A senha só pode ter letras, números, traços e underline.</div>
-                      <div>A senha deve conter apenas letras e números e ter no mínimo 9 caracteres.</div>
-                      <div>A senha precisa ter no mínimo 8 caracteres.</div>
+                      <div>Senha extraída automaticamente da URL M3U</div>
                     </div>
                   </div>
                   {/* Status */}
