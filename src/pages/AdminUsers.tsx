@@ -157,8 +157,9 @@ export default function AdminUsers() {
         throw new Error('Credenciais não encontradas na URL. Verifique se a URL contém username e password.');
       }
 
-      // Construir URL da API
+      // Construir URLs da API
       const apiUrl = `${baseUrl}/player_api.php?username=${username}&password=${password}`;
+      const bouquetsUrl = `${baseUrl}/player_api.php?username=${username}&password=${password}&action=get_live_categories`;
       
       // Tentar primeiro sem proxy (se for HTTPS)
       try {
