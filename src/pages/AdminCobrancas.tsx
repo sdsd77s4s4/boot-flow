@@ -48,7 +48,17 @@ export default function AdminCobrancas() {
   const [modalCopia, setModalCopia] = useState<Cobranca | null>(null);
   const [modalEmail, setModalEmail] = useState<Cobranca | null>(null);
   const [modalWhats, setModalWhats] = useState<Cobranca | null>(null);
-  const [nova, setNova] = useState({ cliente: '', email: '', descricao: '', valor: '', vencimento: '' });
+  const [nova, setNova] = useState({ 
+    cliente: '', 
+    nomeCliente: '', 
+    email: '', 
+    telefone: '', 
+    descricao: '', 
+    valor: '', 
+    status: 'Pendente', 
+    vencimento: '', 
+    observacoes: '' 
+  });
   const [edit, setEdit] = useState({ cliente: '', email: '', descricao: '', valor: '', vencimento: '', status: 'Pendente' });
 
   const total = cobrancas.length;
