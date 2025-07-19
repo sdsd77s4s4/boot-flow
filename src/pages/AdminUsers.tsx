@@ -14,24 +14,8 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import React from "react";
 import { useUsers, User } from "@/hooks/useUsers";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  plan: string;
-  status: string;
-  createdAt: string;
-  phone?: string;
-  telegram?: string;
-  whatsapp?: string;
-  notes?: string;
-  devices?: number;
-  credits?: number;
-  renewalDate?: string;
-}
-
 export default function AdminUsers() {
-  const [users, setUsers] = useState<User[]>([
+  const { users, addUser, updateUser, deleteUser } = useUsers();
     { 
       id: 1, 
       name: "João Silva", 
