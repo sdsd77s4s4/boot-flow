@@ -291,21 +291,6 @@ export default function AdminUsers() {
   };
 
 
-      name: userData.name || userData.channelName || userData.username || "",
-      email: userData.email || "",
-      plan: userData.bouquet || "Cliente",
-      status: "Ativo"
-    }));
-
-    // Atualizar outros campos do formulário se necessário
-    setExtractionResult({
-      success: true,
-      message: `Dados extraídos com sucesso: ${userData.name || userData.username}`,
-      userData
-    });
-  };
-
-
 
   return (
     <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
