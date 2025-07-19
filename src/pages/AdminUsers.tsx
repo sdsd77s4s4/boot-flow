@@ -245,11 +245,7 @@ export default function AdminUsers() {
     });
   };
 
-  // Função para selecionar usuário extraído
-  const selectExtractedUser = (user: any) => {
-    setSelectedExtractedUser(user);
-    applyExtractedData(user);
-  };
+
 
   return (
     <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
