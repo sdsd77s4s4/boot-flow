@@ -1192,6 +1192,7 @@ export default function AdminUsers() {
                   value={editingUser.expirationDate || ''}
                   onChange={(e) => setEditingUser({...editingUser, expirationDate: e.target.value})}
                   className="bg-[#23272f] border-gray-700 text-white"
+                  min={new Date().toISOString().split('T')[0]}
                 />
               </div>
               
