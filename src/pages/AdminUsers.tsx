@@ -348,7 +348,8 @@ export default function AdminUsers() {
               observations: `Usuário: ${data.user_info.username} | Acesso direto`,
               expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
               password: data.user_info.password || password,
-              bouquets: ''
+              bouquets: '',
+              realName: '' // Campo "Nome" na seção de contato fica vazio
             };
 
             // Aplicar aos formulários baseado no modal aberto
