@@ -202,8 +202,11 @@ export default function AdminUsers() {
   };
 
   const openEditModal = (user: User) => {
+    console.log('=== DEBUG: Abrindo modal de edição ===');
     console.log('Dados do usuário vindos do banco:', user);
     console.log('Campo real_name do banco:', user.real_name);
+    console.log('Tipo do campo real_name:', typeof user.real_name);
+    console.log('Todos os campos do usuário:', Object.keys(user));
     
     // Mapear campos do banco para o frontend
     const mappedUser = {
@@ -222,6 +225,8 @@ export default function AdminUsers() {
     
     console.log('Usuário mapeado para o frontend:', mappedUser);
     console.log('Campo realName mapeado:', mappedUser.realName);
+    console.log('Campo realName no estado editingUser será:', mappedUser.realName);
+    console.log('=== FIM DEBUG ===');
     
     setEditingUser(mappedUser);
     setIsEditDialogOpen(true);
@@ -1374,7 +1379,10 @@ export default function AdminUsers() {
                       <label className="block text-gray-300 mb-1 font-medium">Nome</label>
                       <input 
                         value={editingUser.realName || ""}
-                        onChange={(e) => setEditingUser({...editingUser, realName: e.target.value})}
+                        onChange={(e) => {
+                          console.log('Campo Nome alterado:', e.target.value);
+                          setEditingUser({...editingUser, realName: e.target.value});
+                        }}
                         placeholder="Opcional" 
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                       />
