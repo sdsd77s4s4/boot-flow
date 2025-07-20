@@ -597,7 +597,7 @@ export default function AdminUsers() {
 
 
   return (
-    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
+    <div className="space-y-4 sm:space-y-6 min-h-screen bg-[#09090b] p-3 sm:p-6">
       {/* Indicadores de status */}
       {loading && (
         <div className="bg-blue-900/40 border border-blue-700 text-blue-300 rounded-lg p-4">
