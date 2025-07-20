@@ -407,9 +407,9 @@ const AdminDashboard = () => {
                   <Brain className="w-4 h-4 mr-2" />
                   Configurar IA
                 </Button>
-                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handlePageChange("resellers")}> 
-                  <Plus className="w-4 h-4 mr-2" />
-                  Novo Revendedor
+                <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handlePageChange("users")}> 
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Novo Cliente
                 </Button>
               </div>
             </div>
@@ -803,9 +803,9 @@ const AdminDashboard = () => {
                       <Brain className="w-4 h-4 mr-2" />
                       Configurar IA
                     </Button>
-                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handlePageChange("resellers")}> 
-                      <Plus className="w-4 h-4 mr-2" />
-                      Novo Revendedor
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => handlePageChange("users")}> 
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Novo Cliente
                     </Button>
                   </div>
                 </div>
@@ -890,7 +890,7 @@ const AdminDashboard = () => {
                       </Button>
                       {viewMode === 'kanban' && (
                         <>
-                          <Badge className="bg-blue-600 text-white flex items-center gap-1">
+                          <Badge className="bg-blue-600 text-white flex items-center gap-1 animate-pulse">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                             </svg>
@@ -901,7 +901,13 @@ const AdminDashboard = () => {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
-                            Clique para abrir
+                            Clique para abrir modal
+                          </Badge>
+                          <Badge className="bg-purple-600 text-white flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Modais Funcionais
                           </Badge>
                         </>
                       )}
