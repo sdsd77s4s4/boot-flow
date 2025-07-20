@@ -147,8 +147,11 @@ export default function AdminUsers() {
 
   const handleEditUser = async () => {
     if (editingUser) {
-      console.log('Salvando alterações do usuário:', editingUser);
+      console.log('=== DEBUG: Salvando alterações ===');
+      console.log('Usuário completo:', editingUser);
       console.log('Campo realName do editingUser:', editingUser.realName);
+      console.log('Tipo do realName:', typeof editingUser.realName);
+      console.log('Todos os campos do editingUser:', Object.keys(editingUser));
       
       // Preparar dados para atualização no Neon
       const updatedUserData = {
@@ -171,6 +174,9 @@ export default function AdminUsers() {
       console.log('Dados preparados para atualização:', updatedUserData);
       console.log('Todos os campos incluídos:', Object.keys(updatedUserData));
       console.log('Campo real_name sendo enviado:', updatedUserData.real_name);
+      console.log('Tipo do real_name:', typeof updatedUserData.real_name);
+      console.log('JSON sendo enviado:', JSON.stringify({ id: editingUser.id, ...updatedUserData }));
+      console.log('=== FIM DEBUG ===');
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
@@ -1380,7 +1386,10 @@ export default function AdminUsers() {
                       <label className="block text-gray-300 mb-1 font-medium">Nome *</label>
                       <input 
                         value={editingUser.realName || ""}
-                        onChange={(e) => setEditingUser({...editingUser, realName: e.target.value})}
+                        onChange={(e) => {
+                          console.log('Campo Nome alterado para:', e.target.value);
+                          setEditingUser({...editingUser, realName: e.target.value});
+                        }}
                         placeholder="Digite o nome completo" 
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
                         required
