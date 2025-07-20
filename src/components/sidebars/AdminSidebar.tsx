@@ -118,17 +118,17 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
           </Button>
         </DrawerTrigger>
         <DrawerContent className="bg-[#232a36] text-white w-full h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[99999] flex flex-col border-2 sm:border-4 border-purple-700">
-          <div className="flex items-center justify-between p-4 mb-2 border-b border-gray-700">
+          <div className="flex items-center justify-between p-3 sm:p-4 mb-2 border-b border-gray-700">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">Admin</span>
+              <span className="text-lg sm:text-xl font-bold">Admin</span>
             </div>
             <DrawerClose asChild>
-              <Button variant="ghost" size="icon" className="text-white">
+              <Button variant="ghost" size="icon" className="text-white h-8 w-8 sm:h-10 sm:w-10">
                 <span className="sr-only">Fechar menu</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </Button>
