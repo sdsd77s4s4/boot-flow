@@ -888,6 +888,35 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('refresh-dashboard', handleRefresh as EventListener);
   }, [refreshUsers, refreshResellers]);
 
+  // Listener para localStorage (comunicação entre páginas)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dashboard-refresh') {
+        console.log('🔄 Dashboard: localStorage change detectado, atualizando dados...');
+        setRefreshTrigger(prev => prev + 1);
+      }
+    };
+    
+    const checkForRefresh = () => {
+      const refreshFlag = localStorage.getItem('dashboard-refresh');
+      if (refreshFlag) {
+        console.log('🔄 Dashboard: Flag de refresh encontrada, atualizando dados...');
+        localStorage.removeItem('dashboard-refresh');
+        setRefreshTrigger(prev => prev + 1);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    checkForRefresh(); // Verificar ao montar o componente
+    
+    const interval = setInterval(checkForRefresh, 1000); // Verificar a cada segundo
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-[#09090b]">
