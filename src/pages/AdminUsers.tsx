@@ -1295,12 +1295,7 @@ export default function AdminUsers() {
                     {/* Vencimento */}
                     <div className="col-span-2">
                       <label className="block text-gray-300 mb-1 font-medium">Vencimento (Opcional)</label>
-                      <input 
-                        type="date" 
-                        value={editingUser.expirationDate || ""}
-                        onChange={(e) => setEditingUser({...editingUser, expirationDate: e.target.value})}
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                      />
+                      <VencimentoDatePickerEdit />
                     </div>
                     {/* Bouquets */}
                     <div className="col-span-2">
