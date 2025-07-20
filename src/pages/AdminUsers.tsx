@@ -235,7 +235,12 @@ export default function AdminUsers() {
       if (success) {
         // Atualizar Dashboard instantaneamente
         console.log('📤 Clientes: Disparando evento refresh-dashboard após deletar usuário');
-        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'delete' } }));
+        try {
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'delete' } }));
+          console.log('✅ Evento disparado com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao disparar evento:', error);
+        }
         
         setDeletingUser(null);
         setIsDeleteDialogOpen(false);

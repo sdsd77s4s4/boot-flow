@@ -81,7 +81,12 @@ export default function AdminResellers() {
           
           // Atualizar Dashboard instantaneamente
           console.log('📤 Revendas: Disparando evento refresh-dashboard após criar revenda');
-          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'create' } }));
+          try {
+            window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'create' } }));
+            console.log('✅ Evento disparado com sucesso');
+          } catch (error) {
+            console.error('❌ Erro ao disparar evento:', error);
+          }
           
           // Limpar formulário
           setNewReseller({
