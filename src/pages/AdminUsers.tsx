@@ -1019,45 +1019,45 @@ export default function AdminUsers() {
             <TableBody>
               {filteredUsers.map(user => (
                 <TableRow key={user.id} className="hover:bg-[#232a36] transition-colors">
-                  <TableCell className="text-white font-medium">{user.name}</TableCell>
-                  <TableCell className="text-gray-300">{user.email}</TableCell>
-                  <TableCell className="text-gray-300">{user.plan}</TableCell>
+                  <TableCell className="text-white font-medium text-xs sm:text-sm">{user.name}</TableCell>
+                  <TableCell className="hidden sm:table-cell text-gray-300 text-xs sm:text-sm">{user.email}</TableCell>
+                  <TableCell className="text-gray-300 text-xs sm:text-sm">{user.plan}</TableCell>
                   <TableCell>
-                    <Badge className={
+                    <Badge className={`text-xs ${
                       user.status === 'Ativo' ? 'bg-green-700 text-green-200' :
                       user.status === 'Inativo' ? 'bg-red-700 text-red-200' :
                       user.status === 'Pendente' ? 'bg-yellow-700 text-yellow-200' :
                       'bg-gray-700 text-gray-300'
-                    }>{user.status}</Badge>
+                    }`}>{user.status}</Badge>
                   </TableCell>
-                  <TableCell className="text-gray-300">{user.telegram || '-'}</TableCell>
-                  <TableCell className="text-gray-300">{user.expirationDate || '-'}</TableCell>
-                  <TableCell className="text-gray-400">{user.createdAt}</TableCell>
+                  <TableCell className="hidden md:table-cell text-gray-300 text-xs sm:text-sm">{user.telegram || '-'}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">{user.expirationDate || '-'}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">{user.createdAt}</TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1 sm:gap-2">
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white"
+                        className="border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openViewModal(user)}
                       > 
-                        <Eye className="w-4 h-4" /> 
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" /> 
                       </Button>
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="border-yellow-600 text-yellow-400 hover:bg-yellow-600 hover:text-white"
+                        className="border-yellow-600 text-yellow-400 hover:bg-yellow-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openEditModal(user)}
                       > 
-                        <Edit className="w-4 h-4" /> 
+                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" /> 
                       </Button>
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openDeleteModal(user)}
                       > 
-                        <Trash2 className="w-4 h-4" /> 
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" /> 
                       </Button>
                     </div>
                   </TableCell>
