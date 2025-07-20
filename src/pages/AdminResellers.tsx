@@ -602,53 +602,53 @@ export default function AdminResellers() {
             <TableBody>
               {filteredResellers.map((reseller) => (
                 <TableRow key={reseller.id} className="border-gray-700">
-                  <TableCell className="text-white">
+                  <TableCell className="text-white text-xs sm:text-sm">
                     <div>
                       <div className="font-medium">{reseller.username}</div>
                       {reseller.personal_name && (
-                        <div className="text-sm text-gray-400">{reseller.personal_name}</div>
+                        <div className="text-xs sm:text-sm text-gray-400">{reseller.personal_name}</div>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getPermissionColor(reseller.permission)}>
+                    <Badge className={`text-xs ${getPermissionColor(reseller.permission)}`}>
                       {reseller.permission}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-white">{reseller.credits}</TableCell>
+                  <TableCell className="text-white text-xs sm:text-sm">{reseller.credits}</TableCell>
                   <TableCell>
-                    <Badge className={getStatusColor(reseller.status)}>
+                    <Badge className={`text-xs ${getStatusColor(reseller.status)}`}>
                       {reseller.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-white">
+                  <TableCell className="hidden md:table-cell text-white text-xs sm:text-sm">
                     {new Date(reseller.created_at).toLocaleDateString('pt-BR')}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openViewModal(reseller)}
-                        className="text-blue-400 hover:text-blue-300"
+                        className="text-blue-400 hover:text-blue-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditModal(reseller)}
-                        className="text-green-400 hover:text-green-300"
+                        className="text-green-400 hover:text-green-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openDeleteModal(reseller)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-400 hover:text-red-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
                     </div>
                   </TableCell>

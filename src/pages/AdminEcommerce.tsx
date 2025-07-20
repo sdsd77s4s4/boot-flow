@@ -117,18 +117,19 @@ export default function AdminEcommerce() {
   const activeProducts = products.filter(product => product.status === "Ativo").length;
 
   return (
-    <div className="space-y-6 min-h-screen bg-[#09090b] p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 min-h-screen bg-[#09090b] p-3 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">E-commerce</h1>
-          <p className="text-gray-400">Gerencie produtos, vendas e configurações da loja</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">E-commerce</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Gerencie produtos, vendas e configurações da loja</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2 bg-[#1f2937] text-white border-none">
+              <Button variant="outline" className="flex items-center gap-2 bg-[#1f2937] text-white border-none h-10 sm:h-auto">
                 <Settings className="w-4 h-4" />
-                Configurações
+                <span className="hidden sm:inline">Configurações</span>
+                <span className="sm:hidden">Config</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-[#1f2937] text-white max-w-2xl">
