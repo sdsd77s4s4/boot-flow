@@ -384,10 +384,10 @@ export default function AdminUsers() {
                     Adicionar Usuário
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl max-h-[95vh] overflow-hidden p-0">
+                <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl h-[95vh] p-0">
                   <div className="flex flex-col h-full">
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-700 bg-[#1a1f2e]">
+                    <div className="flex items-center justify-between p-6 border-b border-gray-700 bg-[#1a1f2e] flex-shrink-0">
                       <div className="flex items-center gap-3">
                         <div>
                           <h2 className="text-xl font-semibold text-white">Adicionar Cliente</h2>
@@ -411,14 +411,14 @@ export default function AdminUsers() {
                     </div>
 
                     {/* Notes */}
-                    <div className="px-6 py-3 bg-[#1a1f2e] border-b border-gray-700">
+                    <div className="px-6 py-3 bg-[#1a1f2e] border-b border-gray-700 flex-shrink-0">
                       <p className="text-xs text-gray-400">
                         Campos obrigatórios marcados com * • Dados serão sincronizados automaticamente
                       </p>
                     </div>
 
                     {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6 min-h-0">
                       {/* Extração M3U Section */}
                       <div className="border border-blue-600 rounded-lg p-4 bg-blue-900/10">
                         <h3 className="text-lg font-medium text-white mb-2">Extração M3U</h3>
@@ -727,7 +727,7 @@ export default function AdminUsers() {
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between p-6 border-t border-gray-700 bg-[#1a1f2e]">
+                    <div className="flex items-center justify-between p-6 border-t border-gray-700 bg-[#1a1f2e] flex-shrink-0">
                       <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="border-gray-600 text-gray-300 hover:bg-gray-700">
                         Fechar
                       </Button>
