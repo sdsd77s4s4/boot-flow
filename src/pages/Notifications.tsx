@@ -259,17 +259,25 @@ export default function Notifications() {
               <Input placeholder="Buscar cliente ou revenda..." className="mb-2 bg-gray-900 border border-gray-700 text-white" onChange={e => setSelectedDest(e.target.value)} />
               <div className="max-h-40 overflow-y-auto rounded border border-gray-700 bg-[#181825] divide-y divide-gray-800">
                 <div className="px-2 py-1 text-xs text-purple-400 font-bold">Clientes Ativos</div>
-                {users.filter(u => (u.status || '').toLowerCase() === 'ativo' && (!selectedDest || (u.real_name || u.name).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(u => (
-                  <div key={u.id} className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'cliente', ...u })}>
-                    <Users className="w-4 h-4 text-purple-400" /> <span>{u.real_name || u.name} <span className="text-xs text-gray-400">({u.email})</span></span>
-                  </div>
-                ))}
+                {(users.filter(u => (u.status || '').toLowerCase() === 'ativo' && (!selectedDest || (u.real_name || u.name).toLowerCase().includes((selectedDest || '').toLowerCase()))).length > 0 ? (
+                  users.filter(u => (u.status || '').toLowerCase() === 'ativo' && (!selectedDest || (u.real_name || u.name).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(u => (
+                    <div key={u.id} className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'cliente', ...u })}>
+                      <Users className="w-4 h-4 text-purple-400" /> <span>{u.real_name || u.name} <span className="text-xs text-gray-400">({u.email})</span></span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-3 py-2 text-xs text-gray-500">Nenhum cliente encontrado.</div>
+                )}
                 <div className="px-2 py-1 text-xs text-green-400 font-bold">Revendas Ativas</div>
-                {resellers.filter(r => (r.status || '').toLowerCase() === 'active' && (!selectedDest || (r.personal_name || r.username).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(r => (
-                  <div key={r.id} className="px-3 py-2 hover:bg-green-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'revenda', ...r })}>
-                    <Users className="w-4 h-4 text-green-400" /> <span>{r.personal_name || r.username} <span className="text-xs text-gray-400">({r.email})</span></span>
-                  </div>
-                ))}
+                {(resellers.filter(r => (r.status || '').toLowerCase() === 'active' && (!selectedDest || (r.personal_name || r.username).toLowerCase().includes((selectedDest || '').toLowerCase()))).length > 0 ? (
+                  resellers.filter(r => (r.status || '').toLowerCase() === 'active' && (!selectedDest || (r.personal_name || r.username).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(r => (
+                    <div key={r.id} className="px-3 py-2 hover:bg-green-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'revenda', ...r })}>
+                      <Users className="w-4 h-4 text-green-400" /> <span>{r.personal_name || r.username} <span className="text-xs text-gray-400">({r.email})</span></span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-3 py-2 text-xs text-gray-500">Nenhuma revenda encontrada.</div>
+                )}
               </div>
             </div>
             {selectedDest && (
@@ -282,7 +290,6 @@ export default function Notifications() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
             <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={!selectedDest} onClick={() => {
-              // Aqui você pode chamar a função de envio real para WhatsApp
               toast.success('Notificação enviada para ' + (selectedDest?.real_name || selectedDest?.personal_name || selectedDest?.name));
               setModal({ type: null });
             }}>Enviar</Button>
