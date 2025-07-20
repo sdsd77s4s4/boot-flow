@@ -1605,7 +1605,7 @@ function RenovacaoDatePicker() {
   );
 }
 
-function VencimentoDatePickerEdit() {
+function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: User | null, setEditingUser: (user: User) => void }) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
     editingUser?.expirationDate ? new Date(editingUser.expirationDate) : undefined
