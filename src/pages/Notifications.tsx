@@ -8,6 +8,7 @@ import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp, Users } f
 import { useNeonUsers } from '@/hooks/useNeonUsers';
 import { useNeonResellers } from '@/hooks/useNeonResellers';
 import { toast } from 'sonner';
+import { useWhatsAppStatus } from './AdminWhatsApp';
 
 const templatesMock = [
   { id: 1, nome: 'Confirmação de Agendamento', texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', variaveis: ['nome', 'servico', 'data', 'hora'], status: 'Ativo', envios: 1247, taxa: 98.5 },
@@ -33,6 +34,7 @@ export default function Notifications() {
   const { resellers } = useNeonResellers();
   const [selectedDest, setSelectedDest] = useState<any>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  const { isConnected, connectionStatus } = useWhatsAppStatus();
 
   // Cards resumo
   const enviados = historico.length;
@@ -254,6 +256,10 @@ export default function Notifications() {
             <DialogTitle>Enviar Notificação</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+              <span className="text-xs font-semibold">WhatsApp {isConnected ? 'Conectado' : 'Desconectado'} ({connectionStatus})</span>
+            </div>
             <div>
               <label className="block text-gray-300 mb-1 font-medium">Destinatário</label>
               <Input placeholder="Buscar cliente ou revenda..." className="mb-2 bg-gray-900 border border-gray-700 text-white" onChange={e => setSelectedDest(e.target.value)} />
@@ -289,7 +295,11 @@ export default function Notifications() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
-            <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={!selectedDest} onClick={() => {
+            <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={!selectedDest || !isConnected} onClick={() => {
+              if (!isConnected) {
+                toast.error('O WhatsApp não está conectado!');
+                return;
+              }
               toast.success('Notificação enviada para ' + (selectedDest?.real_name || selectedDest?.personal_name || selectedDest?.name));
               setModal({ type: null });
             }}>Enviar</Button>
