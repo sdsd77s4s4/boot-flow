@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNeonUsers } from "@/hooks/useNeonUsers";
 import { useUsers } from "@/hooks/useUsers";
-import { User, UserPlus, Search, Edit, Eye, Trash2, Copy, Download, Upload, Calendar, Clock, Package, CreditCard, MessageCircle, Settings, Users, FileText, BarChart3, ShoppingCart, Gamepad2, Radio, Tv, Bell, HelpCircle, Shield, Globe, Zap, Star, Award, Trophy, Target, TrendingUp, Activity, PieChart, DollarSign, Percent, ArrowUpRight, ArrowDownRight, CheckCircle, XCircle, AlertCircle, Info, Database } from "lucide-react";
+import { User, UserPlus, Search, Edit, Eye, Trash2, Copy, Download, Upload, Calendar, Clock, Package, CreditCard, MessageCircle, Settings, Users, FileText, BarChart3, ShoppingCart, Gamepad2, Radio, Tv, Bell, HelpCircle, Shield, Globe, Zap, Star, Award, Trophy, Target, TrendingUp, Activity, PieChart, DollarSign, Percent, ArrowUpRight, ArrowDownRight, CheckCircle, XCircle, AlertCircle, Info, Database, X } from "lucide-react";
 
 export default function AdminUsers() {
   const { users, loading, error, createUser, updateUser, deleteUser } = useNeonUsers();
@@ -384,137 +384,365 @@ export default function AdminUsers() {
                     Adicionar Usuário
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#1f2937] border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Adicionar Novo Usuário</DialogTitle>
-                    <DialogDescription>
-                      Preencha os dados do novo usuário
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="name">Nome</Label>
-                      <Input
-                        id="name"
-                        value={newUser.name}
-                        onChange={(e) => setNewUser({...newUser, name: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="Nome completo"
-                      />
+                <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl max-h-[95vh] overflow-hidden p-0">
+                  <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-6 border-b border-gray-700 bg-[#1a1f2e]">
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <h2 className="text-xl font-semibold text-white">Adicionar Cliente</h2>
+                          <p className="text-sm text-gray-400 mt-1">Preencha os dados do novo cliente para adicioná-lo à base de dados</p>
+                        </div>
+                        <Badge className="bg-green-600 text-white text-xs">Novo</Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                          <Upload className="h-4 w-4 mr-1" />
+                          Importar
+                        </Button>
+                        <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                          <FileText className="h-4 w-4 mr-1" />
+                          Modelo
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => setIsAddDialogOpen(false)} className="text-gray-400 hover:text-white">
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={newUser.email}
-                        onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="email@exemplo.com"
-                      />
+
+                    {/* Notes */}
+                    <div className="px-6 py-3 bg-[#1a1f2e] border-b border-gray-700">
+                      <p className="text-xs text-gray-400">
+                        Campos obrigatórios marcados com * • Dados serão sincronizados automaticamente
+                      </p>
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="password">Senha</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={newUser.password}
-                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="Senha"
-                      />
+
+                    {/* Scrollable Content */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                      {/* Extração M3U Section */}
+                      <div className="border border-blue-600 rounded-lg p-4 bg-blue-900/10">
+                        <h3 className="text-lg font-medium text-white mb-2">Extração M3U</h3>
+                        <p className="text-sm text-gray-400 mb-4">Serve para importar dados automaticamente a partir de uma URL.</p>
+                        
+                        <div className="space-y-3">
+                          <Input
+                            placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..."
+                            className="bg-[#23272f] border-gray-700 text-white"
+                          />
+                          <div className="flex gap-2">
+                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                              Teste
+                            </Button>
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                              Extrair
+                            </Button>
+                          </div>
+                          <div className="p-3 bg-blue-900/20 border border-blue-700 rounded-md">
+                            <p className="text-sm text-blue-300">
+                              <Info className="h-4 w-4 inline mr-1" />
+                              Funcionalidade em demonstração. Para implementação completa, será necessário criar uma API serverless para processar as URLs M3U.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Informações Básicas */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-white">Informações Básicas</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Servidor *</Label>
+                            <Select>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue placeholder="IPTV 2" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="iptv1">IPTV 1</SelectItem>
+                                <SelectItem value="iptv2">IPTV 2</SelectItem>
+                                <SelectItem value="iptv3">IPTV 3</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <div className="mt-2 p-2 bg-orange-900/20 border border-orange-700 rounded text-xs text-orange-300">
+                              O servidor não pode ser alterado aqui. Para mudar o servidor, você precisa migrar para outro servidor usando o ícone Migrar Servidor.
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Plano *</Label>
+                            <Select>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue placeholder="Selecione um plano" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="basico">Básico</SelectItem>
+                                <SelectItem value="premium">Premium</SelectItem>
+                                <SelectItem value="vip">VIP</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Usuário *</Label>
+                            <div className="relative">
+                              <Input
+                                value={newUser.name}
+                                onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                                className="bg-[#23272f] border-gray-700 text-white pr-10"
+                                placeholder="Usuário"
+                              />
+                              <Upload className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Senha</Label>
+                            <div className="relative">
+                              <Input
+                                type="password"
+                                value={newUser.password}
+                                onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                                className="bg-[#23272f] border-gray-700 text-white pr-10"
+                                placeholder="Senha"
+                              />
+                              <Upload className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            </div>
+                            <Button size="sm" variant="outline" className="mt-2 border-blue-600 text-blue-400 hover:bg-blue-900/20">
+                              Senha extraída automaticamente da URL M3U
+                            </Button>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Status</Label>
+                            <Select value={newUser.status} onValueChange={(value) => setNewUser({...newUser, status: value})}>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="Ativo">Ativo</SelectItem>
+                                <SelectItem value="Inativo">Inativo</SelectItem>
+                                <SelectItem value="Pendente">Pendente</SelectItem>
+                                <SelectItem value="Suspenso">Suspenso</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Vencimento (Opcional)</Label>
+                            <div className="relative">
+                              <Input
+                                type="date"
+                                value={newUser.expirationDate}
+                                onChange={(e) => setNewUser({...newUser, expirationDate: e.target.value})}
+                                className="bg-[#23272f] border-gray-700 text-white pr-10"
+                                placeholder="dd/mm/aaaa"
+                              />
+                              <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            </div>
+                          </div>
+
+                          <div className="md:col-span-2">
+                            <Label className="text-sm font-medium text-gray-300">Bouquets</Label>
+                            <Input
+                              value={newUser.bouquets}
+                              onChange={(e) => setNewUser({...newUser, bouquets: e.target.value})}
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Bouquets extraídos automaticamente"
+                            />
+                            <div className="mt-2 p-2 bg-green-900/20 border border-green-700 rounded text-xs text-green-300">
+                              Bouquets extraídos automaticamente da conta IPTV
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Informações de Contato */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-white">Informações de Contato</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Nome</Label>
+                            <Input
+                              value={newUser.name}
+                              onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Opcional"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">E-mail</Label>
+                            <Input
+                              type="email"
+                              value={newUser.email}
+                              onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Opcional"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Telegram</Label>
+                            <Input
+                              value={newUser.telegram}
+                              onChange={(e) => setNewUser({...newUser, telegram: e.target.value})}
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Opcional"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">WhatsApp</Label>
+                            <Input
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Opcional"
+                            />
+                            <p className="text-xs text-gray-400 mt-1">
+                              Incluindo o código do país - com ou sem espaço e traços ex: 55 11 99999-8888
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Observações */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-white">Observações</h3>
+                        <Textarea
+                          value={newUser.observations}
+                          onChange={(e) => setNewUser({...newUser, observations: e.target.value})}
+                          className="bg-[#23272f] border-gray-700 text-white"
+                          placeholder="Opcional"
+                          rows={3}
+                        />
+                      </div>
+
+                      {/* Configuração de Serviço */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-white">Configuração de Serviço</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Classe de Serviço</Label>
+                            <Select>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="classe1">Classe 1</SelectItem>
+                                <SelectItem value="classe2">Classe 2</SelectItem>
+                                <SelectItem value="classe3">Classe 3</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Plano</Label>
+                            <Select>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue placeholder="Mensal" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="mensal">Mensal</SelectItem>
+                                <SelectItem value="trimestral">Trimestral</SelectItem>
+                                <SelectItem value="semestral">Semestral</SelectItem>
+                                <SelectItem value="anual">Anual</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Status</Label>
+                            <Select>
+                              <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
+                                <SelectValue placeholder="Ativo" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
+                                <SelectItem value="ativo">Ativo</SelectItem>
+                                <SelectItem value="inativo">Inativo</SelectItem>
+                                <SelectItem value="suspenso">Suspenso</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Data de Renovação</Label>
+                            <Input
+                              type="date"
+                              className="bg-[#23272f] border-gray-700 text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Número de Dispositivos</Label>
+                            <Input
+                              type="number"
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="1"
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Créditos</Label>
+                            <div className="flex items-center gap-2">
+                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                                -
+                              </Button>
+                              <Input
+                                type="number"
+                                className="bg-[#23272f] border-gray-700 text-white w-20 text-center"
+                                placeholder="0"
+                              />
+                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                                +
+                              </Button>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1">valor entre 0 e 500€</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Informações Adicionais */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-white">Informações Adicionais</h3>
+                        
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <input type="checkbox" id="notifications" className="rounded border-gray-600 bg-[#23272f]" />
+                            <Label htmlFor="notifications" className="text-sm text-gray-300">
+                              Notificações via WhatsApp
+                            </Label>
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-medium text-gray-300">Anotações</Label>
+                            <Textarea
+                              className="bg-[#23272f] border-gray-700 text-white"
+                              placeholder="Anotações..."
+                              rows={3}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="plan">Plano/URL M3U</Label>
-                      <Input
-                        id="plan"
-                        value={newUser.plan}
-                        onChange={(e) => setNewUser({...newUser, plan: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="URL do plano ou M3U"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="status">Status</Label>
-                      <Select value={newUser.status} onValueChange={(value) => setNewUser({...newUser, status: value})}>
-                        <SelectTrigger className="bg-[#23272f] border-gray-700 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1f2937] border-gray-700 text-white">
-                          <SelectItem value="Ativo">Ativo</SelectItem>
-                          <SelectItem value="Inativo">Inativo</SelectItem>
-                          <SelectItem value="Pendente">Pendente</SelectItem>
-                          <SelectItem value="Suspenso">Suspenso</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="expirationDate">Data de Expiração</Label>
-                      <Input
-                        id="expirationDate"
-                        type="date"
-                        value={newUser.expirationDate}
-                        onChange={(e) => setNewUser({...newUser, expirationDate: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="telegram">Telegram</Label>
-                      <Input
-                        id="telegram"
-                        value={newUser.telegram}
-                        onChange={(e) => setNewUser({...newUser, telegram: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="@usuario"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="bouquets">Pacotes</Label>
-                      <Input
-                        id="bouquets"
-                        value={newUser.bouquets}
-                        onChange={(e) => setNewUser({...newUser, bouquets: e.target.value})}
-                        className="bg-[#23272f] border-gray-700 text-white"
-                        placeholder="Pacotes incluídos"
-                      />
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between p-6 border-t border-gray-700 bg-[#1a1f2e]">
+                      <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                        Fechar
+                      </Button>
+                      <Button 
+                        onClick={handleAddUser} 
+                        disabled={isAddingUser}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        {isAddingUser ? 'Adicionando...' : 'Adicionar Cliente'}
+                      </Button>
                     </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="observations">Observações</Label>
-                    <Textarea
-                      id="observations"
-                      value={newUser.observations}
-                      onChange={(e) => setNewUser({...newUser, observations: e.target.value})}
-                      className="bg-[#23272f] border-gray-700 text-white"
-                      placeholder="Observações adicionais"
-                      rows={3}
-                    />
-                  </div>
-                  
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                      Cancelar
-                    </Button>
-                    <Button 
-                      onClick={handleAddUser} 
-                      disabled={isAddingUser}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      {isAddingUser ? 'Adicionando...' : 'Adicionar Usuário'}
-                    </Button>
-                  </DialogFooter>
                   
                   {addUserSuccess && (
-                    <div className="mt-4 p-3 bg-green-600 text-white rounded-md text-center">
+                    <div className="absolute top-4 right-4 p-3 bg-green-600 text-white rounded-md">
                       Usuário adicionado com sucesso!
                     </div>
                   )}
