@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp, Users } from 'lucide-react';
+import { useNeonUsers } from '@/hooks/useNeonUsers';
+import { useNeonResellers } from '@/hooks/useNeonResellers';
+import { toast } from 'react-toastify';
 
 const templatesMock = [
   { id: 1, nome: 'Confirmação de Agendamento', texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', variaveis: ['nome', 'servico', 'data', 'hora'], status: 'Ativo', envios: 1247, taxa: 98.5 },
@@ -26,6 +29,10 @@ export default function Notifications() {
   const [historico, setHistorico] = useState(historicoMock);
   const [modal, setModal] = useState<{ type: null | 'novo' | 'editar' | 'enviar', template?: any }>({ type: null });
   const [form, setForm] = useState({ nome: '', texto: '', variaveis: '', status: 'Ativo' });
+  const { users } = useNeonUsers();
+  const { resellers } = useNeonResellers();
+  const [selectedDest, setSelectedDest] = useState<any>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
 
   // Cards resumo
   const enviados = historico.length;
@@ -102,7 +109,7 @@ export default function Notifications() {
       </div>
       <div className="flex justify-end gap-2 mb-4">
         <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setModal({ type: 'novo' })}><Plus className="w-4 h-4 mr-2" /> Novo Template</Button>
-        <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => setModal({ type: 'enviar', template: templates[0] })}><Send className="w-4 h-4 mr-2" /> Enviar Notificação</Button>
+        <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => { setModal({ type: 'enviar' }); setSelectedDest(null); setSelectedTemplate(templates[0]); }}><Send className="w-4 h-4 mr-2" /> Enviar Notificação</Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Templates */}
@@ -246,9 +253,39 @@ export default function Notifications() {
           <DialogHeader>
             <DialogTitle>Enviar Notificação</DialogTitle>
           </DialogHeader>
-          <div className="py-4">Notificação enviada com sucesso!</div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-300 mb-1 font-medium">Destinatário</label>
+              <Input placeholder="Buscar cliente ou revenda..." className="mb-2 bg-gray-900 border border-gray-700 text-white" onChange={e => setSelectedDest(e.target.value)} />
+              <div className="max-h-40 overflow-y-auto rounded border border-gray-700 bg-[#181825] divide-y divide-gray-800">
+                <div className="px-2 py-1 text-xs text-purple-400 font-bold">Clientes Ativos</div>
+                {users.filter(u => (u.status || '').toLowerCase() === 'ativo' && (!selectedDest || (u.real_name || u.name).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(u => (
+                  <div key={u.id} className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'cliente', ...u })}>
+                    <Users className="w-4 h-4 text-purple-400" /> <span>{u.real_name || u.name} <span className="text-xs text-gray-400">({u.email})</span></span>
+                  </div>
+                ))}
+                <div className="px-2 py-1 text-xs text-green-400 font-bold">Revendas Ativas</div>
+                {resellers.filter(r => (r.status || '').toLowerCase() === 'active' && (!selectedDest || (r.personal_name || r.username).toLowerCase().includes((selectedDest || '').toLowerCase()))).map(r => (
+                  <div key={r.id} className="px-3 py-2 hover:bg-green-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'revenda', ...r })}>
+                    <Users className="w-4 h-4 text-green-400" /> <span>{r.personal_name || r.username} <span className="text-xs text-gray-400">({r.email})</span></span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {selectedDest && (
+              <div className="bg-[#181825] border border-purple-800 rounded-lg p-3 text-sm text-gray-200 mt-2">
+                <div className="font-semibold text-purple-300 mb-1">Mensagem:</div>
+                <div className="whitespace-pre-line">{selectedTemplate ? selectedTemplate.texto.replace(/\{(.*?)\}/g, (m, v) => selectedDest[v] || `{${v}}`) : ''}</div>
+              </div>
+            )}
+          </div>
           <DialogFooter>
-            <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleEnviar}>OK</Button>
+            <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
+            <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={!selectedDest} onClick={() => {
+              // Aqui você pode chamar a função de envio real para WhatsApp
+              toast.success('Notificação enviada para ' + (selectedDest?.real_name || selectedDest?.personal_name || selectedDest?.name));
+              setModal({ type: null });
+            }}>Enviar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
