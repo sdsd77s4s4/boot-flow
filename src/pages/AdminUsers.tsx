@@ -244,21 +244,40 @@ export default function AdminUsers() {
     setExtractionResult(null);
 
     try {
-      const response = await fetch('/api/extract-m3u', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: m3uUrl }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Falha na extração');
-      }
-
-      const data = await response.json();
-      setExtractionResult(data);
-      setExtractedUsers(data.users || []);
+      // Simulação de extração M3U (funcionalidade temporária)
+      // Em uma implementação real, você criaria uma API serverless para isso
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
+      
+      // Dados simulados de exemplo
+      const mockData = {
+        totalUsers: Math.floor(Math.random() * 100) + 50,
+        activeUsers: Math.floor(Math.random() * 80) + 30,
+        expiredUsers: Math.floor(Math.random() * 20) + 5,
+        users: [
+          {
+            name: "João Silva",
+            email: "joao@exemplo.com",
+            status: "Ativo",
+            expirationDate: "2024-12-31"
+          },
+          {
+            name: "Maria Santos",
+            email: "maria@exemplo.com", 
+            status: "Ativo",
+            expirationDate: "2024-11-15"
+          },
+          {
+            name: "Pedro Costa",
+            email: "pedro@exemplo.com",
+            status: "Expirado", 
+            expirationDate: "2024-09-01"
+          }
+        ]
+      };
+      
+      setExtractionResult(mockData);
+      setExtractedUsers(mockData.users || []);
+      
     } catch (error) {
       console.error('Erro na extração:', error);
       setExtractionError("Erro ao extrair dados M3U. Verifique a URL e tente novamente.");
@@ -578,6 +597,12 @@ export default function AdminUsers() {
                 <CardDescription className="text-gray-400">
                   Insira uma URL M3U para extrair informações dos usuários
                 </CardDescription>
+                <div className="mt-2 p-3 bg-blue-900/20 border border-blue-700 rounded-md">
+                  <p className="text-sm text-blue-300">
+                    <Info className="h-4 w-4 inline mr-1" />
+                    Funcionalidade em demonstração. Para implementação completa, será necessário criar uma API serverless para processar arquivos M3U.
+                  </p>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -733,6 +758,9 @@ export default function AdminUsers() {
         <DialogContent className="bg-[#1f2937] border-gray-700 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>Detalhes do Usuário</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Visualize as informações completas do usuário
+            </DialogDescription>
           </DialogHeader>
           
           {viewingUser && (
@@ -796,6 +824,9 @@ export default function AdminUsers() {
         <DialogContent className="bg-[#1f2937] border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Usuário</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Modifique as informações do usuário
+            </DialogDescription>
           </DialogHeader>
           
           {editingUser && (
