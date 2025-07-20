@@ -1547,7 +1547,7 @@ export default function AdminUsers() {
             <div className="bg-[#23272f] rounded-lg p-4 mb-4">
               <h3 className="text-lg font-semibold text-white mb-2">Usuário a ser excluído:</h3>
               <div className="space-y-2">
-                <p className="text-white"><span className="text-gray-400">Nome:</span> {deletingUser.name}</p>
+                <p className="text-white"><span className="text-gray-400">Nome:</span> {deletingUser.real_name || deletingUser.name}</p>
                 <p className="text-white"><span className="text-gray-400">Email:</span> {deletingUser.email}</p>
                 <p className="text-white"><span className="text-gray-400">Plano:</span> {deletingUser.plan}</p>
                 <p className="text-white"><span className="text-gray-400">Status:</span> {deletingUser.status}</p>
