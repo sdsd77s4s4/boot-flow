@@ -25,14 +25,14 @@ const Gamification = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Trophy className="h-6 w-6 text-primary" />
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Trophy className="h-4 w-4 sm:h-6 sm:w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Nível</p>
-                  <p className="text-2xl font-bold">{userLevel.level}</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Nível</p>
+                  <p className="text-lg sm:text-2xl font-bold">{userLevel.level}</p>
                 </div>
               </div>
             </CardContent>
