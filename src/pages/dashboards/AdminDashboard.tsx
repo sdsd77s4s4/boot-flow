@@ -73,6 +73,9 @@ const AdminDashboard = () => {
 
   const { users, loading: loadingUsers, refreshUsers } = useNeonUsers();
   const { resellers: resellersData, loading: loadingResellers, refreshResellers } = useNeonResellers();
+  
+  // Estado para forçar re-renderização
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Unificar atividades recentes (exemplo: cadastro, edição, status)
   const recentActivityUnified = [
@@ -94,6 +97,7 @@ const AdminDashboard = () => {
 
   // Log para debug
   console.log('📊 Dashboard: Dados atualizados:', {
+    refreshTrigger,
     usersCount: users.length,
     resellersCount: resellersData.length,
     recentActivityCount: recentActivityUnified.length,
@@ -453,6 +457,17 @@ const AdminDashboard = () => {
                   <UserPlus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">Novo Cliente</span>
                   <span className="sm:hidden">Cliente</span>
+                </Button>
+                <Button 
+                  className="bg-green-600 hover:bg-green-700 text-white h-10 sm:h-auto" 
+                  onClick={() => {
+                    console.log('🔄 Teste manual: Atualizando dados...');
+                    setRefreshTrigger(prev => prev + 1);
+                  }}
+                > 
+                  <RefreshCw className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Atualizar</span>
+                  <span className="sm:hidden">Refresh</span>
                 </Button>
               </div>
             </div>
@@ -840,6 +855,15 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, [refreshUsers, refreshResellers]);
 
+  // Forçar atualização quando refreshTrigger muda
+  useEffect(() => {
+    if (refreshTrigger > 0) {
+      console.log('🔄 Forçando atualização dos dados...');
+      refreshUsers();
+      if (refreshResellers) refreshResellers();
+    }
+  }, [refreshTrigger, refreshUsers, refreshResellers]);
+
   // Listener para atualização instantânea
   useEffect(() => {
     const handleRefresh = (event: CustomEvent) => {
@@ -847,11 +871,16 @@ const AdminDashboard = () => {
       console.log('Evento recebido:', event);
       console.log('Detalhes do evento:', event.detail);
       
+      // Forçar re-renderização
+      setRefreshTrigger(prev => prev + 1);
+      
       // Atualizar dados baseado na fonte
       if (event.detail?.source === 'users' || !event.detail?.source) {
+        console.log('🔄 Atualizando dados de usuários...');
         refreshUsers();
       }
       if (event.detail?.source === 'resellers' || !event.detail?.source) {
+        console.log('🔄 Atualizando dados de revendedores...');
         if (refreshResellers) refreshResellers();
       }
     };
