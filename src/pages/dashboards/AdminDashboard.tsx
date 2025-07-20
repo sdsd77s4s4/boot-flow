@@ -26,7 +26,8 @@ import {
   Clock,
   Home,
   Paintbrush,
-  UserPlus
+  UserPlus,
+  Bell
 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/sidebars/AdminSidebar";
@@ -135,151 +136,151 @@ const AdminDashboard = () => {
       color: 'bg-blue-600',
       cards: [
     {
-      id: 'iptv',
+      id: 'clientes',
       content: (
         <CardHeader className="bg-gradient-to-r from-purple-700 to-purple-500 rounded-t-lg">
           <div className="flex items-center space-x-2">
-            <Tv className="w-6 h-6 text-purple-200" />
-            <CardTitle className="text-white">Sistema IPTV</CardTitle>
+            <Users className="w-6 h-6 text-purple-200" />
+            <CardTitle className="text-white">Clientes</CardTitle>
           </div>
         </CardHeader>
       ),
       body: (
         <CardContent className="bg-[#1f2937] rounded-b-lg">
-          <p className="text-gray-300 mb-4">Gerencie servidores, canais e configurações IPTV</p>
+          <p className="text-gray-300 mb-4">Gerencie todos os seus clientes cadastrados</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Usuários Ativos:</span><span className="text-sm font-semibold text-white">{stats.iptvUsers.toLocaleString()}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Servidores Online:</span><span className="text-sm font-semibold text-green-400">12/12</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Clientes Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeClients.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+{stats.monthlyGrowth}%</span></div>
           </div>
         </CardContent>
       ),
-          onClick: () => handleModalOpen("iptv")
+      onClick: () => handlePageChange("users")
     },
     {
-      id: 'ecommerce',
+      id: 'revendas',
       content: (
         <CardHeader className="bg-gradient-to-r from-green-700 to-green-500 rounded-t-lg">
           <div className="flex items-center space-x-2">
-            <ShoppingCart className="w-6 h-6 text-green-200" />
-            <CardTitle className="text-white">E-commerce</CardTitle>
+            <UserPlus className="w-6 h-6 text-green-200" />
+            <CardTitle className="text-white">Revendas</CardTitle>
           </div>
         </CardHeader>
       ),
       body: (
         <CardContent className="bg-[#1f2937] rounded-b-lg">
-          <p className="text-gray-300 mb-4">Gerencie produtos, vendas e configurações</p>
+          <p className="text-gray-300 mb-4">Gerencie suas revendas e parceiros</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Vendas Hoje:</span><span className="text-sm font-semibold text-white">R$ 12.450</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Produtos Ativos:</span><span className="text-sm font-semibold text-green-400">24</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Revendedores Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeResellers}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+8</span></div>
           </div>
         </CardContent>
       ),
-          onClick: () => handleModalOpen("ecommerce")
-        }
+      onClick: () => handlePageChange("resellers")
+    }
       ]
     },
     'personalizacao': {
       id: 'personalizacao',
-      title: 'Personalização',
+      title: 'Cobrança',
       color: 'bg-purple-600',
       cards: [
     {
-          id: 'branding',
+      id: 'cobranca',
       content: (
-            <CardHeader className="bg-gradient-to-r from-blue-700 to-blue-500 rounded-t-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-700 to-blue-500 rounded-t-lg">
           <div className="flex items-center space-x-2">
-                <Paintbrush className="w-6 h-6 text-blue-200" />
-                <CardTitle className="text-white">Customizar Marca</CardTitle>
+            <DollarSign className="w-6 h-6 text-blue-200" />
+            <CardTitle className="text-white">Cobrança</CardTitle>
           </div>
         </CardHeader>
       ),
       body: (
         <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Personalize a aparência, identidade visual e configurações white label da sua plataforma</p>
+          <p className="text-gray-300 mb-4">Controle e visualize cobranças e pagamentos</p>
           <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Logo, cores, domínio, rodapé, etc.</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Configurações WhiteLabel exclusivas</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Receita Total:</span><span className="text-sm font-semibold text-white">R$ {stats.totalRevenue.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Pagamentos este mês:</span><span className="text-sm font-semibold text-green-400">+15</span></div>
           </div>
         </CardContent>
       ),
-          onClick: () => handleModalOpen("branding")
-        }
+      onClick: () => handlePageChange("cobrancas")
+    }
       ]
     },
     'analytics': {
       id: 'analytics',
-      title: 'Analytics & IA',
+      title: 'Notificações',
       color: 'bg-red-600',
       cards: [
         {
-          id: 'analytics-card',
+          id: 'notificacoes',
       content: (
         <CardHeader className="bg-gradient-to-r from-red-700 to-red-500 rounded-t-lg">
           <div className="flex items-center space-x-2">
-            <BarChart3 className="w-6 h-6 text-red-200" />
-            <CardTitle className="text-white">Analytics</CardTitle>
+            <Bell className="w-6 h-6 text-red-200" />
+            <CardTitle className="text-white">Notificações</CardTitle>
           </div>
         </CardHeader>
       ),
       body: (
         <CardContent className="bg-[#1f2937] rounded-b-lg">
-          <p className="text-gray-300 mb-4">Métricas, relatórios e insights</p>
+          <p className="text-gray-300 mb-4">Gerencie alertas e notificações do sistema</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Visualizações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Conversão:</span><span className="text-sm font-semibold text-green-400">3.2%</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Notificações Enviadas:</span><span className="text-sm font-semibold text-white">2.345</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Novas este mês:</span><span className="text-sm font-semibold text-green-400">+120</span></div>
           </div>
         </CardContent>
       ),
-          onClick: () => handleModalOpen("analytics")
+      onClick: () => handlePageChange("notificacoes")
     },
     {
-      id: 'ai',
+      id: 'whatsapp',
       content: (
-        <CardHeader className="bg-gradient-to-r from-gray-800 to-gray-600 rounded-t-lg">
+        <CardHeader className="bg-gradient-to-r from-green-800 to-green-600 rounded-t-lg">
           <div className="flex items-center space-x-2">
-            <Brain className="w-6 h-6 text-gray-200" />
-            <CardTitle className="text-white">IA + Voz</CardTitle>
+            <MessageSquare className="w-6 h-6 text-green-200" />
+            <CardTitle className="text-white">WhatsApp</CardTitle>
           </div>
         </CardHeader>
       ),
       body: (
         <CardContent className="bg-[#1f2937] rounded-b-lg">
-          <p className="text-gray-300 mb-4">Configurações de inteligência artificial</p>
+          <p className="text-gray-300 mb-4">Gerencie integrações e campanhas de WhatsApp</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Interações:</span><span className="text-sm font-semibold text-white">45.678</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Status:</span><span className="text-sm font-semibold text-green-400">Ativo</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Campanhas Ativas:</span><span className="text-sm font-semibold text-white">8</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Mensagens este mês:</span><span className="text-sm font-semibold text-green-400">+1.200</span></div>
           </div>
         </CardContent>
       ),
-          onClick: () => handleModalOpen("ai")
-        }
+      onClick: () => handlePageChange("whatsapp")
+    }
       ]
     },
-    'gamificacao': {
-      id: 'gamificacao',
-      title: 'Gamificação',
+    'analises': {
+      id: 'analises',
+      title: 'Analises',
       color: 'bg-yellow-600',
       cards: [
         {
-          id: 'gamificacao-card',
+          id: 'analises-card',
           content: (
             <CardHeader className="bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-t-lg">
               <div className="flex items-center space-x-2">
-                <Gamepad2 className="w-6 h-6 text-yellow-100" />
-                <CardTitle className="text-white">Gamificação</CardTitle>
+                <BarChart3 className="w-6 h-6 text-yellow-100" />
+                <CardTitle className="text-white">Analises</CardTitle>
               </div>
             </CardHeader>
           ),
           body: (
             <CardContent className="bg-[#1f2937] rounded-b-lg">
-              <p className="text-gray-300 mb-4">Sistema de pontos, conquistas e rankings</p>
+              <p className="text-gray-300 mb-4">Visualize relatórios e análises detalhadas</p>
               <div className="space-y-2">
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Usuários Ativos:</span><span className="text-sm font-semibold text-white">8.234</span></div>
-                <div className="flex justify-between"><span className="text-sm text-gray-400">Conquistas:</span><span className="text-sm font-semibold text-green-400">15</span></div>
+                <div className="flex justify-between"><span className="text-sm text-gray-400">Relatórios:</span><span className="text-sm font-semibold text-white">15</span></div>
+                <div className="flex justify-between"><span className="text-sm text-gray-400">Atualizados este mês:</span><span className="text-sm font-semibold text-green-400">+3</span></div>
               </div>
             </CardContent>
           ),
-          onClick: () => handleModalOpen("gamificacao")
+          onClick: () => handlePageChange("analytics")
     }
       ]
     }
