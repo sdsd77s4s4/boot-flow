@@ -473,19 +473,19 @@ const AdminDashboard = () => {
 
             {/* Cards Section */}
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
                     {viewMode === 'kanban' ? 'Sistema Kanban' : 'Serviços do Sistema'}
                   </h2>
-                  <p className="text-gray-400">
+                  <p className="text-gray-400 text-sm sm:text-base">
                     {viewMode === 'kanban' 
                       ? 'Organize seus serviços por categoria' 
                       : 'Acesse todos os serviços do sistema'
                     }
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'outline'}
                     onClick={() => setViewMode('grid')}
