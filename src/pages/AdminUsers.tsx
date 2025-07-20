@@ -633,6 +633,7 @@ export default function AdminUsers() {
               </Button>
             </DialogTrigger>
           </Dialog>
+        </div>
           
           <Dialog open={isCopyDialogOpen} onOpenChange={setIsCopyDialogOpen}>
             <DialogTrigger asChild>
