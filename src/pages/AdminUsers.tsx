@@ -327,43 +327,191 @@ export default function AdminUsers() {
     setExtractionResult(null);
 
     try {
-      // Simulação de extração M3U (funcionalidade temporária)
-      // Em uma implementação real, você criaria uma API serverless para isso
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
-      
-      // Dados simulados de exemplo
-      const mockData = {
-        totalUsers: Math.floor(Math.random() * 100) + 50,
-        activeUsers: Math.floor(Math.random() * 80) + 30,
-        expiredUsers: Math.floor(Math.random() * 20) + 5,
-        users: [
-          {
-            name: "João Silva",
-            email: "joao@exemplo.com",
-            status: "Ativo",
-            expirationDate: "2024-12-31"
-          },
-          {
-            name: "Maria Santos",
-            email: "maria@exemplo.com", 
-            status: "Ativo",
-            expirationDate: "2024-11-15"
-          },
-          {
-            name: "Pedro Costa",
-            email: "pedro@exemplo.com",
-            status: "Expirado", 
-            expirationDate: "2024-09-01"
+      // Sistema de proxies CORS para extração M3U
+      const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(m3uUrl)}`,
+        `https://cors-anywhere.herokuapp.com/${m3uUrl}`,
+        `https://thingproxy.freeboard.io/fetch/${m3uUrl}`,
+        `https://cors.bridged.cc/${m3uUrl}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(m3uUrl)}`
+      ];
+
+      let m3uContent = null;
+      let lastError = null;
+
+      // Tentar cada proxy até conseguir
+      for (const proxy of proxies) {
+        try {
+          const response = await fetch(proxy, {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/plain,application/x-mpegurl,*/*',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            timeout: 10000
+          });
+
+          if (response.ok) {
+            m3uContent = await response.text();
+            break;
           }
-        ]
+        } catch (error) {
+          lastError = error;
+          continue;
+        }
+      }
+
+      if (!m3uContent) {
+        throw new Error('Não foi possível acessar a URL M3U. Verifique se a URL está correta e acessível.');
+      }
+
+      // Processar conteúdo M3U
+      const lines = m3uContent.split('\n');
+      const users = [];
+      let currentUser = null;
+      let totalUsers = 0;
+      let activeUsers = 0;
+      let expiredUsers = 0;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        if (line.startsWith('#EXTINF:')) {
+          // Extrair informações do usuário da linha EXTINF
+          const userInfo = extractUserInfoFromExtinf(line);
+          if (userInfo) {
+            currentUser = userInfo;
+            totalUsers++;
+            
+            // Verificar se o usuário está ativo (baseado na data de expiração)
+            if (userInfo.expirationDate && new Date(userInfo.expirationDate) > new Date()) {
+              activeUsers++;
+            } else {
+              expiredUsers++;
+            }
+          }
+        } else if (line.startsWith('http') && currentUser) {
+          // URL do stream encontrada, adicionar usuário
+          currentUser.streamUrl = line;
+          users.push({ ...currentUser });
+          currentUser = null;
+        }
+      }
+
+      const result = {
+        totalUsers,
+        activeUsers,
+        expiredUsers,
+        users: users.slice(0, 50), // Limitar a 50 usuários para performance
+        rawContent: m3uContent.substring(0, 1000) // Primeiros 1000 caracteres para debug
       };
-      
-      setExtractionResult(mockData);
-      setExtractedUsers(mockData.users || []);
+
+      setExtractionResult(result);
+      setExtractedUsers(users.slice(0, 50));
       
     } catch (error) {
       console.error('Erro na extração:', error);
-      setExtractionError("Erro ao extrair dados M3U. Verifique a URL e tente novamente.");
+      setExtractionError(`Erro ao extrair dados M3U: ${error.message}`);
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  // Função para extrair informações do usuário da linha EXTINF
+  const extractUserInfoFromExtinf = (extinfLine: string) => {
+    try {
+      // Padrão comum: #EXTINF:-1 tvg-name="Nome" tvg-logo="URL" group-title="Grupo",Nome do Usuário
+      const match = extinfLine.match(/group-title="([^"]*)"[^,]*,(.+)/);
+      if (match) {
+        const groupTitle = match[1];
+        const userName = match[2].trim();
+        
+        // Tentar extrair email do nome ou grupo
+        const emailMatch = userName.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+        const email = emailMatch ? emailMatch[1] : `${userName.toLowerCase().replace(/\s+/g, '')}@iptv.com`;
+        
+        return {
+          name: userName,
+          email: email,
+          status: "Ativo",
+          expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 dias
+          plan: "M3U Importado",
+          bouquets: groupTitle,
+          telegram: "",
+          observations: `Importado de M3U - Grupo: ${groupTitle}`
+        };
+      }
+      
+      // Padrão alternativo: apenas nome após vírgula
+      const simpleMatch = extinfLine.match(/,(.+)$/);
+      if (simpleMatch) {
+        const userName = simpleMatch[1].trim();
+        const email = `${userName.toLowerCase().replace(/\s+/g, '')}@iptv.com`;
+        
+        return {
+          name: userName,
+          email: email,
+          status: "Ativo",
+          expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          plan: "M3U Importado",
+          bouquets: "Importado",
+          telegram: "",
+          observations: "Importado de M3U"
+        };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Erro ao extrair informações do usuário:', error);
+      return null;
+    }
+  };
+
+  // Função para aplicar dados extraídos ao formulário
+  const applyExtractedData = (user: any) => {
+    setNewUser({
+      ...newUser,
+      name: user.name,
+      email: user.email,
+      plan: m3uUrl,
+      status: user.status,
+      telegram: user.telegram || "",
+      observations: user.observations || "",
+      expirationDate: user.expirationDate || "",
+      password: "",
+      bouquets: user.bouquets || ""
+    });
+    
+    // Fechar a seção de extração e ir para o topo do formulário
+    const formElement = document.querySelector('.custom-scroll');
+    if (formElement) {
+      formElement.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Função para testar a URL M3U
+  const testM3UUrl = async () => {
+    if (!m3uUrl.trim()) {
+      setExtractionError("Por favor, insira uma URL M3U válida");
+      return;
+    }
+
+    setIsExtracting(true);
+    setExtractionError("");
+
+    try {
+      const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(m3uUrl)}`, {
+        method: 'HEAD',
+        timeout: 5000
+      });
+
+      if (response.ok) {
+        setExtractionError("✅ URL M3U acessível! Clique em 'Extrair' para processar os dados.");
+      } else {
+        setExtractionError("❌ URL M3U não acessível. Verifique se a URL está correta.");
+      }
+    } catch (error) {
+      setExtractionError("❌ Erro ao testar URL M3U. Verifique a conexão e tente novamente.");
     } finally {
       setIsExtracting(false);
     }
@@ -531,23 +679,85 @@ export default function AdminUsers() {
                         
                         <div className="space-y-3">
                           <Input
+                            value={m3uUrl}
+                            onChange={(e) => setM3uUrl(e.target.value)}
                             placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..."
                             className="bg-[#23272f] border-gray-700 text-white"
                           />
                           <div className="flex gap-2">
-                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
-                              Teste
+                            <Button 
+                              size="sm" 
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={testM3UUrl}
+                              disabled={isExtracting}
+                            >
+                              {isExtracting ? 'Testando...' : 'Teste'}
                             </Button>
-                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                              Extrair
+                            <Button 
+                              size="sm" 
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                              onClick={extractM3UData}
+                              disabled={isExtracting}
+                            >
+                              {isExtracting ? 'Extraindo...' : 'Extrair'}
                             </Button>
                           </div>
-                          <div className="p-3 bg-blue-900/20 border border-blue-700 rounded-md">
-                            <p className="text-sm text-blue-300">
-                              <Info className="h-4 w-4 inline mr-1" />
-                              Funcionalidade em demonstração. Para implementação completa, será necessário criar uma API serverless para processar as URLs M3U.
-                            </p>
-                          </div>
+                          
+                          {extractionError && (
+                            <div className={`p-3 rounded-md text-sm ${
+                              extractionError.includes('✅') 
+                                ? 'bg-green-900/20 border border-green-700 text-green-300' 
+                                : extractionError.includes('❌')
+                                ? 'bg-red-900/20 border border-red-700 text-red-300'
+                                : 'bg-blue-900/20 border border-blue-700 text-blue-300'
+                            }`}>
+                              {extractionError}
+                            </div>
+                          )}
+                          
+                          {extractionResult && (
+                            <div className="space-y-3">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="p-3 bg-[#374151] rounded-lg">
+                                  <div className="text-lg font-bold text-white">{extractionResult.totalUsers}</div>
+                                  <div className="text-xs text-gray-400">Total de Usuários</div>
+                                </div>
+                                <div className="p-3 bg-[#374151] rounded-lg">
+                                  <div className="text-lg font-bold text-green-400">{extractionResult.activeUsers}</div>
+                                  <div className="text-xs text-gray-400">Usuários Ativos</div>
+                                </div>
+                                <div className="p-3 bg-[#374151] rounded-lg">
+                                  <div className="text-lg font-bold text-red-400">{extractionResult.expiredUsers}</div>
+                                  <div className="text-xs text-gray-400">Usuários Expirados</div>
+                                </div>
+                              </div>
+                              
+                                                             {extractedUsers.length > 0 && (
+                                 <div className="space-y-2">
+                                   <h4 className="text-sm font-medium text-white">Usuários Extraídos (Primeiros 10):</h4>
+                                   <div className="max-h-40 overflow-y-auto space-y-1">
+                                     {extractedUsers.slice(0, 10).map((user, index) => (
+                                       <div key={index} className="p-2 bg-[#374151] rounded text-xs">
+                                         <div className="text-white font-medium">{user.name}</div>
+                                         <div className="text-gray-400">{user.email}</div>
+                                         <div className="text-gray-500">Grupo: {user.bouquets}</div>
+                                         <Button 
+                                           size="sm" 
+                                           className="mt-1 bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                                           onClick={() => applyExtractedData(user)}
+                                         >
+                                           Aplicar ao Formulário
+                                         </Button>
+                                       </div>
+                                     ))}
+                                   </div>
+                                   <div className="p-2 bg-yellow-900/20 border border-yellow-700 rounded text-xs text-yellow-300">
+                                     💡 Clique em "Aplicar ao Formulário" para preencher automaticamente os campos com os dados extraídos.
+                                   </div>
+                                 </div>
+                               )}
+                            </div>
+                          )}
                         </div>
                       </div>
 
