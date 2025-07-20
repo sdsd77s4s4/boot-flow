@@ -104,7 +104,8 @@ export default function AdminUsers() {
             observations: "",
             expirationDate: "",
             password: "",
-            bouquets: ""
+            bouquets: "",
+            realName: "" // Limpando também o campo realName
           });
           
           // Limpar dados de extração
