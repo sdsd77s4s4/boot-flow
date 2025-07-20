@@ -153,14 +153,30 @@ export default function Notifications() {
       </div>
       {/* Modal Novo Template */}
       <Dialog open={modal.type === 'novo'} onOpenChange={() => setModal({ type: null })}>
-        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-lg">
+        <DialogContent className="bg-gradient-to-br from-[#232a36] to-[#1f1930] border border-purple-700 text-white max-w-lg shadow-2xl rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Novo Template</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-purple-300 flex items-center gap-2">
+              <MessageSquare className="w-6 h-6 text-purple-400" /> Novo Template
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-            <Input placeholder="Texto da Mensagem" className="bg-gray-900 border border-gray-700 text-white" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
-            <Input placeholder="Variáveis (separadas por vírgula)" className="bg-gray-900 border border-gray-700 text-white" value={form.variaveis} onChange={e => setForm({ ...form, variaveis: e.target.value })} />
+            <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white rounded-lg" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+            <textarea placeholder="Texto da Mensagem (use {variaveis})" rows={3} className="bg-gray-900 border border-gray-700 text-white rounded-lg w-full p-2" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
+            {/* Variáveis detectadas automaticamente */}
+            <div className="flex flex-wrap gap-2">
+              {Array.from(new Set((form.texto.match(/\{(.*?)\}/g) || []).map(v => v.replace(/[{}]/g, '')))).length > 0 ? (
+                Array.from(new Set((form.texto.match(/\{(.*?)\}/g) || []).map(v => v.replace(/[{}]/g, '')))).map(v => (
+                  <span key={v} className="bg-purple-900/60 text-purple-200 rounded-full px-3 py-1 text-xs font-semibold border border-purple-700">{'{'}{v}{'}'}</span>
+                ))
+              ) : (
+                <span className="text-xs text-gray-400">Nenhuma variável detectada. Use {'{nome}'} por exemplo.</span>
+              )}
+            </div>
+            {/* Visualização ao vivo da mensagem */}
+            <div className="bg-[#181825] border border-purple-800 rounded-lg p-3 text-sm text-gray-200 mt-2">
+              <div className="font-semibold text-purple-300 mb-1">Visualização:</div>
+              <div className="whitespace-pre-line">{form.texto || 'Sua mensagem aparecerá aqui...'}</div>
+            </div>
             <select className="bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
               <option value="Ativo">Ativo</option>
               <option value="Inativo">Inativo</option>
