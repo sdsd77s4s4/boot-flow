@@ -443,7 +443,8 @@ export default function AdminUsers() {
             observations: observations.length > 0 ? observations.join(' | ') : '',
             expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
             password: data.user_info.password || password,
-            bouquets: Array.isArray(bouquetsData) ? bouquetsData.map(b => b.category_name).join(', ') : ''
+            bouquets: Array.isArray(bouquetsData) ? bouquetsData.map(b => b.category_name).join(', ') : '',
+            realName: '' // Campo "Nome" na seção de contato fica vazio
           };
 
           // Aplicar aos formulários baseado no modal aberto
