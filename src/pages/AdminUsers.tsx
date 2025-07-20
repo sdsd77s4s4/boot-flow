@@ -1006,14 +1006,14 @@ export default function AdminUsers() {
           <Table>
             <TableHeader>
               <TableRow className="text-gray-400">
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Plano</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Telegram</TableHead>
-                <TableHead>Vencimento</TableHead>
-                <TableHead>Criado em</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableHead className="text-xs sm:text-sm">Nome</TableHead>
+                <TableHead className="hidden sm:table-cell text-xs sm:text-sm">Email</TableHead>
+                <TableHead className="text-xs sm:text-sm">Plano</TableHead>
+                <TableHead className="text-xs sm:text-sm">Status</TableHead>
+                <TableHead className="hidden md:table-cell text-xs sm:text-sm">Telegram</TableHead>
+                <TableHead className="hidden lg:table-cell text-xs sm:text-sm">Vencimento</TableHead>
+                <TableHead className="hidden lg:table-cell text-xs sm:text-sm">Criado em</TableHead>
+                <TableHead className="text-xs sm:text-sm">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
