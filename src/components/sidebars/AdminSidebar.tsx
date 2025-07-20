@@ -113,11 +113,11 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
     return (
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerTrigger asChild>
-          <Button variant="ghost" size="icon" className="bg-[#1f2937] text-white border border-gray-700" onClick={handleDrawerToggle}>
-            <Menu className="w-6 h-6" />
+          <Button variant="ghost" size="icon" className="bg-[#1f2937] text-white border border-gray-700 h-10 w-10" onClick={handleDrawerToggle}>
+            <Menu className="w-5 h-5" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="bg-[#232a36] text-white w-full h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[99999] flex flex-col border-4 border-purple-700">
+        <DrawerContent className="bg-[#232a36] text-white w-full h-full fixed left-0 top-0 rounded-none overflow-y-auto shadow-2xl z-[99999] flex flex-col border-2 sm:border-4 border-purple-700">
           <div className="flex items-center justify-between p-4 mb-2 border-b border-gray-700">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
