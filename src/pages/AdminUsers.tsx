@@ -1457,12 +1457,16 @@ export default function AdminUsers() {
                       <label className="block text-gray-300 mb-1 font-medium">Nome *</label>
                       <input 
                         value={editingUser.realName || ""}
-                        onChange={(e) => {
-                          console.log('Campo Nome alterado para:', e.target.value);
-                          setEditingUser({...editingUser, realName: e.target.value});
+                        onChange={async (e) => {
+                          const newName = e.target.value;
+                          setEditingUser({ ...editingUser, realName: newName });
+                          if (editingUser && editingUser.id) {
+                            // Salvar em tempo real no banco
+                            await updateUser(editingUser.id, { real_name: newName });
+                          }
                         }}
                         placeholder="Digite o nome completo" 
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2" 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         required
                       />
                     </div>
