@@ -205,7 +205,13 @@ export default function AdminUsers() {
       realName: user.real_name || '', // Mapear real_name do banco para realName
       expirationDate: user.expiration_date || '', // Mapear expiration_date para expirationDate
       plan: user.m3u_url || '', // Mapear m3u_url para plan
-      observations: user.observations || '' // Garantir que observations existe
+      observations: user.observations || '', // Garantir que observations existe
+      telegram: user.telegram || '', // Campo telegram
+      whatsapp: user.whatsapp || '', // Campo whatsapp
+      status: user.status || 'Ativo', // Campo status
+      devices: user.devices || 0, // Campo dispositivos
+      credits: user.credits || 0, // Campo créditos
+      notes: user.notes || '' // Campo anotações
     };
     setEditingUser(mappedUser);
     setIsEditDialogOpen(true);
