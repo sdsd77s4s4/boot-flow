@@ -11,6 +11,8 @@ import type { User } from '@/hooks/useUsers';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import React from "react";
+import { useNeonUsers } from '@/hooks/useNeonUsers';
+import { useNeonResellers } from '@/hooks/useNeonResellers';
 
 interface Cobranca {
   id: number;
@@ -20,6 +22,7 @@ interface Cobranca {
   valor: number;
   vencimento: string;
   status: 'Pendente' | 'Vencida' | 'Paga';
+  tipo: 'Cliente' | 'Revenda';
 }
 
 // Gerar cobranças baseadas nos usuários
@@ -47,21 +50,32 @@ const generateCobrancasFromUsers = (users: User[]): Cobranca[] => {
       descricao: descricoes[index % descricoes.length],
       valor: Math.floor(Math.random() * 50) + 90, // Valor entre 90 e 140
       vencimento: vencimento.toLocaleDateString('pt-BR'),
-      status: statuses[index % statuses.length]
+      status: statuses[index % statuses.length],
+      tipo: 'Cliente',
     };
   });
 };
 
 export default function AdminCobrancas() {
-  const { users, getActiveUsers } = useUsers();
+  const { users } = useNeonUsers();
+  const { resellers } = useNeonResellers();
   const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
 
-  // Gerar cobranças quando os usuários carregarem
+  // Gerar cobranças para clientes e revendas
   useEffect(() => {
-    if (users.length > 0) {
-      setCobrancas(generateCobrancasFromUsers(users));
-    }
-  }, [users]);
+    const cobrancasClientes = users.length > 0 ? generateCobrancasFromUsers(users) : [];
+    const cobrancasRevendas = resellers.length > 0 ? resellers.map((rev, idx) => ({
+      id: 10000 + rev.id, // evitar conflito de id
+      cliente: rev.personal_name || rev.username,
+      email: rev.email || '',
+      descricao: 'Cobrança Revenda - Mensal',
+      valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
+      vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
+      status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
+      tipo: 'Revenda',
+    })) : [];
+    setCobrancas([...cobrancasClientes.map(c => ({ ...c, tipo: 'Cliente' })), ...cobrancasRevendas]);
+  }, [users, resellers]);
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string | null>(null);
   const [modalNova, setModalNova] = useState(false);
@@ -130,6 +144,7 @@ export default function AdminCobrancas() {
       valor: Number(nova.valor),
       vencimento: nova.vencimento,
       status: nova.status as 'Pendente' | 'Vencida' | 'Paga',
+      tipo: 'Cliente', // Default to Cliente
     };
     
     setCobrancas([...cobrancas, novaCobranca]);
@@ -343,6 +358,7 @@ export default function AdminCobrancas() {
                 <TableHead>Valor</TableHead>
                 <TableHead>Vencimento</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="text-white text-xs sm:text-sm">Tipo</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -368,6 +384,7 @@ export default function AdminCobrancas() {
                     {c.status === 'Pendente' && <Badge className="bg-yellow-700 text-yellow-200">Pendente</Badge>}
                     {c.status === 'Paga' && <Badge className="bg-green-700 text-green-200">Paga</Badge>}
                   </TableCell>
+                  <TableCell className="text-white text-xs sm:text-sm">{c.tipo}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button size="icon" variant="ghost" onClick={() => setModalVisualizar(c)}><Eye className="w-4 h-4 text-blue-400" /></Button>
@@ -414,7 +431,7 @@ export default function AdminCobrancas() {
                   onChange={e => handleClienteChange(e.target.value)}
                 >
                   <option value="">Selecione um cliente</option>
-                  {getActiveUsers().map(user => (
+                  {users.map(user => (
                     <option key={user.id} value={user.id.toString()}>
                       {user.name} - {user.email}
                     </option>
