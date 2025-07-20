@@ -168,6 +168,7 @@ export default function AdminUsers() {
       };
       
       console.log('Dados preparados para atualização:', updatedUserData);
+      console.log('Todos os campos incluídos:', Object.keys(updatedUserData));
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
@@ -386,7 +387,11 @@ export default function AdminUsers() {
               expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
               password: data.user_info.password || password,
               bouquets: '',
-              realName: '' // Campo "Nome" na seção de contato fica vazio
+              realName: '', // Campo "Nome" na seção de contato fica vazio
+              whatsapp: '', // Campo whatsapp
+              devices: data.user_info.max_connections ? parseInt(data.user_info.max_connections) : 1, // Dispositivos baseado em max_connections
+              credits: 0, // Campo créditos
+              notes: '' // Campo anotações
             };
 
             // Aplicar aos formulários baseado no modal aberto
@@ -482,7 +487,11 @@ export default function AdminUsers() {
             expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split('T')[0] : '',
             password: data.user_info.password || password,
             bouquets: Array.isArray(bouquetsData) ? bouquetsData.map(b => b.category_name).join(', ') : '',
-            realName: '' // Campo "Nome" na seção de contato fica vazio
+            realName: '', // Campo "Nome" na seção de contato fica vazio
+            whatsapp: '', // Campo whatsapp
+            devices: data.user_info.max_connections ? parseInt(data.user_info.max_connections) : 1, // Dispositivos baseado em max_connections
+            credits: 0, // Campo créditos
+            notes: '' // Campo anotações
           };
 
           // Aplicar aos formulários baseado no modal aberto
@@ -520,7 +529,11 @@ export default function AdminUsers() {
               expirationDate: '',
               password: password,
               bouquets: '',
-              realName: '' // Campo "Nome" na seção de contato fica vazio
+              realName: '', // Campo "Nome" na seção de contato fica vazio
+              whatsapp: '', // Campo whatsapp
+              devices: 1, // Campo dispositivos
+              credits: 0, // Campo créditos
+              notes: '' // Campo anotações
             };
 
             // Aplicar aos formulários baseado no modal aberto
