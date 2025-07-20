@@ -29,7 +29,8 @@ export default function AdminUsers() {
     observations: "",
     expirationDate: "",
     password: "",
-    bouquets: ""
+    bouquets: "",
+    realName: "" // Campo separado para o nome real
   });
 
   // Estados para a extração M3U
