@@ -179,7 +179,15 @@ export default function AdminUsers() {
   };
 
   const openEditModal = (user: User) => {
-    setEditingUser({ ...user });
+    // Mapear campos do banco para o frontend
+    const mappedUser = {
+      ...user,
+      realName: user.real_name || '', // Mapear real_name do banco para realName
+      expirationDate: user.expiration_date || '', // Mapear expiration_date para expirationDate
+      plan: user.m3u_url || '', // Mapear m3u_url para plan
+      observations: user.observations || '' // Garantir que observations existe
+    };
+    setEditingUser(mappedUser);
     setIsEditDialogOpen(true);
   };
 
