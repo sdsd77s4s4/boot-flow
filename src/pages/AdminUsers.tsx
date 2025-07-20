@@ -148,6 +148,7 @@ export default function AdminUsers() {
   const handleEditUser = async () => {
     if (editingUser) {
       console.log('Salvando alterações do usuário:', editingUser);
+      console.log('Campo realName atual:', editingUser.realName);
       
       // Preparar dados para atualização no Neon
       const updatedUserData = {
@@ -169,6 +170,7 @@ export default function AdminUsers() {
       
       console.log('Dados preparados para atualização:', updatedUserData);
       console.log('Todos os campos incluídos:', Object.keys(updatedUserData));
+      console.log('Campo real_name sendo enviado:', updatedUserData.real_name);
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
