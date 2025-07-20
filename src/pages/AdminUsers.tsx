@@ -752,8 +752,9 @@ export default function AdminUsers() {
                     <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
                       <option>IPTV 2</option>
                     </select>
-                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
-                      O servidor não pode ser alterado aqui. Para mudar o servidor, você precisa migrar para outro servidor usando o ícone Migrar Servidor.
+                    <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 8v.01" /><circle cx="12" cy="12" r="10" /></svg>
+                      <span className="block">O <b>servidor não pode ser alterado aqui</b>.<br className="sm:hidden"/> Para mudar o servidor, utilize o ícone <b>Migrar Servidor</b> no painel de ações.</span>
                     </div>
                   </div>
                   {/* Plano */}
@@ -1340,8 +1341,9 @@ export default function AdminUsers() {
                       <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
                         <option>IPTV 2</option>
                       </select>
-                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
-                        O servidor não pode ser alterado aqui. Para mudar o servidor, você precisa migrar para outro servidor usando o ícone Migrar Servidor.
+                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 8v.01" /><circle cx="12" cy="12" r="10" /></svg>
+                        <span className="block">O <b>servidor não pode ser alterado aqui</b>.<br className="sm:hidden"/> Para mudar o servidor, utilize o ícone <b>Migrar Servidor</b> no painel de ações.</span>
                       </div>
                     </div>
                     {/* Plano */}
@@ -1350,8 +1352,9 @@ export default function AdminUsers() {
                       <select disabled className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2">
                         <option>🟧 TESTE - COMPLETO</option>
                       </select>
-                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2">
-                        O plano não pode ser alterado aqui. Para alterar o plano, selecione Ações na lista de clientes e escolha Alterar Plano.
+                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 8v.01" /><circle cx="12" cy="12" r="10" /></svg>
+                        <span className="block">O <b>plano não pode ser alterado aqui</b>.<br className="sm:hidden"/> Para alterar o plano, selecione Ações na lista de clientes e escolha Alterar Plano.</span>
                       </div>
                     </div>
                     {/* Usuário */}
