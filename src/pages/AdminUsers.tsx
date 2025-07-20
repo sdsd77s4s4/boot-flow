@@ -18,27 +18,51 @@ export default function AdminUsers() {
   const { users, loading, error, createUser, updateUser, deleteUser } = useNeonUsers();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
-  // Estilos CSS customizados para o scroll
+  // Estilos CSS customizados para o scroll oculto
   React.useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
       .custom-scroll::-webkit-scrollbar {
-        width: 8px;
+        width: 0px;
+        background: transparent;
       }
       .custom-scroll::-webkit-scrollbar-track {
-        background: #374151;
-        border-radius: 4px;
+        background: transparent;
       }
       .custom-scroll::-webkit-scrollbar-thumb {
-        background: #6b7280;
-        border-radius: 4px;
+        background: transparent;
       }
       .custom-scroll::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af;
+        background: transparent;
       }
       .custom-scroll {
-        scrollbar-width: thin;
-        scrollbar-color: #6b7280 #374151;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .custom-scroll:hover::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scroll:hover::-webkit-scrollbar-track {
+        background: #374151;
+        border-radius: 3px;
+      }
+      .custom-scroll:hover::-webkit-scrollbar-thumb {
+        background: #6b7280;
+        border-radius: 3px;
+      }
+      .custom-scroll:hover::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
+      .custom-scroll.has-scrolled::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6b7280, transparent);
+        opacity: 0.3;
+        pointer-events: none;
       }
     `;
     document.head.appendChild(style);
@@ -443,7 +467,7 @@ export default function AdminUsers() {
                     Adicionar Usuário
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl h-[95vh] p-0" style={{ maxHeight: '95vh', overflow: 'hidden' }}>
+                <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl h-[95vh] p-0" style={{ maxHeight: '95vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   <VisuallyHidden>
                     <DialogHeader>
                       <DialogTitle>Adicionar Cliente</DialogTitle>
@@ -483,7 +507,23 @@ export default function AdminUsers() {
                     </div>
 
                     {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 min-h-0 custom-scroll">
+                    <div 
+                      className="flex-1 overflow-y-auto p-6 space-y-6 min-h-0 custom-scroll" 
+                      style={{ 
+                        flex: '1 1 auto', 
+                        overflowY: 'auto', 
+                        overflowX: 'hidden',
+                        position: 'relative'
+                      }}
+                      onScroll={(e) => {
+                        const target = e.target as HTMLDivElement;
+                        if (target.scrollTop > 0) {
+                          target.classList.add('has-scrolled');
+                        } else {
+                          target.classList.remove('has-scrolled');
+                        }
+                      }}
+                    >
                       {/* Extração M3U Section */}
                       <div className="border border-blue-600 rounded-lg p-4 bg-blue-900/10">
                         <h3 className="text-lg font-medium text-white mb-2">Extração M3U</h3>
