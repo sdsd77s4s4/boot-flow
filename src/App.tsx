@@ -35,47 +35,51 @@ import { useState } from 'react';
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <WhatsAppStatusContext.Provider value={{ isConnected, connectionStatus, setIsConnected, setConnectionStatus }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            
-            {/* Dashboards */}
-            <Route path="/dashboard/admin" element={<AdminDashboard />} />
-            <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
-            <Route path="/dashboard/client" element={<ClientDashboard />} />
-            
-            {/* Internal Pages */}
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/help" element={<HelpCenter />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/gamification" element={<Gamification />} />
-            <Route path="/scheduling" element={<Scheduling />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/ecommerce" element={<Ecommerce />} />
-            <Route path="/channels" element={<Channels />} />
-            <Route path="/voice-campaigns" element={<VoiceCampaigns />} />
-            <Route path="/export" element={<Export />} />
-            <Route path="/ai-config" element={<AIConfiguration />} />
-            <Route path="/admin/resellers" element={<AdminResellers />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </WhatsAppStatusContext.Provider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <WhatsAppStatusContext.Provider value={{ isConnected, connectionStatus, setIsConnected, setConnectionStatus }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              
+              {/* Dashboards */}
+              <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
+              <Route path="/dashboard/client" element={<ClientDashboard />} />
+              
+              {/* Internal Pages */}
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/payments" element={<Payments />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/help" element={<HelpCenter />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/gamification" element={<Gamification />} />
+              <Route path="/scheduling" element={<Scheduling />} />
+              <Route path="/statistics" element={<Statistics />} />
+              <Route path="/ecommerce" element={<Ecommerce />} />
+              <Route path="/channels" element={<Channels />} />
+              <Route path="/voice-campaigns" element={<VoiceCampaigns />} />
+              <Route path="/export" element={<Export />} />
+              <Route path="/ai-config" element={<AIConfiguration />} />
+              <Route path="/admin/resellers" element={<AdminResellers />} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </WhatsAppStatusContext.Provider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
