@@ -148,7 +148,7 @@ export default function AdminUsers() {
   const handleEditUser = async () => {
     if (editingUser) {
       console.log('Salvando alterações do usuário:', editingUser);
-      console.log('Campo realName do estado local:', editingRealName);
+      console.log('Campo realName do editingUser:', editingUser.realName);
       
       // Preparar dados para atualização no Neon
       const updatedUserData = {
@@ -159,7 +159,7 @@ export default function AdminUsers() {
         bouquets: editingUser.bouquets || '',
         expiration_date: editingUser.expirationDate || null,
         observations: editingUser.observations || '',
-        real_name: editingRealName, // Usar estado local do nome real
+        real_name: editingUser.realName || '', // Usar realName do editingUser
         telegram: editingUser.telegram || '', // Campo telegram
         whatsapp: editingUser.whatsapp || '', // Campo whatsapp
         status: editingUser.status || 'Ativo', // Campo status
@@ -1525,7 +1525,7 @@ export default function AdminUsers() {
                   </Button>
                   <Button 
                     onClick={handleEditUser} 
-                    disabled={!editingRealName.trim()}
+                    disabled={!editingUser.realName?.trim()}
                     className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded font-semibold disabled:bg-gray-600 disabled:cursor-not-allowed"
                   >
                     Salvar Alterações
