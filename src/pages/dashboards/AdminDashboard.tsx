@@ -927,7 +927,7 @@ const AdminDashboard = () => {
                   {viewMode === 'kanban' ? (
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                       <SortableContext items={Object.values(kanbanColumns).flatMap(column => column.cards).map(card => card.id)} strategy={rectSortingStrategy}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                           {Object.values(kanbanColumns).map(column => (
                             <div key={column.id} className="space-y-4">
                               {/* Column Header */}
