@@ -817,7 +817,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 {/* Cards de métricas do Analytics */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 my-4 sm:my-6">
                   <Card className="bg-[#1f2937] text-white">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
