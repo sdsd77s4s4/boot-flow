@@ -98,9 +98,9 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton className="hover:bg-accent">
+              <SidebarMenuButton className="hover:bg-accent h-10 sm:h-auto">
                 <LogOut className="mr-2 h-4 w-4" />
-                {!collapsed && <span>Sair</span>}
+                {!collapsed && <span className="text-sm sm:text-base">Sair</span>}
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
