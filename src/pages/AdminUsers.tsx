@@ -1295,7 +1295,7 @@ export default function AdminUsers() {
                     {/* Vencimento */}
                     <div className="col-span-2">
                       <label className="block text-gray-300 mb-1 font-medium">Vencimento (Opcional)</label>
-                      <VencimentoDatePickerEdit />
+                      <VencimentoDatePickerEdit editingUser={editingUser} setEditingUser={setEditingUser} />
                     </div>
                     {/* Bouquets */}
                     <div className="col-span-2">
