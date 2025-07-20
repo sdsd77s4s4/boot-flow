@@ -30,7 +30,11 @@ export default function AdminUsers() {
     expirationDate: "",
     password: "",
     bouquets: "",
-    realName: "" // Campo separado para o nome real
+    realName: "", // Campo separado para o nome real
+    whatsapp: "", // Campo whatsapp
+    devices: 0, // Campo dispositivos
+    credits: 0, // Campo créditos
+    notes: "" // Campo anotações
   });
 
   // Estados para a extração M3U
@@ -111,7 +115,11 @@ export default function AdminUsers() {
             expirationDate: "",
             password: "",
             bouquets: "",
-            realName: "" // Limpando também o campo realName
+            realName: "", // Limpando também o campo realName
+            whatsapp: "",
+            devices: 0,
+            credits: 0,
+            notes: ""
           });
           
           // Limpar dados de extração
