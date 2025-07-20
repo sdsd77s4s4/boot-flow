@@ -616,20 +616,32 @@ export default function AdminUsers() {
         </div>
       )}
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
-          <p className="text-gray-400">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
+          <p className="text-gray-400 text-sm sm:text-base">
             {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
           </p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">
-              <Plus className="w-4 h-4" />
-              Novo Usuário
-            </Button>
-          </DialogTrigger>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2 bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">Novo Usuário</span>
+                <span className="sm:hidden">Novo</span>
+              </Button>
+            </DialogTrigger>
+          </Dialog>
+          
+          <Dialog open={isCopyDialogOpen} onOpenChange={setIsCopyDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2 bg-[#059669] hover:bg-[#047857] text-white h-10 sm:h-auto">
+                <Copy className="w-4 h-4" />
+                <span className="hidden sm:inline">Copiar de Cobranças</span>
+                <span className="sm:hidden">Copiar</span>
+              </Button>
+            </DialogTrigger>
           <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
             <DialogHeader className="sr-only">
               <DialogTitle>Adicionar Cliente</DialogTitle>
