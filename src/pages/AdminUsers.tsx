@@ -1603,4 +1603,77 @@ function RenovacaoDatePicker() {
       </PopoverContent>
     </Popover>
   );
+}
+
+function VencimentoDatePickerEdit() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(
+    editingUser?.expirationDate ? new Date(editingUser.expirationDate) : undefined
+  );
+  const [time, setTime] = React.useState<string>("");
+
+  // Atualizar data quando editingUser mudar
+  React.useEffect(() => {
+    if (editingUser?.expirationDate) {
+      setDate(new Date(editingUser.expirationDate));
+    } else {
+      setDate(undefined);
+    }
+  }, [editingUser?.expirationDate]);
+
+  function handleDateSelect(selected: Date | undefined) {
+    setDate(selected);
+    if (selected && editingUser) {
+      // Converter para formato ISO para o estado
+      const isoDate = selected.toISOString().split('T')[0];
+      setEditingUser({...editingUser, expirationDate: isoDate});
+    } else if (editingUser) {
+      setEditingUser({...editingUser, expirationDate: ""});
+    }
+    setOpen(false);
+  }
+
+  function handleTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setTime(e.target.value);
+  }
+
+  function formatDate(d?: Date) {
+    if (!d) return "";
+    return d.toLocaleDateString("pt-BR");
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className="flex gap-2">
+          <input
+            readOnly
+            value={date ? formatDate(date) : ""}
+            placeholder="Selecione a data"
+            className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 cursor-pointer"
+            onClick={() => setOpen(true)}
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={handleTimeChange}
+            className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+          />
+        </div>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto p-0 bg-[#1f2937] border border-gray-700">
+        <CalendarComponent
+          mode="single"
+          selected={date}
+          onSelect={handleDateSelect}
+          className="rounded-md bg-[#1f2937] text-white"
+        />
+        <div className="flex justify-end p-2">
+          <Button size="sm" onClick={() => setOpen(false)}>
+            OK
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 } 
