@@ -385,6 +385,10 @@ export default function AdminUsers() {
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-[#0f1419] border-gray-700 text-white max-w-4xl h-[95vh] p-0">
+                  <DialogHeader className="sr-only">
+                    <DialogTitle>Adicionar Cliente</DialogTitle>
+                    <DialogDescription>Preencha os dados do novo cliente para adicioná-lo à base de dados</DialogDescription>
+                  </DialogHeader>
                   <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-700 bg-[#1a1f2e] flex-shrink-0">
