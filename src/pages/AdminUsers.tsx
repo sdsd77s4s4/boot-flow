@@ -205,7 +205,12 @@ export default function AdminUsers() {
         
         // Atualizar Dashboard instantaneamente
         console.log('📤 Clientes: Disparando evento refresh-dashboard após editar usuário');
-        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'update' } }));
+        try {
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'update' } }));
+          console.log('✅ Evento disparado com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao disparar evento:', error);
+        }
         
         // Aguardar um pouco para o fetchUsers ser executado
         setTimeout(() => {
