@@ -68,12 +68,12 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
 
   const sidebarContent = (
     <>
-      <div className="p-4">
-        <div className="flex items-center space-x-2 mb-6">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <Zap className="w-5 h-5 text-white" />
+      <div className="p-3 sm:p-4">
+        <div className="flex items-center space-x-2 mb-4 sm:mb-6">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+            <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
-          {!collapsed && <span className="text-xl font-bold">Admin</span>}
+          {!collapsed && <span className="text-lg sm:text-xl font-bold">Admin</span>}
         </div>
       </div>
       <SidebarGroup>
