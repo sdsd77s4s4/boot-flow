@@ -67,12 +67,18 @@ export default function AdminUsers() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(users.length / itemsPerPage);
-  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
   const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.real_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.telegram?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.whatsapp?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.plan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.status?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const handleAddUser = async () => {
     if (newUser.name && newUser.email) {
@@ -991,16 +997,24 @@ export default function AdminUsers() {
       </div>
 
       {/* Search bar */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mb-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             placeholder="Buscar usuários..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Resetar para primeira página ao buscar
+            }}
             className="pl-10 bg-[#1f2937] border border-gray-700 text-white"
           />
         </div>
+        {searchTerm && (
+          <div className="text-sm text-gray-400">
+            {filteredUsers.length} resultado{filteredUsers.length !== 1 ? 's' : ''} encontrado{filteredUsers.length !== 1 ? 's' : ''}
+          </div>
+        )}
       </div>
 
       {/* Notificação de sucesso */}
