@@ -71,8 +71,7 @@ const AdminDashboard = () => {
 
 
   
-  // Estado para forçar re-renderização
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
 
 
 
