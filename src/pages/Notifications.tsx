@@ -49,6 +49,8 @@ export default function Notifications() {
     setModal({ type: null });
   };
 
+  const variaveisSugeridas = ['nome', 'servico', 'data', 'hora', 'valor', 'pix', 'promocao', 'desconto', 'validade'];
+
   return (
     <div className="p-6 min-h-screen bg-[#09090b]">
       <div className="flex items-center gap-3 mb-2">
@@ -161,7 +163,36 @@ export default function Notifications() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white rounded-lg" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-            <textarea placeholder="Texto da Mensagem (use {variaveis})" rows={3} className="bg-gray-900 border border-gray-700 text-white rounded-lg w-full p-2" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
+            {/* Variáveis sugeridas para inserir */}
+            <div className="flex flex-wrap gap-2 mb-1">
+              {variaveisSugeridas.map(v => (
+                <button
+                  key={v}
+                  type="button"
+                  className="bg-purple-900/60 text-purple-200 rounded-full px-3 py-1 text-xs font-semibold border border-purple-700 hover:bg-purple-800 hover:text-white transition"
+                  onClick={() => {
+                    const textarea = document.getElementById('template-textarea') as HTMLTextAreaElement;
+                    if (textarea) {
+                      const start = textarea.selectionStart;
+                      const end = textarea.selectionEnd;
+                      const before = form.texto.substring(0, start);
+                      const after = form.texto.substring(end);
+                      const insert = `{${v}}`;
+                      setForm({ ...form, texto: before + insert + after });
+                      setTimeout(() => {
+                        textarea.focus();
+                        textarea.selectionStart = textarea.selectionEnd = start + insert.length;
+                      }, 0);
+                    } else {
+                      setForm({ ...form, texto: form.texto + ` {${v}}` });
+                    }
+                  }}
+                >
+                  {'{'}{v}{'}'}
+                </button>
+              ))}
+            </div>
+            <textarea id="template-textarea" placeholder="Texto da Mensagem (use {variaveis})" rows={3} className="bg-gray-900 border border-gray-700 text-white rounded-lg w-full p-2" value={form.texto} onChange={e => setForm({ ...form, texto: e.target.value })} />
             {/* Variáveis detectadas automaticamente */}
             <div className="flex flex-wrap gap-2">
               {Array.from(new Set((form.texto.match(/\{(.*?)\}/g) || []).map(v => v.replace(/[{}]/g, '')))).length > 0 ? (
