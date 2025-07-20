@@ -119,6 +119,12 @@ const AdminDashboard = () => {
     })),
   ];
 
+  // Log para debug dos usuários online
+  console.log('👥 Dashboard: Usuários online:', {
+    onlineUsersCount: onlineUsersUnified.length,
+    onlineUsers: onlineUsersUnified.map(u => ({ id: u.id, name: u.name, type: u.type, lastSeen: u.lastSeen }))
+  });
+
   const [brandingModal, setBrandingModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState<string | null>(null);
@@ -836,8 +842,9 @@ const AdminDashboard = () => {
 
   // Listener para atualização instantânea
   useEffect(() => {
-    const handleRefresh = () => {
+    const handleRefresh = (event: Event) => {
       console.log('🔄 Dashboard: Evento refresh-dashboard recebido, atualizando dados...');
+      console.log('Evento recebido:', event);
       refreshUsers();
       if (refreshResellers) refreshResellers();
     };

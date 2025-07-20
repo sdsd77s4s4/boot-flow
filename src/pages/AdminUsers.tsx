@@ -116,7 +116,7 @@ export default function AdminUsers() {
           
           // Atualizar Dashboard instantaneamente
           console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
-          window.dispatchEvent(new Event('refresh-dashboard'));
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
           
           // Limpar formulário
           setNewUser({ 
@@ -200,7 +200,7 @@ export default function AdminUsers() {
         
         // Atualizar Dashboard instantaneamente
         console.log('📤 Clientes: Disparando evento refresh-dashboard após editar usuário');
-        window.dispatchEvent(new Event('refresh-dashboard'));
+        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'update' } }));
         
         // Aguardar um pouco para o fetchUsers ser executado
         setTimeout(() => {
@@ -225,7 +225,7 @@ export default function AdminUsers() {
       if (success) {
         // Atualizar Dashboard instantaneamente
         console.log('📤 Clientes: Disparando evento refresh-dashboard após deletar usuário');
-        window.dispatchEvent(new Event('refresh-dashboard'));
+        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'delete' } }));
         
         setDeletingUser(null);
         setIsDeleteDialogOpen(false);
