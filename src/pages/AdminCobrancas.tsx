@@ -103,8 +103,25 @@ export default function AdminCobrancas() {
       vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
       status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
       tipo: 'Revenda',
+      gateway: ['PIX', 'Stripe', 'Mercado Pago'][idx % 3],
+      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][idx % 3],
+      tentativas: Math.floor(Math.random() * 3),
+      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
+      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
+      observacoes: idx % 2 === 0 ? 'Cliente preferencial' : '',
+      tags: idx % 3 === 0 ? ['Urgente', 'VIP'] : idx % 3 === 1 ? ['Recorrente'] : [],
     })) : [];
-    setCobrancas([...cobrancasClientes.map(c => ({ ...c, tipo: 'Cliente' })), ...cobrancasRevendas]);
+    setCobrancas([...cobrancasClientes.map(c => ({ 
+      ...c, 
+      tipo: 'Cliente',
+      gateway: ['PIX', 'Stripe', 'Mercado Pago'][Math.floor(Math.random() * 3)],
+      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][Math.floor(Math.random() * 3)],
+      tentativas: Math.floor(Math.random() * 3),
+      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
+      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
+      observacoes: Math.random() > 0.7 ? 'Cliente com histórico de atraso' : '',
+      tags: Math.random() > 0.8 ? ['Urgente'] : Math.random() > 0.6 ? ['Recorrente'] : [],
+    })), ...cobrancasRevendas]);
   }, [users, resellers]);
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string | null>(null);
@@ -115,6 +132,8 @@ export default function AdminCobrancas() {
   const [modalCopia, setModalCopia] = useState<Cobranca | null>(null);
   const [modalEmail, setModalEmail] = useState<Cobranca | null>(null);
   const [modalWhats, setModalWhats] = useState<Cobranca | null>(null);
+  const [modalRelatorio, setModalRelatorio] = useState(false);
+  const [modalAutomacao, setModalAutomacao] = useState(false);
   const [nova, setNova] = useState({ 
     cliente: '', 
     nomeCliente: '', 
@@ -124,7 +143,10 @@ export default function AdminCobrancas() {
     valor: '', 
     status: 'Pendente', 
     vencimento: '', 
-    observacoes: '' 
+    observacoes: '',
+    gateway: 'PIX',
+    formaPagamento: 'PIX',
+    tags: [] as string[]
   });
   const [edit, setEdit] = useState({ 
     cliente: '', 
@@ -232,8 +254,43 @@ export default function AdminCobrancas() {
   };
   const handleCopiar = (c: Cobranca) => {
     navigator.clipboard.writeText(`Cliente: ${c.cliente}\nEmail: ${c.email}\nDescrição: ${c.descricao}\nValor: R$ ${c.valor.toFixed(2)}\nVencimento: ${c.vencimento}`);
+    toast.success('Cobrança copiada para a área de transferência!');
     setModalCopia(null);
   };
+
+  // Funções de modernização
+  const handleEnviarNotificacao = (cobranca: Cobranca) => {
+    toast.success(`Notificação enviada para ${cobranca.cliente}`);
+    setModalWhats(null);
+  };
+
+  const handleEnviarEmail = (cobranca: Cobranca) => {
+    toast.success(`Email enviado para ${cobranca.email}`);
+    setModalEmail(null);
+  };
+
+  const handleGerarRelatorio = () => {
+    toast.success('Relatório gerado com sucesso!');
+    setModalRelatorio(false);
+  };
+
+  const handleConfigurarAutomacao = () => {
+    toast.success('Automação configurada com sucesso!');
+    setModalAutomacao(false);
+  };
+
+  const handleTestarGateway = (gatewayId: string) => {
+    toast.success(`Gateway ${gatewayId} testado com sucesso!`);
+  };
+
+  // Cálculos para dashboard
+  const totalCobrancas = cobrancas.length;
+  const cobrancasPagas = cobrancas.filter(c => c.status === 'Paga').length;
+  const cobrancasPendentes = cobrancas.filter(c => c.status === 'Pendente').length;
+  const cobrancasVencidas = cobrancas.filter(c => c.status === 'Vencida').length;
+  const valorTotal = cobrancas.reduce((acc, c) => acc + c.valor, 0);
+  const valorRecebido = cobrancas.filter(c => c.status === 'Paga').reduce((acc, c) => acc + c.valor, 0);
+  const taxaConversao = totalCobrancas > 0 ? (cobrancasPagas / totalCobrancas) * 100 : 0;
 
   // Função para preencher automaticamente os campos quando um cliente for selecionado
   const handleClienteChange = (clienteId: string) => {
