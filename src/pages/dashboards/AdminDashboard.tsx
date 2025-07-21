@@ -59,12 +59,11 @@ import Notifications from "../Notifications";
 const AdminDashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
-  const [resellers, setResellers] = useState<any[]>([]);
-  const [stats] = useState({
-    totalUsers: 15847,
+  const [stats, setStats] = useState({
+    totalUsers: 0,
     totalRevenue: 487230,
-    activeResellers: 234,
-    activeClients: 15613,
+    activeResellers: 0,
+    activeClients: 0,
     monthlyGrowth: 12.5,
     iptvUsers: 8934,
     radioListeners: 12456,
@@ -74,6 +73,16 @@ const AdminDashboard = () => {
   // Hooks para dados de usuários e revendedores
   const { users, refreshUsers } = useNeonUsers();
   const { resellers: resellersData, refreshResellers } = useNeonResellers();
+
+  // Atualizar estatísticas quando os dados mudarem
+  useEffect(() => {
+    setStats(prev => ({
+      ...prev,
+      totalUsers: users.length,
+      activeResellers: resellersData.length,
+      activeClients: users.length
+    }));
+  }, [users, resellersData]);
 
 
   
