@@ -132,7 +132,7 @@ const AdminBranding: React.FC = () => {
             {/* Coluna principal */}
             <div className="lg:col-span-2 space-y-6">
               {/* Informações da Empresa */}
-              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg">
+              <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Informações da Empresa</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
@@ -164,7 +164,7 @@ const AdminBranding: React.FC = () => {
                 </div>
               </div>
               {/* Logos e Ícones */}
-              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg">
+              <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Logos e Ícones</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Logo */}
@@ -192,7 +192,7 @@ const AdminBranding: React.FC = () => {
             </div>
             {/* Coluna Preview */}
             <div className="space-y-6">
-              <div className="rounded-2xl border border-purple-700/40 bg-[#1f2937] p-6 shadow-lg min-w-[260px]">
+              <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg min-w-[260px]">
                 <span className="block text-purple-300 font-semibold mb-4 text-lg">Preview</span>
                 <div className="bg-[#181e29] rounded-lg p-4 flex flex-col items-center">
                   <div className="flex gap-2 mb-2">
@@ -229,7 +229,7 @@ const AdminBranding: React.FC = () => {
         {/* Visual */}
         <TabsContent value="visual">
           <div className="max-w-2xl space-y-6">
-            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+            <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
               <span className="block text-purple-300 font-semibold mb-4 text-lg">Cores e Aparência</span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -273,7 +273,7 @@ const AdminBranding: React.FC = () => {
         {/* Avançado */}
         <TabsContent value="avancado">
           <div className="max-w-2xl space-y-6">
-            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+            <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
               <span className="block text-purple-300 font-semibold mb-4 text-lg">Configurações Avançadas</span>
               <div className="mb-4">
                 <label className="block text-gray-300 mb-1 font-medium">Domínio Personalizado</label>
@@ -298,7 +298,7 @@ const AdminBranding: React.FC = () => {
         {/* Funcionalidades */}
         <TabsContent value="funcionalidades">
           <div className="max-w-2xl space-y-6">
-            <div className="rounded-2xl border border-purple-700/40 bg-[#232a36] p-6 shadow-lg">
+            <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
               <span className="block text-purple-300 font-semibold mb-4 text-lg">Módulos e Funcionalidades</span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
@@ -333,7 +333,7 @@ const AdminBranding: React.FC = () => {
         {/* WhiteLabel settings */}
         <TabsContent value="whitelabel">
           <div className="max-w-2xl space-y-6">
-            <div className="rounded-2xl border border-green-700/40 bg-[#232a36] p-6 shadow-lg">
+            <div className="rounded-2xl border border-green-700/40 bg-gradient-to-br from-green-900/50 to-green-800/30 p-6 shadow-lg">
               <span className="block text-green-300 font-semibold mb-4 text-lg">Configurações WhiteLabel</span>
               <div className="mb-4">
                 <label className="block text-gray-300 mb-1 font-medium">Remover menção à plataforma original</label>
