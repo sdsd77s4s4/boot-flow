@@ -361,53 +361,136 @@ export default function AdminCobrancas() {
 
   return (
     <div className="p-6 min-h-screen bg-[#09090b]">
-      <div className="flex items-center gap-3 mb-2">
-        <BarChart3 className="w-7 h-7 text-purple-400" />
-        <h1 className="text-3xl font-bold text-white">Cobranças</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <BarChart3 className="w-7 h-7 text-purple-400" />
+            <h1 className="text-3xl font-bold text-white">Cobranças</h1>
+          </div>
+          <p className="text-gray-400">Gerencie todas as suas cobranças e faturamento</p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            className="border-purple-700 text-purple-400 hover:bg-purple-700/20"
+            onClick={() => setModalRelatorio(true)}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Relatório
+          </Button>
+          <Button 
+            variant="outline" 
+            className="border-green-700 text-green-400 hover:bg-green-700/20"
+            onClick={() => setModalAutomacao(true)}
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            Automação
+          </Button>
+        </div>
       </div>
-      <p className="text-gray-400 mb-6">Gerencie todas as suas cobranças e faturamento</p>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Card className="bg-[#1f2937] border border-purple-700/40">
-          <CardHeader>
-            <CardTitle className="text-sm text-gray-300">Total</CardTitle>
+
+      {/* Dashboard Cards Modernizados */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+        <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Total
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{total}</div>
+            <div className="text-2xl font-bold text-white">{totalCobrancas}</div>
+            <div className="text-xs text-gray-400 mt-1">Cobranças</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-green-700/40">
-          <CardHeader>
-            <CardTitle className="text-sm text-gray-300">Pagas</CardTitle>
+        
+        <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Pagas
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{pagas}</div>
+            <div className="text-2xl font-bold text-green-400">{cobrancasPagas}</div>
+            <div className="text-xs text-gray-400 mt-1">{taxaConversao.toFixed(1)}% taxa</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-yellow-700/40">
-          <CardHeader>
-            <CardTitle className="text-sm text-gray-300">Pendentes</CardTitle>
+        
+        <Card className="bg-gradient-to-br from-yellow-900/50 to-yellow-800/30 border border-yellow-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Pendentes
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-400">{pendentes}</div>
+            <div className="text-2xl font-bold text-yellow-400">{cobrancasPendentes}</div>
+            <div className="text-xs text-gray-400 mt-1">Aguardando</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-red-700/40">
-          <CardHeader>
-            <CardTitle className="text-sm text-gray-300">Vencidas</CardTitle>
+        
+        <Card className="bg-gradient-to-br from-red-900/50 to-red-800/30 border border-red-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Vencidas
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-400">{vencidas}</div>
+            <div className="text-2xl font-bold text-red-400">{cobrancasVencidas}</div>
+            <div className="text-xs text-gray-400 mt-1">Ação necessária</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-blue-700/40">
-          <CardHeader>
-            <CardTitle className="text-sm text-gray-300">Receita Mês</CardTitle>
+        
+        <Card className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 border border-blue-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Receita
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-400">R$ {receitaMes.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-blue-400">R$ {valorRecebido.toLocaleString()}</div>
+            <div className="text-xs text-gray-400 mt-1">Recebido</div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-indigo-900/50 to-indigo-800/30 border border-indigo-700/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-gray-300 flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              A Receber
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-indigo-400">R$ {(valorTotal - valorRecebido).toLocaleString()}</div>
+            <div className="text-xs text-gray-400 mt-1">Pendente</div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Sistema de Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList className="grid w-full grid-cols-4 bg-[#1f2937]">
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="cobrancas" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
+            <Receipt className="w-4 h-4 mr-2" />
+            Cobranças
+          </TabsTrigger>
+          <TabsTrigger value="gateways" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
+            <CreditCard className="w-4 h-4 mr-2" />
+            Gateways
+          </TabsTrigger>
+          <TabsTrigger value="configuracoes" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
+            <Settings className="w-4 h-4 mr-2" />
+            Configurações
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
       {/* Alertas */}
       <div className="mb-4">
         {vencidas > 0 && (
