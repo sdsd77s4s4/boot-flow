@@ -71,6 +71,10 @@ const AdminDashboard = () => {
     aiInteractions: 45678
   });
 
+  // Hooks para dados de usuários e revendedores
+  const { users, refreshUsers } = useNeonUsers();
+  const { resellers: resellersData, refreshResellers } = useNeonResellers();
+
 
   
   // Estado para forçar re-renderização
