@@ -491,56 +491,45 @@ const AdminDashboard = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              <Card className="hover:shadow-glow transition-all duration-300">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 my-4 sm:my-6">
+              <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40 text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xs sm:text-sm font-medium">Total de Usuários</CardTitle>
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +{stats.monthlyGrowth}% em relação ao mês passado
-                  </p>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</div>
+                  <p className="text-xs text-gray-400 mt-1">+12.5% em relação ao mês passado</p>
                 </CardContent>
               </Card>
-
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/40 text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xs sm:text-sm font-medium">Receita Total</CardTitle>
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Receita Total</CardTitle>
+                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold">R$ {stats.totalRevenue.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +15.3% em relação ao mês passado
-                  </p>
+                  <div className="text-lg sm:text-2xl font-bold text-white">R$ {stats.totalRevenue.toLocaleString()}</div>
+                  <p className="text-xs text-gray-400 mt-1">+15.3% em relação ao mês passado</p>
                 </CardContent>
               </Card>
-
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-gradient-to-br from-yellow-900/50 to-yellow-800/30 border border-yellow-700/40 text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xs sm:text-sm font-medium">Revendedores Ativos</CardTitle>
-                  <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Revendedores Ativos</CardTitle>
+                  <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold">{stats.activeResellers}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +8.2% em relação ao mês passado
-                  </p>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{stats.activeResellers}</div>
+                  <p className="text-xs text-gray-400 mt-1">+8.2% em relação ao mês passado</p>
                 </CardContent>
               </Card>
-
-              <Card className="hover:shadow-glow transition-all duration-300">
+              <Card className="bg-gradient-to-br from-red-900/50 to-red-800/30 border border-red-700/40 text-white">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xs sm:text-sm font-medium">Interações IA</CardTitle>
-                  <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Interações IA</CardTitle>
+                  <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-red-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold">{stats.aiInteractions.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +23.1% em relação ao mês passado
-                  </p>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{stats.aiInteractions.toLocaleString()}</div>
+                  <p className="text-xs text-gray-400 mt-1">+23.1% em relação ao mês passado</p>
                 </CardContent>
               </Card>
             </div>
@@ -913,44 +902,44 @@ const AdminDashboard = () => {
                 </div>
                 {/* Cards de métricas do Analytics */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 my-4 sm:my-6">
-                  <Card className="bg-[#1f2937] text-white">
+                  <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40 text-white">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
-                      <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                      <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
                       <div className="text-lg sm:text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</div>
-                      <p className="text-xs text-blue-400 mt-1">+12.5% em relação ao mês passado</p>
+                      <p className="text-xs text-gray-400 mt-1">+12.5% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-[#1f2937] text-white">
+                  <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/40 text-white">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Receita Total</CardTitle>
-                      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
                       <div className="text-lg sm:text-2xl font-bold text-white">R$ {stats.totalRevenue.toLocaleString()}</div>
-                      <p className="text-xs text-blue-400 mt-1">+15.3% em relação ao mês passado</p>
+                      <p className="text-xs text-gray-400 mt-1">+15.3% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-[#1f2937] text-white">
+                  <Card className="bg-gradient-to-br from-yellow-900/50 to-yellow-800/30 border border-yellow-700/40 text-white">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Revendedores Ativos</CardTitle>
-                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
                       <div className="text-lg sm:text-2xl font-bold text-white">{stats.activeResellers}</div>
-                      <p className="text-xs text-blue-400 mt-1">+8.2% em relação ao mês passado</p>
+                      <p className="text-xs text-gray-400 mt-1">+8.2% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-[#1f2937] text-white">
+                  <Card className="bg-gradient-to-br from-red-900/50 to-red-800/30 border border-red-700/40 text-white">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Interações IA</CardTitle>
-                      <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+                      <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-red-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
                       <div className="text-lg sm:text-2xl font-bold text-white">{stats.aiInteractions.toLocaleString()}</div>
-                      <p className="text-xs text-blue-400 mt-1">+23.1% em relação ao mês passado</p>
+                      <p className="text-xs text-gray-400 mt-1">+23.1% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
                 </div>
