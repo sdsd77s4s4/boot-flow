@@ -16,6 +16,7 @@ import { useNeonResellers } from '@/hooks/useNeonResellers';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 
 interface Cobranca {
