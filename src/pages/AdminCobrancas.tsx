@@ -81,6 +81,15 @@ export default function AdminCobrancas() {
   const { users } = useNeonUsers();
   const { resellers } = useNeonResellers();
   const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Gateways configurados
+  const [gateways] = useState<GatewayConfig[]>([
+    { id: 'pix', nome: 'PIX', tipo: 'PIX', status: 'Ativo', taxa: '0.99%', limite: 'R$ 10.000', configurado: true },
+    { id: 'stripe', nome: 'Stripe', tipo: 'Cartão', status: 'Ativo', taxa: '2.99% + R$ 0,30', limite: 'R$ 50.000', configurado: true },
+    { id: 'mercadopago', nome: 'Mercado Pago', tipo: 'Cartão', status: 'Ativo', taxa: '1.99% + R$ 0,60', limite: 'R$ 25.000', configurado: true },
+    { id: 'boleto', nome: 'Boleto', tipo: 'Boleto', status: 'Inativo', taxa: '1.99% + R$ 2,00', limite: 'R$ 5.000', configurado: false },
+  ]);
 
   // Gerar cobranças para clientes e revendas
   useEffect(() => {
