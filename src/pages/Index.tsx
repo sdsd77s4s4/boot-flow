@@ -177,7 +177,7 @@ const Index = () => {
           <div className="flex items-center space-x-2">
             <Button
               className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white font-semibold px-6 py-2 rounded-lg shadow-lg flex items-center gap-2 border-none focus:ring-2 focus:ring-[#a855f7] focus:ring-offset-2 transition-all"
-              onClick={() => handleLogin('client')}
+              onClick={() => navigate('/login')}
             >
               <LogIn className="w-5 h-5 mr-1" />
               Login

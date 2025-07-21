@@ -32,6 +32,7 @@ import AdminResellers from "./pages/AdminResellers";
 import { WhatsAppStatusContext } from './pages/AdminWhatsApp';
 import { useState } from 'react';
 import { UserProvider } from "./contexts/UserContext";
+import Login from "./pages/Login";
 
 
 const queryClient = new QueryClient();
@@ -54,6 +55,8 @@ const App = () => {
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
                 <Route path="/dashboard/client" element={<ClientDashboard />} />
+                {/* Login */}
+                <Route path="/login" element={<Login />} />
                 
                 {/* Internal Pages */}
                 <Route path="/profile" element={<Profile />} />
