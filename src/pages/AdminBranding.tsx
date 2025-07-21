@@ -112,12 +112,55 @@ const AdminBranding: React.FC = () => {
   };
 
   const navItems = [
-    { id: 'marca', title: 'Marca', icon: Paintbrush, description: 'Logo, nome e informações.' },
-    { id: 'visual', title: 'Visual', icon: Palette, description: 'Cores, fontes e temas.' },
-    { id: 'avancado', title: 'Avançado', icon: Code, description: 'Domínio, scripts e SEO.' },
-    { id: 'funcionalidades', title: 'Funcionalidades', icon: Sliders, description: 'Módulos e integrações.' },
-    { id: 'whitelabel', title: 'WhiteLabel', icon: Star, description: 'Sua marca própria.' },
+    { id: 'marca', title: 'Marca', icon: Paintbrush, description: 'Logo, nome e informações.', color: 'purple' },
+    { id: 'visual', title: 'Visual', icon: Palette, description: 'Cores, fontes e temas.', color: 'green' },
+    { id: 'avancado', title: 'Avançado', icon: Code, description: 'Domínio, scripts e SEO.', color: 'blue' },
+    { id: 'funcionalidades', title: 'Funcionalidades', icon: Sliders, description: 'Módulos e integrações.', color: 'yellow' },
+    { id: 'whitelabel', title: 'WhiteLabel', icon: Star, description: 'Sua marca própria.', color: 'red' },
   ];
+
+  const colorClasses = {
+    purple: {
+      border: 'border-purple-500',
+      shadow: 'shadow-purple-500/20',
+      hoverBorder: 'hover:border-purple-600',
+      from: 'from-purple-900/30',
+      to: 'to-purple-800/20',
+      icon: 'text-purple-400'
+    },
+    green: {
+      border: 'border-green-500',
+      shadow: 'shadow-green-500/20',
+      hoverBorder: 'hover:border-green-600',
+      from: 'from-green-900/30',
+      to: 'to-green-800/20',
+      icon: 'text-green-400'
+    },
+    blue: {
+      border: 'border-blue-500',
+      shadow: 'shadow-blue-500/20',
+      hoverBorder: 'hover:border-blue-600',
+      from: 'from-blue-900/30',
+      to: 'to-blue-800/20',
+      icon: 'text-blue-400'
+    },
+    yellow: {
+      border: 'border-yellow-500',
+      shadow: 'shadow-yellow-500/20',
+      hoverBorder: 'hover:border-yellow-600',
+      from: 'from-yellow-900/30',
+      to: 'to-yellow-800/20',
+      icon: 'text-yellow-400'
+    },
+    red: {
+      border: 'border-red-500',
+      shadow: 'shadow-red-500/20',
+      hoverBorder: 'hover:border-red-600',
+      from: 'from-red-900/30',
+      to: 'to-red-800/20',
+      icon: 'text-red-400'
+    }
+  };
 
   return (
     <div className="max-w-full w-full h-full overflow-auto p-4">
@@ -129,21 +172,24 @@ const AdminBranding: React.FC = () => {
       
       {/* Navegação por Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-        {navItems.map(item => (
-          <Card 
-            key={item.id}
-            onClick={() => setTab(item.id)}
-            className={`cursor-pointer transition-all duration-300 ${tab === item.id ? 'border-purple-500 scale-105 shadow-lg shadow-purple-500/20' : 'border-gray-700 hover:border-purple-600'} bg-gradient-to-br from-purple-900/30 to-purple-800/20 border-2`}
-          >
-            <CardHeader className="flex flex-row items-center gap-4 space-y-0 p-4">
-              <item.icon className={`w-8 h-8 transition-colors ${tab === item.id ? 'text-purple-400' : 'text-gray-400'}`} />
-              <div>
-                <CardTitle className="text-md font-bold text-white">{item.title}</CardTitle>
-                <p className="text-xs text-gray-400">{item.description}</p>
-              </div>
-            </CardHeader>
-          </Card>
-        ))}
+        {navItems.map(item => {
+          const colors = colorClasses[item.color as keyof typeof colorClasses] || colorClasses.purple;
+          return (
+            <Card 
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              className={`cursor-pointer transition-all duration-300 ${tab === item.id ? `${colors.border} scale-105 shadow-lg ${colors.shadow}` : `border-gray-700 ${colors.hoverBorder}`} bg-gradient-to-br ${colors.from} ${colors.to} border-2`}
+            >
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0 p-4">
+                <item.icon className={`w-8 h-8 transition-colors ${tab === item.id ? colors.icon : 'text-gray-400'}`} />
+                <div>
+                  <CardTitle className="text-md font-bold text-white">{item.title}</CardTitle>
+                  <p className="text-xs text-gray-400">{item.description}</p>
+                </div>
+              </CardHeader>
+            </Card>
+          )
+        })}
       </div>
 
       {/* Conteúdo Renderizado */}
