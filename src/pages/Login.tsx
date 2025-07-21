@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogIn, Mail, Lock, Loader2, Google, User, Shield, Users } from 'lucide-react';
+import { LogIn, Mail, Lock, Loader2, User, Shield, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -82,7 +82,22 @@ export default function Login() {
               onClick={handleGoogleLogin}
               disabled={loading}
             >
-              <Google className="w-5 h-5 mr-1 text-[#ea4335]" />
+              {/* SVG do Google */}
+              <span className="mr-1">
+                <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clipPath="url(#clip0_17_40)">
+                    <path d="M47.532 24.552c0-1.636-.146-3.2-.418-4.704H24.48v9.02h12.98c-.56 3.02-2.24 5.58-4.78 7.3v6.06h7.74c4.54-4.18 7.11-10.34 7.11-17.676z" fill="#4285F4"/>
+                    <path d="M24.48 48c6.48 0 11.92-2.14 15.89-5.82l-7.74-6.06c-2.15 1.44-4.9 2.3-8.15 2.3-6.26 0-11.56-4.22-13.46-9.9H2.5v6.22C6.45 43.78 14.7 48 24.48 48z" fill="#34A853"/>
+                    <path d="M11.02 28.52a14.77 14.77 0 010-9.44v-6.22H2.5a24.01 24.01 0 000 21.88l8.52-6.22z" fill="#FBBC05"/>
+                    <path d="M24.48 9.54c3.53 0 6.66 1.22 9.13 3.62l6.84-6.84C36.39 2.14 30.96 0 24.48 0 14.7 0 6.45 4.22 2.5 10.82l8.52 6.22c1.9-5.68 7.2-9.5 13.46-9.5z" fill="#EA4335"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_17_40">
+                      <rect width="48" height="48" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
               Entrar com Google
             </Button>
             <div className="flex items-center gap-2 my-4">
