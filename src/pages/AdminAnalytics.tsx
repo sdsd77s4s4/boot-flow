@@ -62,7 +62,7 @@ export default function AdminAnalytics() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <Card className="bg-[#1f2937] text-white">
+        <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Total de Usuários</CardTitle>
             <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
@@ -76,7 +76,7 @@ export default function AdminAnalytics() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] text-white">
+        <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/40 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Usuários Ativos</CardTitle>
             <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
@@ -90,7 +90,7 @@ export default function AdminAnalytics() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] text-white">
+        <Card className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 border border-blue-700/40 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Receita</CardTitle>
             <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
@@ -104,7 +104,7 @@ export default function AdminAnalytics() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] text-white">
+        <Card className="bg-gradient-to-br from-yellow-900/50 to-yellow-800/30 border border-yellow-700/40 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Visualizações</CardTitle>
             <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
