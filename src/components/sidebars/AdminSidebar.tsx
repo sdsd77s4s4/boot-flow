@@ -14,7 +14,10 @@ import {
   MessageSquare,
   Paintbrush,
   Server,
-  Menu
+  Menu,
+  UserPlus,
+  DollarSign,
+  Bell
 } from "lucide-react";
 import {
   Sidebar,
@@ -49,7 +52,7 @@ const menuItems = [
   { title: "E-commerce", page: "ecommerce", icon: ShoppingCart },
   { title: "IA + Voz", page: "ai", icon: Brain },
   { title: "Gamificação", page: "games", icon: Gamepad2 },
-  { title: "Analizes", page: "analytics", icon: BarChart3 },
+  { title: "Análises", page: "analytics", icon: BarChart3 },
   { title: "Configurações", page: "settings", icon: Settings },
 ];
 

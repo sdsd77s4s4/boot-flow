@@ -39,7 +39,7 @@ const menuItems = [
   { title: "E-commerce", url: "/dashboard/client/shop", icon: ShoppingBag },
   { title: "IA + Voz", url: "/dashboard/client/ai", icon: Brain },
   { title: "Gamificação", url: "/dashboard/client/games", icon: Gamepad2 },
-  { title: "Analizes", url: "/dashboard/client/analytics", icon: BarChart3 },
+  { title: "Análises", url: "/dashboard/client/analytics", icon: BarChart3 },
   { title: "Configurações", url: "/dashboard/client/settings", icon: Settings },
 ];
 
