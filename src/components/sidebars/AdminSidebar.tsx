@@ -34,6 +34,15 @@ import {
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface AdminSidebarProps {
   onPageChange: (page: string) => void;
@@ -97,16 +106,34 @@ export function AdminSidebar({ onPageChange, currentPage, isMobile = false, onCl
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
-      <SidebarGroup>
+      <SidebarGroup className="mt-auto">
         <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton className="hover:bg-accent h-10 sm:h-auto">
-                <LogOut className="mr-2 h-4 w-4" />
-                {!collapsed && <span className="text-sm sm:text-base">Sair</span>}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent cursor-pointer">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@admin" />
+                  <AvatarFallback>AD</AvatarFallback>
+                </Avatar>
+                {!collapsed && (
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-white">Admin</span>
+                    <span className="text-xs text-gray-400">admin@email.com</span>
+                  </div>
+                )}
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" side="right" align="start">
+              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handlePageChange('profile')}>
+                Meu Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.location.href = '/'}>
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarGroupContent>
       </SidebarGroup>
     </>
