@@ -72,40 +72,40 @@ export default function AdminGateways() {
       </div>
       <p className="text-gray-400 mb-6">Configure e gerencie seus gateways de pagamento</p>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Card className="bg-[#1f2937] border border-purple-700/40">
-          <CardHeader>
+        <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40">
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-gray-300">Total</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">{total}</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-green-700/40">
-          <CardHeader>
+        <Card className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/40">
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-gray-300">Ativos</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-400">{ativos}</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-blue-700/40">
-          <CardHeader>
+        <Card className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 border border-blue-700/40">
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-gray-300">Configurados</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-400">{configurados}</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-yellow-700/40">
-          <CardHeader>
+        <Card className="bg-gradient-to-br from-yellow-900/50 to-yellow-800/30 border border-yellow-700/40">
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-gray-300">Volume Mensal</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-400">{volumeMensal}</div>
           </CardContent>
         </Card>
-        <Card className="bg-[#1f2937] border border-pink-700/40">
-          <CardHeader>
+        <Card className="bg-gradient-to-br from-pink-900/50 to-pink-800/30 border border-pink-700/40">
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-gray-300">Transações</CardTitle>
           </CardHeader>
           <CardContent>
