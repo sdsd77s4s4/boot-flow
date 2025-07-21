@@ -491,9 +491,9 @@ export default function AdminCobrancas() {
             Configurações
           </TabsTrigger>
         </TabsList>
-      </Tabs>
-      {/* Conteúdo das Tabs */}
-      <TabsContent value="dashboard" className="space-y-6">
+
+        {/* Conteúdo das Tabs */}
+        <TabsContent value="dashboard" className="space-y-6">
         {/* Alertas */}
         <div className="mb-4">
           {cobrancasVencidas > 0 && (
@@ -728,6 +728,7 @@ export default function AdminCobrancas() {
           </Card>
         </div>
       </TabsContent>
+      </Tabs>
       {/* Modal Nova Cobrança */}
       <Dialog open={modalNova} onOpenChange={setModalNova}>
         <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
