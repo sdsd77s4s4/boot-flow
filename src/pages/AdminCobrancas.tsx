@@ -20,6 +20,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import { useCobrancas } from '@/hooks/useCobrancas';
 
 interface Cobranca {
   id: number;
@@ -81,9 +82,9 @@ const generateCobrancasFromUsers = (users: User[]): Cobranca[] => {
 };
 
 export default function AdminCobrancas() {
+  const { cobrancas, loading, error, addCobranca, updateCobranca, deleteCobranca } = useCobrancas();
   const { clientes } = useClientes();
   const { revendas } = useRevendas();
-  const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Gateways configurados
@@ -114,18 +115,9 @@ export default function AdminCobrancas() {
       observacoes: idx % 2 === 0 ? 'Cliente preferencial' : '',
       tags: idx % 3 === 0 ? ['Urgente', 'VIP'] : idx % 3 === 1 ? ['Recorrente'] : [],
     })) : [];
-    setCobrancas([...cobrancasClientes.map(c => ({ 
-      ...c, 
-      tipo: 'Cliente',
-      gateway: ['PIX', 'Stripe', 'Mercado Pago'][Math.floor(Math.random() * 3)],
-      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][Math.floor(Math.random() * 3)],
-      tentativas: Math.floor(Math.random() * 3),
-      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
-      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
-      observacoes: Math.random() > 0.7 ? 'Cliente com histórico de atraso' : '',
-      tags: Math.random() > 0.8 ? ['Urgente'] : Math.random() > 0.6 ? ['Recorrente'] : [],
-    })), ...cobrancasRevendas]);
-  }, [clientes, revendas]);
+    cobrancasClientes.forEach(c => addCobranca(c));
+    cobrancasRevendas.forEach(c => addCobranca(c));
+  }, [clientes, revendas, addCobranca]);
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string | null>(null);
   const [modalNova, setModalNova] = useState(false);
@@ -202,7 +194,7 @@ export default function AdminCobrancas() {
       tipo: 'Cliente', // Default to Cliente
     };
     
-    setCobrancas([...cobrancas, novaCobranca]);
+    addCobranca(novaCobranca);
     setNova({ 
       cliente: '', 
       nomeCliente: '', 
@@ -222,15 +214,14 @@ export default function AdminCobrancas() {
       return;
     }
     
-    setCobrancas(cobrancas.map(c => c.id === modalEditar?.id ? { 
-      ...c, 
+    updateCobranca(modalEditar!.id, { 
       cliente: edit.nomeCliente,
       email: edit.email,
       descricao: edit.descricao, 
       valor: Number(edit.valor),
       vencimento: edit.vencimento,
       status: edit.status as 'Pendente' | 'Vencida' | 'Paga'
-    } : c));
+    });
     
     setEdit({ 
       cliente: '', 
@@ -252,7 +243,7 @@ export default function AdminCobrancas() {
     setModalEditar(null);
   };
   const handleExcluir = () => {
-    setCobrancas(cobrancas.filter(c => c.id !== modalExcluir?.id));
+    deleteCobranca(modalExcluir!.id);
     setModalExcluir(null);
   };
   const handleCopiar = (c: Cobranca) => {
@@ -1209,7 +1200,7 @@ export default function AdminCobrancas() {
           <div className="py-4">Tem certeza que deseja excluir esta cobrança?</div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModalExcluir(null)} className="bg-gray-700 text-white">Cancelar</Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleExcluir}>Excluir</Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => deleteCobranca(modalExcluir!.id)}>Excluir</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
