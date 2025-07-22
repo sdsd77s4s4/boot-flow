@@ -31,7 +31,7 @@ interface UseNeonResellersReturn {
   refreshResellers: () => Promise<void>;
 }
 
-const API_BASE = '/api';
+const API_BASE = '/.netlify/functions';
 
 export const useNeonResellers = (): UseNeonResellersReturn => {
   const [resellers, setResellers] = useState<Reseller[]>([]);
