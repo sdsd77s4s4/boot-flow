@@ -12,11 +12,12 @@ import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, A
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import React from "react";
-import { useClientes } from "@/hooks/useClientes";
+import { useNeonUsers } from "@/hooks/useNeonUsers";
+import type { User } from "@/hooks/useNeonUsers";
 import { useUsers } from "@/hooks/useUsers";
 
 export default function AdminUsers() {
-  const { clientes, loading, error, addCliente, updateCliente, deleteCliente } = useClientes();
+  const { users, loading, error, createUser, updateUser, deleteUser } = useNeonUsers();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
   const [newUser, setNewUser] = useState({
@@ -65,7 +66,7 @@ export default function AdminUsers() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const filteredUsers = clientes.filter(user =>
+  const filteredUsers = users.filter(user =>
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.real_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,7 +109,7 @@ export default function AdminUsers() {
         console.log('Dados preparados para adicionar:', userData);
         
         // Adicionar usuário usando o hook do Neon
-        const success = await addCliente(userData);
+        const success = await createUser(userData);
         
         if (success) {
           setAddUserSuccess(true);
@@ -204,7 +205,7 @@ export default function AdminUsers() {
       console.log('JSON sendo enviado:', JSON.stringify({ id: editingUser.id, ...updatedUserData }));
       console.log('=== FIM DEBUG ===');
       
-      const success = await updateCliente(editingUser.id, updatedUserData);
+      const success = await updateUser(editingUser.id, updatedUserData);
       
       if (success) {
         console.log('✅ Usuário atualizado com sucesso!');
@@ -229,8 +230,8 @@ export default function AdminUsers() {
         
         // Aguardar um pouco para o fetchUsers ser executado
         setTimeout(() => {
-          console.log('Lista de usuários após atualização:', clientes);
-          const updatedUser = clientes.find(u => u.id === editingUser.id);
+          console.log('Lista de usuários após atualização:', users);
+          const updatedUser = users.find(u => u.id === editingUser.id);
           console.log('Usuário atualizado na lista:', updatedUser);
           console.log('Campo real_name na lista:', updatedUser?.real_name);
         }, 1000);
@@ -245,7 +246,7 @@ export default function AdminUsers() {
 
   const handleDeleteUser = async () => {
     if (deletingUser) {
-      const success = await deleteCliente(deletingUser.id);
+      const success = await deleteUser(deletingUser.id);
       
       if (success) {
         // Atualizar Dashboard instantaneamente
@@ -322,7 +323,7 @@ export default function AdminUsers() {
     
     try {
       // Filtrar usuários que não existem na página de Clientes
-      const existingEmails = clientes.map(user => user.email.toLowerCase());
+      const existingEmails = users.map(user => user.email.toLowerCase());
       const usersToCopy = cobrancasUsers.filter(user => 
         !existingEmails.includes(user.email.toLowerCase())
       );
@@ -353,7 +354,7 @@ export default function AdminUsers() {
         console.log(`Copiando usuário ${i + 1}/${usersToCopy.length}:`, user.name);
         
         // Adicionar usuário usando o hook do Neon
-        const success = await addCliente(userData);
+        const success = await createUser(userData);
         
         if (!success) {
           console.error(`Erro ao copiar usuário: ${user.name}`);
@@ -680,7 +681,7 @@ export default function AdminUsers() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
           <p className="text-gray-400 text-sm sm:text-base">
-            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${clientes.length} usuários)`}
+            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -1055,7 +1056,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{clientes.length}</div>
+            <div className="text-2xl font-bold text-white">{users.length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários cadastrados</div>
           </CardContent>
         </Card>
@@ -1068,7 +1069,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{clientes.filter(u => u.status === 'Ativo').length}</div>
+            <div className="text-2xl font-bold text-green-400">{users.filter(u => u.status === 'Ativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários com acesso</div>
           </CardContent>
         </Card>
@@ -1081,7 +1082,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-400">{clientes.filter(u => u.status === 'Inativo').length}</div>
+            <div className="text-2xl font-bold text-red-400">{users.filter(u => u.status === 'Inativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários bloqueados</div>
           </CardContent>
         </Card>
@@ -1583,7 +1584,7 @@ export default function AdminUsers() {
                           setEditingUser({ ...editingUser, realName: newName });
                           if (editingUser && editingUser.id) {
                             // Salvar em tempo real no banco
-                            await updateCliente(editingUser.id, { real_name: newName });
+                            await updateUser(editingUser.id, { real_name: newName });
                           }
                         }}
                         placeholder="Digite o nome completo" 
