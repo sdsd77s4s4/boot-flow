@@ -1042,6 +1042,14 @@ export default function AdminUsers() {
               </div>
             </DialogContent>
           </Dialog>
+          <Button
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white h-10 sm:h-auto"
+            onClick={handleCopyAllUsersFromCobrancas}
+            disabled={isCopyingUsers}
+          >
+            <Copy className="w-4 h-4" />
+            Importar da Cobrança
+          </Button>
         </div>
       </div>
 
