@@ -72,7 +72,7 @@ const AdminDashboard = () => {
   });
 
   // Hooks para dados de usuários e revendedores
-  const { clientes, loading: loadingClientes } = useClientes();
+  const { clientes, loading: loadingClientes, fetchClientes } = useClientes();
   const { revendas, loading: loadingRevendas } = useRevendas();
 
   // Atualizar estatísticas quando os dados mudarem
@@ -868,6 +868,11 @@ const AdminDashboard = () => {
       clearInterval(interval);
     };
   }, []);
+
+  // Adicione a função refreshUsers para atualizar os clientes
+  const refreshUsers = () => {
+    if (fetchClientes) fetchClientes();
+  };
 
   return (
     <SidebarProvider>
