@@ -185,13 +185,13 @@ export default function AdminCobrancas() {
     
     const novaCobranca: Cobranca = {
       id: Math.max(...cobrancas.map(c => c.id)) + 1,
-      cliente: nova.nomeCliente,
+      cliente: nova.nomeCliente, // garantir que só aparece uma vez
       email: nova.email,
       descricao: nova.descricao,
       valor: Number(nova.valor),
       vencimento: nova.vencimento,
       status: nova.status as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Cliente', // Default to Cliente
+      tipo: 'Cliente',
     };
     
     addCobranca(novaCobranca);
