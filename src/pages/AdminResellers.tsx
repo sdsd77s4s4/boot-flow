@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, Activity, CheckCircle, RefreshCw, Maximize2, Moon } from "lucide-react";
 import { useRevendas } from '@/hooks/useRevendas';
-import type { Reseller } from "@/hooks/useNeonResellers";
 
 export default function AdminResellers() {
   const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda } = useRevendas();
@@ -33,9 +32,9 @@ export default function AdminResellers() {
   });
 
   // Estados para os modais
-  const [editingReseller, setEditingReseller] = useState<Reseller | null>(null);
-  const [viewingReseller, setViewingReseller] = useState<Reseller | null>(null);
-  const [deletingReseller, setDeletingReseller] = useState<Reseller | null>(null);
+  const [editingReseller, setEditingReseller] = useState<any | null>(null);
+  const [viewingReseller, setViewingReseller] = useState<any | null>(null);
+  const [deletingReseller, setDeletingReseller] = useState<any | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -199,17 +198,17 @@ export default function AdminResellers() {
     }
   };
 
-  const openViewModal = (revenda: Reseller) => {
+  const openViewModal = (revenda: any) => {
     setViewingReseller(revenda);
     setIsViewDialogOpen(true);
   };
 
-  const openEditModal = (revenda: Reseller) => {
+  const openEditModal = (revenda: any) => {
     setEditingReseller({ ...revenda });
     setIsEditDialogOpen(true);
   };
 
-  const openDeleteModal = (revenda: Reseller) => {
+  const openDeleteModal = (revenda: any) => {
     setDeletingReseller(revenda);
     setIsDeleteDialogOpen(true);
   };
