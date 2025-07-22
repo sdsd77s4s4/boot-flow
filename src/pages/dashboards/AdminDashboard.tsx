@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useNeonUsers } from "@/hooks/useNeonUsers";
-import { useNeonResellers } from "@/hooks/useNeonResellers";
+import { useClientes } from '@/hooks/useClientes';
+import { useRevendas } from '@/hooks/useRevendas';
 import { 
   Brain, 
   Users, 
@@ -55,8 +55,6 @@ import AdminGateways from "../AdminGateways";
 import AdminCobrancas from "../AdminCobrancas";
 import Notifications from "../Notifications";
 import Profile from "../Profile";
-import { useClientes } from '@/hooks/useClientes';
-import { useRevendas } from '@/hooks/useRevendas';
 
 
 const AdminDashboard = () => {
