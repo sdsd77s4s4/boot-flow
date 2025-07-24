@@ -103,7 +103,7 @@ export default function AdminCobrancas() {
       valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
       vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
       status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Revenda',
+      tipo: 'Revenda' as const,
       gateway: ['PIX', 'Stripe', 'Mercado Pago'][idx % 3],
       formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][idx % 3],
       tentativas: Math.floor(Math.random() * 3),
@@ -114,7 +114,7 @@ export default function AdminCobrancas() {
     })) : [];
     setCobrancas([...cobrancasClientes.map(c => ({ 
       ...c, 
-      tipo: 'Cliente',
+      tipo: 'Cliente' as const,
       gateway: ['PIX', 'Stripe', 'Mercado Pago'][Math.floor(Math.random() * 3)],
       formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][Math.floor(Math.random() * 3)],
       tentativas: Math.floor(Math.random() * 3),

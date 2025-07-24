@@ -484,7 +484,7 @@ const AdminDashboard = () => {
                     setRefreshTrigger(prev => prev + 1);
                   }}
                 > 
-                  <RefreshCw className="w-4 h-4 sm:mr-2" />
+                  <div className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">Atualizar</span>
                   <span className="sm:hidden">Refresh</span>
                 </Button>
@@ -1139,7 +1139,7 @@ const AdminDashboard = () => {
             )}
             {/* Renderização das outras páginas continua igual */}
             {currentPage === "users" && <AdminUsers />}
-            {currentPage === "resellers" && <AdminResellers resellers={resellersData} onAddReseller={handleAddReseller} />}
+            {currentPage === "resellers" && <AdminResellers />}
             {currentPage === "iptv" && <AdminIPTV />}
             {currentPage === "radio" && <AdminRadio />}
             {currentPage === "ai" && <AdminAI />}
