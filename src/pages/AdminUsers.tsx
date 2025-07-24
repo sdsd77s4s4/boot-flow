@@ -1155,8 +1155,8 @@ export default function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedUsers.map(user => (
-                <TableRow key={user.id} className="hover:bg-[#232a36] transition-colors">
+              {paginatedUsers.map((user) => (
+                <TableRow key={user.id}>
                   <TableCell className="text-white font-medium text-xs sm:text-sm">{user.name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-gray-300 text-xs sm:text-sm">{user.email}</TableCell>
                   <TableCell className="text-gray-300 text-xs sm:text-sm">{user.plan}</TableCell>
@@ -1189,14 +1189,16 @@ export default function AdminUsers() {
                       > 
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" /> 
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
-                        onClick={() => openDeleteModal(user)}
-                      > 
-                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" /> 
-                      </Button>
+                      <button
+                        className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-background rounded-md border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
+                        onClick={() => {
+                          if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
+                            deleteUser(user.id);
+                          }
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2 w-3 h-3 sm:w-4 sm:h-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                      </button>
                     </div>
                   </TableCell>
                 </TableRow>
