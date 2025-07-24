@@ -200,7 +200,7 @@ export default function AdminUsers() {
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
-      if (success) {
+        await updateUser(userId, updatedUser);
         console.log('✅ Usuário atualizado com sucesso!');
         console.log('Aguardando recarregamento da lista...');
         
@@ -238,10 +238,38 @@ export default function AdminUsers() {
   };
 
   const handleDeleteUser = async () => {
+    if (userToDelete) {
+      try {
+        await deleteUser(userToDelete.id);
+        
+        // Atualizar Dashboard instantaneamente
+        console.log('📤 Clientes: Disparando evento refresh-dashboard após deletar usuário');
+        try {
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'delete' } }));
+          console.log('✅ Evento disparado com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao disparar evento:', error);
+        }
+        
+        // Usar localStorage como fallback
+        try {
+          localStorage.setItem('dashboard-refresh', Date.now().toString());
+          console.log('✅ Flag localStorage definida');
+        } catch (error) {
+          console.error('❌ Erro ao definir flag localStorage:', error);
+        }
+        
+        setUserToDelete(null);
+        setIsDeleteDialogOpen(false);
+      } catch (error) {
+        console.error('Erro ao deletar usuário:', error);
+      }
+    }
+  };
     if (deletingUser) {
       const success = await deleteUser(deletingUser.id);
       
-      if (success) {
+      await deleteUser(userToDelete.id);
         // Atualizar Dashboard instantaneamente
         console.log('📤 Clientes: Disparando evento refresh-dashboard após deletar usuário');
         try {
