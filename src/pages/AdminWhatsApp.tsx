@@ -61,9 +61,9 @@ const initialForm = { id: null, title: '', status: 'Ativo', tag: '', content: ''
 
 export const WhatsAppStatusContext = createContext({
   isConnected: false,
-  connectionStatus: 'disconnected' as 'disconnected' | 'connecting' | 'connected',
+  connectionStatus: 'disconnected',
   setIsConnected: (v: boolean) => {},
-  setConnectionStatus: (v: 'disconnected' | 'connecting' | 'connected') => {},
+  setConnectionStatus: (v: string) => {},
 });
 
 export const useWhatsAppStatus = () => useContext(WhatsAppStatusContext);
@@ -116,12 +116,7 @@ const AdminWhatsApp: React.FC = () => {
       return;
     }
     if (editing) {
-      setTemplates((prev) => prev.map((tpl) => tpl.id === form.id ? { 
-        ...form, 
-        sent: tpl.sent, 
-        delivery: tpl.delivery, 
-        read: tpl.read 
-      } : tpl));
+      setTemplates((prev) => prev.map((tpl) => tpl.id === form.id ? { ...form } : tpl));
       toast.success('Template atualizado com sucesso!');
     } else {
       setTemplates((prev) => [

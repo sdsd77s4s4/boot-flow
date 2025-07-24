@@ -12,12 +12,12 @@ import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, A
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import React from "react";
-import { useClientes } from "@/hooks/useClientes";
+import { useNeonUsers } from "@/hooks/useNeonUsers";
+import type { User } from "@/hooks/useNeonUsers";
 import { useUsers } from "@/hooks/useUsers";
-import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminUsers() {
-  const { clientes: users, loading, error, addCliente, updateCliente: updateUser, deleteCliente: deleteUser } = useClientes();
+  const { users, loading, error, createUser, updateUser, deleteUser } = useNeonUsers();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
   const [newUser, setNewUser] = useState({
@@ -46,9 +46,9 @@ export default function AdminUsers() {
   const [selectedExtractedUser, setSelectedExtractedUser] = useState<any>(null);
 
   // Estados para os modais de ação
-  const [editingUser, setEditingUser] = useState<any | null>(null);
-  const [viewingUser, setViewingUser] = useState<any | null>(null);
-  const [deletingUser, setDeletingUser] = useState<any | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [viewingUser, setViewingUser] = useState<User | null>(null);
+  const [deletingUser, setDeletingUser] = useState<User | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -66,8 +66,7 @@ export default function AdminUsers() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const usersSafe = users || [];
-  const filteredUsers = usersSafe.filter(user =>
+  const filteredUsers = users.filter(user =>
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.real_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -91,75 +90,82 @@ export default function AdminUsers() {
         
         // Preparar dados do usuário para o Neon
         const userData = {
-          name: newUser.realName || newUser.name,
+          name: newUser.realName || newUser.name, // Usar o nome real como name principal
           email: newUser.email,
           password: newUser.password || '',
-          m3u_url: newUser.plan || '',
+          m3u_url: newUser.plan || '', // usando plan como m3u_url
           bouquets: newUser.bouquets || '',
           expiration_date: newUser.expirationDate || null,
-          observations: newUser.observations || ''
+          observations: newUser.observations || '',
+          real_name: newUser.realName || '', // Manter também no real_name
+          telegram: newUser.telegram || '', // Campo telegram
+          whatsapp: newUser.whatsapp || '', // Campo whatsapp
+          status: newUser.status || 'Ativo', // Campo status
+          devices: newUser.devices || 0, // Campo dispositivos
+          credits: newUser.credits || 0, // Campo créditos
+          notes: newUser.notes || '' // Campo anotações
         };
         
         console.log('Dados preparados para adicionar:', userData);
         
         // Adicionar usuário usando o hook do Neon
-        await addCliente(userData);
+        const success = await createUser(userData);
         
-        setAddUserSuccess(true);
-        
-        // Atualizar Dashboard instantaneamente
-        console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
-        try {
-          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
-          console.log('✅ Evento disparado com sucesso');
-        } catch (error) {
-          console.error('❌ Erro ao disparar evento:', error);
+        if (success) {
+          setAddUserSuccess(true);
+          
+          // Atualizar Dashboard instantaneamente
+          console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
+          try {
+            window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
+            console.log('✅ Evento disparado com sucesso');
+          } catch (error) {
+            console.error('❌ Erro ao disparar evento:', error);
+          }
+          
+          // Usar localStorage como fallback
+          try {
+            localStorage.setItem('dashboard-refresh', Date.now().toString());
+            console.log('✅ Flag localStorage definida');
+          } catch (error) {
+            console.error('❌ Erro ao definir flag localStorage:', error);
+          }
+          
+          // Limpar formulário
+          setNewUser({ 
+            name: "", 
+            email: "", 
+            plan: "", 
+            status: "Ativo",
+            telegram: "",
+            observations: "",
+            expirationDate: "",
+            password: "",
+            bouquets: "",
+            realName: "", // Limpando também o campo realName
+            whatsapp: "",
+            devices: 0,
+            credits: 0,
+            notes: ""
+          });
+          
+          // Limpar dados de extração
+          setM3uUrl("");
+          setExtractionResult(null);
+          setExtractionError("");
+          
+          // Fechar modal após 1 segundo
+          setTimeout(() => {
+            setIsAddDialogOpen(false);
+            setAddUserSuccess(false);
+          }, 1000);
+        } else {
+          alert('Erro ao adicionar usuário. Verifique os dados.');
         }
-        
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem('dashboard-refresh', Date.now().toString());
-          console.log('✅ Flag localStorage definida');
-        } catch (error) {
-          console.error('❌ Erro ao definir flag localStorage:', error);
-        }
-        
-        // Limpar formulário
-        setNewUser({ 
-          name: "", 
-          email: "", 
-          plan: "", 
-          status: "Ativo",
-          telegram: "",
-          observations: "",
-          expirationDate: "",
-          password: "",
-          bouquets: "",
-          realName: "", // Limpando também o campo realName
-          whatsapp: "",
-          devices: 0,
-          credits: 0,
-          notes: ""
-        });
-        
-        // Limpar dados de extração
-        setM3uUrl("");
-        setExtractionResult(null);
-        setExtractionError("");
-        
-        // Fechar modal após 1 segundo
-        setTimeout(() => {
-          setIsAddDialogOpen(false);
-          setAddUserSuccess(false);
-        }, 1000);
         
       } catch (error) {
         console.error('Erro ao adicionar usuário:', error);
-        if (error && error.message && error.message.includes('duplicate key value')) {
-          alert('Já existe um usuário com este e-mail!');
-        } else {
-          alert('Erro ao adicionar usuário. Tente novamente.');
-        }
+        alert('Erro ao adicionar usuário. Tente novamente.');
       } finally {
         setIsAddingUser(false);
       }
@@ -201,7 +207,7 @@ export default function AdminUsers() {
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
-      try {
+      if (success) {
         console.log('✅ Usuário atualizado com sucesso!');
         console.log('Aguardando recarregamento da lista...');
         
@@ -263,17 +269,17 @@ export default function AdminUsers() {
         setDeletingUser(null);
         setIsDeleteDialogOpen(false);
       } else {
-        alert('Erro ao deletar usuário. Verifique se você tem permissão no Supabase ou se há policies bloqueando a exclusão.');
+        alert('Erro ao deletar usuário. Tente novamente.');
       }
     }
   };
 
-  const openViewModal = (user: any) => {
+  const openViewModal = (user: User) => {
     setViewingUser(user);
     setIsViewDialogOpen(true);
   };
 
-  const openEditModal = (user: any) => {
+  const openEditModal = (user: User) => {
     console.log('=== DEBUG: Abrindo modal de edição ===');
     console.log('Dados do usuário vindos do banco:', user);
     console.log('Campo real_name do banco:', user.real_name);
@@ -304,22 +310,10 @@ export default function AdminUsers() {
     setIsEditDialogOpen(true);
   };
 
-  const openDeleteModal = (user: any) => {
+  const openDeleteModal = (user: User) => {
     setDeletingUser(user);
     setIsDeleteDialogOpen(true);
   };
-
-  // Sistema de Proxy CORS Multi-Fallback (apenas HTTPS para evitar Mixed Content)
-  const corsProxies = [
-    {
-      name: "api.allorigins.win",
-      url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
-    },
-    {
-      name: "corsproxy.io",
-      url: (targetUrl: string) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
-    }
-  ];
 
   // Função para copiar todos os clientes da página de Cobranças
   const handleCopyAllUsersFromCobrancas = async () => {
@@ -328,12 +322,9 @@ export default function AdminUsers() {
     setCopySuccess(false);
     
     try {
-      const { data: cobrancasData } = await supabase.from('cobrancas').select('*');
-      const cobrancasUsers = cobrancasData || [];
-      
       // Filtrar usuários que não existem na página de Clientes
       const existingEmails = users.map(user => user.email.toLowerCase());
-      const usersToCopy = cobrancasUsers.filter((user: any) => 
+      const usersToCopy = cobrancasUsers.filter(user => 
         !existingEmails.includes(user.email.toLowerCase())
       );
       
@@ -351,19 +342,23 @@ export default function AdminUsers() {
         
         // Preparar dados do usuário para o Neon
         const userData = {
-          name: user.cliente,
+          name: user.name,
           email: user.email,
-          password: '',
-          m3u_url: '',
-          bouquets: '',
-          expiration_date: user.vencimento || null,
-          observations: user.observacoes || ''
+          password: user.password || '',
+          m3u_url: user.plan || '',
+          bouquets: user.bouquets || '',
+          expiration_date: user.expirationDate || user.renewalDate || null,
+          observations: user.observations || user.notes || ''
         };
         
-        console.log(`Copiando usuário ${i + 1}/${usersToCopy.length}:`, user.cliente);
+        console.log(`Copiando usuário ${i + 1}/${usersToCopy.length}:`, user.name);
         
         // Adicionar usuário usando o hook do Neon
-        await addCliente(userData);
+        const success = await createUser(userData);
+        
+        if (!success) {
+          console.error(`Erro ao copiar usuário: ${user.name}`);
+        }
         
         // Atualizar progresso
         setCopyProgress(((i + 1) / usersToCopy.length) * 100);
@@ -389,6 +384,27 @@ export default function AdminUsers() {
       setIsCopyingUsers(false);
     }
   };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Ativo": return "bg-green-100 text-green-800";
+      case "Inativo": return "bg-red-100 text-red-800";
+      case "Pendente": return "bg-yellow-100 text-yellow-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Sistema de Proxy CORS Multi-Fallback (apenas HTTPS para evitar Mixed Content)
+  const corsProxies = [
+    {
+      name: "api.allorigins.win",
+      url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+    },
+    {
+      name: "corsproxy.io",
+      url: (targetUrl: string) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+    }
+  ];
 
   // Função para extrair dados M3U usando o sistema que funcionou
   const extractM3UData = async () => {
@@ -665,7 +681,7 @@ export default function AdminUsers() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
           <p className="text-gray-400 text-sm sm:text-base">
-            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${(users || []).length} usuários)`}
+            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -677,9 +693,7 @@ export default function AdminUsers() {
                 <span className="sm:hidden">Novo</span>
               </Button>
             </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>Adicionar Cliente</DialogTitle>
-              <DialogDescription>Preencha os dados do novo cliente para adicioná-lo à base de dados.</DialogDescription>
+            <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 sm:max-w-2xl max-w-[98vw] px-1 sm:px-0">
               <div className="p-2 sm:p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -1029,14 +1043,6 @@ export default function AdminUsers() {
               </div>
             </DialogContent>
           </Dialog>
-          <Button
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white h-10 sm:h-auto"
-            onClick={handleCopyAllUsersFromCobrancas}
-            disabled={isCopyingUsers}
-          >
-            <Copy className="w-4 h-4" />
-            Importar da Cobrança
-          </Button>
         </div>
       </div>
 
@@ -1050,7 +1056,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{(users || []).length}</div>
+            <div className="text-2xl font-bold text-white">{users.length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários cadastrados</div>
           </CardContent>
         </Card>
@@ -1063,7 +1069,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{(users || []).filter(u => u.status === 'Ativo').length}</div>
+            <div className="text-2xl font-bold text-green-400">{users.filter(u => u.status === 'Ativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários com acesso</div>
           </CardContent>
         </Card>
@@ -1076,7 +1082,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-400">{(users || []).filter(u => u.status === 'Inativo').length}</div>
+            <div className="text-2xl font-bold text-red-400">{users.filter(u => u.status === 'Inativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários bloqueados</div>
           </CardContent>
         </Card>
@@ -1146,8 +1152,8 @@ export default function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedUsers.map((user) => (
-                <TableRow key={user.id}>
+              {paginatedUsers.map(user => (
+                <TableRow key={user.id} className="hover:bg-[#232a36] transition-colors">
                   <TableCell className="text-white font-medium text-xs sm:text-sm">{user.name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-gray-300 text-xs sm:text-sm">{user.email}</TableCell>
                   <TableCell className="text-gray-300 text-xs sm:text-sm">{user.plan}</TableCell>
@@ -1160,8 +1166,8 @@ export default function AdminUsers() {
                     }`}>{user.status}</Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-gray-300 text-xs sm:text-sm">{user.telegram || '-'}</TableCell>
-                  <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">{user.expiration_date || '-'}</TableCell>
-                  <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">{user.created_at}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">{user.expirationDate || '-'}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">{user.createdAt}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 sm:gap-2">
                       <Button 
@@ -1180,16 +1186,14 @@ export default function AdminUsers() {
                       > 
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" /> 
                       </Button>
-                      <button
-                        className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-background rounded-md border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
-                        onClick={() => {
-                          if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
-                            deleteUser(user.id);
-                          }
-                        }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2 w-3 h-3 sm:w-4 sm:h-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
-                      </button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
+                        onClick={() => openDeleteModal(user)}
+                      > 
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" /> 
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -1877,7 +1881,7 @@ function RenovacaoDatePicker() {
   );
 }
 
-function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: any | null, setEditingUser: (user: any) => void }) {
+function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: User | null, setEditingUser: (user: User) => void }) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
     editingUser?.expirationDate ? new Date(editingUser.expirationDate) : undefined
