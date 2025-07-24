@@ -273,12 +273,12 @@ export default function AdminUsers() {
     }
   };
 
-  const openViewModal = (user: User) => {
+  const openViewModal = (user: NeonUser) => {
     setViewingUser(user);
     setIsViewDialogOpen(true);
   };
 
-  const openEditModal = (user: User) => {
+  const openEditModal = (user: NeonUser) => {
     console.log('=== DEBUG: Abrindo modal de edição ===');
     console.log('Dados do usuário vindos do banco:', user);
     console.log('Campo real_name do banco:', user.real_name);
@@ -309,7 +309,7 @@ export default function AdminUsers() {
     setIsEditDialogOpen(true);
   };
 
-  const openDeleteModal = (user: User) => {
+  const openDeleteModal = (user: NeonUser) => {
     setDeletingUser(user);
     setIsDeleteDialogOpen(true);
   };
@@ -1880,7 +1880,7 @@ function RenovacaoDatePicker() {
   );
 }
 
-function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: User | null, setEditingUser: (user: User) => void }) {
+function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: NeonUser | null, setEditingUser: (user: NeonUser) => void }) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
     editingUser?.expirationDate ? new Date(editingUser.expirationDate) : undefined
