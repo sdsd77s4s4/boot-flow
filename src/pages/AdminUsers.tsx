@@ -14,6 +14,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import React from "react";
 import { useClientes } from "@/hooks/useClientes";
 import { useUsers } from "@/hooks/useUsers";
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminUsers() {
   const { clientes: users, loading, error, addCliente, updateCliente: updateUser, deleteCliente: deleteUser } = useClientes();
@@ -59,6 +60,7 @@ export default function AdminUsers() {
   
   // Estados para copiar clientes da página de Cobranças
   const [isCopyDialogOpen, setIsCopyDialogOpen] = useState(false);
+  const [isCopyingUsers, setIsCopyingUsers] = useState(false);
   const [copyProgress, setCopyProgress] = useState(0);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -199,7 +201,7 @@ export default function AdminUsers() {
       
       const success = await updateUser(editingUser.id, updatedUserData);
       
-      if (success) {
+      try {
         console.log('✅ Usuário atualizado com sucesso!');
         console.log('Aguardando recarregamento da lista...');
         
@@ -305,6 +307,87 @@ export default function AdminUsers() {
   const openDeleteModal = (user: any) => {
     setDeletingUser(user);
     setIsDeleteDialogOpen(true);
+  };
+
+  // Sistema de Proxy CORS Multi-Fallback (apenas HTTPS para evitar Mixed Content)
+  const corsProxies = [
+    {
+      name: "api.allorigins.win",
+      url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+    },
+    {
+      name: "corsproxy.io",
+      url: (targetUrl: string) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+    }
+  ];
+
+  // Função para copiar todos os clientes da página de Cobranças
+  const handleCopyAllUsersFromCobrancas = async () => {
+    setIsCopyingUsers(true);
+    setCopyProgress(0);
+    setCopySuccess(false);
+    
+    try {
+      const { data: cobrancasData } = await supabase.from('cobrancas').select('*');
+      const cobrancasUsers = cobrancasData || [];
+      
+      // Filtrar usuários que não existem na página de Clientes
+      const existingEmails = users.map(user => user.email.toLowerCase());
+      const usersToCopy = cobrancasUsers.filter((user: any) => 
+        !existingEmails.includes(user.email.toLowerCase())
+      );
+      
+      if (usersToCopy.length === 0) {
+        alert('Todos os clientes da página de Cobranças já existem na página de Clientes!');
+        setIsCopyingUsers(false);
+        return;
+      }
+      
+      console.log(`Copiando ${usersToCopy.length} usuários da página de Cobranças...`);
+      
+      // Copiar usuários um por um
+      for (let i = 0; i < usersToCopy.length; i++) {
+        const user = usersToCopy[i];
+        
+        // Preparar dados do usuário para o Neon
+        const userData = {
+          name: user.cliente,
+          email: user.email,
+          password: '',
+          m3u_url: '',
+          bouquets: '',
+          expiration_date: user.vencimento || null,
+          observations: user.observacoes || ''
+        };
+        
+        console.log(`Copiando usuário ${i + 1}/${usersToCopy.length}:`, user.cliente);
+        
+        // Adicionar usuário usando o hook do Neon
+        await addCliente(userData);
+        
+        // Atualizar progresso
+        setCopyProgress(((i + 1) / usersToCopy.length) * 100);
+        
+        // Pequena pausa para não sobrecarregar a API
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      setCopySuccess(true);
+      alert(`✅ ${usersToCopy.length} clientes copiados com sucesso da página de Cobranças!`);
+      
+      // Fechar modal após 2 segundos
+      setTimeout(() => {
+        setIsCopyDialogOpen(false);
+        setCopySuccess(false);
+        setCopyProgress(0);
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Erro ao copiar usuários:', error);
+      alert('Erro ao copiar usuários. Verifique o console para mais detalhes.');
+    } finally {
+      setIsCopyingUsers(false);
+    }
   };
 
   // Função para extrair dados M3U usando o sistema que funcionou
@@ -1077,8 +1160,8 @@ export default function AdminUsers() {
                     }`}>{user.status}</Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-gray-300 text-xs sm:text-sm">{user.telegram || '-'}</TableCell>
-                  <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">{user.expirationDate || '-'}</TableCell>
-                  <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">{user.createdAt}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">{user.expiration_date || '-'}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">{user.created_at}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 sm:gap-2">
                       <Button 

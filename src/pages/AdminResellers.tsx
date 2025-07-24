@@ -148,27 +148,25 @@ export default function AdminResellers() {
         observations: editingReseller.observations
       });
       
-      if (success) {
-        // Atualizar Dashboard instantaneamente
-        console.log('📤 Revendas: Disparando evento refresh-dashboard após editar revenda');
-        try {
-          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'update' } }));
-          console.log('✅ Evento disparado com sucesso');
-        } catch (error) {
-          console.error('❌ Erro ao disparar evento:', error);
-        }
-        
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem('dashboard-refresh', Date.now().toString());
-          console.log('✅ Flag localStorage definida');
-        } catch (error) {
-          console.error('❌ Erro ao definir flag localStorage:', error);
-        }
-        
-        setEditingReseller(null);
-        setIsEditDialogOpen(false);
+      // Atualizar Dashboard instantaneamente
+      console.log('📤 Revendas: Disparando evento refresh-dashboard após editar revenda');
+      try {
+        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'update' } }));
+        console.log('✅ Evento disparado com sucesso');
+      } catch (error) {
+        console.error('❌ Erro ao disparar evento:', error);
       }
+      
+      // Usar localStorage como fallback
+      try {
+        localStorage.setItem('dashboard-refresh', Date.now().toString());
+        console.log('✅ Flag localStorage definida');
+      } catch (error) {
+        console.error('❌ Erro ao definir flag localStorage:', error);
+      }
+      
+      setEditingReseller(null);
+      setIsEditDialogOpen(false);
     }
   };
 
@@ -176,7 +174,7 @@ export default function AdminResellers() {
     if (deletingReseller) {
       const success = await deleteRevenda(deletingReseller.id);
       
-      if (success) {
+      // Handle delete success
         // Atualizar Dashboard instantaneamente
         console.log('📤 Revendas: Disparando evento refresh-dashboard após deletar revenda');
         try {
@@ -196,7 +194,6 @@ export default function AdminResellers() {
         
         setDeletingReseller(null);
         setIsDeleteDialogOpen(false);
-      }
     }
   };
 
