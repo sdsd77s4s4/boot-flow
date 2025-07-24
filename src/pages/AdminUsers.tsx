@@ -829,578 +829,420 @@ export default function AdminUsers() {
                 <span className="sm:hidden">Novo</span>
               </Button>
             </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>Adicionar Cliente</DialogTitle>
-              <DialogDescription>
-                Preencha os dados do novo cliente para adicioná-lo à base de
-                dados.
-              </DialogDescription>
-              <div className="p-2 sm:p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
+            <DialogContent className="max-w-lg w-full bg-background border border-gray-800 shadow-2xl p-0 rounded-lg overflow-hidden">
+              <div className="relative">
+                <button
+                  type="button"
+                  className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  onClick={() => setIsAddDialogOpen(false)}
+                  aria-label="Fechar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+                <div className="px-6 pt-6 pb-2 border-b border-gray-800 bg-[#18181b]">
+                  <h2 className="text-lg font-semibold leading-none tracking-tight text-white flex items-center gap-2">
                     <Users className="w-6 h-6 text-green-500" />
-                    <span className="text-lg font-semibold text-white">
-                      Adicionar Cliente
-                    </span>
-                    <span className="ml-2 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold">
-                      Novo
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm"
-                    >
-                      Importar
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 bg-[#1f2937] text-white border border-gray-700 px-3 py-1 rounded text-sm"
-                    >
-                      Modelo
-                    </Button>
-                    <Button
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 bg-green-600 text-white hover:bg-green-700 px-3 py-1 rounded text-xs"
-                      onClick={() => {
-                        setM3uUrl(
-                          'http://ztech.blog/get.php?username=268262713&password=936365120&type=m3u_plus&output=mpegts'
-                        );
-                        setExtractionError('URL de teste carregada! Clique em Extrair.');
-                      }}
-                      disabled={isExtracting}
-                    >
-                      Teste
-                    </Button>
-                    <Button
-                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm"
-                      onClick={extractM3UData}
-                      disabled={isExtracting}
-                    >
-                      Extrair
-                    </Button>
-                  </div>
+                    Adicionar Cliente
+                    <span className="ml-2 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold">Novo</span>
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">Preencha os dados do novo cliente para adicioná-lo à base de dados.</p>
                 </div>
-                <p className="text-gray-400 text-sm mb-2">
-                  Preencha os dados do novo cliente para adicioná-lo à base de
-                  dados
-                </p>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-green-400 text-xs font-medium">
-                    • Campos obrigatórios marcados com *
-                  </span>
-                  <span className="text-blue-400 text-xs font-medium">
-                    • Dados serão sincronizados automaticamente
-                  </span>
-                </div>
-                {/* Extração M3U */}
-                <div className="bg-blue-900/30 border border-blue-800 rounded-lg p-4 mb-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-blue-300 font-medium">
-                      Extração M3U
-                    </span>
-                    <div className="flex gap-2">
-                      <Button
-                        className="bg-green-600 text-white hover:bg-green-700 px-3 py-1 rounded text-xs"
-                        onClick={() => {
-                          setM3uUrl(
-                            "http://ztech.blog/get.php?username=268262713&password=936365120&type=m3u_plus&output=mpegts"
-                          );
-                          setExtractionError(
-                            "URL de teste carregada! Clique em Extrair."
-                          );
-                        }}
-                        disabled={isExtracting}
-                      >
-                        Teste
-                      </Button>
-                      <Button
-                        className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm"
-                        onClick={extractM3UData}
-                        disabled={isExtracting}
-                      >
-                        {isExtracting ? "Extraindo..." : "Extrair"}
-                      </Button>
-                    </div>
+                <div className="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollbar-hide bg-[#18181b]">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-green-400 text-xs font-medium">• Campos obrigatórios marcados com *</span>
+                    <span className="text-blue-400 text-xs font-medium">• Dados serão sincronizados automaticamente</span>
                   </div>
-                  <p className="text-xs text-blue-300 mb-2">
-                    Serve para importar dados automaticamente a partir de uma
-                    URL.
-                  </p>
-                  <Input
-                    placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..."
-                    className="bg-[#1f2937] border border-blue-800 text-white mb-2"
-                    value={m3uUrl}
-                    onChange={(e) => setM3uUrl(e.target.value)}
-                  />
-                  {/* Status de extração */}
-                  {extractionError && (
-                    <div
-                      className={`border text-xs rounded p-2 mb-2 ${
-                        extractionError.includes("Testando proxy")
-                          ? "bg-blue-900/40 border-blue-700 text-blue-300"
-                          : "bg-red-900/40 border-red-700 text-red-300"
-                      }`}
-                    >
-                      {extractionError.includes("Testando proxy") ? "🔄" : "❌"}{" "}
-                      {extractionError}
-                    </div>
-                  )}
-                  {/* Resultado da extração */}
-                  {extractionResult && !extractionError && (
-                    <div className="bg-green-900/40 border border-green-700 text-green-300 text-xs rounded p-2 mb-2">
-                      ✅ {extractionResult.message}
-                    </div>
-                  )}
-                  {/* Dados extraídos aplicados ao formulário */}
-                  {extractionResult && extractionResult.success && (
-                    <div className="bg-green-900/40 border border-green-700 text-green-300 text-xs rounded p-2">
-                      <div className="font-medium mb-1">
-                        ✅ Dados aplicados ao formulário:
-                      </div>
-                      <div className="space-y-1">
-                        <div>• Nome: {newUser.name || "Não extraído"}</div>
-                        <div>• Email: {newUser.email || "Não extraído"}</div>
-                        <div>• Senha: {newUser.password || "Não extraída"}</div>
-                        <div>• Plano: {newUser.plan || "Não extraído"}</div>
-                        <div>• Status: {newUser.status || "Não extraído"}</div>
-                        <div>
-                          • Telegram: {newUser.telegram || "Não extraído"}
-                        </div>
-                        <div>
-                          • Vencimento:{" "}
-                          {newUser.expirationDate || "Não definido"}
-                        </div>
-                        <div>
-                          • Bouquets: {newUser.bouquets || "Não extraídos"}
-                        </div>
-                        <div>
-                          • Observações: {newUser.observations || "Nenhuma"}
-                        </div>
+                  {/* Extração M3U */}
+                  <div className="bg-blue-900/30 border border-blue-800 rounded-lg p-4 mb-6">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-blue-300 font-medium">Extração M3U</span>
+                      <div className="flex gap-2">
+                        <Button className="bg-green-600 text-white hover:bg-green-700 px-3 py-1 rounded text-xs" onClick={() => { setM3uUrl('http://ztech.blog/get.php?username=268262713&password=936365120&type=m3u_plus&output=mpegts'); setExtractionError('URL de teste carregada! Clique em Extrair.'); }} disabled={isExtracting}>Teste</Button>
+                        <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm" onClick={extractM3UData} disabled={isExtracting}>Extrair</Button>
                       </div>
                     </div>
-                  )}
-                </div>
-                {/* Informações Básicas */}
-                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
-                  <span className="block text-white font-semibold mb-2">
-                    Informações Básicas
-                  </span>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Servidor */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Servidor *
-                      </label>
-                      <select
-                        disabled
-                        className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2"
-                      >
-                        <option>IPTV 2</option>
-                      </select>
-                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
+                    <p className="text-xs text-blue-300 mb-2">Serve para importar dados automaticamente a partir de uma URL.</p>
+                    <Input placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..." className="bg-[#1f2937] border border-blue-800 text-white mb-2" value={m3uUrl} onChange={e => setM3uUrl(e.target.value)} />
+                    {extractionError && (
+                      <div className="bg-red-900/40 border border-red-700 text-red-300 text-xs rounded p-2 mb-2">❌ {extractionError}</div>
+                    )}
+                    {extractionResult && !extractionError && (
+                      <div className="bg-green-900/40 border border-green-700 text-green-300 text-xs rounded p-2 mb-2">✅ {extractionResult.message}</div>
+                    )}
+                  </div>
+                  {/* Informações Básicas */}
+                  <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+                    <span className="block text-white font-semibold mb-4">Informações Básicas</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Servidor */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Servidor *
+                        </label>
+                        <select
+                          disabled
+                          className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13 16h-1v-4h-1m1-4h.01M12 8v.01"
+                          <option>IPTV 2</option>
+                        </select>
+                        <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13 16h-1v-4h-1m1-4h.01M12 8v.01"
+                            />
+                            <circle cx="12" cy="12" r="10" />
+                          </svg>
+                          <span className="block">
+                            O <b>servidor não pode ser alterado aqui</b>.
+                            <br className="sm:hidden" /> Para mudar o servidor,
+                            utilize o ícone <b>Migrar Servidor</b> no painel de
+                            ações.
+                          </span>
+                        </div>
+                      </div>
+                      {/* Plano */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Plano *
+                        </label>
+                        <select
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.plan}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, plan: e.target.value })
+                          }
+                        >
+                          <option value="">Selecione um plano</option>
+                          <option value="Trial">🟧 TESTE - COMPLETO</option>
+                          <option value="Premium">🟦 PREMIUM - COMPLETO</option>
+                          <option value="Basic">🟩 BÁSICO</option>
+                        </select>
+                      </div>
+                      {/* Usuário */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Usuário *
+                        </label>
+                        <div className="relative flex items-center">
+                          <input
+                            placeholder="Usuário"
+                            className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
+                            value={newUser.name}
+                            onChange={(e) =>
+                              setNewUser({ ...newUser, name: e.target.value })
+                            }
                           />
-                          <circle cx="12" cy="12" r="10" />
-                        </svg>
-                        <span className="block">
-                          O <b>servidor não pode ser alterado aqui</b>.
-                          <br className="sm:hidden" /> Para mudar o servidor,
-                          utilize o ícone <b>Migrar Servidor</b> no painel de
-                          ações.
-                        </span>
+                          <span className="absolute right-2 text-gray-500 cursor-pointer">
+                            <svg
+                              width="16"
+                              height="16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                              <polyline points="7 9 12 4 17 9" />
+                              <line x1="12" x2="12" y1="4" y2="16" />
+                            </svg>
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    {/* Plano */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Plano *
-                      </label>
-                      <select
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.plan}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, plan: e.target.value })
-                        }
-                      >
-                        <option value="">Selecione um plano</option>
-                        <option value="Trial">🟧 TESTE - COMPLETO</option>
-                        <option value="Premium">🟦 PREMIUM - COMPLETO</option>
-                        <option value="Basic">🟩 BÁSICO</option>
-                      </select>
-                    </div>
-                    {/* Usuário */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Usuário *
-                      </label>
-                      <div className="relative flex items-center">
-                        <input
-                          placeholder="Usuário"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
-                          value={newUser.name}
+                      {/* Senha */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Senha
+                        </label>
+                        <div className="relative flex items-center">
+                          <input
+                            type="text"
+                            placeholder="Senha"
+                            className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
+                            value={newUser.password}
+                            onChange={(e) =>
+                              setNewUser({ ...newUser, password: e.target.value })
+                            }
+                          />
+                          <span className="absolute right-2 text-gray-500 cursor-pointer">
+                            <svg
+                              width="16"
+                              height="16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                              <polyline points="7 9 12 4 17 9" />
+                              <line x1="12" x2="12" y1="4" y2="16" />
+                            </svg>
+                          </span>
+                        </div>
+                        <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
+                          <div>Senha extraída automaticamente da URL M3U</div>
+                        </div>
+                      </div>
+                      {/* Status */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Status
+                        </label>
+                        <select
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.status}
                           onChange={(e) =>
-                            setNewUser({ ...newUser, name: e.target.value })
+                            setNewUser({ ...newUser, status: e.target.value })
                           }
-                        />
-                        <span className="absolute right-2 text-gray-500 cursor-pointer">
-                          <svg
-                            width="16"
-                            height="16"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                            <polyline points="7 9 12 4 17 9" />
-                            <line x1="12" x2="12" y1="4" y2="16" />
-                          </svg>
-                        </span>
-                      </div>
-                    </div>
-                    {/* Senha */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Senha
-                      </label>
-                      <div className="relative flex items-center">
-                        <input
-                          type="text"
-                          placeholder="Senha"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
-                          value={newUser.password}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, password: e.target.value })
-                          }
-                        />
-                        <span className="absolute right-2 text-gray-500 cursor-pointer">
-                          <svg
-                            width="16"
-                            height="16"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                            <polyline points="7 9 12 4 17 9" />
-                            <line x1="12" x2="12" y1="4" y2="16" />
-                          </svg>
-                        </span>
-                      </div>
-                      <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
-                        <div>Senha extraída automaticamente da URL M3U</div>
-                      </div>
-                    </div>
-                    {/* Status */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Status
-                      </label>
-                      <select
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.status}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, status: e.target.value })
-                        }
-                      >
-                        <option value="Ativo">🟢 Ativo</option>
-                        <option value="Inativo">🔴 Inativo</option>
-                        <option value="Pendente">🟡 Pendente</option>
-                      </select>
-                    </div>
-                    {/* Vencimento */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Vencimento (Opcional)
-                      </label>
-                      <input
-                        type="date"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.expirationDate}
-                        onChange={(e) =>
-                          setNewUser({
-                            ...newUser,
-                            expirationDate: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    {/* Bouquets */}
-                    <div className="col-span-2">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Bouquets
-                      </label>
-                      <input
-                        placeholder="Bouquets extraídos automaticamente"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.bouquets}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, bouquets: e.target.value })
-                        }
-                      />
-                      <div className="bg-green-900/40 border border-green-700 text-green-400 text-xs rounded mt-2 p-2">
-                        Bouquets extraídos automaticamente da conta IPTV
-                      </div>
-                    </div>
-                    {/* Nome */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Nome *
-                      </label>
-                      <input
-                        placeholder="Digite o nome completo"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.realName}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, realName: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    {/* E-mail */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        E-mail
-                      </label>
-                      <input
-                        placeholder="Opcional"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.email}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, email: e.target.value })
-                        }
-                      />
-                    </div>
-                    {/* Telegram */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Telegram
-                      </label>
-                      <input
-                        placeholder="Opcional"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.telegram}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, telegram: e.target.value })
-                        }
-                      />
-                    </div>
-                    {/* WhatsApp */}
-                    <div className="col-span-1">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        WhatsApp
-                      </label>
-                      <input
-                        placeholder="Opcional"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        value={newUser.whatsapp}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, whatsapp: e.target.value })
-                        }
-                      />
-                      <span className="text-xs text-gray-400 mt-1 block">
-                        Incluindo o código do país - com ou sem espaço e traços
-                        - ex. 55 11 99999 3333
-                      </span>
-                    </div>
-                    {/* Observações */}
-                    <div className="col-span-2">
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Observações
-                      </label>
-                      <textarea
-                        placeholder="Opcional"
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
-                        value={newUser.observations}
-                        onChange={(e) =>
-                          setNewUser({
-                            ...newUser,
-                            observations: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/* Configuração de Serviço */}
-                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
-                  <span className="block text-purple-400 font-semibold mb-2">
-                    Configuração de Serviço
-                  </span>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                    {/* Classe de Serviço */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Classe de Serviço
-                      </label>
-                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
-                        <option value="">Selecione</option>
-                        <option value="basico">Básico</option>
-                        <option value="premium">Premium</option>
-                      </select>
-                    </div>
-                    {/* Plano */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Plano
-                      </label>
-                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
-                        <option value="mensal">Mensal</option>
-                        <option value="anual">Anual</option>
-                      </select>
-                    </div>
-                    {/* Status */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Status
-                      </label>
-                      <select
-                        value={newUser.status}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, status: e.target.value })
-                        }
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                      >
-                        <option value="Ativo">Ativo</option>
-                        <option value="Inativo">Inativo</option>
-                        <option value="Pendente">Pendente</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                    {/* Data de Renovação */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Data de Renovação
-                      </label>
-                      <RenovacaoDatePicker />
-                    </div>
-                    {/* Número de Dispositivos */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Número de Dispositivos
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        value={newUser.devices || 0}
-                        onChange={(e) =>
-                          setNewUser({
-                            ...newUser,
-                            devices: parseInt(e.target.value) || 0,
-                          })
-                        }
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                      />
-                    </div>
-                    {/* Créditos */}
-                    <div>
-                      <label className="block text-gray-300 mb-1 font-medium">
-                        Créditos
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
                         >
-                          -
-                        </button>
+                          <option value="Ativo">🟢 Ativo</option>
+                          <option value="Inativo">🔴 Inativo</option>
+                          <option value="Pendente">🟡 Pendente</option>
+                        </select>
+                      </div>
+                      {/* Vencimento */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Vencimento (Opcional)
+                        </label>
                         <input
-                          type="number"
-                          min={0}
-                          value={newUser.credits || 0}
+                          type="date"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.expirationDate}
                           onChange={(e) =>
                             setNewUser({
                               ...newUser,
-                              credits: parseInt(e.target.value) || 0,
+                              expirationDate: e.target.value,
                             })
                           }
-                          className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         />
-                        <button
-                          type="button"
-                          className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
-                        >
-                          +
-                        </button>
-                        <span className="text-xs text-gray-400 ml-2">
-                          valor
-                          <br />
-                          entre 0<br />e 500€
+                      </div>
+                      {/* Bouquets */}
+                      <div className="col-span-2">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Bouquets
+                        </label>
+                        <input
+                          placeholder="Bouquets extraídos automaticamente"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.bouquets}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, bouquets: e.target.value })
+                          }
+                        />
+                        <div className="bg-green-900/40 border border-green-700 text-green-400 text-xs rounded mt-2 p-2">
+                          Bouquets extraídos automaticamente da conta IPTV
+                        </div>
+                      </div>
+                      {/* Nome */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Nome *
+                        </label>
+                        <input
+                          placeholder="Digite o nome completo"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.realName}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, realName: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      {/* E-mail */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          E-mail
+                        </label>
+                        <input
+                          placeholder="Opcional"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.email}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, email: e.target.value })
+                          }
+                        />
+                      </div>
+                      {/* Telegram */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Telegram
+                        </label>
+                        <input
+                          placeholder="Opcional"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.telegram}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, telegram: e.target.value })
+                          }
+                        />
+                      </div>
+                      {/* WhatsApp */}
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          WhatsApp
+                        </label>
+                        <input
+                          placeholder="Opcional"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={newUser.whatsapp}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, whatsapp: e.target.value })
+                          }
+                        />
+                        <span className="text-xs text-gray-400 mt-1 block">
+                          Incluindo o código do país - com ou sem espaço e traços
+                          - ex. 55 11 99999 3333
                         </span>
+                      </div>
+                      {/* Observações */}
+                      <div className="col-span-2">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Observações
+                        </label>
+                        <textarea
+                          placeholder="Opcional"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
+                          value={newUser.observations}
+                          onChange={(e) =>
+                            setNewUser({
+                              ...newUser,
+                              observations: e.target.value,
+                            })
+                          }
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* Informações Adicionais */}
-                <div className="bg-[#1f2937] border border-gray-700 rounded-lg p-4 mb-4">
-                  <span className="block text-white font-semibold mb-2">
-                    Informações Adicionais
-                  </span>
-                  <div className="flex items-center gap-2 mb-2">
-                    <input type="checkbox" className="accent-green-500" />
-                    <span className="text-gray-300 text-sm">
-                      Notificações via WhatsApp
-                    </span>
-                  </div>
-                  <div>
-                    <label className="block text-gray-300 mb-1 font-medium">
-                      Anotações
-                    </label>
-                    <textarea
-                      placeholder="Anotações..."
-                      className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-2 min-h-[60px]"
-                      value={newUser.notes}
-                      onChange={(e) =>
-                        setNewUser({ ...newUser, notes: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2 mt-6">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsAddDialogOpen(false)}
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:bg-accent hover:text-accent-foreground h-10 bg-gray-700 text-white px-6 py-2 rounded font-semibold"
-                  >
-                    Fechar
-                  </Button>
-                  <Button
-                    onClick={handleAddUser}
-                    disabled={
-                      !newUser.name ||
-                      !newUser.email ||
-                      !newUser.plan ||
-                      !newUser.realName ||
-                      isAddingUser
-                    }
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-6 py-2 rounded font-semibold transition-all duration-300 bg-purple-600 hover:bg-purple-700 text-white disabled:bg-gray-600 disabled:cursor-not-allowed"
-                  >
-                    {addUserSuccess ? (
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4" />
-                        Cliente Adicionado!
+                  {/* Configuração de Serviço */}
+                  <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+                    <span className="block text-purple-400 font-semibold mb-4">Configuração de Serviço</span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                      {/* Classe de Serviço */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Classe de Serviço
+                        </label>
+                        <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                          <option value="">Selecione</option>
+                          <option value="basico">Básico</option>
+                          <option value="premium">Premium</option>
+                        </select>
                       </div>
-                    ) : isAddingUser ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Adicionando...
+                      {/* Plano */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Plano
+                        </label>
+                        <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                          <option value="mensal">Mensal</option>
+                          <option value="anual">Anual</option>
+                        </select>
                       </div>
-                    ) : (
-                      "Adicionar Cliente"
-                    )}
-                  </Button>
+                      {/* Status */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Status
+                        </label>
+                        <select
+                          value={newUser.status}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, status: e.target.value })
+                          }
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        >
+                          <option value="Ativo">Ativo</option>
+                          <option value="Inativo">Inativo</option>
+                          <option value="Pendente">Pendente</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                      {/* Data de Renovação */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Data de Renovação
+                        </label>
+                        <RenovacaoDatePicker />
+                      </div>
+                      {/* Número de Dispositivos */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Número de Dispositivos
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={newUser.devices || 0}
+                          onChange={(e) =>
+                            setNewUser({
+                              ...newUser,
+                              devices: parseInt(e.target.value) || 0,
+                            })
+                          }
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        />
+                      </div>
+                      {/* Créditos */}
+                      <div>
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Créditos
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
+                          >
+                            -
+                          </button>
+                          <input
+                            type="number"
+                            min={0}
+                            value={newUser.credits || 0}
+                            onChange={(e) =>
+                              setNewUser({
+                                ...newUser,
+                                credits: parseInt(e.target.value) || 0,
+                              })
+                            }
+                            className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          />
+                          <button
+                            type="button"
+                            className="bg-[#23272f] text-white px-2 py-1 rounded border border-gray-700"
+                          >
+                            +
+                          </button>
+                          <span className="text-xs text-gray-400 ml-2">
+                            valor
+                            <br />
+                            entre 0<br />e 500€
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Informações Adicionais */}
+                  <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+                    <span className="block text-white font-semibold mb-2">Informações Adicionais</span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <input type="checkbox" className="accent-purple-600" />
+                      <span className="text-gray-300">Notificações via WhatsApp</span>
+                    </div>
+                    <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
+                    <textarea placeholder="Anotações..." className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]" />
+                  </div>
+                  <div className="flex justify-end gap-2 mt-6">
+                    <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="bg-gray-700 text-white px-6 py-2 rounded font-semibold">Fechar</Button>
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold transition-all duration-300" onClick={handleAddUser}>Adicionar Cliente</Button>
+                  </div>
                 </div>
               </div>
             </DialogContent>
@@ -2399,26 +2241,12 @@ export default function AdminUsers() {
                     Informações Adicionais
                   </span>
                   <div className="flex items-center gap-2 mb-2">
-                    <input type="checkbox" className="accent-green-500" />
-                    <span className="text-gray-300 text-sm">
-                      Notificações via WhatsApp
-                    </span>
+                    <input type="checkbox" className="accent-purple-600" />
+                    <span className="text-gray-300">Notificações via WhatsApp</span>
                   </div>
                   <div>
-                    <label className="block text-gray-300 mb-1 font-medium">
-                      Anotações
-                    </label>
-                    <textarea
-                      value={editingUser.notes || ""}
-                      onChange={(e) =>
-                        setEditingUser({
-                          ...editingUser,
-                          notes: e.target.value,
-                        })
-                      }
-                      className="w-full bg-[#1f2937] border border-gray-700 text-white rounded p-2 min-h-[60px]"
-                      placeholder="Anotações..."
-                    />
+                    <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
+                    <textarea placeholder="Anotações..." className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]" />
                   </div>
                 </div>
 
