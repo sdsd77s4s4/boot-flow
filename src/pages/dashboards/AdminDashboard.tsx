@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useNeonUsers } from "@/hooks/useNeonUsers";
-import { useNeonResellers } from "@/hooks/useNeonResellers";
+import { useClientes } from '@/hooks/useClientes';
+import { useRevendas } from '@/hooks/useRevendas';
 import { 
   Brain, 
   Users, 
@@ -28,7 +28,8 @@ import {
   Home,
   Paintbrush,
   UserPlus,
-  Bell
+  Bell,
+  RefreshCw
 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/sidebars/AdminSidebar";
@@ -72,18 +73,27 @@ const AdminDashboard = () => {
   });
 
   // Hooks para dados de usuários e revendedores
-  const { users, loading: loadingUsers, refreshUsers } = useNeonUsers();
-  const { resellers: resellersData, loading: loadingResellers, refreshResellers } = useNeonResellers();
+  const { clientes, loading: loadingClientes, fetchClientes } = useClientes();
+  const { revendas, loading: loadingRevendas, fetchRevendas } = useRevendas();
+
+  // Função para atualizar clientes
+  const refreshUsers = () => {
+    if (fetchClientes) fetchClientes();
+  };
+  // Função para atualizar revendas
+  const refreshResellers = () => {
+    if (fetchRevendas) fetchRevendas();
+  };
 
   // Atualizar estatísticas quando os dados mudarem
   useEffect(() => {
     setStats(prev => ({
       ...prev,
-      totalUsers: users.length,
-      activeResellers: resellersData.length,
-      activeClients: users.length
+      totalUsers: clientes.length,
+      activeResellers: revendas.length,
+      activeClients: clientes.length
     }));
-  }, [users, resellersData]);
+  }, [clientes, revendas]);
 
   // Dados para atividade recente e usuários online
   const recentActivityUnified = [
@@ -484,7 +494,7 @@ const AdminDashboard = () => {
                     setRefreshTrigger(prev => prev + 1);
                   }}
                 > 
-                  <div className="w-4 h-4 sm:mr-2" />
+                  <RefreshCw className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">Atualizar</span>
                   <span className="sm:hidden">Refresh</span>
                 </Button>
@@ -1085,7 +1095,7 @@ const AdminDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {(loadingUsers || loadingResellers) ? (
+                        {(loadingClientes || loadingRevendas) ? (
                           <div className="text-gray-400">Carregando atividades...</div>
                         ) : recentActivityUnified.length === 0 ? (
                           <div className="text-gray-400">Nenhuma atividade recente encontrada.</div>
@@ -1108,7 +1118,7 @@ const AdminDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {(loadingUsers || loadingResellers) ? (
+                        {(loadingClientes || loadingRevendas) ? (
                           <div className="text-gray-400">Carregando usuários online...</div>
                         ) : onlineUsersUnified.length === 0 ? (
                           <div className="text-gray-400">Nenhum usuário online no momento.</div>
