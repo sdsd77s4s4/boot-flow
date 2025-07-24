@@ -1844,7 +1844,7 @@ export default function AdminUsers() {
                       >
                         <option>IPTV 2</option>
                       </select>
-                      <div className="border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
+                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
                         <svg
                           className="w-4 h-4 flex-shrink-0"
                           fill="none"
