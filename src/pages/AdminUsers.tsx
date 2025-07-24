@@ -148,6 +148,161 @@ export default function AdminUsers() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Modal de Adicionar Cliente */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
+          <div className="p-6 w-full">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Adicionar Cliente <span className="ml-2 text-xs bg-green-700 text-white px-2 py-1 rounded">Novo</span></h2>
+              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white" onClick={() => setIsAddDialogOpen(false)}>Fechar</Button>
+            </div>
+            {/* Extração M3U */}
+            <div className="mb-6 bg-[#232a36] border border-blue-700/40 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-blue-300">Extração M3U</span>
+                <div className="flex gap-2">
+                  <Button size="sm" className="bg-green-700">Teste</Button>
+                  <Button size="sm" className="bg-blue-700">Extrair</Button>
+                </div>
+              </div>
+              <Input placeholder="Insira a URL do M3U para extrair automaticamente os dados do cliente..." className="bg-[#1f2937] border border-gray-700 text-white" />
+              <p className="text-xs text-blue-400 mt-2">Se preencher os dados, automaticamente extrai a partir da URL.</p>
+            </div>
+            {/* Informações Básicas */}
+            <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-gray-300">Servidor</Label>
+                <Select>
+                  <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue placeholder="IPTV" /></SelectTrigger>
+                  <SelectContent><SelectItem value="iptv">IPTV</SelectItem></SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-gray-300">Plano</Label>
+                <Select>
+                  <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue placeholder="Selecione um plano" /></SelectTrigger>
+                  <SelectContent><SelectItem value="">Selecione um plano</SelectItem></SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-gray-300">Usuário</Label>
+                <Input placeholder="Usuário" className="bg-[#232a36] border border-gray-700 text-white" />
+                <p className="text-xs text-yellow-400 mt-1">O usuário e senha padrão virão da M3U. Para mudar o servidor, migre para outro usando a Nova M3U Secundária.</p>
+              </div>
+              <div>
+                <Label className="text-gray-300">Senha</Label>
+                <Input placeholder="Senha" className="bg-[#232a36] border border-gray-700 text-white" />
+                <p className="text-xs text-blue-400 mt-1">Senha extraída automaticamente da URL M3U</p>
+              </div>
+              <div>
+                <Label className="text-gray-300">Status</Label>
+                <Select defaultValue="Ativo">
+                  <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ativo">Ativo</SelectItem>
+                    <SelectItem value="Inativo">Inativo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-gray-300">Vencimento (Opcional)</Label>
+                <Input type="date" className="bg-[#232a36] border border-gray-700 text-white" />
+              </div>
+              <div className="md:col-span-2">
+                <Label className="text-gray-300">Bouquets</Label>
+                <Input placeholder="Bouquets extraídos automaticamente" className="bg-[#232a36] border border-gray-700 text-white" disabled />
+                <p className="text-xs text-green-400 mt-1">Bouquets extraídos automaticamente da conta IPTV</p>
+              </div>
+            </div>
+            {/* Contatos e Observações */}
+            <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-gray-300">Nome</Label>
+                <Input placeholder="Opcional" className="bg-[#232a36] border border-gray-700 text-white" />
+              </div>
+              <div>
+                <Label className="text-gray-300">E-mail</Label>
+                <Input placeholder="Opcional" className="bg-[#232a36] border border-gray-700 text-white" />
+              </div>
+              <div>
+                <Label className="text-gray-300">Telegram</Label>
+                <Input placeholder="Opcional" className="bg-[#232a36] border border-gray-700 text-white" />
+              </div>
+              <div>
+                <Label className="text-gray-300">WhatsApp</Label>
+                <Input placeholder="Opcional" className="bg-[#232a36] border border-gray-700 text-white" />
+                <p className="text-xs text-gray-400 mt-1">Inclua o código do país - com ou sem espaço e traços. Ex: 55 11 99999-3333</p>
+              </div>
+              <div className="md:col-span-2">
+                <Label className="text-gray-300">Observações</Label>
+                <Input placeholder="Opcional" className="bg-[#232a36] border border-gray-700 text-white" />
+              </div>
+            </div>
+            {/* Configuração de Serviço */}
+            <div className="mb-6 border-t border-gray-700 pt-4">
+              <h3 className="text-purple-400 font-semibold mb-2">Configuração de Serviço</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-gray-300">Classe de Serviço</Label>
+                  <Select>
+                    <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                    <SelectContent><SelectItem value="">Selecione</SelectItem></SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-gray-300">Plano</Label>
+                  <Select defaultValue="Mensal">
+                    <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Mensal">Mensal</SelectItem>
+                      <SelectItem value="Anual">Anual</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-gray-300">Status</Label>
+                  <Select defaultValue="Ativo">
+                    <SelectTrigger className="bg-[#232a36] border border-gray-700 text-white"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Ativo">Ativo</SelectItem>
+                      <SelectItem value="Inativo">Inativo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-gray-300">Data de Renovação</Label>
+                  <Input type="date" className="bg-[#232a36] border border-gray-700 text-white" />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Número de Dispositivos</Label>
+                  <Input type="number" min={1} className="bg-[#232a36] border border-gray-700 text-white" />
+                </div>
+                <div>
+                  <Label className="text-gray-300">Créditos</Label>
+                  <div className="flex items-center gap-2">
+                    <Input type="number" min={0} className="bg-[#232a36] border border-gray-700 text-white w-24" />
+                    <span className="text-xs text-gray-400">unidade</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Informações Adicionais */}
+            <div className="mb-4 border-t border-gray-700 pt-4">
+              <Label className="flex items-center gap-2 text-gray-300">
+                <input type="checkbox" className="accent-purple-600" />
+                Notificações via WhatsApp
+              </Label>
+              <Label className="text-gray-300 mt-2">Anotações</Label>
+              <Input placeholder="Anotações..." className="bg-[#232a36] border border-gray-700 text-white" />
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button variant="outline" className="bg-[#232a36] text-white" onClick={() => setIsAddDialogOpen(false)}>Fechar</Button>
+              <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">Adicionar Cliente</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
