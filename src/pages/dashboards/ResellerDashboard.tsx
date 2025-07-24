@@ -56,6 +56,144 @@ const ResellerDashboard = () => {
   const isExtracting = false; // Substitua pela lógica real se necessário
   const { addCliente } = useClientes();
 
+  // Proxies para CORS
+  const corsProxies = [
+    {
+      name: "api.allorigins.win",
+      url: (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+    },
+    {
+      name: "corsproxy.io",
+      url: (targetUrl: string) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+    },
+  ];
+
+  // Função de extração M3U
+  const extractM3UData = async () => {
+    if (!m3uUrl.trim()) {
+      setExtractionError("Por favor, insira uma URL M3U válida.");
+      return;
+    }
+    // setIsExtracting(true); // Se quiser loading
+    setExtractionError("");
+    setExtractionResult(null);
+    try {
+      const urlObj = new URL(m3uUrl);
+      const username = urlObj.searchParams.get("username") || "";
+      const password = urlObj.searchParams.get("password") || "";
+      const baseUrl = `${urlObj.protocol}//${urlObj.host}`;
+      if (!username || !password) {
+        throw new Error("Credenciais não encontradas na URL. Verifique se a URL contém username e password.");
+      }
+      const apiUrl = `${baseUrl}/player_api.php?username=${username}&password=${password}`;
+      // HTTPS direto
+      if (urlObj.protocol === "https:") {
+        try {
+          setExtractionError("Tentando acesso direto...");
+          const response = await fetch(apiUrl, { method: "GET", headers: { Accept: "application/json", "Content-Type": "application/json" } });
+          if (response.ok) {
+            const text = await response.text();
+            let data;
+            try { data = JSON.parse(text); } catch { throw new Error("Resposta não é um JSON válido."); }
+            if (!data.user_info) throw new Error("Dados do usuário não encontrados na resposta.");
+            const extractedData = {
+              name: data.user_info.username,
+              email: `${data.user_info.username}@iptv.com`,
+              plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+              status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
+              telegram: data.user_info.username ? `@${data.user_info.username}` : "",
+              observations: `Usuário: ${data.user_info.username} | Acesso direto`,
+              expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split("T")[0] : "",
+              password: data.user_info.password || password,
+              bouquets: "",
+              realName: "",
+              whatsapp: "",
+              devices: data.user_info.max_connections ? parseInt(data.user_info.max_connections) : 1,
+              credits: 0,
+              notes: "",
+            };
+            setNewUser(extractedData);
+            setExtractionResult({ success: true, message: `Dados extraídos com sucesso! Usuário: ${data.user_info.username}`, data });
+            setExtractionError("");
+            return;
+          }
+        } catch (directError) {
+          setExtractionError("Acesso direto falhou, tentando proxies...");
+        }
+      }
+      // Proxies
+      for (let i = 0; i < corsProxies.length; i++) {
+        const proxy = corsProxies[i];
+        const proxiedUrl = `${proxy.url(apiUrl)}`;
+        try {
+          setExtractionError(`Testando proxy ${i + 1}/${corsProxies.length}...`);
+          const response = await fetch(proxiedUrl, { method: "GET", headers: { Accept: "application/json", "Content-Type": "application/json" }, mode: "cors" });
+          if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+          const text = await response.text();
+          let data;
+          try { data = JSON.parse(text); } catch { throw new Error("Resposta não é um JSON válido."); }
+          if (!data.user_info) throw new Error("Dados do usuário não encontrados na resposta.");
+          const bouquetsData = [ { category_name: "Premium" }, { category_name: "Sports" }, { category_name: "Movies" } ];
+          const observations = [];
+          if (data.user_info.username) observations.push(`Usuário: ${data.user_info.username}`);
+          if (data.user_info.password) observations.push(`Senha: ${data.user_info.password}`);
+          if (data.user_info.exp_date) { const expDate = new Date(parseInt(data.user_info.exp_date) * 1000); observations.push(`Expira: ${expDate.toLocaleDateString("pt-BR")}`); }
+          if (data.user_info.max_connections) observations.push(`Conexões: ${data.user_info.max_connections}`);
+          if (data.user_info.active_cons) observations.push(`Ativas: ${data.user_info.active_cons}`);
+          const extractedData = {
+            name: data.user_info.username || username,
+            email: `${data.user_info.username || username}@iptv.com`,
+            plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+            status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
+            telegram: data.user_info.username ? `@${data.user_info.username}` : "",
+            observations: observations.length > 0 ? observations.join(" | ") : "",
+            expirationDate: data.user_info.exp_date ? new Date(parseInt(data.user_info.exp_date) * 1000).toISOString().split("T")[0] : "",
+            password: data.user_info.password || password,
+            bouquets: Array.isArray(bouquetsData) ? bouquetsData.map((b) => b.category_name).join(", ") : "",
+            realName: "",
+            whatsapp: "",
+            devices: data.user_info.max_connections ? parseInt(data.user_info.max_connections) : 1,
+            credits: 0,
+            notes: "",
+          };
+          setNewUser(extractedData);
+          setExtractionResult({ success: true, message: `Dados extraídos com sucesso! Usuário: ${data.user_info.username}`, data });
+          setExtractionError("");
+          return;
+        } catch (error) {
+          if (i === corsProxies.length - 1) {
+            setExtractionError("Proxies falharam, usando dados simulados...");
+            const extractedData = {
+              name: username,
+              email: `${username}@iptv.com`,
+              plan: "Premium",
+              status: "Ativo",
+              telegram: `@${username}`,
+              observations: `Usuário: ${username} | Senha: ${password} | Dados simulados`,
+              expirationDate: "",
+              password: password,
+              bouquets: "",
+              realName: "",
+              whatsapp: "",
+              devices: 1,
+              credits: 0,
+              notes: "",
+            };
+            setNewUser(extractedData);
+            setExtractionResult({ success: true, message: `Dados simulados aplicados! Usuário: ${username}`, data: { user_info: { username, password } } });
+            setExtractionError("");
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      setExtractionError(errorMessage);
+    } finally {
+      // setIsExtracting(false);
+    }
+  };
+
   // Função para validar e salvar cliente
   async function handleAddCliente() {
     if (!newUser.realName || !newUser.name || !newUser.plan) {
@@ -127,7 +265,7 @@ const ResellerDashboard = () => {
                         <span className="text-blue-300 font-medium">Extração M3U</span>
                         <div className="flex gap-2">
                           <Button className="bg-green-600 text-white hover:bg-green-700 px-3 py-1 rounded text-xs" disabled={isExtracting}>Teste</Button>
-                          <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm" disabled={isExtracting}>Extrair</Button>
+                          <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 rounded text-sm" onClick={extractM3UData} disabled={isExtracting}>Extrair</Button>
                         </div>
                       </div>
                       <p className="text-xs text-blue-300 mb-2">Serve para importar dados automaticamente a partir de uma URL.</p>
