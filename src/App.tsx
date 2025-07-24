@@ -32,15 +32,13 @@ import AdminResellers from "./pages/AdminResellers";
 import { WhatsAppStatusContext } from './pages/AdminWhatsApp';
 import { useState } from 'react';
 import { UserProvider } from "./contexts/UserContext";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -48,7 +46,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <WhatsAppStatusContext.Provider value={{ isConnected, connectionStatus, setIsConnected, setConnectionStatus }}>
-            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
                 
@@ -56,9 +54,6 @@ const App = () => {
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 <Route path="/dashboard/reseller" element={<ResellerDashboard />} />
                 <Route path="/dashboard/client" element={<ClientDashboard />} />
-                {/* Login e Cadastro */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
                 
                 {/* Internal Pages */}
                 <Route path="/profile" element={<Profile />} />

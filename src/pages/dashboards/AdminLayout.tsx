@@ -4,8 +4,8 @@ import AdminSidebar from "@/components/sidebars/AdminSidebar";
 import { useState } from "react";
 
 export default function AdminLayout() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  
+  const [currentPage, setCurrentPage] = useState("dashboard");
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -16,4 +16,4 @@ export default function AdminLayout() {
       </div>
     </SidebarProvider>
   );
-} 
+}

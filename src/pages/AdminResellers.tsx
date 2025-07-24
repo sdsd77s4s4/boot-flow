@@ -9,11 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, Activity, CheckCircle, RefreshCw, Maximize2, Moon } from "lucide-react";
-import { useNeonResellers } from "@/hooks/useNeonResellers";
-import type { Reseller } from "@/hooks/useNeonResellers";
+import { useRevendas } from '@/hooks/useRevendas';
 
 export default function AdminResellers() {
-  const { resellers, loading, error, createReseller, updateReseller, deleteReseller } = useNeonResellers();
+  const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda } = useRevendas();
 
   const [newReseller, setNewReseller] = useState({
     username: "",
@@ -33,9 +32,9 @@ export default function AdminResellers() {
   });
 
   // Estados para os modais
-  const [editingReseller, setEditingReseller] = useState<Reseller | null>(null);
-  const [viewingReseller, setViewingReseller] = useState<Reseller | null>(null);
-  const [deletingReseller, setDeletingReseller] = useState<Reseller | null>(null);
+  const [editingReseller, setEditingReseller] = useState<any | null>(null);
+  const [viewingReseller, setViewingReseller] = useState<any | null>(null);
+  const [deletingReseller, setDeletingReseller] = useState<any | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -45,13 +44,13 @@ export default function AdminResellers() {
   const [isAddingReseller, setIsAddingReseller] = useState(false);
   const [addResellerSuccess, setAddResellerSuccess] = useState(false);
 
-  const filteredResellers = resellers.filter(reseller =>
-    reseller.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reseller.personal_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reseller.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRevendas = revendas.filter(revenda =>
+    revenda.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    revenda.personal_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    revenda.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddReseller = async (e: React.FormEvent) => {
+  const handleAddRevenda = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (newReseller.username && newReseller.password && newReseller.permission) {
@@ -59,10 +58,10 @@ export default function AdminResellers() {
       setAddResellerSuccess(false);
       
       try {
-        const success = await createReseller({
+        const success = await addRevenda({
           username: newReseller.username,
           password: newReseller.password,
-          force_password_change: newReseller.force_password_change,
+          force_password_change: newReseller.force_password_change?.toString(),
           permission: newReseller.permission as 'admin' | 'reseller' | 'subreseller',
           credits: newReseller.credits,
           servers: newReseller.servers || undefined,
@@ -76,7 +75,7 @@ export default function AdminResellers() {
           observations: newReseller.observations || undefined
         });
         
-        if (success) {
+        try {
           setAddResellerSuccess(true);
           
           // Atualizar Dashboard instantaneamente
@@ -119,6 +118,8 @@ export default function AdminResellers() {
             setIsAddDialogOpen(false);
             setAddResellerSuccess(false);
           }, 1000);
+        } catch (error) {
+          console.error('Success handling error:', error);
         }
       } catch (error) {
         console.error('Erro ao adicionar revendedor:', error);
@@ -128,9 +129,9 @@ export default function AdminResellers() {
     }
   };
 
-  const handleEditReseller = async () => {
+  const handleEditRevenda = async () => {
     if (editingReseller) {
-      const success = await updateReseller(editingReseller.id, {
+      await updateRevenda(editingReseller.id, {
         username: editingReseller.username,
         password: editingReseller.password,
         force_password_change: editingReseller.force_password_change,
@@ -147,70 +148,66 @@ export default function AdminResellers() {
         observations: editingReseller.observations
       });
       
-      if (success) {
-        // Atualizar Dashboard instantaneamente
-        console.log('📤 Revendas: Disparando evento refresh-dashboard após editar revenda');
-        try {
-          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'update' } }));
-          console.log('✅ Evento disparado com sucesso');
-        } catch (error) {
-          console.error('❌ Erro ao disparar evento:', error);
-        }
-        
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem('dashboard-refresh', Date.now().toString());
-          console.log('✅ Flag localStorage definida');
-        } catch (error) {
-          console.error('❌ Erro ao definir flag localStorage:', error);
-        }
-        
-        setEditingReseller(null);
-        setIsEditDialogOpen(false);
+      // Atualizar Dashboard instantaneamente
+      console.log('📤 Revendas: Disparando evento refresh-dashboard após editar revenda');
+      try {
+        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'update' } }));
+        console.log('✅ Evento disparado com sucesso');
+      } catch (error) {
+        console.error('❌ Erro ao disparar evento:', error);
       }
-    }
-  };
-
-  const handleDeleteReseller = async () => {
-    if (deletingReseller) {
-      const success = await deleteReseller(deletingReseller.id);
       
-      if (success) {
-        // Atualizar Dashboard instantaneamente
-        console.log('📤 Revendas: Disparando evento refresh-dashboard após deletar revenda');
-        try {
-          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'delete' } }));
-          console.log('✅ Evento disparado com sucesso');
-        } catch (error) {
-          console.error('❌ Erro ao disparar evento:', error);
-        }
-        
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem('dashboard-refresh', Date.now().toString());
-          console.log('✅ Flag localStorage definida');
-        } catch (error) {
-          console.error('❌ Erro ao definir flag localStorage:', error);
-        }
-        
-        setDeletingReseller(null);
-        setIsDeleteDialogOpen(false);
+      // Usar localStorage como fallback
+      try {
+        localStorage.setItem('dashboard-refresh', Date.now().toString());
+        console.log('✅ Flag localStorage definida');
+      } catch (error) {
+        console.error('❌ Erro ao definir flag localStorage:', error);
       }
+      
+      setEditingReseller(null);
+      setIsEditDialogOpen(false);
     }
   };
 
-  const openViewModal = (reseller: Reseller) => {
-    setViewingReseller(reseller);
+  const handleDeleteRevenda = async () => {
+    if (deletingReseller) {
+      await deleteRevenda(deletingReseller.id);
+      
+      // Atualizar Dashboard instantaneamente
+      console.log('📤 Revendas: Disparando evento refresh-dashboard após deletar revenda');
+      try {
+        window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'resellers', action: 'delete' } }));
+        console.log('✅ Evento disparado com sucesso');
+      } catch (error) {
+        console.error('❌ Erro ao disparar evento:', error);
+      }
+      
+      // Usar localStorage como fallback
+      try {
+        localStorage.setItem('dashboard-refresh', Date.now().toString());
+        console.log('✅ Flag localStorage definida');
+      } catch (error) {
+        console.error('❌ Erro ao definir flag localStorage:', error);
+      }
+      
+      setDeletingReseller(null);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const openViewModal = (revenda: any) => {
+    setViewingReseller(revenda);
     setIsViewDialogOpen(true);
   };
 
-  const openEditModal = (reseller: Reseller) => {
-    setEditingReseller({ ...reseller });
+  const openEditModal = (revenda: any) => {
+    setEditingReseller({ ...revenda });
     setIsEditDialogOpen(true);
   };
 
-  const openDeleteModal = (reseller: Reseller) => {
-    setDeletingReseller(reseller);
+  const openDeleteModal = (revenda: any) => {
+    setDeletingReseller(revenda);
     setIsDeleteDialogOpen(true);
   };
 
@@ -256,7 +253,7 @@ export default function AdminResellers() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Gerenciamento de Revendedores</h1>
           <p className="text-gray-400 text-sm sm:text-base">
-            {loading ? 'Carregando...' : `Gerencie todos os revendedores do sistema (${resellers.length} revendedores)`}
+            {loading ? 'Carregando...' : `Gerencie todos os revendedores do sistema (${revendas.length} revendedores)`}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -295,7 +292,7 @@ export default function AdminResellers() {
                 </div>
               </div>
               
-              <form onSubmit={handleAddReseller} className="space-y-6 flex-1 overflow-y-auto">
+              <form onSubmit={handleAddRevenda} className="space-y-6 flex-1 overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-white">
@@ -626,7 +623,7 @@ export default function AdminResellers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{resellers.length}</div>
+            <div className="text-2xl font-bold text-white">{revendas.length}</div>
             <div className="text-xs text-gray-400 mt-1">Revendedores cadastrados</div>
           </CardContent>
         </Card>
@@ -639,7 +636,7 @@ export default function AdminResellers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{resellers.filter(r => r.status === 'active').length}</div>
+            <div className="text-2xl font-bold text-green-400">{revendas.filter(r => r.status === 'active').length}</div>
             <div className="text-xs text-gray-400 mt-1">Revendedores com acesso</div>
           </CardContent>
         </Card>
@@ -652,7 +649,7 @@ export default function AdminResellers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-400">{resellers.filter(r => r.permission === 'admin').length}</div>
+            <div className="text-2xl font-bold text-blue-400">{revendas.filter(r => r.permission === 'admin').length}</div>
             <div className="text-xs text-gray-400 mt-1">Contas de administrador</div>
           </CardContent>
         </Card>
@@ -689,7 +686,7 @@ export default function AdminResellers() {
         <CardHeader>
           <CardTitle className="text-white">Lista de Revendedores</CardTitle>
           <CardDescription className="text-gray-400">
-            {filteredResellers.length} revendedores encontrados
+            {filteredRevendas.length} revendedores encontrados
           </CardDescription>
         </CardHeader>
         <CardContent className="overflow-x-auto">
@@ -705,36 +702,36 @@ export default function AdminResellers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredResellers.map((reseller) => (
-                <TableRow key={reseller.id} className="border-gray-700">
+              {filteredRevendas.map((revenda) => (
+                <TableRow key={revenda.id} className="border-gray-700">
                   <TableCell className="text-white text-xs sm:text-sm">
                     <div>
-                      <div className="font-medium">{reseller.username}</div>
-                      {reseller.personal_name && (
-                        <div className="text-xs sm:text-sm text-gray-400">{reseller.personal_name}</div>
+                      <div className="font-medium">{revenda.username}</div>
+                      {revenda.personal_name && (
+                        <div className="text-xs sm:text-sm text-gray-400">{revenda.personal_name}</div>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={`text-xs ${getPermissionColor(reseller.permission)}`}>
-                      {reseller.permission}
+                    <Badge className={`text-xs ${getPermissionColor(revenda.permission)}`}>
+                      {revenda.permission}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-white text-xs sm:text-sm">{reseller.credits}</TableCell>
+                  <TableCell className="text-white text-xs sm:text-sm">{revenda.credits}</TableCell>
                   <TableCell>
-                    <Badge className={`text-xs ${getStatusColor(reseller.status)}`}>
-                      {reseller.status}
+                    <Badge className={`text-xs ${getStatusColor(revenda.status)}`}>
+                      {revenda.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-white text-xs sm:text-sm">
-                    {new Date(reseller.created_at).toLocaleDateString('pt-BR')}
+                    {new Date(revenda.created_at).toLocaleDateString('pt-BR')}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1 sm:gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openViewModal(reseller)}
+                        onClick={() => openViewModal(revenda)}
                         className="text-blue-400 hover:text-blue-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -742,7 +739,7 @@ export default function AdminResellers() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openEditModal(reseller)}
+                        onClick={() => openEditModal(revenda)}
                         className="text-green-400 hover:text-green-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -750,7 +747,7 @@ export default function AdminResellers() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openDeleteModal(reseller)}
+                        onClick={() => openDeleteModal(revenda)}
                         className="text-red-400 hover:text-red-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -889,7 +886,7 @@ export default function AdminResellers() {
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleEditReseller}>
+            <Button onClick={handleEditRevenda}>
               Salvar Alterações
             </Button>
           </DialogFooter>
@@ -907,7 +904,7 @@ export default function AdminResellers() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteReseller} className="bg-red-600 hover:bg-red-700">
+            <AlertDialogAction onClick={handleDeleteRevenda} className="bg-red-600 hover:bg-red-700">
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
