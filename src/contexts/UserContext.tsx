@@ -10,7 +10,7 @@ interface UserContextType {
 }
 
 // URL do avatar padrão
-const defaultAvatar = 'https://source.boringavatars.com/beam/120/Admin?colors=7e22ce,a855f7,6d28d9,e9d5ff';
+const defaultAvatar = 'https://ui-avatars.com/api/?name=Admin&background=7e22ce&color=fff&size=120';
 
 // Cria o contexto com um valor padrão
 const UserContext = createContext<UserContextType>({
