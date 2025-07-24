@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 interface User {
   id: number;
@@ -9,13 +10,13 @@ interface User {
   bouquets?: string;
   expiration_date?: string;
   observations?: string;
-  real_name?: string; // Campo para o nome real
-  telegram?: string; // Campo para telegram
-  whatsapp?: string; // Campo para whatsapp
-  status?: string; // Campo para status
-  devices?: number; // Campo para número de dispositivos
-  credits?: number; // Campo para créditos
-  notes?: string; // Campo para anotações
+  real_name?: string;
+  telegram?: string;
+  whatsapp?: string;
+  status?: string;
+  devices?: number;
+  credits?: number;
+  notes?: string;
   created_at: string;
   updated_at: string;
 }
@@ -30,8 +31,6 @@ interface UseNeonUsersReturn {
   refreshUsers: () => Promise<void>;
 }
 
-const API_BASE = '/.netlify/functions';
-
 export const useNeonUsers = (): UseNeonUsersReturn => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,27 +40,16 @@ export const useNeonUsers = (): UseNeonUsersReturn => {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch(`${API_BASE}/users`);
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        setError('Resposta inesperada do servidor. Verifique se a API está online.');
-        setLoading(false);
-        return;
-      }
-      const data = await response.json();
-      
-      if (data.success) {
-        console.log('📋 Usuários retornados do backend:', data.users);
-        console.log('Exemplo de usuário:', data.users[0]);
-        console.log('Campos disponíveis:', data.users[0] ? Object.keys(data.users[0]) : 'Nenhum usuário');
-        setUsers(data.users);
+      const { data, error: supaError } = await supabase.from('users').select('*');
+      if (supaError) {
+        setError('Erro ao buscar usuários do Supabase');
+        setUsers([]);
       } else {
-        setError(data.message || 'Erro ao buscar usuários');
+        setUsers(data || []);
       }
     } catch (err) {
-      setError('Erro de conexão com o servidor');
-      console.error('Erro ao buscar usuários:', err);
+      setError('Erro de conexão com o Supabase');
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -70,27 +58,15 @@ export const useNeonUsers = (): UseNeonUsersReturn => {
   const createUser = async (userData: Omit<User, 'id' | 'created_at' | 'updated_at'>): Promise<boolean> => {
     try {
       setError(null);
-      
-      const response = await fetch(`${API_BASE}/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        await fetchUsers(); // Recarregar lista
-        return true;
-      } else {
-        setError(data.message || 'Erro ao criar usuário');
+      const { error: supaError } = await supabase.from('users').insert([userData]);
+      if (supaError) {
+        setError('Erro ao criar usuário no Supabase');
         return false;
       }
+      await fetchUsers();
+      return true;
     } catch (err) {
-      setError('Erro de conexão com o servidor');
-      console.error('Erro ao criar usuário:', err);
+      setError('Erro de conexão com o Supabase');
       return false;
     }
   };
@@ -98,27 +74,15 @@ export const useNeonUsers = (): UseNeonUsersReturn => {
   const updateUser = async (id: number, userData: Partial<User>): Promise<boolean> => {
     try {
       setError(null);
-      
-      const response = await fetch(`${API_BASE}/users`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, ...userData }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        await fetchUsers(); // Recarregar lista
-        return true;
-      } else {
-        setError(data.message || 'Erro ao atualizar usuário');
+      const { error: supaError } = await supabase.from('users').update(userData).eq('id', id);
+      if (supaError) {
+        setError('Erro ao atualizar usuário no Supabase');
         return false;
       }
+      await fetchUsers();
+      return true;
     } catch (err) {
-      setError('Erro de conexão com o servidor');
-      console.error('Erro ao atualizar usuário:', err);
+      setError('Erro de conexão com o Supabase');
       return false;
     }
   };
@@ -126,27 +90,15 @@ export const useNeonUsers = (): UseNeonUsersReturn => {
   const deleteUser = async (id: number): Promise<boolean> => {
     try {
       setError(null);
-      
-      const response = await fetch(`${API_BASE}/users`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        await fetchUsers(); // Recarregar lista
-        return true;
-      } else {
-        setError(data.message || 'Erro ao deletar usuário');
+      const { error: supaError } = await supabase.from('users').delete().eq('id', id);
+      if (supaError) {
+        setError('Erro ao deletar usuário no Supabase');
         return false;
       }
+      await fetchUsers();
+      return true;
     } catch (err) {
-      setError('Erro de conexão com o servidor');
-      console.error('Erro ao deletar usuário:', err);
+      setError('Erro de conexão com o Supabase');
       return false;
     }
   };
