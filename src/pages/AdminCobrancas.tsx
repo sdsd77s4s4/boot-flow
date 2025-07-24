@@ -4,21 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Calendar, Plus, Search, Filter, Edit, Trash2, Eye, Copy, Mail, MessageSquare, BarChart3, Users, TrendingUp, DollarSign, AlertCircle, CheckCircle, Clock, Download, Upload, Zap, CreditCard, Receipt, Bell, Settings } from 'lucide-react';
-import { useClientes } from '@/hooks/useClientes';
-import type { Cliente } from '@/hooks/useClientes';
-import { useRevendas } from '@/hooks/useRevendas';
-import type { Revenda } from '@/hooks/useRevendas';
+import { useUsers } from '@/hooks/useUsers';
+import type { User } from '@/hooks/useUsers';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import React from "react";
+import { useNeonUsers } from '@/hooks/useNeonUsers';
+import { useNeonResellers } from '@/hooks/useNeonResellers';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { useCobrancas } from '@/hooks/useCobrancas';
 
 interface Cobranca {
   id: number;
@@ -49,7 +48,7 @@ interface GatewayConfig {
 }
 
 // Gerar cobranças baseadas nos usuários
-const generateCobrancasFromUsers = (users: Cliente[]): Cobranca[] => {
+const generateCobrancasFromUsers = (users: User[]): Cobranca[] => {
   return users.map((user, index) => {
     const statuses: ('Pendente' | 'Vencida' | 'Paga')[] = ['Pendente', 'Vencida', 'Paga'];
     const descricoes = [
@@ -80,9 +79,9 @@ const generateCobrancasFromUsers = (users: Cliente[]): Cobranca[] => {
 };
 
 export default function AdminCobrancas() {
-  const { cobrancas, loading, error, addCobranca, updateCobranca, deleteCobranca } = useCobrancas();
-  const { clientes } = useClientes();
-  const { revendas } = useRevendas();
+  const { users } = useNeonUsers();
+  const { resellers } = useNeonResellers();
+  const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Gateways configurados
@@ -95,8 +94,8 @@ export default function AdminCobrancas() {
 
   // Gerar cobranças para clientes e revendas
   useEffect(() => {
-    const cobrancasClientes = clientes.length > 0 ? generateCobrancasFromUsers(clientes) : [];
-    const cobrancasRevendas = revendas.length > 0 ? revendas.map((rev, idx) => ({
+    const cobrancasClientes = users.length > 0 ? generateCobrancasFromUsers(users as any) : [];
+    const cobrancasRevendas = resellers.length > 0 ? resellers.map((rev, idx) => ({
       id: 10000 + rev.id, // evitar conflito de id
       cliente: rev.personal_name || rev.username,
       email: rev.email || '',
@@ -104,7 +103,7 @@ export default function AdminCobrancas() {
       valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
       vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
       status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Revenda',
+      tipo: 'Revenda' as const,
       gateway: ['PIX', 'Stripe', 'Mercado Pago'][idx % 3],
       formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][idx % 3],
       tentativas: Math.floor(Math.random() * 3),
@@ -113,9 +112,18 @@ export default function AdminCobrancas() {
       observacoes: idx % 2 === 0 ? 'Cliente preferencial' : '',
       tags: idx % 3 === 0 ? ['Urgente', 'VIP'] : idx % 3 === 1 ? ['Recorrente'] : [],
     })) : [];
-    cobrancasClientes.forEach(c => addCobranca(c));
-    cobrancasRevendas.forEach(c => addCobranca(c));
-  }, [clientes, revendas, addCobranca]);
+    setCobrancas([...cobrancasClientes.map(c => ({ 
+      ...c, 
+      tipo: 'Cliente' as const,
+      gateway: ['PIX', 'Stripe', 'Mercado Pago'][Math.floor(Math.random() * 3)],
+      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][Math.floor(Math.random() * 3)],
+      tentativas: Math.floor(Math.random() * 3),
+      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
+      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
+      observacoes: Math.random() > 0.7 ? 'Cliente com histórico de atraso' : '',
+      tags: Math.random() > 0.8 ? ['Urgente'] : Math.random() > 0.6 ? ['Recorrente'] : [],
+    })), ...cobrancasRevendas]);
+  }, [users, resellers]);
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string | null>(null);
   const [modalNova, setModalNova] = useState(false);
@@ -183,16 +191,16 @@ export default function AdminCobrancas() {
     
     const novaCobranca: Cobranca = {
       id: Math.max(...cobrancas.map(c => c.id)) + 1,
-      cliente: nova.nomeCliente, // garantir que só aparece uma vez
+      cliente: nova.nomeCliente,
       email: nova.email,
       descricao: nova.descricao,
       valor: Number(nova.valor),
       vencimento: nova.vencimento,
       status: nova.status as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Cliente',
+      tipo: 'Cliente', // Default to Cliente
     };
     
-    addCobranca(novaCobranca);
+    setCobrancas([...cobrancas, novaCobranca]);
     setNova({ 
       cliente: '', 
       nomeCliente: '', 
@@ -215,14 +223,15 @@ export default function AdminCobrancas() {
       return;
     }
     
-    updateCobranca(modalEditar!.id, { 
+    setCobrancas(cobrancas.map(c => c.id === modalEditar?.id ? { 
+      ...c, 
       cliente: edit.nomeCliente,
       email: edit.email,
       descricao: edit.descricao, 
       valor: Number(edit.valor),
       vencimento: edit.vencimento,
       status: edit.status as 'Pendente' | 'Vencida' | 'Paga'
-    });
+    } : c));
     
     setEdit({ 
       cliente: '', 
@@ -244,7 +253,7 @@ export default function AdminCobrancas() {
     setModalEditar(null);
   };
   const handleExcluir = () => {
-    deleteCobranca(modalExcluir!.id);
+    setCobrancas(cobrancas.filter(c => c.id !== modalExcluir?.id));
     setModalExcluir(null);
   };
   const handleCopiar = (c: Cobranca) => {
@@ -292,7 +301,7 @@ export default function AdminCobrancas() {
     if (clienteId) {
       if (clienteId.startsWith('cliente-')) {
         const id = clienteId.replace('cliente-', '');
-        const selectedUser = clientes.find(user => user.id.toString() === id);
+        const selectedUser = users.find(user => user.id.toString() === id);
         if (selectedUser) {
           setNova({
             ...nova,
@@ -304,7 +313,7 @@ export default function AdminCobrancas() {
         }
       } else if (clienteId.startsWith('revenda-')) {
         const id = clienteId.replace('revenda-', '');
-        const selectedRev = revendas.find(rev => rev.id.toString() === id);
+        const selectedRev = resellers.find(rev => rev.id.toString() === id);
         if (selectedRev) {
           setNova({
             ...nova,
@@ -328,12 +337,12 @@ export default function AdminCobrancas() {
 
   // Função para obter usuário por ID
   const getUserById = (id: number) => {
-    return clientes.find(user => user.id === id);
+    return users.find(user => user.id === id);
   };
 
   // Função para abrir modal de edição com dados preenchidos
   const openEditModal = (cobranca: Cobranca) => {
-    const user = clientes.find(u => u.name === cobranca.cliente);
+    const user = users.find(u => u.name === cobranca.cliente);
     setEdit({
       cliente: user?.id.toString() || '',
       nomeCliente: cobranca.cliente,
@@ -726,8 +735,6 @@ export default function AdminCobrancas() {
       {/* Modal Nova Cobrança */}
       <Dialog open={modalNova} onOpenChange={setModalNova}>
         <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-          <DialogTitle>Nova Cobrança</DialogTitle>
-          <DialogDescription>Preencha os dados para criar uma nova cobrança.</DialogDescription>
           <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-white">Nova Cobrança</h2>
@@ -756,12 +763,12 @@ export default function AdminCobrancas() {
                 >
                   <option value="">Selecionar</option>
                   <optgroup label="Clientes">
-                    {clientes.map(user => (
+                    {users.map(user => (
                       <option key={`cliente-${user.id}`} value={`cliente-${user.id}`}>{user.name} - {user.email}</option>
                     ))}
                   </optgroup>
                   <optgroup label="Revendas">
-                    {revendas.map(rev => (
+                    {resellers.map(rev => (
                       <option key={`revenda-${rev.id}`} value={`revenda-${rev.id}`}>{rev.personal_name || rev.username} - {rev.email}</option>
                     ))}
                   </optgroup>
@@ -901,8 +908,9 @@ export default function AdminCobrancas() {
       {/* Modal Visualizar */}
       <Dialog open={!!modalVisualizar} onOpenChange={() => setModalVisualizar(null)}>
         <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
-          <DialogTitle>Detalhes da Cobrança</DialogTitle>
-          <DialogDescription>Veja as informações completas da cobrança selecionada.</DialogDescription>
+          <DialogHeader>
+            <DialogTitle>Detalhes da Cobrança</DialogTitle>
+          </DialogHeader>
           <div className="space-y-2 py-2">
             <div><b>Cliente:</b> {modalVisualizar?.cliente}</div>
             <div><b>E-mail:</b> {modalVisualizar?.email}</div>
@@ -919,8 +927,6 @@ export default function AdminCobrancas() {
       {/* Modal Editar */}
       <Dialog open={!!modalEditar} onOpenChange={() => setModalEditar(null)}>
         <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
-          <DialogTitle>Editar Cobrança</DialogTitle>
-          <DialogDescription>Edite os dados da cobrança e do cliente</DialogDescription>
           <div className="p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
@@ -950,7 +956,7 @@ export default function AdminCobrancas() {
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.cliente}
                     onChange={e => {
-                      const selectedUser = clientes.find(user => user.id.toString() === e.target.value);
+                      const selectedUser = users.find(user => user.id.toString() === e.target.value);
                       if (selectedUser) {
                         setEdit({
                           ...edit,
@@ -969,7 +975,7 @@ export default function AdminCobrancas() {
                     }}
                   >
                     <option value="">Selecione um cliente</option>
-                    {clientes.map(user => (
+                    {users.map(user => (
                       <option key={user.id} value={user.id.toString()}>
                         {user.name}
                       </option>
@@ -1204,7 +1210,7 @@ export default function AdminCobrancas() {
           <div className="py-4">Tem certeza que deseja excluir esta cobrança?</div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModalExcluir(null)} className="bg-gray-700 text-white">Cancelar</Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => deleteCobranca(modalExcluir!.id)}>Excluir</Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleExcluir}>Excluir</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
