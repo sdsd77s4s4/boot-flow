@@ -44,6 +44,12 @@ export const useNeonResellers = (): UseNeonResellersReturn => {
       setError(null);
       
       const response = await fetch(`${API_BASE}/resellers`);
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        setError('Resposta inesperada do servidor. Verifique se a API está online.');
+        setLoading(false);
+        return;
+      }
       const data = await response.json();
       
       if (data.success) {
