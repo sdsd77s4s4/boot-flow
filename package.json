@@ -8,7 +8,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "netlify dev:exec drizzle-kit migrate",
+    "db:studio": "netlify dev:exec drizzle-kit studio"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -49,6 +52,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "drizzle-orm": "^0.44.3",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
@@ -74,6 +78,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",

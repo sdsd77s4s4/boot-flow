@@ -12,11 +12,11 @@ import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, A
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import React from "react";
-import { useNeonUsers, type User as NeonUser } from "@/hooks/useNeonUsers";
-import { useUsers, type User as OldUser } from "@/hooks/useUsers";
+import { useClientes } from "@/hooks/useClientes";
+import { useUsers } from "@/hooks/useUsers";
 
 export default function AdminUsers() {
-  const { users, loading, error, createUser, updateUser, deleteUser } = useNeonUsers();
+  const { clientes: users, loading, error, addCliente, updateCliente: updateUser, deleteCliente: deleteUser } = useClientes();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
   const [newUser, setNewUser] = useState({
@@ -45,9 +45,9 @@ export default function AdminUsers() {
   const [selectedExtractedUser, setSelectedExtractedUser] = useState<any>(null);
 
   // Estados para os modais de ação
-  const [editingUser, setEditingUser] = useState<NeonUser | null>(null);
-  const [viewingUser, setViewingUser] = useState<NeonUser | null>(null);
-  const [deletingUser, setDeletingUser] = useState<NeonUser | null>(null);
+  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [viewingUser, setViewingUser] = useState<any | null>(null);
+  const [deletingUser, setDeletingUser] = useState<any | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -65,7 +65,8 @@ export default function AdminUsers() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const filteredUsers = users.filter(user =>
+  const usersSafe = users || [];
+  const filteredUsers = usersSafe.filter(user =>
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.real_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -89,82 +90,75 @@ export default function AdminUsers() {
         
         // Preparar dados do usuário para o Neon
         const userData = {
-          name: newUser.realName || newUser.name, // Usar o nome real como name principal
+          name: newUser.realName || newUser.name,
           email: newUser.email,
           password: newUser.password || '',
-          m3u_url: newUser.plan || '', // usando plan como m3u_url
+          m3u_url: newUser.plan || '',
           bouquets: newUser.bouquets || '',
           expiration_date: newUser.expirationDate || null,
-          observations: newUser.observations || '',
-          real_name: newUser.realName || '', // Manter também no real_name
-          telegram: newUser.telegram || '', // Campo telegram
-          whatsapp: newUser.whatsapp || '', // Campo whatsapp
-          status: newUser.status || 'Ativo', // Campo status
-          devices: newUser.devices || 0, // Campo dispositivos
-          credits: newUser.credits || 0, // Campo créditos
-          notes: newUser.notes || '' // Campo anotações
+          observations: newUser.observations || ''
         };
         
         console.log('Dados preparados para adicionar:', userData);
         
         // Adicionar usuário usando o hook do Neon
-        const success = await createUser(userData);
+        await addCliente(userData);
         
-        if (success) {
-          setAddUserSuccess(true);
-          
-          // Atualizar Dashboard instantaneamente
-          console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
-          try {
-            window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
-            console.log('✅ Evento disparado com sucesso');
-          } catch (error) {
-            console.error('❌ Erro ao disparar evento:', error);
-          }
-          
-          // Usar localStorage como fallback
-          try {
-            localStorage.setItem('dashboard-refresh', Date.now().toString());
-            console.log('✅ Flag localStorage definida');
-          } catch (error) {
-            console.error('❌ Erro ao definir flag localStorage:', error);
-          }
-          
-          // Limpar formulário
-          setNewUser({ 
-            name: "", 
-            email: "", 
-            plan: "", 
-            status: "Ativo",
-            telegram: "",
-            observations: "",
-            expirationDate: "",
-            password: "",
-            bouquets: "",
-            realName: "", // Limpando também o campo realName
-            whatsapp: "",
-            devices: 0,
-            credits: 0,
-            notes: ""
-          });
-          
-          // Limpar dados de extração
-          setM3uUrl("");
-          setExtractionResult(null);
-          setExtractionError("");
-          
-          // Fechar modal após 1 segundo
-          setTimeout(() => {
-            setIsAddDialogOpen(false);
-            setAddUserSuccess(false);
-          }, 1000);
-        } else {
-          alert('Erro ao adicionar usuário. Verifique os dados.');
+        setAddUserSuccess(true);
+        
+        // Atualizar Dashboard instantaneamente
+        console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
+        try {
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
+          console.log('✅ Evento disparado com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao disparar evento:', error);
         }
+        
+        // Usar localStorage como fallback
+        try {
+          localStorage.setItem('dashboard-refresh', Date.now().toString());
+          console.log('✅ Flag localStorage definida');
+        } catch (error) {
+          console.error('❌ Erro ao definir flag localStorage:', error);
+        }
+        
+        // Limpar formulário
+        setNewUser({ 
+          name: "", 
+          email: "", 
+          plan: "", 
+          status: "Ativo",
+          telegram: "",
+          observations: "",
+          expirationDate: "",
+          password: "",
+          bouquets: "",
+          realName: "", // Limpando também o campo realName
+          whatsapp: "",
+          devices: 0,
+          credits: 0,
+          notes: ""
+        });
+        
+        // Limpar dados de extração
+        setM3uUrl("");
+        setExtractionResult(null);
+        setExtractionError("");
+        
+        // Fechar modal após 1 segundo
+        setTimeout(() => {
+          setIsAddDialogOpen(false);
+          setAddUserSuccess(false);
+        }, 1000);
         
       } catch (error) {
         console.error('Erro ao adicionar usuário:', error);
-        alert('Erro ao adicionar usuário. Tente novamente.');
+        if (error && error.message && error.message.includes('duplicate key value')) {
+          alert('Já existe um usuário com este e-mail!');
+        } else {
+          alert('Erro ao adicionar usuário. Tente novamente.');
+        }
       } finally {
         setIsAddingUser(false);
       }
@@ -268,17 +262,17 @@ export default function AdminUsers() {
         setDeletingUser(null);
         setIsDeleteDialogOpen(false);
       } else {
-        alert('Erro ao deletar usuário. Tente novamente.');
+        alert('Erro ao deletar usuário. Verifique se você tem permissão no Supabase ou se há policies bloqueando a exclusão.');
       }
     }
   };
 
-  const openViewModal = (user: NeonUser) => {
+  const openViewModal = (user: any) => {
     setViewingUser(user);
     setIsViewDialogOpen(true);
   };
 
-  const openEditModal = (user: NeonUser) => {
+  const openEditModal = (user: any) => {
     console.log('=== DEBUG: Abrindo modal de edição ===');
     console.log('Dados do usuário vindos do banco:', user);
     console.log('Campo real_name do banco:', user.real_name);
@@ -309,7 +303,7 @@ export default function AdminUsers() {
     setIsEditDialogOpen(true);
   };
 
-  const openDeleteModal = (user: NeonUser) => {
+  const openDeleteModal = (user: any) => {
     setDeletingUser(user);
     setIsDeleteDialogOpen(true);
   };
@@ -353,7 +347,7 @@ export default function AdminUsers() {
         console.log(`Copiando usuário ${i + 1}/${usersToCopy.length}:`, user.name);
         
         // Adicionar usuário usando o hook do Neon
-        const success = await createUser(userData);
+        const success = await addCliente(userData);
         
         if (!success) {
           console.error(`Erro ao copiar usuário: ${user.name}`);
@@ -680,7 +674,7 @@ export default function AdminUsers() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white">Gerenciamento de Usuários</h1>
           <p className="text-gray-400 text-sm sm:text-base">
-            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${users.length} usuários)`}
+            {loading ? 'Carregando...' : `Gerencie todos os usuários do sistema (${(users || []).length} usuários)`}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -692,7 +686,9 @@ export default function AdminUsers() {
                 <span className="sm:hidden">Novo</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700 sm:max-w-2xl max-w-[98vw] px-1 sm:px-0">
+            <DialogContent>
+              <DialogTitle>Adicionar Cliente</DialogTitle>
+              <DialogDescription>Preencha os dados do novo cliente para adicioná-lo à base de dados.</DialogDescription>
               <div className="p-2 sm:p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -1042,6 +1038,14 @@ export default function AdminUsers() {
               </div>
             </DialogContent>
           </Dialog>
+          <Button
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white h-10 sm:h-auto"
+            onClick={handleCopyAllUsersFromCobrancas}
+            disabled={isCopyingUsers}
+          >
+            <Copy className="w-4 h-4" />
+            Importar da Cobrança
+          </Button>
         </div>
       </div>
 
@@ -1055,7 +1059,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{users.length}</div>
+            <div className="text-2xl font-bold text-white">{(users || []).length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários cadastrados</div>
           </CardContent>
         </Card>
@@ -1068,7 +1072,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{users.filter(u => u.status === 'Ativo').length}</div>
+            <div className="text-2xl font-bold text-green-400">{(users || []).filter(u => u.status === 'Ativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários com acesso</div>
           </CardContent>
         </Card>
@@ -1081,7 +1085,7 @@ export default function AdminUsers() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-400">{users.filter(u => u.status === 'Inativo').length}</div>
+            <div className="text-2xl font-bold text-red-400">{(users || []).filter(u => u.status === 'Inativo').length}</div>
             <div className="text-xs text-gray-400 mt-1">Usuários bloqueados</div>
           </CardContent>
         </Card>
@@ -1880,7 +1884,7 @@ function RenovacaoDatePicker() {
   );
 }
 
-function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: NeonUser | null, setEditingUser: (user: NeonUser) => void }) {
+function VencimentoDatePickerEdit({ editingUser, setEditingUser }: { editingUser: any | null, setEditingUser: (user: any) => void }) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
     editingUser?.expirationDate ? new Date(editingUser.expirationDate) : undefined
