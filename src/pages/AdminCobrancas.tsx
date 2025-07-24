@@ -94,7 +94,7 @@ export default function AdminCobrancas() {
 
   // Gerar cobranças para clientes e revendas
   useEffect(() => {
-    const cobrancasClientes = users.length > 0 ? generateCobrancasFromUsers(users) : [];
+    const cobrancasClientes = users.length > 0 ? generateCobrancasFromUsers(users as any) : [];
     const cobrancasRevendas = resellers.length > 0 ? resellers.map((rev, idx) => ({
       id: 10000 + rev.id, // evitar conflito de id
       cliente: rev.personal_name || rev.username,
@@ -103,7 +103,7 @@ export default function AdminCobrancas() {
       valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
       vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
       status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Revenda',
+      tipo: 'Revenda' as const,
       gateway: ['PIX', 'Stripe', 'Mercado Pago'][idx % 3],
       formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][idx % 3],
       tentativas: Math.floor(Math.random() * 3),
@@ -114,7 +114,7 @@ export default function AdminCobrancas() {
     })) : [];
     setCobrancas([...cobrancasClientes.map(c => ({ 
       ...c, 
-      tipo: 'Cliente',
+      tipo: 'Cliente' as const,
       gateway: ['PIX', 'Stripe', 'Mercado Pago'][Math.floor(Math.random() * 3)],
       formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][Math.floor(Math.random() * 3)],
       tentativas: Math.floor(Math.random() * 3),
@@ -210,7 +210,10 @@ export default function AdminCobrancas() {
       valor: '', 
       status: 'Pendente', 
       vencimento: '', 
-      observacoes: '' 
+      observacoes: '',
+      gateway: '',
+      formaPagamento: '',
+      tags: []
     });
     setModalNova(false);
   };
