@@ -61,7 +61,7 @@ export default function AdminResellers() {
         const success = await addRevenda({
           username: newReseller.username,
           password: newReseller.password,
-          force_password_change: newReseller.force_password_change,
+          force_password_change: newReseller.force_password_change?.toString(),
           permission: newReseller.permission as 'admin' | 'reseller' | 'subreseller',
           credits: newReseller.credits,
           servers: newReseller.servers || undefined,
@@ -75,7 +75,7 @@ export default function AdminResellers() {
           observations: newReseller.observations || undefined
         });
         
-        if (success) {
+        try {
           setAddResellerSuccess(true);
           
           // Atualizar Dashboard instantaneamente
@@ -118,6 +118,8 @@ export default function AdminResellers() {
             setIsAddDialogOpen(false);
             setAddResellerSuccess(false);
           }, 1000);
+        } catch (error) {
+          console.error('Success handling error:', error);
         }
       } catch (error) {
         console.error('Erro ao adicionar revendedor:', error);

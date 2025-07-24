@@ -16,7 +16,7 @@ import { useClientes } from "@/hooks/useClientes";
 import { useUsers } from "@/hooks/useUsers";
 
 export default function AdminUsers() {
-  const { users, loading, error, addCliente, updateUser, deleteUser } = useClientes();
+  const { clientes: users, loading, error, addCliente, updateCliente: updateUser, deleteCliente: deleteUser } = useClientes();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
   const [newUser, setNewUser] = useState({
@@ -102,59 +102,55 @@ export default function AdminUsers() {
         console.log('Dados preparados para adicionar:', userData);
         
         // Adicionar usuário usando o hook do Neon
-        const success = await addCliente(userData);
+        await addCliente(userData);
         
-        if (success) {
-          setAddUserSuccess(true);
-          
-          // Atualizar Dashboard instantaneamente
-          console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
-          try {
-            window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
-            console.log('✅ Evento disparado com sucesso');
-          } catch (error) {
-            console.error('❌ Erro ao disparar evento:', error);
-          }
-          
-          // Usar localStorage como fallback
-          try {
-            localStorage.setItem('dashboard-refresh', Date.now().toString());
-            console.log('✅ Flag localStorage definida');
-          } catch (error) {
-            console.error('❌ Erro ao definir flag localStorage:', error);
-          }
-          
-          // Limpar formulário
-          setNewUser({ 
-            name: "", 
-            email: "", 
-            plan: "", 
-            status: "Ativo",
-            telegram: "",
-            observations: "",
-            expirationDate: "",
-            password: "",
-            bouquets: "",
-            realName: "", // Limpando também o campo realName
-            whatsapp: "",
-            devices: 0,
-            credits: 0,
-            notes: ""
-          });
-          
-          // Limpar dados de extração
-          setM3uUrl("");
-          setExtractionResult(null);
-          setExtractionError("");
-          
-          // Fechar modal após 1 segundo
-          setTimeout(() => {
-            setIsAddDialogOpen(false);
-            setAddUserSuccess(false);
-          }, 1000);
-        } else {
-          alert('Erro ao adicionar usuário. Verifique os dados.');
+        setAddUserSuccess(true);
+        
+        // Atualizar Dashboard instantaneamente
+        console.log('📤 Clientes: Disparando evento refresh-dashboard após criar usuário');
+        try {
+          window.dispatchEvent(new CustomEvent('refresh-dashboard', { detail: { source: 'users', action: 'create' } }));
+          console.log('✅ Evento disparado com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao disparar evento:', error);
         }
+        
+        // Usar localStorage como fallback
+        try {
+          localStorage.setItem('dashboard-refresh', Date.now().toString());
+          console.log('✅ Flag localStorage definida');
+        } catch (error) {
+          console.error('❌ Erro ao definir flag localStorage:', error);
+        }
+        
+        // Limpar formulário
+        setNewUser({ 
+          name: "", 
+          email: "", 
+          plan: "", 
+          status: "Ativo",
+          telegram: "",
+          observations: "",
+          expirationDate: "",
+          password: "",
+          bouquets: "",
+          realName: "", // Limpando também o campo realName
+          whatsapp: "",
+          devices: 0,
+          credits: 0,
+          notes: ""
+        });
+        
+        // Limpar dados de extração
+        setM3uUrl("");
+        setExtractionResult(null);
+        setExtractionError("");
+        
+        // Fechar modal após 1 segundo
+        setTimeout(() => {
+          setIsAddDialogOpen(false);
+          setAddUserSuccess(false);
+        }, 1000);
         
       } catch (error) {
         console.error('Erro ao adicionar usuário:', error);

@@ -12,6 +12,16 @@ export interface Cliente {
   observations?: string;
   created_at?: string;
   updated_at?: string;
+  phone?: string;
+  telegram?: string;
+  whatsapp?: string;
+  devices?: number;
+  credits?: number;
+  renewalDate?: string;
+  notes?: string;
+  real_name?: string;
+  plan?: string;
+  status?: string;
 }
 
 export function useClientes() {

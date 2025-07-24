@@ -12,6 +12,14 @@ export interface Revenda {
   status?: string;
   created_at?: string;
   updated_at?: string;
+  force_password_change?: string;
+  servers?: string;
+  master_reseller?: string;
+  disable_login_days?: number;
+  monthly_reseller?: boolean;
+  telegram?: string;
+  whatsapp?: string;
+  observations?: string;
 }
 
 export function useRevendas() {
