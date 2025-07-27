@@ -801,12 +801,9 @@ export default function AdminUsers() {
         </div>
       )}
 
+      {/* Banner de erro RLS */}
       {error && (
-        <div className="bg-red-900/40 border border-red-700 text-red-300 rounded-lg p-4">
-          <div className="flex items-center gap-2">
-            <span>❌ Erro: {error}</span>
-          </div>
-        </div>
+        <RLSErrorBanner error={error} onClearError={clearError} />
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
