@@ -275,14 +275,13 @@ export default function AdminUsers() {
       );
       console.log("=== FIM DEBUG ===");
 
-      const success = await updateUser(editingUser.id, updatedUserData);
+      await updateCliente(editingUser.id, updatedUserData);
+      
+      console.log("✅ Usuário atualizado com sucesso!");
+      console.log("Aguardando recarregamento da lista...");
 
-      if (success) {
-        console.log("✅ Usuário atualizado com sucesso!");
-        console.log("Aguardando recarregamento da lista...");
-
-        // Atualizar Dashboard instantaneamente
-        console.log(
+      // Atualizar Dashboard instantaneamente
+      console.log(
           "📤 Clientes: Disparando evento refresh-dashboard após editar usuário"
         );
         try {
@@ -322,39 +321,33 @@ export default function AdminUsers() {
 
   const handleDeleteUser = async () => {
     if (deletingUser) {
-      const success = await deleteUser(deletingUser.id);
-
-      if (success) {
-        // Atualizar Dashboard instantaneamente
-        console.log(
-          "📤 Clientes: Disparando evento refresh-dashboard após deletar usuário"
+      await deleteCliente(deletingUser.id);
+      
+      // Atualizar Dashboard instantaneamente
+      console.log(
+        "📤 Clientes: Disparando evento refresh-dashboard após deletar usuário"
+      );
+      try {
+        window.dispatchEvent(
+          new CustomEvent("refresh-dashboard", {
+            detail: { source: "users", action: "delete" },
+          })
         );
-        try {
-          window.dispatchEvent(
-            new CustomEvent("refresh-dashboard", {
-              detail: { source: "users", action: "delete" },
-            })
-          );
-          console.log("✅ Evento disparado com sucesso");
-        } catch (error) {
-          console.error("❌ Erro ao disparar evento:", error);
-        }
-
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem("dashboard-refresh", Date.now().toString());
-          console.log("✅ Flag localStorage definida");
-        } catch (error) {
-          console.error("❌ Erro ao definir flag localStorage:", error);
-        }
-
-        setDeletingUser(null);
-        setIsDeleteDialogOpen(false);
-      } else {
-        alert(
-          "Erro ao deletar usuário. Verifique se você tem permissão no Supabase ou se há policies bloqueando a exclusão."
-        );
+        console.log("✅ Evento disparado com sucesso");
+      } catch (error) {
+        console.error("❌ Erro ao disparar evento:", error);
       }
+
+      // Usar localStorage como fallback
+      try {
+        localStorage.setItem("dashboard-refresh", Date.now().toString());
+        console.log("✅ Flag localStorage definida");
+      } catch (error) {
+        console.error("❌ Erro ao definir flag localStorage:", error);
+      }
+
+      setDeletingUser(null);
+      setIsDeleteDialogOpen(false);
     }
   };
 
@@ -448,10 +441,10 @@ export default function AdminUsers() {
         );
 
         // Adicionar usuário usando o hook do Neon
-        const success = await addCliente(userData);
-
-        if (!success) {
-          console.error(`Erro ao copiar usuário: ${user.name}`);
+        try {
+          await addCliente(userData);
+        } catch (error) {
+          console.error(`Erro ao copiar usuário: ${user.name}`, error);
         }
 
         // Atualizar progresso
@@ -1412,10 +1405,10 @@ export default function AdminUsers() {
                     {user.telegram || "-"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">
-                    {user.expirationDate || "-"}
+                    {user.expiration_date || "-"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">
-                    {user.createdAt}
+                    {user.created_at}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1 sm:gap-2">
