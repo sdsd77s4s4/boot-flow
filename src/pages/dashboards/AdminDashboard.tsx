@@ -56,7 +56,7 @@ import AdminGateways from "../AdminGateways";
 import AdminCobrancas from "../AdminCobrancas";
 import Notifications from "../Notifications";
 import Profile from "../Profile";
-import AddClienteForm from '@/components/AddClienteForm';
+
 
 
 const AdminDashboard = () => {
@@ -64,6 +64,8 @@ const AdminDashboard = () => {
   const [clientModal, setClientModal] = useState(false);
   const [resellerModal, setResellerModal] = useState(false);
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalRevenue: 487230,
