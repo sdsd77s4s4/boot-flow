@@ -35,7 +35,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/sidebars/AdminSidebar";
 import { AIModalManager } from "@/components/modals/AIModalManager";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -486,6 +486,8 @@ const AdminDashboard = () => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
+                    <DialogTitle className="sr-only">Gerenciamento de Clientes</DialogTitle>
+                    <DialogDescription className="sr-only">Interface para adicionar e gerenciar clientes</DialogDescription>
                     <div className="p-6 w-full">
                       <AdminUsers />
                     </div>
@@ -501,6 +503,8 @@ const AdminDashboard = () => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
+                    <DialogTitle className="sr-only">Gerenciamento de Revendedores</DialogTitle>
+                    <DialogDescription className="sr-only">Interface para adicionar e gerenciar revendedores</DialogDescription>
                     <div className="p-6 w-full">
                       <AdminResellers />
                     </div>
