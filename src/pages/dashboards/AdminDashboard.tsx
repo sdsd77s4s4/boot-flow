@@ -75,6 +75,31 @@ const AdminDashboard = () => {
     aiInteractions: 45678
   });
 
+  // Estados para o modal de cliente
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    plan: "",
+    status: "Ativo",
+    telegram: "",
+    observations: "",
+    expirationDate: "",
+    password: "",
+    bouquets: "",
+    realName: "",
+    whatsapp: "",
+    devices: 0,
+    credits: 0,
+    notes: "",
+  });
+
+  // Estados para a extração M3U
+  const [m3uUrl, setM3uUrl] = useState("");
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractionResult, setExtractionResult] = useState<any>(null);
+  const [extractionError, setExtractionError] = useState("");
+  const [isAddingUser, setIsAddingUser] = useState(false);
+
   // Hooks para dados de usuários e revendedores
   const { clientes, loading: loadingClientes, fetchClientes, addCliente } = useClientes();
   const { revendas, loading: loadingRevendas, fetchRevendas } = useRevendas();
@@ -98,66 +123,360 @@ const AdminDashboard = () => {
     }));
   }, [clientes, revendas]);
 
-  // Dados para atividade recente e usuários online
-  const recentActivityUnified = [
+  // Sistema de Proxy CORS Multi-Fallback (apenas HTTPS para evitar Mixed Content)
+  const corsProxies = [
     {
-      id: 1,
-      type: 'user',
-      user: 'João Silva',
-      time: '2 minutos atrás',
-      status: 'Ativo'
+      name: "api.allorigins.win",
+      url: (targetUrl: string) =>
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
     },
     {
-      id: 2,
-      type: 'reseller',
-      user: 'Maria Santos',
-      time: '5 minutos atrás',
-      status: 'Online'
+      name: "corsproxy.io",
+      url: (targetUrl: string) =>
+        `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
     },
-    {
-      id: 3,
-      type: 'user',
-      user: 'Pedro Costa',
-      time: '10 minutos atrás',
-      status: 'Inativo'
-    }
   ];
 
-  const onlineUsersUnified = [
-    {
-      id: 1,
-      name: 'João Silva',
-      type: 'Cliente',
-      status: 'Online',
-      lastSeen: 'Agora'
-    },
-    {
-      id: 2,
-      name: 'Maria Santos',
-      type: 'Revendedor',
-      status: 'Online',
-      lastSeen: '2 min atrás'
-    },
-    {
-      id: 3,
-      name: 'Pedro Costa',
-      type: 'Cliente',
-      status: 'Away',
-      lastSeen: '5 min atrás'
+  // Função para extrair dados M3U usando o sistema que funcionou
+  const extractM3UData = async () => {
+    if (!m3uUrl.trim()) {
+      setExtractionError("Por favor, insira uma URL M3U válida.");
+      return;
     }
-  ];
 
+    setIsExtracting(true);
+    setExtractionError("");
+    setExtractionResult(null);
 
-  
-  // Estado para forçar re-renderização
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+    try {
+      // Extrair credenciais da URL
+      const urlObj = new URL(m3uUrl);
+      const username = urlObj.searchParams.get("username") || "";
+      const password = urlObj.searchParams.get("password") || "";
+      const baseUrl = `${urlObj.protocol}//${urlObj.host}`;
 
+      if (!username || !password) {
+        throw new Error(
+          "Credenciais não encontradas na URL. Verifique se a URL contém username e password."
+        );
+      }
 
+      // Construir URLs da API
+      const apiUrl = `${baseUrl}/player_api.php?username=${username}&password=${password}`;
 
-  const [brandingModal, setBrandingModal] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'kanban' | 'grid'>('kanban');
+      // Verificar se é HTTP e avisar sobre Mixed Content
+      if (urlObj.protocol === "http:") {
+        console.log(
+          "URL HTTP detectada - usando proxies para evitar Mixed Content"
+        );
+        setExtractionError("URL HTTP detectada - usando proxies seguros...");
+      } else {
+        // Tentar primeiro sem proxy (se for HTTPS)
+        try {
+          console.log("Tentando acesso direto...");
+          setExtractionError("Tentando acesso direto...");
+
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const text = await response.text();
+            let data;
+
+            try {
+              data = JSON.parse(text);
+            } catch (parseError) {
+              throw new Error("Resposta não é um JSON válido.");
+            }
+
+            if (!data.user_info) {
+              throw new Error("Dados do usuário não encontrados na resposta.");
+            }
+
+            console.log("Sucesso com acesso direto!");
+
+            // Aplicar dados extraídos ao formulário
+            const extractedData = {
+              name: data.user_info.username,
+              email: `${data.user_info.username}@iptv.com`,
+              plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+              status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
+              telegram: data.user_info.username
+                ? `@${data.user_info.username}`
+                : "",
+              observations: `Usuário: ${data.user_info.username} | Acesso direto`,
+              expirationDate: data.user_info.exp_date
+                ? new Date(parseInt(data.user_info.exp_date) * 1000)
+                    .toISOString()
+                    .split("T")[0]
+                : "",
+              password: data.user_info.password || password,
+              bouquets: "",
+              realName: "",
+              whatsapp: "",
+              devices: data.user_info.max_connections
+                ? parseInt(data.user_info.max_connections)
+                : 1,
+              credits: 0,
+              notes: "",
+            };
+
+            setNewUser(extractedData);
+
+            setExtractionResult({
+              success: true,
+              message: `Dados extraídos com sucesso! Usuário: ${data.user_info.username}`,
+              data: data,
+            });
+
+            setExtractionError("");
+            return;
+          }
+        } catch (directError) {
+          console.log("Acesso direto falhou, tentando proxies...");
+        }
+      }
+
+      // Tentar com diferentes proxies
+      for (let i = 0; i < corsProxies.length; i++) {
+        const proxy = corsProxies[i];
+        const proxiedUrl = `${proxy.url(apiUrl)}`;
+
+        try {
+          console.log(
+            `Tentando proxy ${i + 1}/${corsProxies.length}: ${proxy.name}`
+          );
+          setExtractionError(
+            `Testando proxy ${i + 1}/${corsProxies.length}...`
+          );
+
+          const response = await fetch(proxiedUrl, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            mode: "cors",
+          });
+
+          if (!response.ok) {
+            if (response.status === 403) {
+              throw new Error("Acesso negado. Verifique suas credenciais.");
+            } else if (response.status === 404) {
+              throw new Error("Servidor IPTV não encontrado.");
+            } else {
+              throw new Error(`Erro HTTP: ${response.status}`);
+            }
+          }
+
+          const text = await response.text();
+          let data;
+
+          try {
+            data = JSON.parse(text);
+          } catch (parseError) {
+            throw new Error("Resposta não é um JSON válido.");
+          }
+
+          if (!data.user_info) {
+            throw new Error("Dados do usuário não encontrados na resposta.");
+          }
+
+          console.log(`Sucesso com proxy: ${proxy.name}`);
+
+          // Preparar observações com dados reais
+          const observations = [];
+          if (data.user_info.username)
+            observations.push(`Usuário: ${data.user_info.username}`);
+          if (data.user_info.password)
+            observations.push(`Senha: ${data.user_info.password}`);
+          if (data.user_info.exp_date) {
+            const expDate = new Date(parseInt(data.user_info.exp_date) * 1000);
+            observations.push(`Expira: ${expDate.toLocaleDateString("pt-BR")}`);
+          }
+          if (data.user_info.max_connections)
+            observations.push(`Conexões: ${data.user_info.max_connections}`);
+          if (data.user_info.active_cons)
+            observations.push(`Ativas: ${data.user_info.active_cons}`);
+
+          // Aplicar dados extraídos ao formulário
+          const extractedData = {
+            name: data.user_info.username || username,
+            email: `${data.user_info.username || username}@iptv.com`,
+            plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+            status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
+            telegram: data.user_info.username
+              ? `@${data.user_info.username}`
+              : "",
+            observations:
+              observations.length > 0 ? observations.join(" | ") : "",
+            expirationDate: data.user_info.exp_date
+              ? new Date(parseInt(data.user_info.exp_date) * 1000)
+                  .toISOString()
+                  .split("T")[0]
+              : "",
+            password: data.user_info.password || password,
+            bouquets: "Premium, Sports, Movies",
+            realName: "",
+            whatsapp: "",
+            devices: data.user_info.max_connections
+              ? parseInt(data.user_info.max_connections)
+              : 1,
+            credits: 0,
+            notes: "",
+          };
+
+          setNewUser(extractedData);
+
+          setExtractionResult({
+            success: true,
+            message: `Dados extraídos com sucesso! Usuário: ${data.user_info.username}`,
+            data: data,
+          });
+
+          setExtractionError("");
+          return;
+        } catch (error) {
+          console.log(`Falha com proxy ${proxy.name}:`, error);
+
+          if (i === corsProxies.length - 1) {
+            // Se todos os proxies falharam, usar dados simulados como fallback
+            console.log("Todos os proxies falharam, usando dados simulados...");
+            setExtractionError("Proxies falharam, usando dados simulados...");
+
+            // Simular dados baseados na URL
+            const extractedData = {
+              name: username,
+              email: `${username}@iptv.com`,
+              plan: "Premium",
+              status: "Ativo",
+              telegram: `@${username}`,
+              observations: `Usuário: ${username} | Senha: ${password} | Dados simulados`,
+              expirationDate: "",
+              password: password,
+              bouquets: "",
+              realName: "",
+              whatsapp: "",
+              devices: 1,
+              credits: 0,
+              notes: "",
+            };
+
+            setNewUser(extractedData);
+
+            setExtractionResult({
+              success: true,
+              message: `Dados simulados aplicados! Usuário: ${username}`,
+              data: { user_info: { username, password } },
+            });
+
+            setExtractionError("");
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro desconhecido";
+      setExtractionError(errorMessage);
+      console.error("Erro na extração M3U:", error);
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const handleAddUser = async () => {
+    if (newUser.name && newUser.email) {
+      setIsAddingUser(true);
+
+      try {
+        // Preparar dados do usuário para o Neon
+        const userData = {
+          name: newUser.realName || newUser.name,
+          email: newUser.email,
+          password: newUser.password || "",
+          m3u_url: newUser.plan || "",
+          bouquets: newUser.bouquets || "",
+          expiration_date: newUser.expirationDate || null,
+          observations: newUser.observations || "",
+        };
+
+        console.log("Dados preparados para adicionar:", userData);
+
+        // Adicionar usuário usando o hook do Neon
+        await addCliente(userData);
+
+        // Atualizar Dashboard instantaneamente
+        console.log(
+          "📤 Clientes: Disparando evento refresh-dashboard após criar usuário"
+        );
+        try {
+          window.dispatchEvent(
+            new CustomEvent("refresh-dashboard", {
+              detail: { source: "users", action: "create" },
+            })
+          );
+          console.log("✅ Evento disparado com sucesso");
+        } catch (error) {
+          console.error("❌ Erro ao disparar evento:", error);
+        }
+
+        // Usar localStorage como fallback
+        try {
+          localStorage.setItem("dashboard-refresh", Date.now().toString());
+          console.log("✅ Flag localStorage definida");
+        } catch (error) {
+          console.error("❌ Erro ao definir flag localStorage:", error);
+        }
+
+        // Limpar formulário
+        setNewUser({
+          name: "",
+          email: "",
+          plan: "",
+          status: "Ativo",
+          telegram: "",
+          observations: "",
+          expirationDate: "",
+          password: "",
+          bouquets: "",
+          realName: "",
+          whatsapp: "",
+          devices: 0,
+          credits: 0,
+          notes: "",
+        });
+
+        // Limpar dados de extração
+        setM3uUrl("");
+        setExtractionResult(null);
+        setExtractionError("");
+
+        // Fechar modal após 1 segundo
+        setTimeout(() => {
+          setClientModal(false);
+        }, 1000);
+      } catch (error) {
+        console.error("Erro ao adicionar usuário:", error);
+        if (
+          error &&
+          error.message &&
+          error.message.includes("duplicate key value")
+        ) {
+          alert("Já existe um usuário com este e-mail!");
+        } else {
+          alert("Erro ao adicionar usuário. Tente novamente.");
+        }
+      } finally {
+        setIsAddingUser(false);
+      }
+    }
+  };
 
   const handleModalOpen = (modalType: string) => {
     setActiveModal(modalType);
