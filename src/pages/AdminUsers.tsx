@@ -2316,6 +2316,8 @@ export default function AdminUsers() {
   );
 }
 
+export { AdminUsers as default };
+
 function VencimentoDatePicker() {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
