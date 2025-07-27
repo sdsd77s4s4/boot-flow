@@ -8,7 +8,7 @@ export interface Cobranca {
   descricao: string;
   valor: number;
   vencimento: string;
-  status: 'Pendente' | 'Paga' | 'Vencida' | 'Cancelada';
+  status: string; // Changed to string to match database
   tipo: string;
   gateway?: string;
   forma_pagamento?: string;
@@ -63,7 +63,7 @@ export function useCobrancas() {
     }
   }
 
-  async function updateCobranca(id: number, updates: Partial<Cobranca>) {
+  async function updateCobranca(id: number, updates: Partial<Omit<Cobranca, 'id'>>) {
     try {
       const { error } = await supabase
         .from('cobrancas')

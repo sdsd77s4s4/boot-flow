@@ -8,7 +8,7 @@ export interface Revenda {
   permission?: string;
   credits?: number;
   personal_name?: string;
-  status?: 'active' | 'inactive' | 'suspended';
+  status?: string; // Changed to string to match database
   created_at?: string;
   updated_at?: string;
   force_password_change?: string;
@@ -63,7 +63,7 @@ export function useRevendas() {
     }
   }
 
-  async function updateRevenda(id: number, updates: Partial<Revenda>) {
+  async function updateRevenda(id: number, updates: Partial<Omit<Revenda, 'id'>>) {
     try {
       const { error } = await supabase
         .from('resellers')

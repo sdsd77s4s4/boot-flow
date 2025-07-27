@@ -20,7 +20,7 @@ export interface Cliente {
   notes?: string;
   real_name?: string;
   plan?: string;
-  status?: 'active' | 'inactive' | 'suspended';
+  status?: string; // Changed to string to match database
   created_by?: string;
 }
 
@@ -65,7 +65,7 @@ export function useClientes() {
     }
   }
 
-  async function updateCliente(id: number, updates: Partial<Cliente>) {
+  async function updateCliente(id: number, updates: Partial<Omit<Cliente, 'id'>>) {
     try {
       const { error } = await supabase
         .from('users')
