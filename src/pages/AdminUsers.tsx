@@ -79,6 +79,7 @@ export default function AdminUsers() {
     addCliente,
     updateCliente: updateUser,
     deleteCliente: deleteUser,
+    clearError,
   } = useClientes();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
