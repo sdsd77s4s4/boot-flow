@@ -14,7 +14,228 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cobrancas: {
+        Row: {
+          cliente: string
+          created_at: string
+          created_by: string | null
+          descricao: string
+          email: string
+          forma_pagamento: string | null
+          gateway: string | null
+          id: number
+          observacoes: string | null
+          proxima_tentativa: string | null
+          status: string | null
+          tags: string[] | null
+          tentativas: number | null
+          tipo: string
+          ultima_tentativa: string | null
+          updated_at: string
+          valor: number
+          vencimento: string
+        }
+        Insert: {
+          cliente: string
+          created_at?: string
+          created_by?: string | null
+          descricao: string
+          email: string
+          forma_pagamento?: string | null
+          gateway?: string | null
+          id?: never
+          observacoes?: string | null
+          proxima_tentativa?: string | null
+          status?: string | null
+          tags?: string[] | null
+          tentativas?: number | null
+          tipo: string
+          ultima_tentativa?: string | null
+          updated_at?: string
+          valor: number
+          vencimento: string
+        }
+        Update: {
+          cliente?: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string
+          email?: string
+          forma_pagamento?: string | null
+          gateway?: string | null
+          id?: never
+          observacoes?: string | null
+          proxima_tentativa?: string | null
+          status?: string | null
+          tags?: string[] | null
+          tentativas?: number | null
+          tipo?: string
+          ultima_tentativa?: string | null
+          updated_at?: string
+          valor?: number
+          vencimento?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resellers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          credits: number | null
+          disable_login_days: number | null
+          email: string
+          force_password_change: string | null
+          id: number
+          master_reseller: string | null
+          monthly_reseller: boolean | null
+          observations: string | null
+          permission: string | null
+          personal_name: string | null
+          servers: string | null
+          status: string | null
+          telegram: string | null
+          updated_at: string
+          username: string
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          disable_login_days?: number | null
+          email: string
+          force_password_change?: string | null
+          id?: never
+          master_reseller?: string | null
+          monthly_reseller?: boolean | null
+          observations?: string | null
+          permission?: string | null
+          personal_name?: string | null
+          servers?: string | null
+          status?: string | null
+          telegram?: string | null
+          updated_at?: string
+          username: string
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          disable_login_days?: number | null
+          email?: string
+          force_password_change?: string | null
+          id?: never
+          master_reseller?: string | null
+          monthly_reseller?: boolean | null
+          observations?: string | null
+          permission?: string | null
+          personal_name?: string | null
+          servers?: string | null
+          status?: string | null
+          telegram?: string | null
+          updated_at?: string
+          username?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          bouquets: string | null
+          created_at: string
+          created_by: string | null
+          credits: number | null
+          devices: number | null
+          email: string
+          expiration_date: string | null
+          id: number
+          m3u_url: string | null
+          name: string
+          notes: string | null
+          observations: string | null
+          phone: string | null
+          plan: string | null
+          real_name: string | null
+          status: string | null
+          telegram: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          bouquets?: string | null
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          devices?: number | null
+          email: string
+          expiration_date?: string | null
+          id?: never
+          m3u_url?: string | null
+          name: string
+          notes?: string | null
+          observations?: string | null
+          phone?: string | null
+          plan?: string | null
+          real_name?: string | null
+          status?: string | null
+          telegram?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          bouquets?: string | null
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          devices?: number | null
+          email?: string
+          expiration_date?: string | null
+          id?: never
+          m3u_url?: string | null
+          name?: string
+          notes?: string | null
+          observations?: string | null
+          phone?: string | null
+          plan?: string | null
+          real_name?: string | null
+          status?: string | null
+          telegram?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

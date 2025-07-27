@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Cliente {
   id: number;
   name: string;
   email: string;
-  password?: string;
   m3u_url?: string;
   bouquets?: string;
   expiration_date?: string;
@@ -21,7 +20,8 @@ export interface Cliente {
   notes?: string;
   real_name?: string;
   plan?: string;
-  status?: string;
+  status?: 'active' | 'inactive' | 'suspended';
+  created_by?: string;
 }
 
 export function useClientes() {
@@ -30,32 +30,76 @@ export function useClientes() {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchClientes() {
-    setLoading(true);
-    const { data, error } = await supabase.from('users').select('*');
-    if (error) setError(error.message);
-    else setClientes(data || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setClientes(data || []);
+    } catch (err: any) {
+      setError(err.message);
+      console.error('Error fetching clientes:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function addCliente(cliente: Omit<Cliente, 'id'>) {
-    const { error } = await supabase.from('users').insert([cliente]);
-    if (error) setError(error.message);
-    else await fetchClientes();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('users')
+        .insert([{ ...cliente, created_by: user.id }]);
+      
+      if (error) throw error;
+      await fetchClientes();
+      return true;
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+    }
   }
 
   async function updateCliente(id: number, updates: Partial<Cliente>) {
-    const { error } = await supabase.from('users').update(updates).eq('id', id);
-    if (error) setError(error.message);
-    else await fetchClientes();
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update(updates)
+        .eq('id', id);
+      
+      if (error) throw error;
+      await fetchClientes();
+      return true;
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+    }
   }
 
   async function deleteCliente(id: number) {
-    const { error } = await supabase.from('users').delete().eq('id', id);
-    if (error) setError(error.message);
-    else await fetchClientes();
+    try {
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      await fetchClientes();
+      return true;
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+    }
   }
 
-  useEffect(() => { fetchClientes(); }, []);
+  useEffect(() => { 
+    fetchClientes(); 
+  }, []);
 
   return { clientes, loading, error, addCliente, updateCliente, deleteCliente, fetchClientes };
-} 
+}
