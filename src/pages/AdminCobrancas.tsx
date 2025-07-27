@@ -441,7 +441,7 @@ export default function AdminCobrancas() {
         </div>
       </div>
 
-      {/* Banner de erro RLS */}
+      {/* Banner de erro RLS - apenas se houver erro */}
       {error && (
         <RLSErrorBannerCobrancas error={error} onClearError={clearError} />
       )}
