@@ -28,32 +28,130 @@ export function useRevendas() {
   const [error, setError] = useState<string | null>(null);
 
   async function fetchRevendas() {
-    setLoading(true);
-    const { data, error } = await supabase.from('resellers').select('*');
-    if (error) setError(error.message);
-    else setRevendas(data || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const { data, error } = await supabase.from('resellers').select('*');
+      
+      if (error) {
+        console.error('Erro ao buscar revendedores:', error);
+        
+        // Verificar se é erro de RLS
+        if (error.message.includes('row-level security policy')) {
+          setError('Erro de permissão: As políticas de segurança estão bloqueando o acesso. Execute o script SQL para corrigir as políticas RLS.');
+        } else {
+          setError(`Erro ao buscar revendedores: ${error.message}`);
+        }
+        return;
+      }
+      
+      setRevendas(data || []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(`Erro inesperado: ${errorMessage}`);
+      console.error('Erro ao buscar revendedores:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function addRevenda(revenda: Omit<Revenda, 'id'>) {
-    const { error } = await supabase.from('resellers').insert([revenda]);
-    if (error) setError(error.message);
-    else await fetchRevendas();
+    try {
+      setError(null);
+      
+      const { data, error } = await supabase.from('resellers').insert([revenda]).select();
+      
+      if (error) {
+        console.error('Erro ao adicionar revendedor:', error);
+        
+        // Verificar se é erro de RLS
+        if (error.message.includes('row-level security policy')) {
+          setError('Erro de permissão: As políticas de segurança estão bloqueando a inserção. Execute o script SQL para corrigir as políticas RLS.');
+        } else {
+          setError(`Erro ao adicionar revendedor: ${error.message}`);
+        }
+        return false;
+      }
+      
+      await fetchRevendas();
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(`Erro inesperado ao adicionar revendedor: ${errorMessage}`);
+      console.error('Erro ao adicionar revendedor:', err);
+      return false;
+    }
   }
 
   async function updateRevenda(id: number, updates: Partial<Revenda>) {
-    const { error } = await supabase.from('resellers').update(updates).eq('id', id);
-    if (error) setError(error.message);
-    else await fetchRevendas();
+    try {
+      setError(null);
+      
+      const { data, error } = await supabase.from('resellers').update(updates).eq('id', id).select();
+      
+      if (error) {
+        console.error('Erro ao atualizar revendedor:', error);
+        
+        // Verificar se é erro de RLS
+        if (error.message.includes('row-level security policy')) {
+          setError('Erro de permissão: As políticas de segurança estão bloqueando a atualização. Execute o script SQL para corrigir as políticas RLS.');
+        } else {
+          setError(`Erro ao atualizar revendedor: ${error.message}`);
+        }
+        return false;
+      }
+      
+      await fetchRevendas();
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(`Erro inesperado ao atualizar revendedor: ${errorMessage}`);
+      console.error('Erro ao atualizar revendedor:', err);
+      return false;
+    }
   }
 
   async function deleteRevenda(id: number) {
-    const { error } = await supabase.from('resellers').delete().eq('id', id);
-    if (error) setError(error.message);
-    else await fetchRevendas();
+    try {
+      setError(null);
+      
+      const { error } = await supabase.from('resellers').delete().eq('id', id);
+      
+      if (error) {
+        console.error('Erro ao deletar revendedor:', error);
+        
+        // Verificar se é erro de RLS
+        if (error.message.includes('row-level security policy')) {
+          setError('Erro de permissão: As políticas de segurança estão bloqueando a exclusão. Execute o script SQL para corrigir as políticas RLS.');
+        } else {
+          setError(`Erro ao deletar revendedor: ${error.message}`);
+        }
+        return false;
+      }
+      
+      await fetchRevendas();
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(`Erro inesperado ao deletar revendedor: ${errorMessage}`);
+      console.error('Erro ao deletar revendedor:', err);
+      return false;
+    }
   }
 
-  useEffect(() => { fetchRevendas(); }, []);
+  useEffect(() => { 
+    fetchRevendas(); 
+  }, []);
 
-  return { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda, fetchRevendas };
+  return { 
+    revendas, 
+    loading, 
+    error, 
+    addRevenda, 
+    updateRevenda, 
+    deleteRevenda, 
+    fetchRevendas,
+    clearError: () => setError(null)
+  };
 } 
