@@ -385,6 +385,11 @@ export default function AdminCobrancas() {
         </div>
       </div>
 
+      {/* Banner de erro RLS */}
+      {error && (
+        <RLSErrorBannerCobrancas error={error} onClearError={clearError} />
+      )}
+
       {/* Dashboard Cards Modernizados */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
         <Card className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/40">
