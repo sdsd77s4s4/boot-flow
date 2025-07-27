@@ -13,7 +13,7 @@ import { useRevendas } from '@/hooks/useRevendas';
 import { RLSErrorBannerResellers } from '@/components/RLSErrorBannerResellers';
 
 export default function AdminResellers() {
-  const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda } = useRevendas();
+  const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda, clearError } = useRevendas();
 
   const [newReseller, setNewReseller] = useState({
     username: "",
