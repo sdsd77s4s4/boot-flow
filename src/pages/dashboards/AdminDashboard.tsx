@@ -927,7 +927,7 @@ const AdminDashboard = () => {
                     <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
                   </div>
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
-                    <Dialog open={activeModal === 'add_user'} onOpenChange={() => setActiveModal(activeModal === 'add_user' ? null : 'add_user')}>
+                    <Dialog open={clientModal} onOpenChange={setClientModal}>
                       <DialogTrigger asChild>
                         <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto"> 
                           <UserPlus className="w-4 h-4 sm:mr-2" />
@@ -944,7 +944,7 @@ const AdminDashboard = () => {
                       </DialogContent>
                     </Dialog>
                     
-                    <Dialog open={activeModal === 'add_reseller'} onOpenChange={() => setActiveModal(activeModal === 'add_reseller' ? null : 'add_reseller')}>
+                    <Dialog open={resellerModal} onOpenChange={setResellerModal}>
                       <DialogTrigger asChild>
                         <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto"> 
                           <Plus className="w-4 h-4 sm:mr-2" />
