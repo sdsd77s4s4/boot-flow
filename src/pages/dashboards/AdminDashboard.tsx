@@ -56,6 +56,7 @@ import AdminGateways from "../AdminGateways";
 import AdminCobrancas from "../AdminCobrancas";
 import Notifications from "../Notifications";
 import Profile from "../Profile";
+import AddClienteForm from '@/components/AddClienteForm';
 
 
 const AdminDashboard = () => {
@@ -75,7 +76,7 @@ const AdminDashboard = () => {
   });
 
   // Hooks para dados de usuários e revendedores
-  const { clientes, loading: loadingClientes, fetchClientes } = useClientes();
+  const { clientes, loading: loadingClientes, fetchClientes, addCliente } = useClientes();
   const { revendas, loading: loadingRevendas, fetchRevendas } = useRevendas();
 
   // Função para atualizar clientes
@@ -481,18 +482,19 @@ const AdminDashboard = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
                 <Dialog open={clientModal} onOpenChange={setClientModal}>
                   <DialogTrigger asChild>
-                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto"> 
+                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
                       <UserPlus className="w-4 h-4 sm:mr-2" />
                       <span className="hidden sm:inline">Novo Cliente</span>
                       <span className="sm:hidden">Cliente</span>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
-                    <DialogTitle className="sr-only">Gerenciamento de Clientes</DialogTitle>
-                    <DialogDescription className="sr-only">Interface para adicionar e gerenciar clientes</DialogDescription>
-                    <div className="p-6 w-full">
-                      <AdminUsers />
-                    </div>
+                  <DialogContent className="max-w-lg w-full bg-background border border-gray-800 shadow-2xl p-0 rounded-lg overflow-hidden">
+                    <AddClienteForm
+                      addCliente={addCliente}
+                      extractM3UData={async () => {}} // implementar se necessário
+                      onSuccess={() => { setClientModal(false); fetchClientes(); }}
+                      onCancel={() => setClientModal(false)}
+                    />
                   </DialogContent>
                 </Dialog>
                 
@@ -929,18 +931,19 @@ const AdminDashboard = () => {
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
                     <Dialog open={clientModal} onOpenChange={setClientModal}>
                       <DialogTrigger asChild>
-                        <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto"> 
+                        <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
                           <UserPlus className="w-4 h-4 sm:mr-2" />
                           <span className="hidden sm:inline">Novo Cliente</span>
                           <span className="sm:hidden">Cliente</span>
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
-                        <DialogTitle className="sr-only">Gerenciamento de Clientes</DialogTitle>
-                        <DialogDescription className="sr-only">Interface para adicionar e gerenciar clientes</DialogDescription>
-                        <div className="p-6 w-full">
-                          <AdminUsers />
-                        </div>
+                      <DialogContent className="max-w-lg w-full bg-background border border-gray-800 shadow-2xl p-0 rounded-lg overflow-hidden">
+                        <AddClienteForm
+                          addCliente={addCliente}
+                          extractM3UData={async () => {}} // implementar se necessário
+                          onSuccess={() => { setClientModal(false); fetchClientes(); }}
+                          onCancel={() => setClientModal(false)}
+                        />
                       </DialogContent>
                     </Dialog>
                     
