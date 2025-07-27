@@ -60,6 +60,8 @@ import Profile from "../Profile";
 
 const AdminDashboard = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [clientModal, setClientModal] = useState(false);
+  const [resellerModal, setResellerModal] = useState(false);
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
   const [stats, setStats] = useState({
     totalUsers: 0,
