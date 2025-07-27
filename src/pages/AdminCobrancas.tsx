@@ -81,7 +81,7 @@ const generateCobrancasFromUsers = (users: Cliente[]): Cobranca[] => {
 };
 
 export default function AdminCobrancas() {
-  const { cobrancas, loading, error, addCobranca, updateCobranca, deleteCobranca } = useCobrancas();
+  const { cobrancas, loading, error, addCobranca, updateCobranca, deleteCobranca, clearError } = useCobrancas();
   const { clientes } = useClientes();
   const { revendas } = useRevendas();
   const [activeTab, setActiveTab] = useState('dashboard');
