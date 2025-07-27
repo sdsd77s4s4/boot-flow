@@ -37,6 +37,8 @@ interface Cobranca {
   proximaTentativa?: string;
   observacoes?: string;
   tags?: string[];
+  originalId?: number; // ID original do cliente/revenda
+  originalType?: 'cliente' | 'revenda'; // Tipo original
 }
 
 interface GatewayConfig {
@@ -49,9 +51,9 @@ interface GatewayConfig {
   configurado: boolean;
 }
 
-// Gerar cobranças baseadas nos usuários
-const generateCobrancasFromUsers = (users: Cliente[]): Cobranca[] => {
-  return users.map((user, index) => {
+// Gerar cobranças baseadas nos clientes
+const generateCobrancasFromClientes = (clientes: Cliente[]): Cobranca[] => {
+  return clientes.map((cliente, index) => {
     const statuses: ('Pendente' | 'Vencida' | 'Paga')[] = ['Pendente', 'Vencida', 'Paga'];
     const descricoes = [
       'Renovação Básico - Plano Mensal',
@@ -68,23 +70,59 @@ const generateCobrancasFromUsers = (users: Cliente[]): Cobranca[] => {
     vencimento.setDate(hoje.getDate() + (index * 7) + Math.floor(Math.random() * 30));
     
     return {
-      id: user.id,
-      cliente: user.name,
-      email: user.email,
+      id: cliente.id,
+      cliente: cliente.name,
+      email: cliente.email,
       descricao: descricoes[index % descricoes.length],
       valor: Math.floor(Math.random() * 50) + 90, // Valor entre 90 e 140
       vencimento: vencimento.toLocaleDateString('pt-BR'),
       status: statuses[index % statuses.length],
       tipo: 'Cliente',
+      gateway: ['PIX', 'Stripe', 'Mercado Pago'][index % 3],
+      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][index % 3],
+      tentativas: Math.floor(Math.random() * 3),
+      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
+      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
+      observacoes: index % 2 === 0 ? 'Cliente preferencial' : '',
+      tags: index % 3 === 0 ? ['Urgente', 'VIP'] : index % 3 === 1 ? ['Recorrente'] : [],
+      originalId: cliente.id,
+      originalType: 'cliente'
     };
   });
 };
 
+// Gerar cobranças baseadas nas revendas
+const generateCobrancasFromRevendas = (revendas: Revenda[]): Cobranca[] => {
+  return revendas.map((revenda, index) => ({
+    id: 10000 + revenda.id, // evitar conflito de id
+    cliente: revenda.personal_name || revenda.username,
+    email: revenda.email || '',
+    descricao: 'Cobrança Revenda - Mensal',
+    valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
+    vencimento: new Date(Date.now() + (index * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
+    status: ['Pendente', 'Vencida', 'Paga'][index % 3] as 'Pendente' | 'Vencida' | 'Paga',
+    tipo: 'Revenda',
+    gateway: ['PIX', 'Stripe', 'Mercado Pago'][index % 3],
+    formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][index % 3],
+    tentativas: Math.floor(Math.random() * 3),
+    ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
+    proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
+    observacoes: index % 2 === 0 ? 'Revenda preferencial' : '',
+    tags: index % 3 === 0 ? ['Urgente', 'VIP'] : index % 3 === 1 ? ['Recorrente'] : [],
+    originalId: revenda.id,
+    originalType: 'revenda'
+  }));
+};
+
 export default function AdminCobrancas() {
-  const { cobrancas, loading, error, addCobranca, updateCobranca, deleteCobranca, clearError } = useCobrancas();
   const { clientes } = useClientes();
   const { revendas } = useRevendas();
   const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Estado para cobranças virtuais (baseadas em clientes e revendas)
+  const [cobrancasVirtuais, setCobrancasVirtuais] = useState<Cobranca[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Gateways configurados
   const [gateways] = useState<GatewayConfig[]>([
@@ -94,29 +132,50 @@ export default function AdminCobrancas() {
     { id: 'boleto', nome: 'Boleto', tipo: 'Boleto', status: 'Inativo', taxa: '1.99% + R$ 2,00', limite: 'R$ 5.000', configurado: false },
   ]);
 
-  // Gerar cobranças para clientes e revendas
+  // Gerar cobranças virtuais baseadas em clientes e revendas
   useEffect(() => {
-    const cobrancasClientes = clientes.length > 0 ? generateCobrancasFromUsers(clientes) : [];
-    const cobrancasRevendas = revendas.length > 0 ? revendas.map((rev, idx) => ({
-      id: 10000 + rev.id, // evitar conflito de id
-      cliente: rev.personal_name || rev.username,
-      email: rev.email || '',
-      descricao: 'Cobrança Revenda - Mensal',
-      valor: Math.floor(Math.random() * 80) + 120, // Valor entre 120 e 200
-      vencimento: new Date(Date.now() + (idx * 5 + 3) * 86400000).toLocaleDateString('pt-BR'),
-      status: ['Pendente', 'Vencida', 'Paga'][idx % 3] as 'Pendente' | 'Vencida' | 'Paga',
-      tipo: 'Revenda',
-      gateway: ['PIX', 'Stripe', 'Mercado Pago'][idx % 3],
-      formaPagamento: ['PIX', 'Cartão de Crédito', 'Cartão de Débito'][idx % 3],
-      tentativas: Math.floor(Math.random() * 3),
-      ultimaTentativa: new Date(Date.now() - Math.random() * 86400000 * 7).toLocaleDateString('pt-BR'),
-      proximaTentativa: new Date(Date.now() + Math.random() * 86400000 * 3).toLocaleDateString('pt-BR'),
-      observacoes: idx % 2 === 0 ? 'Cliente preferencial' : '',
-      tags: idx % 3 === 0 ? ['Urgente', 'VIP'] : idx % 3 === 1 ? ['Recorrente'] : [],
-    })) : [];
-    cobrancasClientes.forEach(c => addCobranca(c));
-    cobrancasRevendas.forEach(c => addCobranca(c));
-  }, [clientes, revendas, addCobranca]);
+    setLoading(true);
+    try {
+      const cobrancasClientes = generateCobrancasFromClientes(clientes);
+      const cobrancasRevendas = generateCobrancasFromRevendas(revendas);
+      const todasCobrancas = [...cobrancasClientes, ...cobrancasRevendas];
+      setCobrancasVirtuais(todasCobrancas);
+      setError(null);
+    } catch (err) {
+      setError('Erro ao gerar cobranças virtuais');
+      console.error('Erro ao gerar cobranças:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [clientes, revendas]);
+
+  // Funções para manipular cobranças virtuais
+  const addCobranca = (cobranca: Omit<Cobranca, 'id'>) => {
+    const novaCobranca: Cobranca = {
+      ...cobranca,
+      id: Math.max(...cobrancasVirtuais.map(c => c.id)) + 1
+    };
+    setCobrancasVirtuais(prev => [...prev, novaCobranca]);
+    toast.success('Cobrança adicionada com sucesso!');
+    return true;
+  };
+
+  const updateCobranca = (id: number, updates: Partial<Cobranca>) => {
+    setCobrancasVirtuais(prev => 
+      prev.map(c => c.id === id ? { ...c, ...updates } : c)
+    );
+    toast.success('Cobrança atualizada com sucesso!');
+    return true;
+  };
+
+  const deleteCobranca = (id: number) => {
+    setCobrancasVirtuais(prev => prev.filter(c => c.id !== id));
+    toast.success('Cobrança excluída com sucesso!');
+    return true;
+  };
+
+  const clearError = () => setError(null);
+
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState<string | null>(null);
   const [modalNova, setModalNova] = useState(false);
@@ -160,15 +219,15 @@ export default function AdminCobrancas() {
     notes: ''
   });
 
-  const total = cobrancas.length;
-  const pagas = cobrancas.filter(c => c.status === 'Paga').length;
-  const pendentes = cobrancas.filter(c => c.status === 'Pendente').length;
-  const vencidas = cobrancas.filter(c => c.status === 'Vencida').length;
+  const total = cobrancasVirtuais.length;
+  const pagas = cobrancasVirtuais.filter(c => c.status === 'Paga').length;
+  const pendentes = cobrancasVirtuais.filter(c => c.status === 'Pendente').length;
+  const vencidas = cobrancasVirtuais.filter(c => c.status === 'Vencida').length;
   const receitaMes = 0;
 
-  const vencendo = cobrancas.filter(c => c.status === 'Pendente').slice(0,2); // Exemplo
+  const vencendo = cobrancasVirtuais.filter(c => c.status === 'Pendente').slice(0,2); // Exemplo
 
-  const filtradas = cobrancas.filter(c => {
+  const filtradas = cobrancasVirtuais.filter(c => {
     const buscaLower = busca.toLowerCase();
     const matchBusca = c.cliente.toLowerCase().includes(buscaLower) || c.email.toLowerCase().includes(buscaLower) || c.descricao.toLowerCase().includes(buscaLower);
     const matchStatus = !filtroStatus || c.status === filtroStatus;
@@ -182,15 +241,18 @@ export default function AdminCobrancas() {
       return;
     }
     
-    const novaCobranca: Cobranca = {
-      id: Math.max(...cobrancas.map(c => c.id)) + 1,
-      cliente: nova.nomeCliente, // garantir que só aparece uma vez
+    const novaCobranca: Omit<Cobranca, 'id'> = {
+      cliente: nova.nomeCliente,
       email: nova.email,
       descricao: nova.descricao,
       valor: Number(nova.valor),
       vencimento: nova.vencimento,
       status: nova.status as 'Pendente' | 'Vencida' | 'Paga',
       tipo: 'Cliente',
+      gateway: nova.gateway,
+      formaPagamento: nova.formaPagamento,
+      observacoes: nova.observacoes,
+      tags: nova.tags
     };
     
     addCobranca(novaCobranca);
@@ -204,12 +266,13 @@ export default function AdminCobrancas() {
       status: 'Pendente', 
       vencimento: '', 
       observacoes: '',
-      gateway: '',
-      formaPagamento: '',
+      gateway: 'PIX',
+      formaPagamento: 'PIX',
       tags: []
     });
     setModalNova(false);
   };
+
   const handleSalvarEdit = () => {
     if (!edit.cliente || !edit.nomeCliente || !edit.email || !edit.descricao || !edit.valor || !edit.vencimento) {
       alert('Preencha todos os campos obrigatórios!');
@@ -244,10 +307,12 @@ export default function AdminCobrancas() {
     });
     setModalEditar(null);
   };
+
   const handleExcluir = () => {
     deleteCobranca(modalExcluir!.id);
     setModalExcluir(null);
   };
+
   const handleCopiar = (c: Cobranca) => {
     navigator.clipboard.writeText(`Cliente: ${c.cliente}\nEmail: ${c.email}\nDescrição: ${c.descricao}\nValor: R$ ${c.valor.toFixed(2)}\nVencimento: ${c.vencimento}`);
     toast.success('Cobrança copiada para a área de transferência!');
@@ -280,79 +345,70 @@ export default function AdminCobrancas() {
   };
 
   // Cálculos para dashboard
-  const totalCobrancas = cobrancas.length;
-  const cobrancasPagas = cobrancas.filter(c => c.status === 'Paga').length;
-  const cobrancasPendentes = cobrancas.filter(c => c.status === 'Pendente').length;
-  const cobrancasVencidas = cobrancas.filter(c => c.status === 'Vencida').length;
-  const valorTotal = cobrancas.reduce((acc, c) => acc + c.valor, 0);
-  const valorRecebido = cobrancas.filter(c => c.status === 'Paga').reduce((acc, c) => acc + c.valor, 0);
+  const totalCobrancas = cobrancasVirtuais.length;
+  const cobrancasPagas = cobrancasVirtuais.filter(c => c.status === 'Paga').length;
+  const cobrancasPendentes = cobrancasVirtuais.filter(c => c.status === 'Pendente').length;
+  const cobrancasVencidas = cobrancasVirtuais.filter(c => c.status === 'Vencida').length;
+  const valorTotal = cobrancasVirtuais.reduce((acc, c) => acc + c.valor, 0);
+  const valorRecebido = cobrancasVirtuais.filter(c => c.status === 'Paga').reduce((acc, c) => acc + c.valor, 0);
   const taxaConversao = totalCobrancas > 0 ? (cobrancasPagas / totalCobrancas) * 100 : 0;
 
-  // Função para preencher automaticamente os campos quando um cliente for selecionado
+  // Funções auxiliares para seleção de clientes/revendas
   const handleClienteChange = (clienteId: string) => {
-    if (clienteId) {
-      if (clienteId.startsWith('cliente-')) {
-        const id = clienteId.replace('cliente-', '');
-        const selectedUser = clientes.find(user => user.id.toString() === id);
-        if (selectedUser) {
-          setNova({
-            ...nova,
-            cliente: clienteId,
-            nomeCliente: selectedUser.name,
-            email: selectedUser.email,
-            telefone: selectedUser.phone || ''
-          });
-        }
-      } else if (clienteId.startsWith('revenda-')) {
-        const id = clienteId.replace('revenda-', '');
-        const selectedRev = revendas.find(rev => rev.id.toString() === id);
-        if (selectedRev) {
-          setNova({
-            ...nova,
-            cliente: clienteId,
-            nomeCliente: selectedRev.personal_name || selectedRev.username,
-            email: selectedRev.email || '',
-            telefone: selectedRev.whatsapp || ''
-          });
-        }
-      }
-    } else {
+    const cliente = clientes.find(c => c.id.toString() === clienteId);
+    if (cliente) {
       setNova({
         ...nova,
-        cliente: '',
-        nomeCliente: '',
-        email: '',
-        telefone: ''
+        cliente: clienteId,
+        nomeCliente: cliente.name,
+        email: cliente.email,
+        telefone: cliente.phone || '',
+        descricao: 'Cobrança Mensal - Cliente',
+        valor: '99.90',
+        vencimento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       });
     }
   };
 
-  // Função para obter usuário por ID
-  const getUserById = (id: number) => {
-    return clientes.find(user => user.id === id);
+  const handleRevendaChange = (revendaId: string) => {
+    const revenda = revendas.find(r => r.id.toString() === revendaId);
+    if (revenda) {
+      setNova({
+        ...nova,
+        cliente: revendaId,
+        nomeCliente: revenda.personal_name || revenda.username,
+        email: revenda.email || '',
+        telefone: '',
+        descricao: 'Cobrança Mensal - Revenda',
+        valor: '149.90',
+        vencimento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
+    }
   };
 
-  // Função para abrir modal de edição com dados preenchidos
+  const getUserById = (id: number) => {
+    return clientes.find(c => c.id === id) || revendas.find(r => r.id === id);
+  };
+
   const openEditModal = (cobranca: Cobranca) => {
-    const user = clientes.find(u => u.name === cobranca.cliente);
+    setModalEditar(cobranca);
     setEdit({
-      cliente: user?.id.toString() || '',
+      cliente: cobranca.originalId?.toString() || '',
       nomeCliente: cobranca.cliente,
       email: cobranca.email,
-      telefone: user?.phone || '',
+      telefone: '',
       descricao: cobranca.descricao,
       valor: cobranca.valor.toString(),
       status: cobranca.status,
       vencimento: cobranca.vencimento,
-      observacoes: '',
-      telegram: user?.telegram || '',
-      whatsapp: user?.whatsapp || '',
-      devices: user?.devices || 1,
-      credits: user?.credits || 0,
-      renewalDate: user?.renewalDate || '',
-      notes: user?.notes || ''
+      observacoes: cobranca.observacoes || '',
+      telegram: '',
+      whatsapp: '',
+      devices: 1,
+      credits: 0,
+      renewalDate: '',
+      notes: ''
     });
-    setModalEditar(cobranca);
   };
 
   return (
@@ -498,12 +554,12 @@ export default function AdminCobrancas() {
         <div className="mb-4">
           {cobrancasVencidas > 0 && (
             <div className="bg-red-900/80 text-red-200 rounded-lg px-4 py-3 mb-2 font-semibold">
-              <span className="mr-2">⚠️</span> Você tem {cobrancasVencidas} cobrança(s) vencida(s) totalizando R$ {(cobrancas.filter(c => c.status === 'Vencida').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
+              <span className="mr-2">⚠️</span> Você tem {cobrancasVencidas} cobrança(s) vencida(s) totalizando R$ {(cobrancasVirtuais.filter(c => c.status === 'Vencida').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
             </div>
           )}
           {cobrancasPendentes > 0 && (
             <div className="bg-yellow-900/80 text-yellow-200 rounded-lg px-4 py-3 font-semibold">
-              <span className="mr-2">⏰</span> Você tem {cobrancasPendentes} cobrança(s) pendente(s) totalizando R$ {(cobrancas.filter(c => c.status === 'Pendente').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
+              <span className="mr-2">⏰</span> Você tem {cobrancasPendentes} cobrança(s) pendente(s) totalizando R$ {(cobrancasVirtuais.filter(c => c.status === 'Pendente').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
             </div>
           )}
         </div>
@@ -758,7 +814,13 @@ export default function AdminCobrancas() {
                 <select 
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
                   value={nova.cliente}
-                  onChange={e => handleClienteChange(e.target.value)}
+                  onChange={e => {
+                    if (e.target.value.startsWith('cliente-')) {
+                      handleClienteChange(e.target.value);
+                    } else if (e.target.value.startsWith('revenda-')) {
+                      handleRevendaChange(e.target.value);
+                    }
+                  }}
                 >
                   <option value="">Selecionar</option>
                   <optgroup label="Clientes">
@@ -956,7 +1018,7 @@ export default function AdminCobrancas() {
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.cliente}
                     onChange={e => {
-                      const selectedUser = clientes.find(user => user.id.toString() === e.target.value);
+                      const selectedUser = getUserById(parseInt(e.target.value));
                       if (selectedUser) {
                         setEdit({
                           ...edit,
@@ -978,6 +1040,11 @@ export default function AdminCobrancas() {
                     {clientes.map(user => (
                       <option key={user.id} value={user.id.toString()}>
                         {user.name}
+                      </option>
+                    ))}
+                    {revendas.map(rev => (
+                      <option key={rev.id} value={rev.id.toString()}>
+                        {rev.personal_name || rev.username}
                       </option>
                     ))}
                   </select>
