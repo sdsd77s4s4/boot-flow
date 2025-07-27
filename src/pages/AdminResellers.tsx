@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, Activity, CheckCircle, RefreshCw, Maximize2, Moon } from "lucide-react";
 import { useRevendas } from '@/hooks/useRevendas';
+import { RLSErrorBannerResellers } from '@/components/RLSErrorBannerResellers';
 
 export default function AdminResellers() {
   const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda } = useRevendas();
