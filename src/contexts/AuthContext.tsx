@@ -84,13 +84,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const role = userProfile?.role || 'client';
         setUserRole(role);
         
-        // Redireciona para a dashboard apropriada se estiver na página de login
+        // Redireciona para a página inicial apropriada se estiver na página de login
         if (window.location.pathname === '/login') {
           if (role === 'admin' || role === 'reseller' || role === 'client') {
             redirectBasedOnRole(role);
           } else {
-            console.warn('[AuthContext] Role inválida, redirecionando para /dashboard/client');
-            safeNavigate('/dashboard/client');
+            console.warn('[AuthContext] Role inválida, redirecionando para /');
+            safeNavigate('/');
           }
         }
       } else {
