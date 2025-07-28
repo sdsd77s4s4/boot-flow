@@ -359,11 +359,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Erro ao atualizar perfil:', error);
       const errorMessage = error.message.includes('unique')
         ? 'Este e-mail já está em uso por outra conta.'
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        setUserRole(null);
-      } finally {
+        : error.message || 'Erro ao atualizar perfil. Tente novamente.';
+      
+      toast.error(errorMessage);
+      return { error };
+    } finally {
         setLoading(false);
       }
     };
