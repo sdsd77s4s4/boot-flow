@@ -359,50 +359,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Erro ao atualizar perfil:', error);
       const errorMessage = error.message.includes('unique')
         ? 'Este e-mail já está em uso por outra conta.'
-        : error.message || 'Erro ao atualizar perfil. Tente novamente.';
-      
-      toast.error(errorMessage);
-      return { error };
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const refreshSession = useCallback(async (): Promise<void> => {
-    try {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error('Erro ao obter sessão:', error);
-        throw error;
-      }
-      
-      if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id);
-        const role = userProfile?.role || 'client';
-        
-        // Atualiza o estado com os dados mais recentes
-        setSession(session);
-        setUser(session.user);
-        setProfile(userProfile);
-        setUserRole(role);
-      } else {
-        // Se não houver sessão, limpa o estado
         setSession(null);
         setUser(null);
         setProfile(null);
         setUserRole(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Erro ao atualizar sessão:', error);
-      // Em caso de erro, limpa o estado para garantir consistência
-      setSession(null);
-      setUser(null);
-      setProfile(null);
-      setUserRole(null);
-      throw error;
-    }
-  }, [fetchUserProfile]);
+    };
+
+    // Verifica a sessão inicial
+    checkSession();
+    
+    // Configura o listener para mudanças de autenticação
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Mudança de estado de autenticação:', event);
+        
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          if (session?.user) {
+            try {
+              const userProfile = await fetchUserProfile(session.user.id);
+              const role = userProfile?.role || 'client';
+              
+              setSession(session);
+              setUser(session.user);
+              setProfile(userProfile);
+              setUserRole(role);
+              
+              // Redireciona apenas se for um novo login
+              if (event === 'SIGNED_IN') {
+                redirectBasedOnRole(role);
+              }
+            } catch (error) {
+              console.error('Erro ao atualizar perfil após mudança de autenticação:', error);
+            }
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          setUserRole(null);
+          navigate('/login');
+        }
+      }
+    );
+    
+    // Limpa o listener quando o componente é desmontado
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [fetchUserProfile, redirectBasedOnRole, navigate]);
 
   const value = {
     user,
