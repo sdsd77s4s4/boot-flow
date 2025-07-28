@@ -253,13 +253,12 @@ const AdminDashboard = () => {
 
   // Atualizar estatísticas quando os dados mudarem
   useEffect(() => {
-    setStats(prev => ({
-      ...prev,
-      totalUsers: clientes.length,
-      activeResellers: revendas.length,
-      activeClients: clientes.length
-    }));
-  }, [clientes, revendas]);
+    // Usando refreshStats para atualizar as estatísticas
+    refreshStats();
+    
+    // Se precisar atualizar estatísticas locais, use o estado existente
+    // ou adicione um estado local se necessário
+  }, [clientes, revendas, refreshStats]);
 
   // Efeito para lidar com erros nas estatísticas
   useEffect(() => {
