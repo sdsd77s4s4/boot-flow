@@ -22,8 +22,6 @@ import { ResellerSidebar } from "@/components/sidebars/ResellerSidebar";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, Users } from "lucide-react";
-import { useState } from "react";
 import { useClientes } from "@/hooks/useClientes";
 
 const ResellerDashboard = () => {
