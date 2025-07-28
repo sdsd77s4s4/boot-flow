@@ -10,8 +10,24 @@ const ResetPassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const params = new URLSearchParams(hash.substring(1)); // Remove o #
+      const token = params.get('access_token');
+      const type = params.get('type');
+
+      if (token && type === 'recovery') {
+        setAccessToken(token);
+      } else {
+        setError('Parâmetros de redefinição inválidos ou não encontrados na URL.');
+        toast.error('O link de redefinição parece estar incorreto. Por favor, tente novamente.');
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +55,7 @@ const ResetPassword: React.FC = () => {
     try {
       setLoading(true);
       
-      // Obtém o token de redefinição da URL
-      const accessToken = searchParams.get('access_token');
-      const type = searchParams.get('type');
-
-      if (type === 'recovery' && accessToken) {
+      if (accessToken) {
         console.log('Token de acesso recebido, tentando redefinir senha...');
         
         // Primeiro, atualiza a sessão com o token de acesso
@@ -79,7 +91,7 @@ const ResetPassword: React.FC = () => {
           navigate('/login');
         }, 3000);
       } else {
-        console.error('Parâmetros inválidos na URL:', { type, hasAccessToken: !!accessToken });
+        console.error('Token de acesso não encontrado ou inválido.');
         throw new Error('Link de redefinição inválido ou expirado.');
       }
     } catch (error: any) {
