@@ -281,10 +281,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       setLoading(true);
       
+      // Validações básicas
+      if (updates.email && !/\S+@\S+\.\S+/.test(updates.email)) {
+        throw new Error('Por favor, insira um endereço de e-mail válido.');
+      }
+      
+      // Prepara os dados para atualização
+      const updateData: Partial<UserProfile> = { ...updates };
+      
+      // Remove campos que não devem ser atualizados diretamente
+      delete updateData.id;
+      delete updateData.created_at;
+      delete updateData.updated_at;
+      
       // Atualiza o perfil no banco de dados
       const { data, error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update(updateData)
         .eq('id', user.id)
         .select()
         .single();
@@ -293,20 +306,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Atualiza o estado local
       if (data) {
-        setProfile(data);
+        const updatedProfile = { ...profile, ...data };
+        setProfile(updatedProfile);
         
         // Se o papel foi atualizado, atualiza o redirecionamento
         if (updates.role) {
           setUserRole(updates.role);
-          redirectBasedOnRole(updates.role);
+          // Não redireciona automaticamente para evitar problemas de UX
+          // O usuário pode querer continuar editando
+          toast.success('Perfil atualizado com sucesso! Atualizando permissões...');
+          // Pequeno atraso para o usuário ver a mensagem
+          setTimeout(() => redirectBasedOnRole(updates.role!), 1000);
+        } else {
+          toast.success('Perfil atualizado com sucesso!');
         }
       }
       
-      toast.success('Perfil atualizado com sucesso!');
       return { error: null };
     } catch (error: any) {
       console.error('Erro ao atualizar perfil:', error);
-      toast.error(error.message || 'Erro ao atualizar perfil. Tente novamente.');
+      const errorMessage = error.message.includes('unique')
+        ? 'Este e-mail já está em uso por outra conta.'
+        : error.message || 'Erro ao atualizar perfil. Tente novamente.';
+      
+      toast.error(errorMessage);
       return { error };
     } finally {
       setLoading(false);
