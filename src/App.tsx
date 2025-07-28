@@ -1,9 +1,12 @@
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// UI Components
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
 
 // Context Providers
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -42,9 +45,15 @@ import { WhatsAppStatusContext } from './pages/AdminWhatsApp';
 const queryClient = new QueryClient();
 
 // Componente para rotas protegidas
-const ProtectedRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole?: 'admin' | 'reseller' | 'client' }) => {
+const ProtectedRoute = ({ 
+  children, 
+  requiredRole 
+}: { 
+  children: JSX.Element, 
+  requiredRole?: 'admin' | 'reseller' | 'client' 
+}) => {
   const { user, loading } = useAuth();
-  const location = window.location;
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -54,13 +63,17 @@ const ProtectedRoute = ({ children, requiredRole }: { children: JSX.Element, req
     );
   }
 
+  // Se não há usuário autenticado, redireciona para login
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   // Verifica se o usuário tem a role necessária
-  // Esta é uma implementação básica - você precisará adaptar conforme sua lógica de roles
-  if (requiredRole && user.user_metadata?.role !== requiredRole) {
+  // Você pode personalizar essa lógica conforme suas necessidades
+  const userRole = user.user_metadata?.role || 'client';
+  const hasRequiredRole = !requiredRole || userRole === requiredRole;
+  
+  if (!hasRequiredRole) {
     return <Navigate to="/unauthorized" replace />;
   }
 
