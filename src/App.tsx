@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WhatsAppButton } from './components/WhatsAppButton';
 
 // UI Components
 import { Toaster } from "@/components/ui/toaster";
@@ -39,6 +40,7 @@ const App = () => {
       <TooltipProvider>
         <WhatsAppStatusContext.Provider value={{ isConnected, setIsConnected, connectionStatus, setConnectionStatus }}>
           <BrowserRouter>
+            <WhatsAppButton />
             <Routes>
               {/* Rotas públicas */}
               <Route path="/" element={<Index />} />
