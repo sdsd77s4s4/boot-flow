@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: mode !== 'production', // Desativa sourcemaps em produção
-      chunkSizeWarningLimit: 1000,
+      chunkSizeWarningLimit: 1600, // Aumenta o limite de aviso para 1600 kB
       rollupOptions: {
         output: {
           manualChunks: {
@@ -34,8 +34,6 @@ export default defineConfig(({ mode }) => {
       },
       // Adiciona um hash ao nome dos arquivos para evitar cache
       manifest: true,
-      // Melhora a divisão de código
-      chunkSizeWarningLimit: 1600,
       // Otimizações para produção
       minify: 'terser',
       terserOptions: {
