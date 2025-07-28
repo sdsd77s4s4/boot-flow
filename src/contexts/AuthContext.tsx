@@ -141,6 +141,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
+      
+      // Limpa qualquer estado de erro anterior
+      setError(null);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -151,21 +155,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Busca o perfil do usuário
       const userProfile = await fetchUserProfile(data.session.user.id);
+      const role = userProfile?.role || 'client';
       
+      // Atualiza o estado com os dados do usuário e perfil
       setSession(data.session);
       setUser(data.session.user);
       setProfile(userProfile);
-      setUserRole(userProfile?.role || null);
+      setUserRole(role);
+      
+      // Exibe mensagem de sucesso
+      toast.success('Login realizado com sucesso! Redirecionando...');
       
       // Redireciona com base no papel do usuário
-      redirectBasedOnRole(userProfile?.role || 'client');
+      redirectBasedOnRole(role);
       
-      toast.success('Login realizado com sucesso!');
       return { error: null };
     } catch (error: any) {
       console.error('Erro no login:', error);
-      toast.error(error.message || 'Erro ao fazer login. Verifique suas credenciais.');
-      return { error };
+      const errorMessage = error.message || 'Erro ao fazer login. Verifique suas credenciais.';
+      toast.error(errorMessage);
+      return { error: new Error(errorMessage) };
     } finally {
       setLoading(false);
     }
