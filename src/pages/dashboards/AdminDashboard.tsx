@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useClientes } from '@/hooks/useClientes';
 import { useRevendas } from '@/hooks/useRevendas';
+import { useRealtimeClientes, useRealtimeRevendas } from '@/hooks/useRealtime';
+import { toast } from 'sonner';
 import { 
   Brain, 
   Users, 
@@ -125,9 +127,79 @@ const AdminDashboard = () => {
   const [extractionError, setExtractionError] = useState("");
   const [isAddingUser, setIsAddingUser] = useState(false);
 
-  // Hooks para dados de usuários e revendedores
-  const { clientes, loading: loadingClientes, fetchClientes, addCliente } = useClientes();
-  const { revendas, loading: loadingRevendas, fetchRevendas, addRevenda } = useRevendas();
+  // Hooks para dados de usuários e revendedores com atualização em tempo real
+  const { data: realtimeClientes, error: clientesError, isConnected: clientesConnected } = useRealtimeClientes();
+  const { data: realtimeRevendas, error: revendasError, isConnected: revendasConnected } = useRealtimeRevendas();
+  
+  // Estados locais para os dados
+  const [clientes, setClientes] = useState<any[]>([]);
+  const [revendas, setRevendas] = useState<any[]>([]);
+  const [loadingClientes, setLoadingClientes] = useState(true);
+  const [loadingRevendas, setLoadingRevendas] = useState(true);
+  
+  // Atualiza os estados locais quando os dados em tempo real mudam
+  useEffect(() => {
+    if (realtimeClientes) {
+      setClientes(realtimeClientes);
+      setLoadingClientes(false);
+    }
+    
+    if (realtimeRevendas) {
+      setRevendas(realtimeRevendas);
+      setLoadingRevendas(false);
+    }
+  }, [realtimeClientes, realtimeRevendas]);
+  
+  // Exibe notificações de erro
+  useEffect(() => {
+    if (clientesError) {
+      console.error('Erro na conexão em tempo real de clientes:', clientesError);
+      toast.error('Erro ao conectar com atualizações em tempo real de clientes');
+    }
+    
+    if (revendasError) {
+      console.error('Erro na conexão em tempo real de revendas:', revendasError);
+      toast.error('Erro ao conectar com atualizações em tempo real de revendas');
+    }
+  }, [clientesError, revendasError]);
+  
+  // Função para adicionar um novo cliente
+  const addCliente = useCallback(async (clienteData: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('clientes')
+        .insert([clienteData])
+        .select();
+        
+      if (error) throw error;
+      
+      toast.success('Cliente adicionado com sucesso!');
+      return { data, error: null };
+    } catch (error) {
+      console.error('Erro ao adicionar cliente:', error);
+      toast.error('Erro ao adicionar cliente');
+      return { data: null, error };
+    }
+  }, []);
+  
+  // Função para adicionar um novo revendedor
+  const addRevenda = useCallback(async (revendaData: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('revendas')
+        .insert([revendaData])
+        .select();
+        
+      if (error) throw error;
+      
+      toast.success('Revendedor adicionado com sucesso!');
+      return { data, error: null };
+    } catch (error) {
+      console.error('Erro ao adicionar revendedor:', error);
+      toast.error('Erro ao adicionar revendedor');
+      return { data: null, error };
+    }
+  }, []);
 
   // Dados de atividade e usuários online
   const recentActivityUnified = [
