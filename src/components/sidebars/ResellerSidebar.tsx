@@ -37,19 +37,19 @@ import { AvatarSelectionModal } from "@/components/modals/AvatarSelectionModal";
 import { useState } from 'react';
 
 const menuItems = [
-  { title: "Dashboard", url: "/dashboard/reseller", icon: Home },
-  { title: "Clientes", url: "/dashboard/reseller/clients", icon: Users },
-  { title: "Revendas", url: "/dashboard/reseller/resellers", icon: Users },
-  { title: "Cobranças", url: "/dashboard/reseller/billing", icon: BarChart3 },
-  { title: "Notificações", url: "/dashboard/reseller/notifications", icon: MessageSquare },
-  { title: "WhatsApp", url: "/dashboard/reseller/whatsapp", icon: MessageSquare },
-  { title: "Gateways", url: "/dashboard/reseller/gateways", icon: BarChart3 },
-  { title: "Customizar Marca", url: "/dashboard/reseller/branding", icon: BarChart3 },
-  { title: "E-commerce", url: "/dashboard/reseller/shop", icon: ShoppingCart },
-  { title: "IA + Voz", url: "/dashboard/reseller/ai", icon: BarChart3 },
-  { title: "Gamificação", url: "/dashboard/reseller/games", icon: BarChart3 },
-  { title: "Análises", url: "/dashboard/reseller/reports", icon: BarChart3 },
-  { title: "Configurações", url: "/dashboard/reseller/settings", icon: Settings },
+  { title: "Dashboard", url: "/reseller", icon: Home },
+  { title: "Clientes", url: "/reseller/clients", icon: Users },
+  { title: "Revendas", url: "/reseller/resellers", icon: Users },
+  { title: "Cobranças", url: "/reseller/billing", icon: BarChart3 },
+  { title: "Notificações", url: "/reseller/notifications", icon: MessageSquare },
+  { title: "WhatsApp", url: "/reseller/whatsapp", icon: MessageSquare },
+  { title: "Gateways", url: "/reseller/gateways", icon: BarChart3 },
+  { title: "Customizar Marca", url: "/reseller/branding", icon: BarChart3 },
+  { title: "E-commerce", url: "/reseller/shop", icon: ShoppingCart },
+  { title: "IA + Voz", url: "/reseller/ai", icon: BarChart3 },
+  { title: "Gamificação", url: "/reseller/games", icon: BarChart3 },
+  { title: "Análises", url: "/reseller/reports", icon: BarChart3 },
+  { title: "Configurações", url: "/reseller/settings", icon: Settings },
 ];
 
 export function ResellerSidebar() {
