@@ -66,6 +66,7 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [viewMode, setViewMode] = useState<'grid' | 'kanban'>('grid');
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalRevenue: 487230,
