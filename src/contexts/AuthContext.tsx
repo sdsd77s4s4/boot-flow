@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
-import { User, Session, AuthError } from '@supabase/supabase-js';
+import { User, Session, AuthError, UserResponse } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase, UserProfile } from '@/lib/supabase';
@@ -107,6 +107,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) throw error;
+      if (!data.session) throw new Error('Erro ao fazer login: Sessão não encontrada');
+
+      // Busca o perfil do usuário
+      const userProfile = await fetchUserProfile(data.session.user.id);
+      
+      setSession(data.session);
+      setUser(data.session.user);
+      setProfile(userProfile);
+      setUserRole(userProfile?.role || null);
+      
+      // Redireciona com base no papel do usuário
+      redirectBasedOnRole(userProfile?.role || 'client');
       
       toast.success('Login realizado com sucesso!');
       return { error: null };
@@ -169,6 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       setSession(null);
       setProfile(null);
+      setUserRole(null);
       
       toast.success('Você saiu da sua conta com sucesso!');
       navigate('/login');
@@ -204,16 +217,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
       
-      const { error } = await supabase
+      setLoading(true);
+      
+      // Atualiza o perfil no banco de dados
+      const { data, error } = await supabase
         .from('profiles')
         .update(updates)
-        .eq('id', user.id);
+        .eq('id', user.id)
+        .select()
+        .single();
         
       if (error) throw error;
       
-      // Atualiza o perfil local
-      if (profile) {
-        setProfile({ ...profile, ...updates });
+      // Atualiza o estado local
+      if (data) {
+        setProfile(data);
+        
+        // Se o papel foi atualizado, atualiza o redirecionamento
+        if (updates.role) {
+          setUserRole(updates.role);
+          redirectBasedOnRole(updates.role);
+        }
       }
       
       toast.success('Perfil atualizado com sucesso!');
@@ -222,6 +246,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Erro ao atualizar perfil:', error);
       toast.error(error.message || 'Erro ao atualizar perfil. Tente novamente.');
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
   
