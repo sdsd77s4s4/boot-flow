@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/', // Garante que a rota base seja a raiz
   plugins: [react()],
   resolve: {
     alias: {
@@ -31,5 +32,6 @@ export default defineConfig(({ mode }) => ({
   preview: {
     port: 3000,
     host: true,
+    strictPort: true, // Garante que a porta não seja alterada automaticamente
   },
 }))
