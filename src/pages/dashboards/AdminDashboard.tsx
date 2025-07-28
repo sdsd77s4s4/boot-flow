@@ -464,49 +464,31 @@ const AdminDashboard = () => {
   };
 
   const handleAddUser = async () => {
-    if (newUser.name && newUser.email) {
-      setIsAddingUser(true);
+    if (!newUser.name || !newUser.email || !newUser.plan || !newUser.status || !newUser.expirationDate) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
 
-      try {
-        // Preparar dados do usuário para o Neon
-        const userData = {
-          name: newUser.realName || newUser.name,
-          email: newUser.email,
-          password: newUser.password || "",
-          m3u_url: newUser.plan || "",
-          bouquets: newUser.bouquets || "",
-          expiration_date: newUser.expirationDate || null,
-          observations: newUser.observations || "",
-        };
+    setIsAddingUser(true);
+    try {
+      const success = await addCliente({
+        name: newUser.name,
+        email: newUser.email,
+        plan: newUser.plan,
+        status: newUser.status,
+        telegram: newUser.telegram,
+        observations: newUser.observations,
+        expirationDate: newUser.expirationDate,
+        password: newUser.password,
+        bouquets: newUser.bouquets,
+        realName: newUser.realName,
+        whatsapp: newUser.whatsapp,
+        devices: newUser.devices,
+        credits: newUser.credits,
+        notes: newUser.notes,
+      });
 
-        console.log("Dados preparados para adicionar:", userData);
-
-        // Adicionar usuário usando o hook do Neon
-        await addCliente(userData);
-
-        // Atualizar Dashboard instantaneamente
-        console.log(
-          "📤 Clientes: Disparando evento refresh-dashboard após criar usuário"
-        );
-        try {
-          window.dispatchEvent(
-            new CustomEvent("refresh-dashboard", {
-              detail: { source: "users", action: "create" },
-            })
-          );
-          console.log("✅ Evento disparado com sucesso");
-        } catch (error) {
-          console.error("❌ Erro ao disparar evento:", error);
-        }
-
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem("dashboard-refresh", Date.now().toString());
-          console.log("✅ Flag localStorage definida");
-        } catch (error) {
-          console.error("❌ Erro ao definir flag localStorage:", error);
-        }
-
+      if (success) {
         // Limpar formulário
         setNewUser({
           name: "",
@@ -524,30 +506,84 @@ const AdminDashboard = () => {
           credits: 0,
           notes: "",
         });
-
-        // Limpar dados de extração
-        setM3uUrl("");
-        setExtractionResult(null);
-        setExtractionError("");
-
-        // Fechar modal após 1 segundo
-        setTimeout(() => {
-          setClientModal(false);
-        }, 1000);
-      } catch (error) {
-        console.error("Erro ao adicionar usuário:", error);
-        if (
-          error &&
-          error.message &&
-          error.message.includes("duplicate key value")
-        ) {
-          alert("Já existe um usuário com este e-mail!");
-        } else {
-          alert("Erro ao adicionar usuário. Tente novamente.");
-        }
-      } finally {
-        setIsAddingUser(false);
+        
+        // Fechar modal
+        setClientModal(false);
+        
+        // Atualizar dados
+        refreshUsers();
+        
+        // Atualizar dashboard
+        setRefreshTrigger(prev => prev + 1);
       }
+    } catch (error) {
+      console.error("Erro ao adicionar cliente:", error);
+      alert("Erro ao adicionar cliente. Tente novamente.");
+    } finally {
+      setIsAddingUser(false);
+    }
+  };
+
+  const handleAddReseller = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newReseller.username || !newReseller.password || !newReseller.permission) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    setIsAddingReseller(true);
+    try {
+      const success = await addRevenda({
+        username: newReseller.username,
+        password: newReseller.password,
+        force_password_change: newReseller.force_password_change?.toString(),
+        permission: newReseller.permission as 'admin' | 'reseller' | 'subreseller',
+        credits: newReseller.credits,
+        servers: newReseller.servers || undefined,
+        master_reseller: newReseller.master_reseller || undefined,
+        disable_login_days: newReseller.disable_login_days,
+        monthly_reseller: newReseller.monthly_reseller,
+        personal_name: newReseller.personal_name || undefined,
+        email: newReseller.email || undefined,
+        telegram: newReseller.telegram || undefined,
+        whatsapp: newReseller.whatsapp || undefined,
+        observations: newReseller.observations || undefined
+      });
+
+      if (success) {
+        // Limpar formulário
+        setNewReseller({
+          username: "",
+          password: "",
+          force_password_change: false,
+          permission: "",
+          credits: 10,
+          servers: "",
+          master_reseller: "",
+          disable_login_days: 0,
+          monthly_reseller: false,
+          personal_name: "",
+          email: "",
+          telegram: "",
+          whatsapp: "",
+          observations: ""
+        });
+        
+        // Fechar modal
+        setResellerModal(false);
+        
+        // Atualizar dados
+        refreshResellers();
+        
+        // Atualizar dashboard
+        setRefreshTrigger(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar revendedor:", error);
+      alert("Erro ao adicionar revendedor. Tente novamente.");
+    } finally {
+      setIsAddingReseller(false);
     }
   };
 
