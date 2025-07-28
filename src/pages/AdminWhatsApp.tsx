@@ -109,39 +109,95 @@ const AdminWhatsApp: React.FC = () => {
 
   // Função para enviar mensagem via API Brasil
   const sendWhatsAppMessage = async (phoneNumber: string, message: string) => {
-    if (!apiBrasilConfig.bearerToken || !apiBrasilConfig.profileId) {
-      toast.error('Configuração da API Brasil incompleta');
-      return { success: false, error: 'Configuração incompleta' };
+    // Validação dos campos obrigatórios
+    if (!apiBrasilConfig.bearerToken?.trim()) {
+      toast.error('Token de acesso da API Brasil não configurado');
+      return { success: false, error: 'Token de acesso não configurado' };
     }
 
-    setApiBrasilConfig(prev => ({ ...prev, isLoading: true }));
+    if (!apiBrasilConfig.profileId?.trim()) {
+      toast.error('Profile ID da API Brasil não configurado');
+      return { success: false, error: 'Profile ID não configurado' };
+    }
+
+    // Validação do número de telefone
+    const cleanedPhone = phoneNumber.replace(/\D/g, '');
+    if (!cleanedPhone || cleanedPhone.length < 10) {
+      toast.error('Número de telefone inválido');
+      return { success: false, error: 'Número de telefone inválido' };
+    }
+
+    // Validação da mensagem
+    if (!message?.trim()) {
+      toast.error('A mensagem não pode estar vazia');
+      return { success: false, error: 'Mensagem vazia' };
+    }
+
+    setApiBrasilConfig(prev => ({ ...prev, isLoading: true, error: '' }));
     
     try {
+      const payload = {
+        profileId: apiBrasilConfig.profileId.trim(),
+        phoneNumber: cleanedPhone,
+        message: message.trim()
+      };
+
+      console.log('Enviando mensagem via API Brasil:', { 
+        endpoint: 'https://gateway.apibrasil.io/api/v2/whatsapp/send-message',
+        payload
+      });
+
       const response = await fetch('https://gateway.apibrasil.io/api/v2/whatsapp/send-message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiBrasilConfig.bearerToken}`,
+          'Authorization': `Bearer ${apiBrasilConfig.bearerToken.trim()}`,
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          profileId: apiBrasilConfig.profileId,
-          phoneNumber: phoneNumber,
-          message: message
-        })
+        body: JSON.stringify(payload)
       });
 
-      const data = await response.json();
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (jsonError) {
+        console.error('Erro ao processar resposta JSON:', jsonError);
+        throw new Error('Resposta inválida do servidor');
+      }
+
+      console.log('Resposta da API Brasil:', responseData);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Erro ao enviar mensagem');
+        const errorMessage = responseData?.message || 
+                           responseData?.error?.message || 
+                           `Erro HTTP ${response.status}`;
+        console.error('Erro na resposta da API:', { status: response.status, errorMessage });
+        throw new Error(errorMessage);
       }
 
       toast.success('Mensagem enviada com sucesso!');
-      return { success: true, data };
+      return { 
+        success: true, 
+        data: responseData,
+        message: 'Mensagem enviada com sucesso'
+      };
     } catch (error: any) {
-      console.error('Erro ao enviar mensagem:', error);
-      toast.error(`Erro ao enviar mensagem: ${error.message}`);
-      return { success: false, error: error.message };
+      console.error('Erro ao enviar mensagem via API Brasil:', error);
+      const errorMessage = error.message || 'Erro ao enviar mensagem';
+      toast.error(`Erro: ${errorMessage}`);
+      
+      // Atualiza o estado com a mensagem de erro
+      setApiBrasilConfig(prev => ({
+        ...prev,
+        error: errorMessage,
+        isLoading: false
+      }));
+      
+      return { 
+        success: false, 
+        error: errorMessage,
+        message: errorMessage
+      };
     } finally {
       setApiBrasilConfig(prev => ({ ...prev, isLoading: false }));
     }
