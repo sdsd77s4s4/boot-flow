@@ -9,7 +9,6 @@ type Json =
 
 type StringKeyOf<T> = Extract<keyof T, string>;
 type Values<T> = T[keyof T];
-type Columns<T extends { Row: Record<string, unknown> }> = StringKeyOf<T['Row']>;
 
 type Tables = {
   profiles: {
@@ -186,11 +185,42 @@ type TableUpdate<T extends TablesKey> = Tables[T]['Update'];
 
 export type { Tables, TablesKey, TableKey, TableRow, TableInsert, TableUpdate };
 
+// Tipos de utilitários para mapear as tabelas
+type MapRow<T> = T extends { Row: infer R } ? R : never;
+type MapInsert<T> = T extends { Insert: infer I } ? I : never;
+type MapUpdate<T> = T extends { Update: infer U } ? U : never;
+
+type DatabaseTables = {
+  [K in keyof Tables]: {
+    Row: MapRow<Tables[K]>;
+    Insert: MapInsert<Tables[K]>;
+    Update: MapUpdate<Tables[K]>;
+  };
+};
+
 export interface Database {
   public: {
-    Tables: Tables;
-    Views: Record<string, unknown>;
-    Functions: Record<string, unknown>;
-    Enums: Record<string, unknown>;
+    Tables: DatabaseTables;
+    Views: {
+      [key: string]: {
+        Row: Record<string, unknown>;
+      };
+    };
+    Functions: {
+      [key: string]: {
+        Args: Record<string, unknown>;
+        Returns: unknown;
+      };
+    };
+    Enums: {
+      [key: string]: string[];
+    };
   };
 }
+
+// Tipos auxiliares para consultas
+export type TablesKey = keyof Database['public']['Tables'];
+export type TableKey<T extends TablesKey> = T;
+export type TableRow<T extends TablesKey> = Database['public']['Tables'][T]['Row'];
+export type TableInsert<T extends TablesKey> = Database['public']['Tables'][T]['Insert'];
+export type TableUpdate<T extends TablesKey> = Database['public']['Tables'][T]['Update'];
