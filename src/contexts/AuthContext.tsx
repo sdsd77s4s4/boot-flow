@@ -33,11 +33,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<'admin' | 'reseller' | 'client' | null>(null);
+  const isAuthenticated = !!user;
   const navigate = useNavigate();
 
   // Função para buscar o perfil do usuário
-  const fetchUserProfile = useCallback(async (userId: string) => {
+  const fetchUserProfile = useCallback(async (userId: string): Promise<UserProfile | null> => {
     try {
       const { data, error } = await supabase
         .from('profiles')
