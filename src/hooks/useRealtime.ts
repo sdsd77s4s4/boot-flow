@@ -126,3 +126,19 @@ export function useRealtimeCobrancas() {
     event: '*',
   });
 }
+
+// Hook específico para a tabela de clientes
+export function useRealtimeClientes() {
+  return useRealtime<Database['public']['Tables']['clientes']['Row']>({
+    table: 'clientes',
+    event: '*',
+  });
+}
+
+// Hook específico para a tabela de revendas
+export function useRealtimeRevendas() {
+  return useRealtime<Database['public']['Tables']['revendas']['Row']>({
+    table: 'revendas',
+    event: '*',
+  });
+}
