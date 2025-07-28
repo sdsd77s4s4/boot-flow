@@ -16,6 +16,7 @@ import { UserProvider } from "./contexts/UserContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Cadastro from "./pages/Cadastro";
 
 // Dashboards
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
@@ -105,6 +106,7 @@ const App = () => {
                 {/* Rotas Públicas */}
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
+<Route path="/cadastro" element={<Cadastro />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 
