@@ -117,7 +117,7 @@ const generateCobrancasFromRevendas = (revendas: Revenda[]): Cobranca[] => {
 export default function AdminCobrancas() {
   const { clientes } = useClientes();
   const { revendas } = useRevendas();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('cobrancas');
   
   // Estado para cobranças virtuais (baseadas em clientes e revendas)
   const [cobrancasVirtuais, setCobrancasVirtuais] = useState<Cobranca[]>([]);
@@ -530,13 +530,13 @@ export default function AdminCobrancas() {
       {/* Sistema de Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList className="grid w-full grid-cols-4 bg-[#1f2937]">
-          <TabsTrigger value="dashboard" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
-            <BarChart3 className="w-4 h-4 mr-2" />
-            Dashboard
-          </TabsTrigger>
           <TabsTrigger value="cobrancas" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
             <Receipt className="w-4 h-4 mr-2" />
             Cobranças
+          </TabsTrigger>
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            Dashboard
           </TabsTrigger>
           <TabsTrigger value="gateways" className="data-[state=active]:bg-purple-700 data-[state=active]:text-white">
             <CreditCard className="w-4 h-4 mr-2" />
@@ -549,7 +549,7 @@ export default function AdminCobrancas() {
         </TabsList>
 
         {/* Conteúdo das Tabs */}
-        <TabsContent value="dashboard" className="space-y-6">
+        <TabsContent value="cobrancas" className="space-y-6">
         {/* Alertas */}
         <div className="mb-4">
           {cobrancasVencidas > 0 && (
