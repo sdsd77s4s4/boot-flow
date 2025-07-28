@@ -34,9 +34,7 @@ const Index = () => {
     message: ""
   });
 
-  const handleLogin = (userType: 'admin' | 'reseller' | 'client') => {
-    navigate(`/dashboard/${userType}`);
-  };
+  // Função de login removida - Agora o acesso é direto
 
   const features = [
     {
