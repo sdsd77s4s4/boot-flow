@@ -193,54 +193,72 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  // Dados de atividade e usuários online
-  const recentActivityUnified = [
-    {
-      id: 1,
-      type: 'user',
-      user: 'João Silva',
-      time: '2 minutos atrás',
-      status: 'Online'
-    },
-    {
-      id: 2,
-      type: 'reseller',
-      user: 'Maria Santos',
-      time: '5 minutos atrás',
-      status: 'Away'
-    },
-    {
-      id: 3,
-      type: 'user',
-      user: 'Pedro Costa',
-      time: '10 minutos atrás',
-      status: 'Offline'
-    }
-  ];
+  // Função para formatar a data relativa
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Agora';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min atrás`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} horas atrás`;
+    return `${Math.floor(diffInSeconds / 86400)} dias atrás`;
+  };
 
-  const onlineUsersUnified = [
-    {
-      id: 1,
-      name: 'João Silva',
-      type: 'Cliente',
-      status: 'Online',
-      lastSeen: 'Agora'
-    },
-    {
-      id: 2,
-      name: 'Maria Santos',
-      type: 'Revendedor',
-      status: 'Away',
-      lastSeen: '2 min atrás'
-    },
-    {
-      id: 3,
-      name: 'Pedro Costa',
-      type: 'Cliente',
-      status: 'Offline',
-      lastSeen: '10 min atrás'
-    }
-  ];
+  // Mapear clientes e revendedores para atividade recente
+  const recentActivityUnified = useMemo(() => {
+    const clientesAtividades = clientes.slice(0, 5).map((cliente, index) => ({
+      id: `c-${cliente.id}`,
+      type: 'user',
+      user: cliente.name || cliente.email,
+      time: cliente.updated_at ? formatTimeAgo(cliente.updated_at) : 'Há muito tempo',
+      status: cliente.status === 'Ativo' ? 'Online' : 'Offline'
+    }));
+
+    const revendasAtividades = revendas.slice(0, 5).map((revenda, index) => ({
+      id: `r-${revenda.id}`,
+      type: 'reseller',
+      user: revenda.username || revenda.email,
+      time: revenda.updated_at ? formatTimeAgo(revenda.updated_at) : 'Há muito tempo',
+      status: revenda.status === 'Ativo' ? 'Online' : 'Offline'
+    }));
+
+    // Combinar e ordenar por data mais recente
+    return [...clientesAtividades, ...revendasAtividades]
+      .sort((a, b) => {
+        const timeA = a.time.includes('Agora') ? 0 : parseInt(a.time);
+        const timeB = b.time.includes('Agora') ? 0 : parseInt(b.time);
+        return timeA - timeB;
+      })
+      .slice(0, 5); // Limitar a 5 itens
+  }, [clientes, revendas]);
+
+  // Mapear clientes e revendedores para usuários online
+  const onlineUsersUnified = useMemo(() => {
+    const clientesOnline = clientes
+      .filter(cliente => cliente.status === 'Ativo')
+      .slice(0, 10)
+      .map(cliente => ({
+        id: `c-${cliente.id}`,
+        name: cliente.name || cliente.email,
+        type: 'Cliente',
+        status: 'Online',
+        lastSeen: cliente.updated_at ? formatTimeAgo(cliente.updated_at) : 'Agora'
+      }));
+
+    const revendasOnline = revendas
+      .filter(revenda => revenda.status === 'Ativo')
+      .slice(0, 10)
+      .map(revenda => ({
+        id: `r-${revenda.id}`,
+        name: revenda.username || revenda.email,
+        type: 'Revendedor',
+        status: 'Online',
+        lastSeen: revenda.updated_at ? formatTimeAgo(revenda.updated_at) : 'Agora'
+      }));
+
+    return [...clientesOnline, ...revendasOnline].slice(0, 10); // Limitar a 10 itens
+  }, [clientes, revendas]);
 
   // Função para atualizar clientes
   const refreshUsers = () => {
