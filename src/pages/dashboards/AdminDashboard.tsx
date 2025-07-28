@@ -1690,14 +1690,7 @@ const AdminDashboard = () => {
                           <span className="sm:hidden">Cliente</span>
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-lg w-full bg-background border border-gray-800 shadow-2xl p-0 rounded-lg overflow-hidden">
-                        <AddClienteForm
-                          addCliente={addCliente}
-                          extractM3UData={async () => {}} // implementar se necessário
-                          onSuccess={() => { setClientModal(false); fetchClientes(); }}
-                          onCancel={() => setClientModal(false)}
-                        />
-                      </DialogContent>
+
                     </Dialog>
                     
                     <Dialog open={resellerModal} onOpenChange={setResellerModal}>
