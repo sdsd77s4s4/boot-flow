@@ -1,1 +1,4 @@
-/*    /index.html   200 
+# Redireciona todas as rotas para index.html para suportar SPA
+/*    /index.html   200
+# Redireciona erros 404 para index.html
+/* /index.html 404=200
