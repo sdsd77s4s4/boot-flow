@@ -108,6 +108,55 @@ const AdminDashboard = () => {
   const { clientes, loading: loadingClientes, fetchClientes, addCliente } = useClientes();
   const { revendas, loading: loadingRevendas, fetchRevendas } = useRevendas();
 
+  // Dados de atividade e usuários online
+  const recentActivityUnified = [
+    {
+      id: 1,
+      type: 'user',
+      user: 'João Silva',
+      time: '2 minutos atrás',
+      status: 'Online'
+    },
+    {
+      id: 2,
+      type: 'reseller',
+      user: 'Maria Santos',
+      time: '5 minutos atrás',
+      status: 'Away'
+    },
+    {
+      id: 3,
+      type: 'user',
+      user: 'Pedro Costa',
+      time: '10 minutos atrás',
+      status: 'Offline'
+    }
+  ];
+
+  const onlineUsersUnified = [
+    {
+      id: 1,
+      name: 'João Silva',
+      type: 'Cliente',
+      status: 'Online',
+      lastSeen: 'Agora'
+    },
+    {
+      id: 2,
+      name: 'Maria Santos',
+      type: 'Revendedor',
+      status: 'Away',
+      lastSeen: '2 min atrás'
+    },
+    {
+      id: 3,
+      name: 'Pedro Costa',
+      type: 'Cliente',
+      status: 'Offline',
+      lastSeen: '10 min atrás'
+    }
+  ];
+
   // Função para atualizar clientes
   const refreshUsers = () => {
     if (fetchClientes) fetchClientes();
