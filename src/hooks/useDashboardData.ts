@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useRealtimeClientes, useRealtimeRevendas } from './useRealtime';
-import { Cliente } from './useClientes';
-import { Revenda } from './useRevendas';
+import { useRealtime } from './useRealtime';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/types/supabase.types';
 
-type ClienteRow = Database['public']['Tables']['clientes']['Row'];
-type RevendaRow = Database['public']['Tables']['revendas']['Row'];
+type UserRow = Database['public']['Tables']['users']['Row'];
+type ResellerRow = Database['public']['Tables']['resellers']['Row'];
 
 export interface DashboardStats {
   totalUsers: number;
@@ -21,8 +19,8 @@ export interface DashboardStats {
 
 function useDashboardData() {
   // Estados para os dados em tempo real
-  const { data: clientes = [], error: clientesError } = useRealtimeClientes();
-  const { data: revendas = [], error: revendasError } = useRealtimeRevendas();
+  const { data: clientes = [], error: clientesError } = useRealtime<UserRow>({ table: 'users' });
+  const { data: revendas = [], error: revendasError } = useRealtime<ResellerRow>({ table: 'resellers' });
   const [loading, setLoading] = useState(true);
   
   // Estado para as estatísticas do dashboard
@@ -46,13 +44,13 @@ function useDashboardData() {
       
       // Contagem de clientes ativos
       const activeClients = clientes.filter(cliente => {
-        const status = (cliente as ClienteRow).status?.toLowerCase();
+        const status = (cliente as UserRow).status?.toLowerCase();
         return status === 'ativo' || status === 'active';
       }).length;
 
       // Contagem de revendedores ativos
       const activeResellers = revendas.filter(revenda => {
-        const status = (revenda as RevendaRow).status?.toLowerCase();
+        const status = (revenda as ResellerRow).status?.toLowerCase();
         return status === 'ativo' || status === 'active';
       }).length;
 
@@ -92,9 +90,9 @@ function useDashboardData() {
 
       // Contar usuários de IPTV e Rádio baseado no plano
       const iptvUsers = clientes.filter(cliente => {
-        const planoId = (cliente as ClienteRow).plano_id;
-        // Implemente a lógica para verificar se o plano é de IPTV
-        return planoId?.toString().toLowerCase().includes('iptv');
+        const plan = (cliente as UserRow).plan?.toLowerCase();
+        // Verifica se o plano contém 'iptv' ou se o cliente tem URL M3U
+        return plan?.includes('iptv') || (cliente as UserRow).m3u_url;
       }).length;
       
       const radioListeners = clientes.filter(cliente => {
