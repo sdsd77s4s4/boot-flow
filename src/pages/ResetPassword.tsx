@@ -41,25 +41,34 @@ const ResetPassword: React.FC = () => {
       
       // Obtém o token de redefinição da URL
       const accessToken = searchParams.get('access_token');
-      const refreshToken = searchParams.get('refresh_token');
       const type = searchParams.get('type');
 
-      if (type === 'recovery' && accessToken && refreshToken) {
-        // Atualiza a sessão com os tokens
-        const { error: sessionError } = await supabase.auth.setSession({
+      if (type === 'recovery' && accessToken) {
+        console.log('Token de acesso recebido, tentando redefinir senha...');
+        
+        // Primeiro, atualiza a sessão com o token de acesso
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
           access_token: accessToken,
-          refresh_token: refreshToken,
+          refresh_token: accessToken, // Usando o mesmo token como refresh_token temporário
         });
 
-        if (sessionError) throw sessionError;
+        if (sessionError) {
+          console.error('Erro ao configurar sessão:', sessionError);
+          throw sessionError;
+        }
 
-        // Atualiza a senha
-        const { error: updateError } = await supabase.auth.updateUser({
+        // Agora atualiza a senha do usuário autenticado
+        const { data: userData, error: updateError } = await supabase.auth.updateUser({
           password: password,
         });
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          console.error('Erro ao atualizar senha:', updateError);
+          throw updateError;
+        }
 
+        console.log('Senha redefinida com sucesso para o usuário:', userData?.user?.email);
+        
         // Desloga o usuário após a redefinição de senha
         await supabase.auth.signOut();
         setSuccess(true);
@@ -70,6 +79,7 @@ const ResetPassword: React.FC = () => {
           navigate('/login');
         }, 3000);
       } else {
+        console.error('Parâmetros inválidos na URL:', { type, hasAccessToken: !!accessToken });
         throw new Error('Link de redefinição inválido ou expirado.');
       }
     } catch (error: any) {
