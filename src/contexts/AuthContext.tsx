@@ -217,38 +217,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signOut = async () => {
+  const resetPassword = async (email: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signOut();
+      
+      // Validação básica do e-mail
+      if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        throw new Error('Por favor, insira um endereço de e-mail válido.');
+      }
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
       if (error) throw error;
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-      toast.error('Erro ao sair da conta. Tente novamente.');
-      throw error;
+      
+      toast.success('E-mail de redefinição de senha enviado com sucesso! Verifique sua caixa de entrada.');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Erro ao enviar e-mail de redefinição de senha:', error);
+      const errorMessage = error.message.includes('email') 
+        ? 'Este endereço de e-mail não está cadastrado.' 
+        : 'Erro ao enviar e-mail de redefinição de senha. Tente novamente.';
+      
+      toast.error(errorMessage);
+      return { error };
     } finally {
-      // Limpa o estado independentemente do resultado do logout
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-      setUserRole(null);
-      
-      // Redireciona para a página de login
-      navigate('/login');
-      
-      // Exibe mensagem de sucesso após o redirecionamento
-      setTimeout(() => {
-        toast.success('Você saiu da sua conta com sucesso!');
-      }, 100);
-      
       setLoading(false);
     }
-    
-    setLoading(false);
-  });
-  
-  return () => {
-    subscription.unsubscribe();
+  };
+
   const updateProfile = async (updates: Partial<UserProfile>) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
