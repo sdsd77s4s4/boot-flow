@@ -11,57 +11,116 @@ import { useRevendas } from '@/hooks/useRevendas';
 import { toast } from 'sonner';
 import { useWhatsAppStatus } from './AdminWhatsApp';
 
+type TemplateStatus = 'Ativo' | 'Inativo';
+
 type Template = {
   id: number;
   nome: string;
   texto: string;
   variaveis: string[];
-  status: string;
+  status: TemplateStatus;
   envios: number;
   taxa: number;
 };
+
+type HistoricoStatus = 'Entregue' | 'Lido' | 'Falha';
 
 type HistoricoItem = {
   id: number;
   nome: string;
   template: string;
-  status: 'Entregue' | 'Lido' | 'Falha';
+  status: HistoricoStatus;
   data: string;
 };
 
-const templatesMock = [
-  { id: 1, nome: 'Confirmação de Agendamento', texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', variaveis: ['nome', 'servico', 'data', 'hora'], status: 'Ativo', envios: 1247, taxa: 98.5 },
-  { id: 2, nome: 'Lembrete de Agendamento', texto: 'Oi {nome}! Lembrete: você tem um agendamento amanhã às {hora} para {servico}. Confirme sua presença!', variaveis: ['nome', 'servico', 'hora'], status: 'Ativo', envios: 892, taxa: 97.2 },
-  { id: 3, nome: 'Cobrança Pendente', texto: 'Olá {nome}, você tem uma cobrança pendente de {valor} para {servico}. Pague via PIX: {pix}. Obrigado!', variaveis: ['nome', 'valor', 'servico', 'pix'], status: 'Ativo', envios: 445, taxa: 96.8 },
-  { id: 4, nome: 'Promoção Especial', texto: 'Olá {nome}, temos uma promoção especial para você! {promocao} com {desconto}% de desconto. Válido até {validade}.', variaveis: ['nome', 'promocao', 'desconto', 'validade'], status: 'Inativo', envios: 234, taxa: 95.1 },
-  { id: 5, nome: 'Aniversário', texto: 'Parabéns {nome}! Que seu dia seja especial! Como presente, você tem {desconto}% de desconto em qualquer serviço. Aproveite!', variaveis: ['nome', 'desconto'], status: 'Ativo', envios: 67, taxa: 99.2 },
+const templatesMock: Template[] = [
+  { 
+    id: 1, 
+    nome: 'Confirmação de Agendamento', 
+    texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', 
+    variaveis: ['nome', 'servico', 'data', 'hora'], 
+    status: 'Ativo', 
+    envios: 1247, 
+    taxa: 98.5 
+  },
+  { 
+    id: 2, 
+    nome: 'Lembrete de Agendamento', 
+    texto: 'Oi {nome}! Lembrete: você tem um agendamento amanhã às {hora} para {servico}. Confirme sua presença!', 
+    variaveis: ['nome', 'servico', 'hora'], 
+    status: 'Ativo', 
+    envios: 892, 
+    taxa: 97.2 
+  },
+  { 
+    id: 3, 
+    nome: 'Cobrança Pendente', 
+    texto: 'Olá {nome}, você tem uma cobrança pendente de {valor} para {servico}. Pague via PIX: {pix}. Obrigado!', 
+    variaveis: ['nome', 'valor', 'servico', 'pix'], 
+    status: 'Ativo', 
+    envios: 445, 
+    taxa: 96.8 
+  },
+  { 
+    id: 4, 
+    nome: 'Promoção Especial', 
+    texto: 'Olá {nome}, temos uma promoção especial para você! {promocao} com {desconto}% de desconto. Válido até {validade}.', 
+    variaveis: ['nome', 'promocao', 'desconto', 'validade'], 
+    status: 'Inativo', 
+    envios: 234, 
+    taxa: 95.1 
+  },
+  { 
+    id: 5, 
+    nome: 'Aniversário', 
+    texto: 'Parabéns {nome}! Que seu dia seja especial! Como presente, você tem {desconto}% de desconto em qualquer serviço. Aproveite!', 
+    variaveis: ['nome', 'desconto'], 
+    status: 'Ativo', 
+    envios: 67, 
+    taxa: 99.2 
+  },
 ];
 
-const historicoMock = [
+const historicoMock: HistoricoItem[] = [
   { id: 1, nome: 'Maria Silva', template: 'Confirmação de Agendamento', status: 'Entregue', data: '15/01/2025, 07:30' },
   { id: 2, nome: 'João Santos', template: 'Lembrete de Agendamento', status: 'Lido', data: '15/01/2025, 06:15' },
   { id: 3, nome: 'Ana Costa', template: 'Cobrança Pendente', status: 'Entregue', data: '15/01/2025, 05:45' },
   { id: 4, nome: 'Pedro Lima', template: 'Promoção Especial', status: 'Falha', data: '14/01/2025, 18:00' },
 ];
 
+type FormData = {
+  nome: string;
+  texto: string;
+  status: TemplateStatus;
+  variaveis: string;
+};
+
+type Destinatario = {
+  id: string;
+  nome: string;
+  telefone: string;
+  tipo?: 'cliente' | 'revenda';
+};
+
 export default function Notifications() {
   const [templates, setTemplates] = useState<Template[]>(templatesMock);
   const [historico, setHistorico] = useState<HistoricoItem[]>(historicoMock);
   const [modal, setModal] = useState<{ type: null | 'novo' | 'editar' | 'enviar', template?: Template }>({ type: null });
-  const [form, setForm] = useState({ 
+  const [form, setForm] = useState<FormData>({ 
     nome: '', 
     texto: '', 
-    status: 'Ativo' as const,
+    status: 'Ativo',
     variaveis: '' 
   });
   const [searchValue, setSearchValue] = useState('');
+  const [searchDestValue, setSearchDestValue] = useState('');
   const { clientes = [] } = useClientes();
   const { revendas = [] } = useRevendas();
-  const [selectedDest, setSelectedDest] = useState<{id: string; nome: string; telefone: string} | null>(null);
+  const [selectedDest, setSelectedDest] = useState<Destinatario | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const { isConnected, connectionStatus } = useWhatsAppStatus();
   
-  const variaveisSugeridas = ['nome', 'servico', 'data', 'hora', 'valor', 'desconto', 'validade', 'pix', 'promocao'];
+  const variaveisSugeridas = ['nome', 'servico', 'data', 'hora', 'valor', 'desconto', 'validade', 'pix', 'promocao'] as const;
 
   // Cards resumo
   const enviados = historico.length;
