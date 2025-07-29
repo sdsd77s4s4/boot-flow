@@ -824,6 +824,89 @@ const AdminWhatsApp: React.FC = () => {
 
       {/* Modal de Configuração */}
       <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
+  <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
+    <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
+      <div className="flex items-center gap-2 mb-1">
+        <MessageSquare className="w-6 h-6 text-green-500" />
+        <span className="text-lg font-semibold text-white">Configurar WhatsApp Business</span>
+      </div>
+      <p className="text-gray-400 text-sm mb-6">Conecte seu WhatsApp escaneando o QR Code abaixo.</p>
+      <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* QR Code para conexão WhatsApp */}
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <WhatsAppQRCode
+            token={apiBrasilConfig.bearerToken}
+            profileId={apiBrasilConfig.profileId}
+            onConnectionChange={(connected) => {
+              setApiBrasilConfig(prev => ({ ...prev, isConnected: connected, isLoading: false }));
+              setIsConnected(connected);
+              setConnectionStatus(connected ? 'connected' : 'disconnected');
+            }}
+            className="mx-auto"
+            showConnectionDetails
+          />
+          <p className="text-xs text-gray-400 mt-2 text-center">Abra o WhatsApp no seu celular, vá em <b>Dispositivos Conectados</b> &gt; <b>Conectar um dispositivo</b> e escaneie o QR Code.</p>
+        </div>
+        {/* Formulário de configuração, se necessário */}
+        <div className="flex-1 w-full">
+          <div className="mb-4">
+            <label className="block text-gray-300 text-sm font-medium mb-1">Bearer Token</label>
+            <Input
+              type={apiBrasilConfig.showToken ? 'text' : 'password'}
+              value={apiBrasilConfig.bearerToken || ''}
+              onChange={(e) => setApiBrasilConfig(prev => ({ ...prev, bearerToken: e.target.value, isConnected: false }))}
+              placeholder="Insira seu Bearer Token"
+              className="bg-[#1e2430] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setApiBrasilConfig(prev => ({ ...prev, showToken: !prev.showToken }))}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+              style={{ right: 8, top: 38 }}
+            >
+              {apiBrasilConfig.showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+            <p className="text-xs text-gray-400 mt-1">Token de autenticação da API Brasil</p>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-300 text-sm font-medium mb-1">Profile ID</label>
+            <Input
+              value={apiBrasilConfig.profileId || ''}
+              onChange={(e) => setApiBrasilConfig(prev => ({ ...prev, profileId: e.target.value, isConnected: false }))}
+              placeholder="Insira o Profile ID"
+              className="bg-[#1e2430] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+            />
+            <p className="text-xs text-gray-400 mt-1">ID do perfil na plataforma API Brasil</p>
+          </div>
+          <div className="mb-3">
+            <label className="block text-gray-300 text-sm font-medium mb-1">Número de Telefone</label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-600 bg-gray-700 text-gray-300 text-sm">
+                +55
+              </span>
+              <Input
+                type="tel"
+                value={apiBrasilConfig.phoneNumber || ''}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '');
+                  setApiBrasilConfig(prev => ({ ...prev, phoneNumber: value }));
+                }}
+                placeholder="11999999999"
+                className="bg-[#1e2430] border-l-0 rounded-l-none border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">Número de telefone com DDD (apenas números)</p>
+          </div>
+          {apiBrasilConfig.error && (
+            <div className="mb-3 p-2 text-sm text-red-400 bg-red-900/30 rounded border border-red-800">
+              {apiBrasilConfig.error}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </DialogContent>
+</Dialog>
           <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
             <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex items-center gap-2 mb-1">
