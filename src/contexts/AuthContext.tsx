@@ -19,6 +19,13 @@ interface AuthContextType {
   refreshSession: () => Promise<void>;
 }
 
+type NavigateFunction = (path: string) => void;
+
+interface AuthProviderProps {
+  children: ReactNode;
+  navigate?: NavigateFunction;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -29,33 +36,32 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<'admin' | 'reseller' | 'client' | null>(null);
   const isAuthenticated = !!user;
-  const navigate = useNavigate();
 
-  // Função segura para navegar
   const safeNavigate = useCallback((path: string) => {
     if (window.location.pathname !== path) {
       console.log(`[AuthContext] Navegando para: ${path}`);
-      navigate(path);
+      if (navigate) {
+        navigate(path);
+      } else if (window) {
+        window.location.href = path;
+      }
     } else {
       console.log(`[AuthContext] Já está em: ${path}, não navega.`);
     }
   }, [navigate]);
 
-  // Função para redirecionar com base no papel do usuário
   const redirectBasedOnRole = useCallback((role: 'admin' | 'reseller' | 'client') => {
     console.log(`[AuthContext] Redirecionando com role:`, role);
-    // Redireciona para a rota base, já que agora todas as rotas são acessíveis sem autenticação
     safeNavigate('/');
   }, [safeNavigate]);
 
-  // Função para buscar o perfil do usuário
   const fetchUserProfile = useCallback(async (userId: string): Promise<UserProfile | null> => {
     try {
       const { data, error } = await supabase
@@ -73,18 +79,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    // Verifica se há uma sessão ativa ao carregar o componente
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         const userProfile = await fetchUserProfile(session.user.id);
         setProfile(userProfile);
         const role = userProfile?.role || 'client';
         setUserRole(role);
-        
-        // Redireciona para a página inicial apropriada se estiver na página de login
+
         if (window.location.pathname === '/login') {
           if (role === 'admin' || role === 'reseller' || role === 'client') {
             redirectBasedOnRole(role);
