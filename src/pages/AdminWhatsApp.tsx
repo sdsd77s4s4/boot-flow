@@ -234,29 +234,37 @@ const AdminWhatsApp: React.FC = () => {
   const testApiBrasilConnection = async () => {
     // Validação dos campos obrigatórios
     if (!apiBrasilConfig.bearerToken?.trim()) {
-      toast.error('O Bearer Token da API Brasil é obrigatório');
-      return;
+      const errorMsg = 'O Bearer Token da API Brasil é obrigatório';
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
     }
     
     if (!apiBrasilConfig.profileId?.trim()) {
-      toast.error('O Profile ID da API Brasil é obrigatório');
-      return;
+      const errorMsg = 'O Profile ID da API Brasil é obrigatório';
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     // Validação básica do formato do token (deve começar com 'ey' para JWT)
     if (!apiBrasilConfig.bearerToken.startsWith('ey')) {
-      toast.error('Formato de token inválido. O token deve começar com "ey"');
-      return;
+      const errorMsg = 'Formato de token inválido. O token deve começar com "ey"';
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     setApiBrasilConfig(prev => ({ ...prev, isLoading: true, error: '' }));
     
     try {
+      const token = apiBrasilConfig.bearerToken.trim();
+      const profileId = apiBrasilConfig.profileId.trim();
+      
+      console.log('Testando conexão com API Brasil...', { token: token.substring(0, 10) + '...', profileId });
+      
       const response = await fetch('https://gateway.apibrasil.io/api/v2/whatsapp/status', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${apiBrasilConfig.bearerToken.trim()}`,
-          'profile-id': apiBrasilConfig.profileId.trim(),
+          'Authorization': `Bearer ${token}`,
+          'profile-id': profileId,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -266,53 +274,65 @@ const AdminWhatsApp: React.FC = () => {
       let data;
       try {
         data = await response.json();
+        console.log('Resposta da API Brasil:', data);
       } catch (jsonError) {
         console.error('Erro ao processar resposta JSON:', jsonError);
         throw new Error('Resposta inválida do servidor');
       }
 
       if (!response.ok) {
-        console.error('Erro na resposta da API:', data);
-        throw new Error(data.message || data.error || `Erro HTTP ${response.status}`);
+        console.error('Erro na resposta da API:', { status: response.status, data });
+        const errorMsg = data?.message || data?.error?.message || `Erro HTTP ${response.status}`;
+        throw new Error(errorMsg);
       }
 
+      const isConnected = data.connected === true;
+      
       setApiBrasilConfig(prev => ({
         ...prev,
-        isConnected: data.connected || false,
+        isConnected,
         isConfigured: true,
         isLoading: false,
         error: ''
       }));
 
-      if (data.connected) {
+      if (isConnected) {
         setIsConnected(true);
         setConnectionStatus('connected');
         toast.success('Conexão com API Brasil estabelecida com sucesso!');
         
         // Salva a configuração no localStorage
         localStorage.setItem('apiBrasilConfig', JSON.stringify({
-          bearerToken: apiBrasilConfig.bearerToken,
-          profileId: apiBrasilConfig.profileId,
-          phoneNumber: apiBrasilConfig.phoneNumber
+          bearerToken: token,
+          profileId,
+          phoneNumber: apiBrasilConfig.phoneNumber,
+          isConfigured: true,
+          isConnected: true
         }));
       } else {
         setConnectionStatus('disconnected');
+        setIsConnected(false);
         toast.warning('API Brasil conectada, mas o WhatsApp não está ativo');
       }
 
-      return data;
+      return { success: true, connected: isConnected, data };
+      
     } catch (error: any) {
       console.error('Erro ao testar conexão com API Brasil:', error);
+      const errorMsg = error.message || 'Erro desconhecido ao conectar com a API Brasil';
+      
       setApiBrasilConfig(prev => ({
         ...prev,
-        error: error.message,
+        error: errorMsg,
         isConnected: false,
         isLoading: false
       }));
-      toast.error(`Erro na conexão: ${error.message}`);
+      
+      toast.error(`Erro na conexão: ${errorMsg}`);
       setIsConnected(false);
       setConnectionStatus('disconnected');
-      return { success: false, error: error.message };
+      
+      return { success: false, error: errorMsg };
     }
   };
 
