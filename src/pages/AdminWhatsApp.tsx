@@ -907,7 +907,7 @@ const AdminWhatsApp: React.FC = () => {
     </div>
   </DialogContent>
 </Dialog>
-          <DialogContent className="bg-[#1f2937] text-white max-w-2xl w-full p-0 rounded-xl shadow-xl border border-gray-700">
+
             <div className="p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex items-center gap-2 mb-1">
               <MessageSquare className="w-6 h-6 text-green-500" />
