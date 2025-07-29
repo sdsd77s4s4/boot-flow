@@ -25,7 +25,29 @@ import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
+
+  // Efeito para mostrar/ocultar o botão de voltar ao topo
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const features = [
     {
