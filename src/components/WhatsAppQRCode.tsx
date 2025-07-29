@@ -182,29 +182,61 @@ export function WhatsAppQRCode({
 
   // Função para desconectar o WhatsApp
   const handleDisconnect = async () => {
-    if (!token || !profileId) return;
+    if (!token?.trim() || !profileId?.trim()) {
+      toast.error('Token ou Profile ID não configurados');
+      return;
+    }
     
     setIsLoading(true);
+    setConnectionStatus('Desconectando...');
+    setConnectionError(null);
     
     try {
       const { success, error } = await disconnectWhatsApp(token, profileId);
       
       if (success) {
+        // Atualiza os estados para desconectado
         setIsConnected(false);
         setStatus('disconnected');
-        setConnectionStatus('Desconectado');
+        setConnectionStatus('Desconectado com sucesso');
         setQrCode(null);
-        toast.success('WhatsApp desconectado com sucesso');
+        setCountdown(null);
+        setLastChecked(new Date());
         
+        // Notifica o componente pai
         if (onConnectionChange) {
           onConnectionChange(false);
         }
+        
+        // Feedback visual para o usuário
+        toast.success('WhatsApp desconectado com sucesso', {
+          description: 'A conexão com o WhatsApp foi encerrada',
+          duration: 5000
+        });
+        
+        return true;
       } else {
-        throw new Error(error || 'Falha ao desconectar');
+        throw new Error(error || 'Falha ao desconectar o WhatsApp');
       }
     } catch (error: any) {
       console.error('Erro ao desconectar WhatsApp:', error);
-      toast.error(error.message || 'Erro ao desconectar WhatsApp');
+      
+      const errorMessage = error?.message || 'Não foi possível desconectar o WhatsApp';
+      setStatus('error');
+      setConnectionStatus('Erro ao desconectar');
+      setConnectionError(errorMessage);
+      
+      // Feedback visual para o usuário
+      toast.error('Erro ao desconectar WhatsApp', {
+        description: errorMessage,
+        action: {
+          label: 'Tentar novamente',
+          onClick: handleDisconnect
+        },
+        duration: 8000
+      });
+      
+      return false;
     } finally {
       setIsLoading(false);
     }
