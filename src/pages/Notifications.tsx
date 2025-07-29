@@ -467,7 +467,6 @@ export default function Notifications() {
         </Card>
       </div>
       {/* Modal Novo Template */}
-      {/* Modal Novo Template */}
       <Dialog open={modal.type === 'novo'} onOpenChange={(isOpen) => !isOpen && setModal({ type: null })}>
         <DialogContent className="bg-gradient-to-br from-[#232a36] to-[#1f1930] border border-purple-700 text-white max-w-lg shadow-2xl rounded-2xl">
           <DialogHeader>
@@ -476,18 +475,7 @@ export default function Notifications() {
               Crie um novo template de mensagem para notificações. Use variáveis como {'{nome}'} para personalização.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-            <label htmlFor="template-name" className="sr-only">Nome do Template</label>
-            <Input 
-              id="template-name"
-              placeholder="Nome do Template" 
-              className="bg-gray-900 border border-gray-700 text-white rounded-lg w-full mb-3" 
-              value={form.nome} 
-              onChange={e => setForm({ ...form, nome: e.target.value })}
-              aria-label="Nome do Template"
-            />
-          </div>
+          {renderNovoTemplateModal()}
           
           <div>
             <div className="flex items-center justify-between mb-1">
