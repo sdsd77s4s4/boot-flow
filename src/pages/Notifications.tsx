@@ -3,7 +3,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { DialogFooter } from '@/components/ui/dialog';
+import { DialogWrapper } from '@/components/ui/DialogWrapper';
 import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp, Users } from 'lucide-react';
 import { useClientes } from '@/hooks/useClientes';
 import { useRevendas } from '@/hooks/useRevendas';
@@ -168,19 +169,11 @@ export default function Notifications() {
         </Card>
       </div>
       {/* Modal Novo Template */}
-      <Dialog open={modal.type === 'novo'} onOpenChange={() => setModal({ type: null })}>
-        <DialogContent className="bg-gradient-to-br from-[#232a36] to-[#1f1930] border border-purple-700 text-white max-w-lg shadow-2xl rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-purple-300 flex items-center gap-2">
-              <MessageSquare className="w-6 h-6 text-purple-400" /> Novo Template
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <Input placeholder="Nome do Template" className="bg-gray-900 border border-gray-700 text-white rounded-lg" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-            {/* Variáveis sugeridas para inserir */}
-            <div className="flex flex-wrap gap-2 mb-1">
-              {variaveisSugeridas.map(v => (
-                <button
+      <DialogWrapper
+        title={
+          <div className="flex items-center gap-2">
+            <MessageSquare className="w-6 h-6 text-purple-400" />
+            <span>Novo Template</span>
                   key={v}
                   type="button"
                   className="bg-purple-900/60 text-purple-200 rounded-full px-3 py-1 text-xs font-semibold border border-purple-700 hover:bg-purple-800 hover:text-white transition"
