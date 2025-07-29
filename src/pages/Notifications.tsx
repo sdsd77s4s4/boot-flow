@@ -476,28 +476,6 @@ export default function Notifications() {
             </DialogDescription>
           </DialogHeader>
           {renderNovoTemplateModal()}
-          
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm text-gray-300">Variáveis disponíveis:</span>
-              <span className="text-xs text-gray-500">Clique para inserir</span>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {variaveisSugeridas.map(v => (
-                <button
-                  key={v}
-                  type="button"
-                  className="bg-purple-900/60 text-purple-200 rounded-full px-3 py-1 text-xs font-semibold border border-purple-700 hover:bg-purple-800 hover:text-white transition"
-                  onClick={() => {
-                    const textarea = document.getElementById('template-textarea') as HTMLTextAreaElement;
-                    if (textarea) {
-                      const start = textarea.selectionStart;
-                      const end = textarea.selectionEnd;
-                      const before = form.texto.substring(0, start);
-                      const after = form.texto.substring(end);
-                      const insert = `{${v}}`;
-                      setForm({ ...form, texto: before + insert + after });
-                      setTimeout(() => {
                         textarea.focus();
                         textarea.selectionStart = textarea.selectionEnd = start + insert.length;
                       }, 0);
