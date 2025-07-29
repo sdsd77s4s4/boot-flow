@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // UI Components
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+
+// Contexts
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Pages
 import Landing from "./pages/Landing";
@@ -33,6 +36,12 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 const queryClient = new QueryClient();
 
+// Componente para fornecer navegação ao AuthProvider
+const AuthProviderWithNavigation = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+  return <AuthProvider navigate={navigate}>{children}</AuthProvider>;
+};
+
 const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
@@ -40,9 +49,9 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AuthProvider>
-          <WhatsAppStatusContext.Provider value={{ isConnected, setIsConnected, connectionStatus, setConnectionStatus }}>
-            <BrowserRouter>
+        <BrowserRouter>
+          <AuthProviderWithNavigation>
+            <WhatsAppStatusContext.Provider value={{ isConnected, setIsConnected, connectionStatus, setConnectionStatus }}>
               <Routes>
               {/* Rotas públicas */}
               <Route path="/" element={<Landing />} />
@@ -68,9 +77,9 @@ const App = () => {
               {/* Rota 404 */}
               <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
           </WhatsAppStatusContext.Provider>
-        </AuthProvider>
+          </AuthProviderWithNavigation>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
