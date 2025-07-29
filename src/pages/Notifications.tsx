@@ -599,6 +599,7 @@ export default function Notifications() {
             <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
             <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleEditar}>Salvar</Button>
           </DialogFooter>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       {/* Modal Enviar Notificação */}
