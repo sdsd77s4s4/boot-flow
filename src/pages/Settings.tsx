@@ -350,30 +350,70 @@ const SegurancaContent = ({ senha, setSenha, modal2FA, setModal2FA, modalExcluir
         <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setModalExcluir(true)}>Excluir Conta</Button>
       </div>
       {/* Modal 2FA */}
-      <Dialog open={modal2FA} onOpenChange={setModal2FA}>
-        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle>Ativar Autenticação 2FA</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">Escaneie o QR Code no seu app autenticador.</div>
-          <DialogFooter>
-            <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={() => setModal2FA(false)}>OK</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DialogWrapper
+        title="Ativar Autenticação 2FA"
+        description="Escaneie o QR Code no seu aplicativo autenticador para configurar a verificação em duas etapas."
+        className="bg-[#232a36] border border-purple-700 text-white max-w-md"
+        open={modal2FA}
+        onOpenChange={setModal2FA}
+      >
+        <div className="py-4 flex flex-col items-center">
+          <div className="bg-white p-4 mb-4">
+            {/* Espaço para o QR Code */}
+            <div className="w-48 h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+              [QR Code]
+            </div>
+          </div>
+          <p className="text-sm text-gray-300 mb-4 text-center">
+            Escaneie este código QR com seu aplicativo autenticador ou insira manualmente o código abaixo:
+          </p>
+          <div className="bg-[#1f2937] p-3 rounded-md font-mono text-sm mb-4">
+            ABC1 DEF2 GHI3 JKL4
+          </div>
+        </div>
+      </DialogWrapper>
       {/* Modal Excluir Conta */}
-      <Dialog open={modalExcluir} onOpenChange={setModalExcluir}>
-        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle>Excluir Conta</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.</div>
-          <DialogFooter>
-            <Button className="bg-[#1f2937] text-white" onClick={() => setModalExcluir(false)}>Cancelar</Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => setModalExcluir(false)}>Excluir</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DialogWrapper
+        title="Excluir Conta"
+        description="Tem certeza que deseja excluir sua conta? Esta ação é irreversível e todos os seus dados serão permanentemente removidos."
+        className="bg-[#232a36] border border-red-700 text-white max-w-md"
+        open={modalExcluir}
+        onOpenChange={setModalExcluir}
+      >
+        <div className="py-4">
+          <p className="text-red-400 mb-4">⚠️ Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.</p>
+          <div className="mb-4">
+            <label htmlFor="confirm-delete" className="block text-gray-300 mb-2">
+              Digite "EXCLUIR" para confirmar:
+            </label>
+            <Input
+              id="confirm-delete"
+              placeholder="Digite EXCLUIR"
+              className="bg-[#1f2937] border border-gray-700 text-white"
+              aria-label="Confirmação para excluir a conta"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button 
+              className="bg-[#1f2937] text-white hover:bg-gray-600"
+              onClick={() => setModalExcluir(false)}
+              aria-label="Cancelar e manter a conta"
+            >
+              Cancelar
+            </Button>
+            <Button 
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => {
+                // Lógica para excluir a conta
+                setModalExcluir(false);
+              }}
+              aria-label="Confirmar exclusão da conta"
+            >
+              Sim, Excluir Minha Conta
+            </Button>
+          </div>
+        </div>
+      </DialogWrapper>
     </div>
   );
 };
