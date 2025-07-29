@@ -28,6 +28,7 @@ import VoiceCampaigns from "./pages/VoiceCampaigns";
 import AIConfiguration from "./pages/AIConfiguration";
 import AdminResellers from "./pages/AdminResellers";
 import { WhatsAppStatusContext } from './pages/AdminWhatsApp';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const queryClient = new QueryClient();
 
@@ -38,9 +39,10 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WhatsAppStatusContext.Provider value={{ isConnected, setIsConnected, connectionStatus, setConnectionStatus }}>
-          <BrowserRouter>
-            <Routes>
+        <AuthProvider>
+          <WhatsAppStatusContext.Provider value={{ isConnected, setIsConnected, connectionStatus, setConnectionStatus }}>
+            <BrowserRouter>
+              <Routes>
               {/* Rotas públicas */}
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
@@ -63,9 +65,10 @@ const App = () => {
 
               {/* Rota 404 */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </WhatsAppStatusContext.Provider>
+              </Routes>
+            </BrowserRouter>
+          </WhatsAppStatusContext.Provider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
