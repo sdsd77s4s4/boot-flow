@@ -197,7 +197,13 @@ const Index = () => {
               Tudo em uma única plataforma para revolucionar seu negócio.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {/* Hero section buttons removed as requested */}
+              <Button size="lg" className="bg-white text-black hover:bg-white/90">
+                <Play className="w-5 h-5 mr-2" />
+                Ver Demo
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                Começar Grátis
+              </Button>
             </div>
           </div>
         </div>
@@ -265,7 +271,13 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  {/* Pricing plan button removed as requested */}
+                  <Button 
+                    className={`w-full ${plan.popular ? 'bg-primary' : 'bg-secondary'}`}
+                    variant={plan.popular ? 'default' : 'secondary'}
+                  >
+                    Começar Agora
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -377,10 +389,10 @@ const Index = () => {
                       rows={4}
                 />
                   </div>
-                  {/* Contact form submit button removed as requested */}
+                  <Button type="submit" className="w-full">
                     <Mail className="w-4 h-4 mr-2" />
-                  Enviar Mensagem
-                </Button>
+                    Enviar Mensagem
+                  </Button>
                 </form>
               </CardContent>
             </Card>
