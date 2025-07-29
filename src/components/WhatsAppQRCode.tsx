@@ -1,27 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Check, X, Loader2, MessageSquare } from 'lucide-react';
+import { RefreshCw, Check, X, Loader2, MessageSquare, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { generateQRCode, checkConnectionStatus, disconnectWhatsApp } from '@/services/apiBrasilService';
 
+// Tipos para o status da conexão
+type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
+
+// Interface para as propriedades do componente
 interface WhatsAppQRCodeProps {
   token: string;
   profileId: string;
   onConnectionChange?: (connected: boolean) => void;
   className?: string;
+  showConnectionDetails?: boolean;
 }
+
+
 
 export function WhatsAppQRCode({ 
   token, 
   profileId, 
   onConnectionChange,
-  className = ''
+  className = '',
+  showConnectionDetails = true
 }: WhatsAppQRCodeProps) {
+  // Estados do componente
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
+  const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [countdown, setCountdown] = useState<number | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<string>('Desconectado');
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   // Função para verificar o status da conexão
   const checkConnection = useCallback(async () => {
@@ -89,42 +100,80 @@ export function WhatsAppQRCode({
 
   // Função para gerar um novo QR Code
   const generateNewQRCode = useCallback(async () => {
-    if (!token || !profileId) {
-      toast.error('Token ou Profile ID não configurados');
-      return;
+    if (!token?.trim() || !profileId?.trim()) {
+      const errorMsg = 'Token ou Profile ID não configurados';
+      setConnectionError(errorMsg);
+      toast.error(errorMsg);
+      return null;
     }
 
     setIsLoading(true);
     setStatus('connecting');
     setConnectionStatus('Gerando QR Code...');
+    setConnectionError(null);
     setQrCode(null);
     setCountdown(null);
 
     try {
       const { success, data, error } = await generateQRCode(token, profileId, 'temporary');
       
-      if (success && data) {
+      if (success && data?.qrCode) {
         setQrCode(data.qrCode);
         setConnectionStatus('Aguardando leitura do QR Code...');
         
         // Configurar contagem regressiva para verificar a conexão
         const timeout = data.timeout || 30000;
-        setCountdown(Math.ceil(timeout / 1000));
+        const countdownSeconds = Math.ceil(timeout / 1000);
+        setCountdown(countdownSeconds);
         
-        // Iniciar a verificação de conexão após o timeout
-        setTimeout(() => {
+        // Mostrar notificação informativa
+        toast.info('QR Code gerado', {
+          description: 'Escaneie o código com o WhatsApp no seu celular',
+          duration: 5000
+        });
+        
+        // Iniciar contagem regressiva
+        const countdownInterval = setInterval(() => {
+          setCountdown(prev => {
+            if (prev === null || prev <= 1) {
+              clearInterval(countdownInterval);
+              return null;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        
+        // Verificar conexão após o timeout
+        const checkTimeout = setTimeout(() => {
+          clearInterval(countdownInterval);
           checkConnection();
         }, timeout);
         
-        return data.qrCode;
+        // Limpar intervalos ao desmontar
+        return () => {
+          clearInterval(countdownInterval);
+          clearTimeout(checkTimeout);
+        };
+        
       } else {
         throw new Error(error || 'Falha ao gerar QR Code');
       }
     } catch (error: any) {
       console.error('Erro ao gerar QR Code:', error);
+      const errorMsg = error?.message || 'Não foi possível gerar o QR Code';
+      
       setStatus('error');
-      setConnectionStatus('Erro ao gerar QR Code');
-      toast.error(error.message || 'Erro ao gerar QR Code');
+      setConnectionStatus('Falha ao gerar QR Code');
+      setConnectionError(errorMsg);
+      
+      toast.error('Erro ao gerar QR Code', {
+        description: errorMsg,
+        action: {
+          label: 'Tentar novamente',
+          onClick: generateNewQRCode
+        }
+      });
+      
       return null;
     } finally {
       setIsLoading(false);
