@@ -614,13 +614,28 @@ export default function Notifications() {
             </div>
             <div>
               <label className="block text-gray-300 mb-1 font-medium">Destinatário</label>
-              <Input placeholder="Buscar cliente ou revenda..." className="mb-2 bg-gray-900 border border-gray-700 text-white" onChange={e => setSelectedDest(e.target.value)} />
+              <Input 
+                placeholder="Buscar cliente ou revenda..." 
+                className="mb-2 bg-gray-900 border border-gray-700 text-white" 
+                value={searchDestValue}
+                onChange={e => setSearchDestValue(e.target.value)} 
+              />
               <div className="max-h-40 overflow-y-auto rounded border border-gray-700 bg-[#181825] divide-y divide-gray-800">
                 <div className="px-2 py-1 text-xs text-purple-400 font-bold">Clientes Ativos</div>
-                {clientes.filter(c => (c.status || '').toLowerCase() === 'ativo' && (!searchValue || (c.real_name || c.name).toLowerCase().includes(searchValue.toLowerCase()))).length > 0 ? (
-                  clientes.filter(c => (c.status || '').toLowerCase() === 'ativo' && (!searchValue || (c.real_name || c.name).toLowerCase().includes(searchValue.toLowerCase()))).map(c => (
-                    <div key={c.id} className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'cliente', ...c })}>
-                      <Users className="w-4 h-4 text-purple-400" /> <span>{c.real_name || c.name} <span className="text-xs text-gray-400">({c.email})</span></span>
+                {clientes.filter(c => (c.status || '').toLowerCase() === 'ativo' && (!searchDestValue || (c.real_name || c.name).toLowerCase().includes(searchDestValue.toLowerCase()))).length > 0 ? (
+                  clientes.filter(c => (c.status || '').toLowerCase() === 'ativo' && (!searchDestValue || (c.real_name || c.name).toLowerCase().includes(searchDestValue.toLowerCase()))).map(c => (
+                    <div 
+                      key={c.id} 
+                      className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer flex items-center gap-2" 
+                      onClick={() => setSelectedDest({ 
+                        id: c.id, 
+                        nome: c.real_name || c.name, 
+                        telefone: c.email || '',
+                        tipo: 'cliente' as const
+                      })}
+                    >
+                      <Users className="w-4 h-4 text-purple-400" /> 
+                      <span>{c.real_name || c.name} <span className="text-xs text-gray-400">({c.email})</span></span>
                     </div>
                   ))
                 ) : (
@@ -629,10 +644,20 @@ export default function Notifications() {
               </div>
               <div className="max-h-40 overflow-y-auto rounded border border-gray-700 bg-[#181825] divide-y divide-gray-800 mt-2">
                 <div className="px-2 py-1 text-xs text-green-400 font-bold">Revendas Ativas</div>
-                {revendas.filter(r => (r.status || '').toLowerCase() === 'active' && (!searchValue || (r.personal_name || r.username).toLowerCase().includes(searchValue.toLowerCase()))).length > 0 ? (
-                  revendas.filter(r => (r.status || '').toLowerCase() === 'active' && (!searchValue || (r.personal_name || r.username).toLowerCase().includes(searchValue.toLowerCase()))).map(r => (
-                    <div key={r.id} className="px-3 py-2 hover:bg-green-900/30 cursor-pointer flex items-center gap-2" onClick={() => setSelectedDest({ tipo: 'revenda', ...r })}>
-                      <Users className="w-4 h-4 text-green-400" /> <span>{r.personal_name || r.username} <span className="text-xs text-gray-400">({r.email})</span></span>
+                {revendas.filter(r => (r.status || '').toLowerCase() === 'active' && (!searchDestValue || (r.personal_name || r.username).toLowerCase().includes(searchDestValue.toLowerCase()))).length > 0 ? (
+                  revendas.filter(r => (r.status || '').toLowerCase() === 'active' && (!searchDestValue || (r.personal_name || r.username).toLowerCase().includes(searchDestValue.toLowerCase()))).map(r => (
+                    <div 
+                      key={r.id} 
+                      className="px-3 py-2 hover:bg-green-900/30 cursor-pointer flex items-center gap-2" 
+                      onClick={() => setSelectedDest({ 
+                        id: r.id, 
+                        nome: r.personal_name || r.username, 
+                        telefone: r.email || '',
+                        tipo: 'revenda' as const
+                      })}
+                    >
+                      <Users className="w-4 h-4 text-green-400" /> 
+                      <span>{r.personal_name || r.username} <span className="text-xs text-gray-400">({r.email})</span></span>
                     </div>
                   ))
                 ) : (
@@ -640,23 +665,33 @@ export default function Notifications() {
                 )}
               </div>
             </div>
-            {selectedDest && (
+            {selectedDest && selectedTemplate && (
               <div className="bg-[#181825] border border-purple-800 rounded-lg p-3 text-sm text-gray-200 mt-2">
                 <div className="font-semibold text-purple-300 mb-1">Mensagem:</div>
-                <div className="whitespace-pre-line">{selectedTemplate ? selectedTemplate.texto.replace(/\{(.*?)\}/g, (m, v) => selectedDest[v] || `{${v}}`) : ''}</div>
+                <div className="whitespace-pre-line">
+                  {Object.entries(selectedDest).reduce(
+                    (text, [key, value]) => text.replace(new RegExp(`\\{${key}\\}`, 'g'), value || ''), 
+                    selectedTemplate.texto
+                  )}
+                </div>
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
-            <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={!selectedDest || !isConnected} onClick={() => {
-              if (!isConnected) {
-                toast.error('O WhatsApp não está conectado!');
-                return;
-              }
-              toast.success('Notificação enviada para ' + (selectedDest?.real_name || selectedDest?.personal_name || selectedDest?.name));
-              setModal({ type: null });
-            }}>Enviar</Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setModal({ type: null })} 
+              className="bg-gray-700 text-white"
+            >
+              Cancelar
+            </Button>
+            <Button 
+              className="bg-green-600 hover:bg-green-700 text-white" 
+              disabled={!selectedDest || !isConnected} 
+              onClick={handleEnviar}
+            >
+              Enviar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
