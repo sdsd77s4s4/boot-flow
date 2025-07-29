@@ -419,8 +419,8 @@ const Landing = () => {
               <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <a 
-                    href="/#funcionalidades" 
-                    className="hover:text-foreground transition-colors"
+                    href="#funcionalidades" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
                       document.getElementById('funcionalidades')?.scrollIntoView({ behavior: 'smooth' });
@@ -431,11 +431,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="/precos" 
-                    className="hover:text-foreground transition-colors"
+                    href="#planos" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/precos');
+                      document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
                     Preços
@@ -443,11 +443,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="/api" 
-                    className="hover:text-foreground transition-colors"
+                    href="#api" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      window.open('https://api.bootflow.com.br/docs', '_blank');
+                      document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
                     API
@@ -455,11 +455,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="/integracoes" 
-                    className="hover:text-foreground transition-colors"
+                    href="#integracoes" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/integracoes');
+                      document.getElementById('integracoes')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
                     Integrações
