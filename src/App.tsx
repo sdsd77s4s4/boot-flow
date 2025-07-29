@@ -15,6 +15,8 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import Sobre from "./pages/empresa/Sobre";
+import Blog from "./pages/empresa/Blog";
 
 // Dashboards
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
@@ -59,6 +61,8 @@ const App = () => {
                 <Route path="/termos" element={<Terms />} />
                 <Route path="/privacidade" element={<Privacy />} />
                 <Route path="/ajuda" element={<HelpCenter />} />
+                <Route path="/empresa/sobre" element={<Sobre />} />
+                <Route path="/empresa/blog" element={<Blog />} />
 
                 {/* Dashboard Admin - Acesso direto */}
                 <Route path="/admin" element={<AdminDashboard />} />
