@@ -18,11 +18,20 @@ import { useRevendas } from '@/hooks/useRevendas';
 import { toast } from 'sonner';
 import { useWhatsAppStatus } from './AdminWhatsApp';
 
-// Definindo o tipo TemplateStatus como um tipo união de strings literais
-type TemplateStatus = 'Ativo' | 'Inativo';
+// Definindo os tipos de status como constantes para melhor tipagem
+export const TEMPLATE_STATUS = {
+  ATIVO: 'Ativo',
+  INATIVO: 'Inativo'
+} as const;
 
-// Definindo o tipo HistoricoStatus como um tipo união de strings literais
-type HistoricoStatus = 'Entregue' | 'Lido' | 'Falha';
+export const HISTORICO_STATUS = {
+  ENTREGUE: 'Entregue',
+  LIDO: 'Lido',
+  FALHA: 'Falha'
+} as const;
+
+type TemplateStatus = typeof TEMPLATE_STATUS[keyof typeof TEMPLATE_STATUS];
+type HistoricoStatus = typeof HISTORICO_STATUS[keyof typeof HISTORICO_STATUS];
 
 type Template = {
   id: number;
@@ -556,8 +565,8 @@ export default function Notifications() {
               onChange={e => setForm({ ...form, status: e.target.value as TemplateStatus })}
               aria-label="Status do Template"
             >
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
+              <option value={TEMPLATE_STATUS.ATIVO}>Ativo</option>
+              <option value={TEMPLATE_STATUS.INATIVO}>Inativo</option>
             </select>
           </div>
           <DialogFooter>
@@ -582,8 +591,8 @@ export default function Notifications() {
               onChange={e => setForm({ ...form, status: e.target.value as TemplateStatus })}
               aria-label="Status do Template"
             >
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
+              <option value={TEMPLATE_STATUS.ATIVO}>Ativo</option>
+              <option value={TEMPLATE_STATUS.INATIVO}>Inativo</option>
             </select>
           </div>
           <DialogFooter>
