@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft, Bot, AlertCircle } from "lucide-react";
+import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft, MessageSquare, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Login() {
@@ -50,7 +50,7 @@ export default function Login() {
           className="max-w-md text-center space-y-6"
         >
           <div className="mx-auto w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <Bot className="w-12 h-12 text-primary" />
+            <MessageSquare className="w-12 h-12 text-primary" />
           </div>
           <h2 className="text-3xl font-bold tracking-tight">Bem-vindo de volta!</h2>
           <p className="text-muted-foreground">
@@ -87,7 +87,7 @@ export default function Login() {
               <CardContent className="p-0 space-y-6">
                 {error && (
                   <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-2" />
+                    <AlertTriangle className="w-4 h-4 mr-2" />
                     {error}
                   </div>
                 )}
