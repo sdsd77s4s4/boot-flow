@@ -109,6 +109,22 @@ type Destinatario = {
   tipo?: 'cliente' | 'revenda';
 };
 
+// Definindo tipos para cliente e revenda para melhor tipagem
+interface Cliente {
+  id: string;
+  name: string;
+  real_name?: string;
+  email?: string;
+  status?: string;
+}
+
+interface Revenda {
+  id: string;
+  username: string;
+  personal_name?: string;
+  status?: string;
+}
+
 export default function Notifications() {
   const [templates, setTemplates] = useState<Template[]>(templatesMock);
   const [historico, setHistorico] = useState<HistoricoItem[]>(historicoMock);
