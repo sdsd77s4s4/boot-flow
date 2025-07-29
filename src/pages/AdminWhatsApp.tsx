@@ -1192,7 +1192,6 @@ const AdminWhatsApp: React.FC = () => {
                   Salvar Integração
                 </Button>
               </div>
-          </div>
         </DialogContent>
       </Dialog>
 
