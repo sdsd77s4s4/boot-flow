@@ -256,6 +256,7 @@ const AdminWhatsApp: React.FC = () => {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${apiBrasilConfig.bearerToken.trim()}`,
+          'profile-id': apiBrasilConfig.profileId.trim(),
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
