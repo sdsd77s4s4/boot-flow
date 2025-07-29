@@ -481,10 +481,54 @@ const Landing = () => {
             <div>
               <h4 className="font-semibold mb-4">Empresa</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Sobre</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacidade</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Termos</a></li>
+                <li>
+                  <a 
+                    href="/empresa/sobre" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/empresa/sobre');
+                    }}
+                  >
+                    Sobre
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="/empresa/blog" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/empresa/blog');
+                    }}
+                  >
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="/privacy" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/privacy');
+                    }}
+                  >
+                    Privacidade
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="/terms" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/terms');
+                    }}
+                  >
+                    Termos
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
