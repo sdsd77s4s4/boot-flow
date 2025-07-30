@@ -134,10 +134,22 @@ const AdminDashboard = () => {
   const { data: realtimeRevendas, error: revendasError, isConnected: revendasConnected } = useRealtimeRevendas();
   
   // Hook para gerenciar clientes
-  const { clientes, loading: loadingClientes, error: clientesError2, fetchClientes } = useClientes();
+  const { 
+    clientes, 
+    loading: loadingClientes, 
+    error: clientesError2, 
+    fetchClientes,
+    addCliente: addClienteHook 
+  } = useClientes();
   
   // Hook para gerenciar revendas
-  const { revendas, loading: loadingRevendas, error: revendasError2, fetchRevendas } = useRevendas();
+  const { 
+    revendas, 
+    loading: loadingRevendas, 
+    error: revendasError2, 
+    fetchRevendas,
+    addRevenda: addRevendaHook 
+  } = useRevendas();
   
   // Atualiza os estados locais quando os dados em tempo real mudam
   useEffect(() => {
@@ -170,40 +182,38 @@ const AdminDashboard = () => {
   // Função para adicionar um novo cliente
   const addCliente = useCallback(async (clienteData: any) => {
     try {
-      const { data, error } = await supabase
-        .from('clientes')
-        .insert([clienteData])
-        .select();
-        
-      if (error) throw error;
+      const success = await addClienteHook(clienteData);
+      if (!success) {
+        throw new Error('Falha ao adicionar cliente');
+      }
       
       toast.success('Cliente adicionado com sucesso!');
-      return { data, error: null };
+      return { data: null, error: null };
     } catch (error) {
       console.error('Erro ao adicionar cliente:', error);
-      toast.error('Erro ao adicionar cliente');
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      toast.error(`Erro ao adicionar cliente: ${errorMessage}`);
       return { data: null, error };
     }
-  }, []);
+  }, [addClienteHook]);
   
   // Função para adicionar um novo revendedor
   const addRevenda = useCallback(async (revendaData: any) => {
     try {
-      const { data, error } = await supabase
-        .from('revendas')
-        .insert([revendaData])
-        .select();
-        
-      if (error) throw error;
+      const success = await addRevendaHook(revendaData);
+      if (!success) {
+        throw new Error('Falha ao adicionar revendedor');
+      }
       
       toast.success('Revendedor adicionado com sucesso!');
-      return { data, error: null };
+      return { data: null, error: null };
     } catch (error) {
       console.error('Erro ao adicionar revendedor:', error);
-      toast.error('Erro ao adicionar revendedor');
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      toast.error(`Erro ao adicionar revendedor: ${errorMessage}`);
       return { data: null, error };
     }
-  }, []);
+  }, [addRevendaHook]);
 
   // Função para formatar a data relativa
   const formatTimeAgo = (dateString: string) => {
