@@ -11,7 +11,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, EyeOff, Download, Upload, Users, Loader2 } from 'lucide-react';
 import { WhatsAppQRCode } from '@/components/WhatsAppQRCode';
-import { io, Socket } from 'socket.io-client';
 import { SendWhatsAppMessage } from '@/components/SendWhatsAppMessage';
 import { checkConnectionStatus } from '@/services/apiBrasilService';
 
@@ -74,7 +73,6 @@ export const WhatsAppStatusContext = createContext({
 export const useWhatsAppStatus = () => useContext(WhatsAppStatusContext);
 
 const AdminWhatsApp: React.FC = () => {
-
   // Estados para a API Brasil
   const [apiBrasilConfig, setApiBrasilConfig] = useState({
     bearerToken: '',
@@ -95,7 +93,6 @@ const AdminWhatsApp: React.FC = () => {
   const [form, setForm] = useState(initialForm);
   const [templateToDelete, setTemplateToDelete] = useState<any>(null);
   const [configModalOpen, setConfigModalOpen] = useState(false);
-
   const [configTab, setConfigTab] = useState('geral');
   const [config, setConfig] = useState({
     provider: 'whatsapp-web',
@@ -109,36 +106,6 @@ const AdminWhatsApp: React.FC = () => {
   // Estados para conexão WhatsApp
   const [isConnected, setIsConnected] = useState(false);
   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
-  const [qrStatus, setQrStatus] = useState<'loading' | 'qrcode' | 'connected' | 'expired'>('loading');
-
-  // Conexão socket.io para QR Code APIBRASIL
-  useEffect(() => {
-    if (!qrModalOpen) return;
-    setQrStatus('loading');
-    setQrCodeData(null);
-    const bearer = apiBrasilConfig.bearerToken || 'SEU_BEARER_TOKEN';
-    const channelName = apiBrasilConfig.profileId || 'SEU_CHANNEL_NAME';
-    if (!bearer || !channelName) return;
-    const socket: Socket = io('https://socket.apibrasil.com.br', {
-      query: { bearer, channelName }
-    });
-    socket.on('evolution', (evolution: any) => {
-      if (evolution?.qrcode) {
-        setQrCodeData(evolution.qrcode);
-        setQrStatus('qrcode');
-      }
-      if (evolution?.status === 'CONNECTED') {
-        setQrStatus('connected');
-      }
-      if (evolution?.status === 'QRCODE_EXPIRED') {
-        setQrStatus('expired');
-      }
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, [qrModalOpen, apiBrasilConfig.bearerToken, apiBrasilConfig.profileId]);
-
   const [isLoadingQR, setIsLoadingQR] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
 
@@ -850,51 +817,10 @@ const AdminWhatsApp: React.FC = () => {
           <p className="text-gray-400 mt-1">Gerencie integrações, templates e automações do WhatsApp</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700" onClick={() => setQrModalOpen(true)}><Settings className="w-4 h-4 mr-2" />Configurar</Button>
+          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700"><Settings className="w-4 h-4 mr-2" />Configurar</Button>
           <Button className="bg-green-600 hover:bg-green-700" onClick={handleNewTemplate}><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
         </div>
       </div>
-
-      {/* Modal de QR Code APIBRASIL */}
-      <Dialog open={qrModalOpen} onOpenChange={setQrModalOpen}>
-  <DialogContent className="bg-[#1f2937] text-white max-w-md w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center animate-fade-in">
-    <DialogHeader>
-      <DialogTitle>Conectar WhatsApp via APIBRASIL</DialogTitle>
-      <DialogDescription>
-        {qrStatus === 'loading' && 'Gerando QR Code, aguarde...'}
-        {qrStatus === 'qrcode' && 'Escaneie o QR Code abaixo no seu WhatsApp para conectar.'}
-        {qrStatus === 'connected' && 'WhatsApp conectado com sucesso!'}
-        {qrStatus === 'expired' && 'QR Code expirado. Feche e tente novamente.'}
-      </DialogDescription>
-    </DialogHeader>
-    <div className="flex flex-col items-center justify-center p-4 min-h-[240px]">
-      {qrStatus === 'loading' && (
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-14 h-14 text-green-400 animate-spin" />
-          <span className="text-gray-300 mt-2">Aguardando QR Code...</span>
-        </div>
-      )}
-      {qrStatus === 'qrcode' && qrCodeData && (
-        <img src={qrCodeData} alt="QR Code WhatsApp APIBRASIL" className="w-56 h-56 rounded shadow-lg transition-all duration-300 border-2 border-green-500" />
-      )}
-      {qrStatus === 'connected' && (
-        <div className="flex flex-col items-center gap-3">
-          <CheckCircle className="w-14 h-14 text-green-500 animate-pulse" />
-          <span className="text-green-400 font-semibold">Conectado!</span>
-        </div>
-      )}
-      {qrStatus === 'expired' && (
-        <div className="flex flex-col items-center gap-3">
-          <Clock className="w-14 h-14 text-yellow-500 animate-bounce" />
-          <span className="text-yellow-400 font-semibold">QR Code expirado</span>
-        </div>
-      )}
-    </div>
-    <DialogFooter>
-      <Button onClick={() => setQrModalOpen(false)} className="w-full">Fechar</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
 
       {/* Modal de Configuração */}
       <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
@@ -1365,12 +1291,9 @@ const AdminWhatsApp: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-
-
-      </div>
-      </WhatsAppStatusContext.Provider>
+    </div>
+    </WhatsAppStatusContext.Provider>
   );
 };
 
-export default AdminWhatsApp;
+export default AdminWhatsApp; 
