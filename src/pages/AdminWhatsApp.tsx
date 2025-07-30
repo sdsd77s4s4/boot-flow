@@ -74,6 +74,8 @@ export const WhatsAppStatusContext = createContext({
 export const useWhatsAppStatus = () => useContext(WhatsAppStatusContext);
 
 const AdminWhatsApp: React.FC = () => {
+  // Estado para modal de ajuda
+  const [helpModalOpen, setHelpModalOpen] = useState(true);
   // Estados para a API Brasil
   const [apiBrasilConfig, setApiBrasilConfig] = useState({
     bearerToken: '',
@@ -1364,9 +1366,69 @@ const AdminWhatsApp: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    {/* Modal de Ajuda */}
+    {helpModalOpen && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0,0,0,0.7)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <div style={{
+          background: '#232a36',
+          color: '#fff',
+          borderRadius: '16px',
+          boxShadow: '0 4px 32px rgba(0,0,0,0.7)',
+          padding: '32px 24px 24px 24px',
+          minWidth: '320px',
+          maxWidth: '90vw',
+          position: 'relative',
+        }}>
+          <button
+            onClick={() => setHelpModalOpen(false)}
+            style={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              background: 'none',
+              border: 'none',
+              color: '#fff',
+              fontSize: 24,
+              cursor: 'pointer',
+            }}
+            aria-label="Fechar Ajuda"
+          >
+            &times;
+          </button>
+          <div style={{ fontSize: 24, fontWeight: 'bold', color: '#60a5fa', marginBottom: 16, textAlign: 'center' }}>
+            Ajuda
+          </div>
+          <div style={{ marginBottom: 12, fontSize: 16, background: '#1a2230', borderRadius: 8, padding: 12 }}>
+            <strong>Qr Code não aparece.</strong>
+            <div style={{ color: '#cbd5e1', fontSize: 14, marginTop: 4 }}>
+              Certifique-se de que sua conexão com a internet está estável e que o navegador não está bloqueando pop-ups. Tente atualizar a página ou gerar um novo QR Code.
+            </div>
+          </div>
+          <div style={{ fontSize: 16, background: '#1a2230', borderRadius: 8, padding: 12 }}>
+            <strong>Whatsapp não conecta</strong>
+            <div style={{ color: '#cbd5e1', fontSize: 14, marginTop: 4 }}>
+              Verifique se o WhatsApp está instalado e atualizado no seu celular. Certifique-se de que o aparelho está conectado à internet e tente novamente.
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    {helpModalOpen === undefined && setHelpModalOpen(true)}
+
     </div>
     </WhatsAppStatusContext.Provider>
   );
 };
 
-export default AdminWhatsApp; 
+export default AdminWhatsApp;
