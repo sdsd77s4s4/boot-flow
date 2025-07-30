@@ -2055,9 +2055,7 @@ const AdminDashboard = () => {
         
         <main className="flex-1 p-6 max-w-full w-full overflow-x-auto">
           <div className="max-w-7xl mx-auto space-y-6">
-            {currentPage === "whatsapp" ? (
-              <AdminWhatsApp />
-            ) : currentPage === "dashboard" ? (
+            {currentPage === "dashboard" && (
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
@@ -2797,7 +2795,7 @@ const AdminDashboard = () => {
                         className="bg-[#1f2937] text-white border border-gray-700 hover:bg-[#23272f] h-10 sm:h-auto"
                       >
                         <svg className="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                         <span className="hidden sm:inline">Grid</span>
                       </Button>
@@ -2965,7 +2963,7 @@ const AdminDashboard = () => {
                   </Card>
                 </div>
               </>
-            ) : null}
+            )}
             {/* Renderização das outras páginas continua igual */}
             {currentPage === "users" && <AdminUsers />}
             {currentPage === "resellers" && <AdminResellers resellers={revendas} onAddReseller={handleAddReseller} />}
