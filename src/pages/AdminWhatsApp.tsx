@@ -93,6 +93,7 @@ const AdminWhatsApp: React.FC = () => {
   const [form, setForm] = useState(initialForm);
   const [templateToDelete, setTemplateToDelete] = useState<any>(null);
   const [configModalOpen, setConfigModalOpen] = useState(false);
+const [qrModalOpen, setQrModalOpen] = useState(false);
   const [configTab, setConfigTab] = useState('geral');
   const [config, setConfig] = useState({
     provider: 'whatsapp-web',
@@ -817,10 +818,32 @@ const AdminWhatsApp: React.FC = () => {
           <p className="text-gray-400 mt-1">Gerencie integrações, templates e automações do WhatsApp</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700"><Settings className="w-4 h-4 mr-2" />Configurar</Button>
+          <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-700" onClick={() => setQrModalOpen(true)}><Settings className="w-4 h-4 mr-2" />Configurar</Button>
           <Button className="bg-green-600 hover:bg-green-700" onClick={handleNewTemplate}><Plus className="w-4 h-4 mr-2" />Novo Template</Button>
         </div>
       </div>
+
+      {/* Modal de QR Code APIBRASIL */}
+      <Dialog open={qrModalOpen} onOpenChange={setQrModalOpen}>
+        <DialogContent className="bg-[#1f2937] text-white max-w-md w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col items-center justify-center">
+          <DialogHeader>
+            <DialogTitle>Conectar WhatsApp via APIBRASIL</DialogTitle>
+            <DialogDescription>Escaneie o QR Code abaixo no seu WhatsApp para conectar.</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center p-4">
+            {qrCodeData ? (
+              <img src={qrCodeData} alt="QR Code WhatsApp APIBRASIL" className="w-56 h-56" />
+            ) : (
+              <div className="w-56 h-56 bg-gray-700 flex items-center justify-center rounded">
+                <span className="text-gray-400">QR Code indisponível</span>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setQrModalOpen(false)} className="w-full">Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Configuração */}
       <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
