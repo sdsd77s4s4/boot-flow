@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, EyeOff, Download, Upload, Users, Loader2 } from 'lucide-react';
 import { WhatsAppQRCode } from '@/components/WhatsAppQRCode';
+import { io, Socket } from 'socket.io-client';
 import { SendWhatsAppMessage } from '@/components/SendWhatsAppMessage';
 import { checkConnectionStatus } from '@/services/apiBrasilService';
 
@@ -107,6 +108,30 @@ const [qrModalOpen, setQrModalOpen] = useState(false);
   // Estados para conexão WhatsApp
   const [isConnected, setIsConnected] = useState(false);
   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+
+  // Conexão socket.io para QR Code APIBRASIL
+  useEffect(() => {
+    if (!qrModalOpen) return;
+    // Substitua pelos seus dados reais ou variáveis de ambiente
+    const bearer = apiBrasilConfig.bearerToken || 'SEU_BEARER_TOKEN';
+    const channelName = apiBrasilConfig.profileId || 'SEU_CHANNEL_NAME';
+    if (!bearer || !channelName) return;
+    const socket: Socket = io('https://socket.apibrasil.com.br', {
+      query: {
+        bearer,
+        channelName
+      }
+    });
+    socket.on('evolution', (evolution: any) => {
+      // O QR code geralmente vem em evolution.qrcode
+      if (evolution && evolution.qrcode) {
+        setQrCodeData(evolution.qrcode);
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [qrModalOpen, apiBrasilConfig.bearerToken, apiBrasilConfig.profileId]);
   const [isLoadingQR, setIsLoadingQR] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
 
