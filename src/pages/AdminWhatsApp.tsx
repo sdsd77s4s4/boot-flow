@@ -105,6 +105,8 @@ const AdminWhatsApp: React.FC = () => {
   // Estados para conexão WhatsApp
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
+  const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+  const [isLoadingQR, setIsLoadingQR] = useState(false);
 
   // Função para enviar mensagem via API Brasil
   const sendWhatsAppMessage = async (phoneNumber: string, message: string) => {
@@ -608,6 +610,10 @@ const AdminWhatsApp: React.FC = () => {
                 isConnected={isConnected}
                 setIsConnected={setIsConnected}
                 setConnectionStatus={setConnectionStatus}
+                setQrCodeData={setQrCodeData}
+                qrCodeData={qrCodeData}
+                isLoadingQR={isLoadingQR}
+                setIsLoadingQR={setIsLoadingQR}
               />
               
               {/* Configurações avançadas da API */}
