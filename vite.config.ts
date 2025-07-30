@@ -1,13 +1,13 @@
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
+import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
+  plugins: [react(), splitVendorChunkPlugin()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": resolve(__dirname, "./src"),
     },
   },
   server: {
@@ -18,12 +18,20 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    chunkSizeWarningLimit: 1000, // Aumenta o limite de aviso para 1000 kB
+    chunkSizeWarningLimit: 1000, // Ajusta o limite de aviso para 1000KB
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
+          // Separa o React e suas dependências
+          react: ['react', 'react-dom', 'react-router-dom'],
+          // Separa bibliotecas UI
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-slot'],
+          // Separa bibliotecas de utilidades
+          utils: ['date-fns', 'zod', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+          // Separa bibliotecas de gráficos (se houver)
+          charts: ['recharts', 'd3-shape', 'd3-scale'],
+          // Separa o Socket.IO (se estiver usando)
+          socket: ['socket.io-client'],
         },
       },
     },
@@ -31,5 +39,8 @@ export default defineConfig(({ mode }) => ({
   preview: {
     port: 3000,
     host: true,
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
   },
 }))
