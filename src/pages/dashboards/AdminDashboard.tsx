@@ -2039,9 +2039,8 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <>
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-[#09090b]">
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-[#09090b]">
         {/* Menu lateral desktop */}
         <div className="hidden lg:block">
           <AdminSidebar onPageChange={handlePageChange} currentPage={currentPage} />
@@ -3786,7 +3785,6 @@ const AdminDashboard = () => {
         </Dialog>
       </div>
     </SidebarProvider>
-  </>
-);
+  );
 
 export default AdminDashboard;
