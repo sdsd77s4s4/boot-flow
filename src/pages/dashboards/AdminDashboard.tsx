@@ -992,23 +992,6 @@ const AdminDashboard = () => {
     );
   }
 
-  // Função para renderizar o conteúdo da página atual
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case "dashboard":
-        return (
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
-                <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
-                <Dialog open={clientModal} onOpenChange={setClientModal}>
-                  <DialogTrigger asChild>
-                    <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
-                      <UserPlus className="w-4 h-4 sm:mr-2" />
                       <span className="hidden sm:inline">Novo Cliente</span>
                       <span className="sm:hidden">Cliente</span>
                     </Button>
