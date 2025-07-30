@@ -63,6 +63,16 @@ import Profile from "../Profile";
 
 
 const AdminDashboard = () => {
+  // --- Estados para integração APIBrasil QR Code ---
+  const [apiBrasilConfig, setApiBrasilConfig] = useState(() => {
+    const saved = localStorage.getItem('apiBrasilConfig');
+    return saved ? JSON.parse(saved) : { bearerToken: '', profileId: '' };
+  });
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+  const [isLoadingQR, setIsLoadingQR] = useState(false);
+  // --- Fim estados integração APIBrasil ---
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [clientModal, setClientModal] = useState(false);
   const [resellerModal, setResellerModal] = useState(false);
