@@ -63,8 +63,6 @@ import Profile from "../Profile";
 
 
 const AdminDashboard = () => {
-  // Hook de clientes
-  const { clientes, fetchClientes, addCliente, updateCliente, deleteCliente, loading: loadingClientes, error: errorClientes } = useClientes();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [clientModal, setClientModal] = useState(false);
   const [resellerModal, setResellerModal] = useState(false);
