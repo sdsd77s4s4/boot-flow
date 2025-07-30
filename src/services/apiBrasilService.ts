@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 
 // URL base da API Brasil - Pode ser configurada via variável de ambiente
-const API_BRASIL_BASE_URL = process.env.NEXT_PUBLIC_API_BRASIL_URL || 'https://gateway.apibrasil.io/api/v2/whatsapp';
+const API_BRASIL_BASE_URL = (typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_API_BRASIL_URL : null) || 'https://gateway.apibrasil.io/api/v2/whatsapp';
 
 // Interface para respostas da API
 interface ApiBrasilResponse<T = any> {
