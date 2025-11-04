@@ -147,31 +147,58 @@ export default function AdminUsers() {
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const handleAddUser = async () => {
-    if (newUser.name && newUser.email) {
-      setIsAddingUser(true);
-      setAddUserSuccess(false);
+    // Validação completa dos campos obrigatórios
+    if (!newUser.name || !newUser.email || !newUser.plan) {
+      alert("Por favor, preencha todos os campos obrigatórios: Usuário, Email e Plano.");
+      return;
+    }
 
-      try {
-        // Debug: mostrar dados que serão adicionados
-        console.log("Dados do usuário a ser adicionado:", newUser);
+    // Validar data de vencimento
+    if (!newUser.expirationDate) {
+      alert("Por favor, preencha a data de vencimento.");
+      return;
+    }
 
-        // Preparar dados do usuário para o Neon
-        const userData = {
-          name: newUser.realName || newUser.name,
-          email: newUser.email,
-          password: newUser.password || "",
-          m3u_url: newUser.plan || "",
-          bouquets: newUser.bouquets || "",
-          expiration_date: newUser.expirationDate || null,
-          observations: newUser.observations || "",
-        };
+    setIsAddingUser(true);
+    setAddUserSuccess(false);
 
-        console.log("Dados preparados para adicionar:", userData);
+    try {
+      // Debug: mostrar dados que serão adicionados
+      console.log("Dados do usuário a ser adicionado:", newUser);
 
-        // Adicionar usuário usando o hook do Neon
-        await addCliente(userData);
+      // Preparar dados do usuário para o Supabase (snake_case)
+      const userData = {
+        name: newUser.realName || newUser.name,
+        email: newUser.email,
+        plan: newUser.plan, // Campo obrigatório
+        status: newUser.status || "Ativo", // Campo obrigatório com default
+        expiration_date: newUser.expirationDate, // Campo obrigatório
+        password: newUser.password || "",
+        m3u_url: newUser.m3u_url || "",
+        bouquets: newUser.bouquets || "",
+        observations: newUser.observations || "",
+        real_name: newUser.realName || "",
+        telegram: newUser.telegram || "",
+        whatsapp: newUser.whatsapp || "",
+        devices: newUser.devices || 0,
+        credits: newUser.credits || 0,
+        notes: newUser.notes || "",
+        server: newUser.server || "",
+      };
 
-        setAddUserSuccess(true);
+      console.log("Dados preparados para adicionar:", userData);
+
+      // Adicionar usuário usando o hook
+      const success = await addCliente(userData);
+
+      // Verificar se a operação foi bem-sucedida
+      if (!success) {
+        // Se addCliente retornou false, verificar se há erro no hook
+        const errorMessage = error || "Erro ao adicionar cliente. Verifique os dados e tente novamente.";
+        throw new Error(errorMessage);
+      }
+
+      setAddUserSuccess(true);
 
         // Atualizar Dashboard instantaneamente
         console.log(
@@ -224,21 +251,25 @@ export default function AdminUsers() {
           setIsAddDialogOpen(false);
           setAddUserSuccess(false);
         }, 1000);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro ao adicionar usuário:", error);
-        if (
-          error &&
-          error.message &&
-          error.message.includes("duplicate key value")
-        ) {
-          alert("Já existe um usuário com este e-mail!");
+        const errorMessage = error?.message || error || "Erro desconhecido ao adicionar usuário.";
+        
+        // Mensagens específicas para diferentes tipos de erro
+        if (errorMessage.includes("duplicate key value") || errorMessage.includes("unique constraint")) {
+          alert("❌ Já existe um usuário com este e-mail!");
+        } else if (errorMessage.includes("row-level security") || errorMessage.includes("RLS")) {
+          alert("❌ Erro de permissão: Verifique se você está autenticado e se as políticas RLS estão configuradas corretamente.");
+        } else if (errorMessage.includes("autenticação") || errorMessage.includes("sessão expirou")) {
+          alert("❌ Sua sessão expirou. Por favor, faça login novamente.");
+        } else if (errorMessage.includes("NOT NULL") || errorMessage.includes("null value")) {
+          alert("❌ Erro: Alguns campos obrigatórios não foram preenchidos corretamente.");
         } else {
-          alert("Erro ao adicionar usuário. Tente novamente.");
+          alert(`❌ Erro ao adicionar usuário: ${errorMessage}`);
         }
       } finally {
         setIsAddingUser(false);
       }
-    }
   };
 
   const handleEditUser = async () => {
