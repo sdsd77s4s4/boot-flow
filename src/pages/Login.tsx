@@ -31,8 +31,8 @@ export default function Login() {
       const { error } = await signIn(email, password);
       if (error) throw error;
       
-      // Redireciona para o dashboard admin
-      navigate("/admin");
+      // O redirecionamento será feito automaticamente pelo AuthContext baseado no role
+      // Não precisa navegar manualmente aqui
     } catch (error: any) {
       // Tratamento específico para erros de conexão/rede
       let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
