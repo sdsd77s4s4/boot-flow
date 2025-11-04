@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase.types';
 
 // Configuração do cliente Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://tgffflpfilsxikqhnkuj.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZmZmbHBmaWxzeGlrcWhua3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1NzQ5OTcsImV4cCI6MjA2OTE1MDk5N30.qMzjJOJkPeW2hN9jD_uCW1MTlJgzstSyxm78ia0IdIM';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://mnjivyaztsgxaqihrqec.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uaml2eWF6dHNneGFxaWhycWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNzk1MzIsImV4cCI6MjA3Nzg1NTUzMn0.TDtX3vbrQXtECUqsyrUiGN81fUOYpAK7WRpOEk1acR8';
 
 // Log de diagnóstico
 const usingEnvVars = !!import.meta.env.VITE_SUPABASE_URL && !!import.meta.env.VITE_SUPABASE_ANON_KEY;
