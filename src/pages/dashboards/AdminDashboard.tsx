@@ -134,6 +134,10 @@ const AdminDashboard = () => {
   const { data: realtimeClientes, error: clientesError, isConnected: clientesConnected } = useRealtimeClientes();
   const { data: realtimeRevendas, error: revendasError, isConnected: revendasConnected } = useRealtimeRevendas();
   
+  // Hooks para funções de atualização
+  const { fetchClientes } = useClientes();
+  const { fetchRevendas } = useRevendas();
+  
   // Estados locais para os dados
   const [clientes, setClientes] = useState<any[]>([]);
   const [revendas, setRevendas] = useState<any[]>([]);
@@ -272,13 +276,22 @@ const AdminDashboard = () => {
   }, [clientes, revendas]);
 
   // Função para atualizar clientes
-  const refreshUsers = () => {
-    if (fetchClientes) fetchClientes();
-  };
+  const refreshUsers = useCallback(() => {
+    if (fetchClientes) {
+      fetchClientes();
+    }
+    // Também atualiza os dados locais se necessário
+    setRefreshTrigger(prev => prev + 1);
+  }, [fetchClientes]);
+  
   // Função para atualizar revendas
-  const refreshResellers = () => {
-    if (fetchRevendas) fetchRevendas();
-  };
+  const refreshResellers = useCallback(() => {
+    if (fetchRevendas) {
+      fetchRevendas();
+    }
+    // Também atualiza os dados locais se necessário
+    setRefreshTrigger(prev => prev + 1);
+  }, [fetchRevendas]);
 
   // Atualizar estatísticas quando os dados mudarem
   useEffect(() => {
