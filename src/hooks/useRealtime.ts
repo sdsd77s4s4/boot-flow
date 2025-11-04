@@ -49,7 +49,7 @@ export function useRealtime<T>({
       setError(err instanceof Error ? err : new Error(String(err)));
       return [];
     }
-  }, [table]);
+  }, [table, isDemo]);
 
   // Configura a assinatura em tempo real
   useEffect(() => {
