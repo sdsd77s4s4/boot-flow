@@ -183,6 +183,38 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
     try {
       setLoading(true);
       
+      // Primeiro tenta autenticação demo se as credenciais corresponderem
+      const demoUser = validateDemoCredentials(email, password);
+      if (demoUser) {
+        console.log('🎭 Usando modo demo para login');
+        enableDemoMode();
+        setDemoMode(true);
+        
+        const demoSession = createDemoSession(demoUser);
+        const demoProfile: UserProfile = {
+          id: demoUser.id,
+          email: demoUser.email,
+          full_name: demoUser.full_name,
+          role: demoUser.role,
+          avatar_url: demoUser.avatar_url,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        
+        setSession(demoSession as Session);
+        setUser(demoSession.user as User);
+        setProfile(demoProfile);
+        setUserRole(demoUser.role);
+        
+        toast.success(`Login demo realizado com sucesso! Bem-vindo, ${demoUser.full_name}!`, {
+          duration: 5000,
+        });
+        
+        redirectBasedOnRole(demoUser.role);
+        return { error: null };
+      }
+      
+      // Tenta autenticação Supabase normal
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -200,6 +232,7 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
       setUser(data.session.user);
       setProfile(userProfile);
       setUserRole(role);
+      setDemoMode(false);
       
       // Exibe mensagem de sucesso
       toast.success('Login realizado com sucesso! Redirecionando...');
@@ -213,19 +246,30 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
       
       // Tratamento específico para erros de conexão/rede
       let errorMessage = 'Erro ao fazer login. Verifique suas credenciais.';
+      let showDemoHint = false;
       
       if (error?.message?.includes('Failed to fetch') || 
           error?.message?.includes('ERR_NAME_NOT_RESOLVED') ||
           error?.message?.includes('NetworkError') ||
           error?.name === 'AuthRetryableFetchError') {
-        errorMessage = 'Erro de conexão: Não foi possível conectar ao servidor. Verifique se o projeto Supabase está ativo e se a URL está correta no arquivo .env';
+        errorMessage = 'Erro de conexão: Não foi possível conectar ao servidor.';
+        showDemoHint = true;
       } else if (error?.message) {
         errorMessage = error.message;
       }
       
       toast.error(errorMessage, {
-        duration: 8000, // Duração maior para mensagens de erro de conexão
+        duration: 8000,
+        description: showDemoHint ? '💡 Use as credenciais demo para testar: admin@demo.com / admin123' : undefined,
       });
+      
+      if (showDemoHint) {
+        console.log('💡 Credenciais demo disponíveis:');
+        DEMO_USERS.forEach(user => {
+          console.log(`   ${user.email} / ${user.password} (${user.role})`);
+        });
+      }
+      
       return { error };
     } finally {
       setLoading(false);
