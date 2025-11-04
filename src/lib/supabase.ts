@@ -5,10 +5,23 @@ import type { Database } from '@/types/supabase.types';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://tgffflpfilsxikqhnkuj.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZmZmbHBmaWxzeGlrcWhua3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1NzQ5OTcsImV4cCI6MjA2OTE1MDk5N30.qMzjJOJkPeW2hN9jD_uCW1MTlJgzstSyxm78ia0IdIM';
 
+// Validação da URL do Supabase
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Variáveis de ambiente do Supabase não configuradas corretamente.');
   console.log('Usando valores padrão para desenvolvimento local.');
 }
+
+// Validação do formato da URL
+try {
+  new URL(supabaseUrl);
+} catch (error) {
+  console.error('URL do Supabase inválida:', supabaseUrl);
+  console.error('Verifique se a URL está correta no arquivo .env');
+}
+
+// Exporta a URL para uso em outros lugares
+export const SUPABASE_URL = supabaseUrl;
+export const SUPABASE_ANON_KEY = supabaseAnonKey;
 
 // Criação da instância única do cliente Supabase
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {

@@ -178,8 +178,22 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
       return { error: null };
     } catch (error: any) {
       console.error('Erro no login:', error);
-      const errorMessage = error.message || 'Erro ao fazer login. Verifique suas credenciais.';
-      toast.error(errorMessage);
+      
+      // Tratamento específico para erros de conexão/rede
+      let errorMessage = 'Erro ao fazer login. Verifique suas credenciais.';
+      
+      if (error?.message?.includes('Failed to fetch') || 
+          error?.message?.includes('ERR_NAME_NOT_RESOLVED') ||
+          error?.message?.includes('NetworkError') ||
+          error?.name === 'AuthRetryableFetchError') {
+        errorMessage = 'Erro de conexão: Não foi possível conectar ao servidor. Verifique se o projeto Supabase está ativo e se a URL está correta no arquivo .env';
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage, {
+        duration: 8000, // Duração maior para mensagens de erro de conexão
+      });
       return { error };
     } finally {
       setLoading(false);

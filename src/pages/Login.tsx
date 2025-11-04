@@ -33,7 +33,20 @@ export default function Login() {
       // Redireciona para o dashboard admin
       navigate("/admin");
     } catch (error: any) {
-      setError(error.message || "Erro ao fazer login. Verifique suas credenciais.");
+      // Tratamento específico para erros de conexão/rede
+      let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
+      
+      if (error?.message?.includes('Failed to fetch') || 
+          error?.message?.includes('ERR_NAME_NOT_RESOLVED') ||
+          error?.message?.includes('NetworkError') ||
+          error?.name === 'AuthRetryableFetchError' ||
+          error?.message?.includes('Erro de conexão')) {
+        errorMessage = "Erro de conexão: Não foi possível conectar ao servidor. Verifique sua conexão com a internet e se o projeto Supabase está ativo.";
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -86,9 +99,14 @@ export default function Login() {
             <form onSubmit={handleSubmit}>
               <CardContent className="p-0 space-y-6">
                 {error && (
-                  <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm flex items-center">
-                    <AlertTriangle className="w-4 h-4 mr-2" />
-                    {error}
+                  <div className="bg-destructive/10 text-destructive p-4 rounded-md text-sm">
+                    <div className="flex items-start">
+                      <AlertTriangle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="font-medium mb-1">Erro ao fazer login</p>
+                        <p className="text-xs whitespace-pre-line">{error}</p>
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div className="space-y-2">
