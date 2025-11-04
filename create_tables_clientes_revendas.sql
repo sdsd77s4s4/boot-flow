@@ -21,23 +21,29 @@
 -- NOTA: useClientes hook usa 'users', mas alguns hooks usam 'clientes'
 CREATE TABLE IF NOT EXISTS public.users (
   id BIGSERIAL PRIMARY KEY,
+  -- Informações Básicas (obrigatórias)
+  server VARCHAR(100),
+  plan VARCHAR(50) NOT NULL CHECK (plan IN ('Mensal', 'Trimestral', 'Semestral', 'Anual')),
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
+  status VARCHAR(50) NOT NULL DEFAULT 'Ativo' CHECK (status IN ('Ativo', 'Inativo', 'Suspenso', 'Pendente')),
+  expiration_date DATE NOT NULL,
+  -- Configuração de Serviço
+  devices INTEGER DEFAULT 0,
+  credits INTEGER DEFAULT 0,
   password VARCHAR(255),
-  m3u_url TEXT,
   bouquets TEXT,
-  expiration_date DATE,
-  renewal_date DATE,
+  -- Informações Adicionais
+  real_name VARCHAR(255),
+  whatsapp VARCHAR(20),
+  telegram VARCHAR(100),
   observations TEXT,
   notes TEXT,
+  -- Extração M3U e outros
+  m3u_url TEXT,
+  renewal_date DATE,
   phone VARCHAR(20),
-  telegram VARCHAR(100),
-  whatsapp VARCHAR(20),
-  devices INTEGER DEFAULT 1,
-  credits INTEGER DEFAULT 0,
-  real_name VARCHAR(255),
-  plan VARCHAR(100),
-  status VARCHAR(50) DEFAULT 'Ativo',
+  -- Timestamps automáticos
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
