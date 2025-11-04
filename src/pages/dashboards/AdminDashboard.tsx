@@ -8,6 +8,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { useRevendas } from '@/hooks/useRevendas';
 import { useRealtimeClientes, useRealtimeRevendas } from '@/hooks/useRealtime';
 import useDashboardData from '@/hooks/useDashboardData';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { 
   Brain, 
