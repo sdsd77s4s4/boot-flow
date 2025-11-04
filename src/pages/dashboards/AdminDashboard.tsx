@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -309,22 +309,46 @@ const AdminDashboard = () => {
     return [...clientesOnline, ...revendasOnline].slice(0, 10); // Limitar a 10 itens
   }, [clientes, revendas]);
 
+  // Usar ref para evitar loops infinitos
+  const isRefreshingRef = useRef(false);
+  const lastRefreshRef = useRef(0);
+
   // Função para atualizar clientes
   const refreshUsers = useCallback(() => {
+    // Evitar múltiplas chamadas simultâneas
+    const now = Date.now();
+    if (isRefreshingRef.current || (now - lastRefreshRef.current < 1000)) {
+      return;
+    }
+    isRefreshingRef.current = true;
+    lastRefreshRef.current = now;
+    
     if (fetchClientes) {
       fetchClientes();
     }
-    // Também atualiza os dados locais se necessário
-    setRefreshTrigger(prev => prev + 1);
+    
+    setTimeout(() => {
+      isRefreshingRef.current = false;
+    }, 1000);
   }, [fetchClientes]);
   
   // Função para atualizar revendas
   const refreshResellers = useCallback(() => {
+    // Evitar múltiplas chamadas simultâneas
+    const now = Date.now();
+    if (isRefreshingRef.current || (now - lastRefreshRef.current < 1000)) {
+      return;
+    }
+    isRefreshingRef.current = true;
+    lastRefreshRef.current = now;
+    
     if (fetchRevendas) {
       fetchRevendas();
     }
-    // Também atualiza os dados locais se necessário
-    setRefreshTrigger(prev => prev + 1);
+    
+    setTimeout(() => {
+      isRefreshingRef.current = false;
+    }, 1000);
   }, [fetchRevendas]);
 
   // Atualizar estatísticas quando os dados mudarem
@@ -2040,9 +2064,11 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, [refreshUsers, refreshResellers]);
 
-  // Forçar atualização quando refreshTrigger muda
+  // Forçar atualização quando refreshTrigger muda (com debounce)
+  const lastRefreshTriggerRef = useRef(0);
   useEffect(() => {
-    if (refreshTrigger > 0) {
+    if (refreshTrigger > 0 && refreshTrigger !== lastRefreshTriggerRef.current) {
+      lastRefreshTriggerRef.current = refreshTrigger;
       console.log('🔄 Forçando atualização dos dados...');
       refreshUsers();
       if (refreshResellers) refreshResellers();
@@ -2053,13 +2079,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     const handleRefresh = (event: CustomEvent) => {
       console.log('🔄 Dashboard: Evento refresh-dashboard recebido, atualizando dados...');
-      console.log('Evento recebido:', event);
-      console.log('Detalhes do evento:', event.detail);
       
-      // Forçar re-renderização
-      setRefreshTrigger(prev => prev + 1);
-      
-      // Atualizar dados baseado na fonte
+      // Atualizar dados baseado na fonte sem disparar refreshTrigger novamente
       if (event.detail?.source === 'users' || !event.detail?.source) {
         console.log('🔄 Atualizando dados de usuários...');
         refreshUsers();
@@ -2067,6 +2088,11 @@ const AdminDashboard = () => {
       if (event.detail?.source === 'resellers' || !event.detail?.source) {
         console.log('🔄 Atualizando dados de revendedores...');
         if (refreshResellers) refreshResellers();
+      }
+      
+      // Apenas atualiza o trigger se realmente necessário
+      if (!event.detail?.source || event.detail?.forceRefresh) {
+        setRefreshTrigger(prev => prev + 1);
       }
     };
     window.addEventListener('refresh-dashboard', handleRefresh as EventListener);
@@ -2078,7 +2104,9 @@ const AdminDashboard = () => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'dashboard-refresh') {
         console.log('🔄 Dashboard: localStorage change detectado, atualizando dados...');
-        setRefreshTrigger(prev => prev + 1);
+        // Chama diretamente sem atualizar o trigger para evitar loops
+        refreshUsers();
+        if (refreshResellers) refreshResellers();
       }
     };
     
@@ -2087,20 +2115,19 @@ const AdminDashboard = () => {
       if (refreshFlag) {
         console.log('🔄 Dashboard: Flag de refresh encontrada, atualizando dados...');
         localStorage.removeItem('dashboard-refresh');
-        setRefreshTrigger(prev => prev + 1);
+        // Chama diretamente sem atualizar o trigger para evitar loops
+        refreshUsers();
+        if (refreshResellers) refreshResellers();
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
     checkForRefresh(); // Verificar ao montar o componente
     
-    const interval = setInterval(checkForRefresh, 1000); // Verificar a cada segundo
-    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
-  }, []);
+  }, [refreshUsers, refreshResellers]);
 
   return (
     <SidebarProvider>
