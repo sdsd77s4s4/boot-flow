@@ -954,9 +954,10 @@ export default function AdminUsers() {
                           }
                         >
                           <option value="">Selecione um plano</option>
-                          <option value="Trial">🟧 TESTE - COMPLETO</option>
-                          <option value="Premium">🟦 PREMIUM - COMPLETO</option>
-                          <option value="Basic">🟩 BÁSICO</option>
+                          <option value="Mensal">🟧 Mensal</option>
+                          <option value="Trimestral">🟦 Trimestral</option>
+                          <option value="Semestral">🟩 Semestral</option>
+                          <option value="Anual">🟪 Anual</option>
                         </select>
                       </div>
                       {/* Usuário */}
