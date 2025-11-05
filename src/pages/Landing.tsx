@@ -353,9 +353,9 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
             {plans.map((plan, index) => (
-              <Card key={index} className={`glass border-border/20 hover:border-primary/20 transition-all duration-300 relative flex flex-col overflow-hidden group ${plan.popular ? 'ring-2 ring-primary shadow-glow lg:scale-105 lg:-mt-2' : ''} ${plan.price === "R$ 0" ? 'border-green-500/30' : ''}`}>
+              <Card key={index} className={`glass border-border/20 hover:border-primary/20 transition-all duration-300 relative flex flex-col overflow-hidden group ${plan.popular ? 'ring-2 ring-primary shadow-glow lg:scale-105' : ''} ${plan.price === "R$ 0" ? 'border-green-500/30' : ''}`}>
                 {plan.popular && (
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-primary"></div>
                 )}
@@ -363,49 +363,49 @@ const Landing = () => {
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-green-500 to-green-400"></div>
                 )}
                 {plan.popular && (
-                  <Badge variant="neon" className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10 animate-pulse-glow shadow-lg">
+                  <Badge variant="neon" className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10 animate-pulse-glow shadow-lg text-xs">
                     ⭐ Mais Popular
                   </Badge>
                 )}
                 {plan.price === "R$ 0" && (
-                  <Badge className="absolute -top-3 right-4 bg-green-500 hover:bg-green-600 text-white z-10 shadow-lg font-bold">
+                  <Badge className="absolute -top-3 right-4 bg-green-500 hover:bg-green-600 text-white z-10 shadow-lg font-bold text-xs px-2 py-0.5">
                     GRÁTIS
                   </Badge>
                 )}
-                <CardHeader className="text-center pb-4 border-b border-border/20 relative">
-                  <CardTitle className="text-2xl font-bold mb-2">{plan.name}</CardTitle>
-                  <CardDescription className="text-sm mb-4 min-h-[40px]">{plan.description}</CardDescription>
+                <CardHeader className="text-center pb-3 border-b border-border/20 relative px-3 pt-5">
+                  <CardTitle className="text-lg font-bold mb-1">{plan.name}</CardTitle>
+                  <CardDescription className="text-xs mb-2 min-h-[28px] leading-tight">{plan.description}</CardDescription>
                   <div className="mb-2">
-                    <div className="text-4xl font-bold gradient-text mb-1">
+                    <div className="text-2xl font-bold gradient-text mb-1">
                       {plan.price}
-                      <span className="text-lg text-muted-foreground">{plan.period}</span>
+                      <span className="text-sm text-muted-foreground">{plan.period}</span>
                     </div>
-                    <div className="text-sm text-primary font-semibold mt-2 bg-primary/10 rounded-full px-3 py-1 inline-block">
+                    <div className="text-xs text-primary font-semibold mt-1 bg-primary/10 rounded-full px-2 py-0.5 inline-block">
                       {plan.clients}
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-1 flex flex-col pt-6">
-                  <div className="space-y-3 mb-6 flex-1">
+                <CardContent className="flex-1 flex flex-col pt-3 px-3 pb-3">
+                  <div className="space-y-1.5 mb-3 flex-1">
                     {plan.features.map((feature, i) => (
-                      <div key={i} className="flex items-start space-x-2 group-hover:translate-x-1 transition-transform">
-                        <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-sm leading-relaxed">{feature}</span>
+                      <div key={i} className="flex items-start space-x-2 group-hover:translate-x-0.5 transition-transform">
+                        <Check className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-xs leading-relaxed">{feature}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="border-t border-border/20 pt-4 mb-4 bg-muted/30 rounded-lg p-3">
+                  <div className="border-t border-border/20 pt-2 mb-2 bg-muted/30 rounded-lg p-1.5">
                     <p className="text-xs text-muted-foreground italic text-center leading-relaxed">
                       "{plan.highlight}"
                     </p>
                   </div>
                   <Button 
                     variant={plan.popular ? "hero" : plan.price === "R$ 0" ? "default" : "glass"} 
-                    className={`w-full font-semibold transition-all duration-300 ${plan.popular ? 'hover:scale-105 shadow-lg' : ''}`}
+                    className={`w-full font-semibold text-xs h-8 transition-all duration-300 ${plan.popular ? 'hover:scale-105 shadow-lg' : ''}`}
                     onClick={() => navigate('/cadastro')}
                   >
-                    {plan.price === "R$ 0" ? "Começar Grátis Agora" : "Assinar Agora"}
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    {plan.price === "R$ 0" ? "Começar Grátis" : "Assinar Agora"}
+                    <ArrowRight className="w-3 h-3 ml-1.5" />
                   </Button>
                 </CardContent>
               </Card>
