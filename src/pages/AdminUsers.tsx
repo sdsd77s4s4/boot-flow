@@ -993,80 +993,44 @@ export default function AdminUsers() {
                           }
                         >
                           <option value="">Selecione um plano</option>
-                          <option value="Mensal">🟧 Mensal</option>
-                          <option value="Trimestral">🟦 Trimestral</option>
-                          <option value="Semestral">🟩 Semestral</option>
-                          <option value="Anual">🟪 Anual</option>
+                          <option value="Mensal">Mensal</option>
+                          <option value="Trimestral">Trimestral</option>
+                          <option value="Semestral">Semestral</option>
+                          <option value="Anual">Anual</option>
                         </select>
                       </div>
-                      {/* Usuário */}
+                      {/* Nome */}
                       <div className="col-span-1">
                         <label className="block text-gray-300 mb-1 font-medium">
-                          Usuário *
+                          Nome *
                         </label>
-                        <div className="relative flex items-center">
-                          <input
-                            placeholder="Usuário"
-                            className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
-                            value={newUser.name}
-                            onChange={(e) =>
-                              setNewUser({ ...newUser, name: e.target.value })
-                            }
-                          />
-                          <span className="absolute right-2 text-gray-500 cursor-pointer">
-                            <svg
-                              width="16"
-                              height="16"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                              <polyline points="7 9 12 4 17 9" />
-                              <line x1="12" x2="12" y1="4" y2="16" />
-                            </svg>
-                          </span>
-                        </div>
+                        <Input
+                          placeholder="Nome completo do cliente"
+                          className="bg-[#23272f] border border-gray-700 text-white"
+                          value={newUser.name}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, name: e.target.value })
+                          }
+                        />
                       </div>
-                      {/* Senha */}
+                      {/* Email */}
                       <div className="col-span-1">
                         <label className="block text-gray-300 mb-1 font-medium">
-                          Senha
+                          Email *
                         </label>
-                        <div className="relative flex items-center">
-                          <input
-                            type="text"
-                            placeholder="Senha"
-                            className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 pr-8"
-                            value={newUser.password}
-                            onChange={(e) =>
-                              setNewUser({ ...newUser, password: e.target.value })
-                            }
-                          />
-                          <span className="absolute right-2 text-gray-500 cursor-pointer">
-                            <svg
-                              width="16"
-                              height="16"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                              <polyline points="7 9 12 4 17 9" />
-                              <line x1="12" x2="12" y1="4" y2="16" />
-                            </svg>
-                          </span>
-                        </div>
-                        <div className="bg-blue-900/40 border border-blue-700 text-blue-300 text-xs rounded mt-2 p-2 space-y-1">
-                          <div>Senha extraída automaticamente da URL M3U</div>
-                        </div>
+                        <Input
+                          placeholder="email@exemplo.com"
+                          className="bg-[#23272f] border border-gray-700 text-white"
+                          value={newUser.email}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, email: e.target.value })
+                          }
+                        />
                       </div>
                       {/* Status */}
                       <div className="col-span-1">
                         <label className="block text-gray-300 mb-1 font-medium">
-                          Status
+                          Status *
                         </label>
                         <select
                           className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
@@ -1075,121 +1039,23 @@ export default function AdminUsers() {
                             setNewUser({ ...newUser, status: e.target.value })
                           }
                         >
-                          <option value="Ativo">🟢 Ativo</option>
-                          <option value="Inativo">🔴 Inativo</option>
-                          <option value="Pendente">🟡 Pendente</option>
+                          <option value="Ativo">Ativo</option>
+                          <option value="Inativo">Inativo</option>
+                          <option value="Suspenso">Suspenso</option>
+                          <option value="Pendente">Pendente</option>
                         </select>
                       </div>
-                      {/* Vencimento */}
+                      {/* Data de Expiração */}
                       <div className="col-span-1">
                         <label className="block text-gray-300 mb-1 font-medium">
-                          Vencimento *
+                          Data de Expiração *
                         </label>
-                        <input
+                        <Input
                           type="date"
-                          required
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          className="bg-[#23272f] border border-gray-700 text-white"
                           value={newUser.expirationDate}
                           onChange={(e) =>
-                            setNewUser({
-                              ...newUser,
-                              expirationDate: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                      {/* Bouquets */}
-                      <div className="col-span-2">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          Bouquets
-                        </label>
-                        <input
-                          placeholder="Bouquets extraídos automaticamente"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          value={newUser.bouquets}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, bouquets: e.target.value })
-                          }
-                        />
-                        <div className="bg-green-900/40 border border-green-700 text-green-400 text-xs rounded mt-2 p-2">
-                          Bouquets extraídos automaticamente da conta IPTV
-                        </div>
-                      </div>
-                      {/* Nome */}
-                      <div className="col-span-1">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          Nome *
-                        </label>
-                        <input
-                          placeholder="Digite o nome completo"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          value={newUser.realName}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, realName: e.target.value })
-                          }
-                          required
-                        />
-                      </div>
-                      {/* E-mail */}
-                      <div className="col-span-1">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          E-mail
-                        </label>
-                        <input
-                          placeholder="Opcional"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          value={newUser.email}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, email: e.target.value })
-                          }
-                        />
-                      </div>
-                      {/* Telegram */}
-                      <div className="col-span-1">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          Telegram
-                        </label>
-                        <input
-                          placeholder="Opcional"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          value={newUser.telegram}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, telegram: e.target.value })
-                          }
-                        />
-                      </div>
-                      {/* WhatsApp */}
-                      <div className="col-span-1">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          WhatsApp
-                        </label>
-                        <input
-                          placeholder="Opcional"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          value={newUser.whatsapp}
-                          onChange={(e) =>
-                            setNewUser({ ...newUser, whatsapp: e.target.value })
-                          }
-                        />
-                        <span className="text-xs text-gray-400 mt-1 block">
-                          Incluindo o código do país - com ou sem espaço e traços
-                          - ex. 55 11 99999 3333
-                        </span>
-                      </div>
-                      {/* Observações */}
-                      <div className="col-span-2">
-                        <label className="block text-gray-300 mb-1 font-medium">
-                          Observações
-                        </label>
-                        <textarea
-                          placeholder="Opcional"
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
-                          value={newUser.observations}
-                          onChange={(e) =>
-                            setNewUser({
-                              ...newUser,
-                              observations: e.target.value,
-                            })
+                            setNewUser({ ...newUser, expirationDate: e.target.value })
                           }
                         />
                       </div>
