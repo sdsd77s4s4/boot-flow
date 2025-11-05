@@ -175,51 +175,25 @@ const AdminDashboard = () => {
   // Função para adicionar um novo cliente (usa o hook useClientes)
   const addCliente = useCallback(async (clienteData: any) => {
     try {
-      // Verifica se está em modo demo
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Você precisa estar autenticado no Supabase para adicionar clientes. O modo demo não salva dados no banco.', { duration: 7000 });
-        return { data: null, error: new Error('Não autenticado') };
-      }
+      console.log('🔄 [AdminDashboard] addCliente wrapper chamado com:', clienteData);
       
-      // Converte os nomes dos campos para corresponder ao banco de dados
-      const dataToInsert = {
-        name: clienteData.name,
-        email: clienteData.email,
-        plan: clienteData.plan,
-        status: clienteData.status,
-        expiration_date: clienteData.expirationDate || clienteData.expiration_date,
-        password: clienteData.password,
-        bouquets: clienteData.bouquets,
-        real_name: clienteData.realName || clienteData.real_name,
-        whatsapp: clienteData.whatsapp,
-        telegram: clienteData.telegram,
-        observations: clienteData.observations,
-        notes: clienteData.notes,
-        devices: clienteData.devices || 0,
-        credits: clienteData.credits || 0,
-        m3u_url: clienteData.m3u_url,
-        server: clienteData.server,
-        renewal_date: clienteData.renewalDate || clienteData.renewal_date,
-        phone: clienteData.phone,
-      };
-      
-      const success = await addClienteHook(dataToInsert);
+      // Chamar diretamente o hook sem verificar sessão (o hook já faz isso)
+      const success = await addClienteHook(clienteData);
       
       if (success) {
         toast.success('Cliente adicionado com sucesso!');
-        return { data: null, error: null };
+        return true;
       } else {
         // Mostra mensagem de erro mais específica
         const errorMsg = 'Não foi possível adicionar o cliente. Verifique se você está autenticado e se todos os campos obrigatórios estão preenchidos.';
         toast.error(errorMsg, { duration: 5000 });
         console.error('Erro ao adicionar cliente - verifique o console para detalhes');
-        return { data: null, error: new Error('Falha ao adicionar cliente') };
+        return false;
       }
-    } catch (error) {
-      console.error('Erro ao adicionar cliente:', error);
-      toast.error('Erro ao adicionar cliente');
-      return { data: null, error };
+    } catch (error: any) {
+      console.error('Erro no wrapper addCliente:', error);
+      toast.error(`Erro ao adicionar cliente: ${error?.message || 'Erro desconhecido'}`, { duration: 5000 });
+      return false;
     }
   }, [addClienteHook]);
   
@@ -636,65 +610,136 @@ const AdminDashboard = () => {
   };
 
   const handleAddUser = async () => {
-    if (!newUser.name || !newUser.email || !newUser.plan || !newUser.status || !newUser.expirationDate) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
+    console.log("🔵 [AdminDashboard] handleAddUser chamado");
+    console.log("🔵 [AdminDashboard] Estado newUser:", newUser);
+    
+    // Validação completa dos campos obrigatórios
+    if (!newUser.name || !newUser.email || !newUser.plan) {
+      console.log("❌ [AdminDashboard] Validação falhou: campos obrigatórios não preenchidos");
+      alert("Por favor, preencha todos os campos obrigatórios: Nome, Email e Plano.");
       return;
     }
 
+    // Validar data de vencimento
+    if (!newUser.expirationDate) {
+      console.log("❌ [AdminDashboard] Validação falhou: data de vencimento não preenchida");
+      alert("Por favor, preencha a data de vencimento.");
+      return;
+    }
+
+    console.log("✅ [AdminDashboard] Validação passou, iniciando processo...");
     setIsAddingUser(true);
+
+    // Timeout de segurança para evitar travamento infinito (30 segundos)
+    let timeoutId: NodeJS.Timeout | null = null;
+    timeoutId = setTimeout(() => {
+      console.error("⏰ [AdminDashboard] Timeout: processo demorou mais de 30 segundos");
+      setIsAddingUser(false);
+      alert("⏰ O processo está demorando muito. Verifique sua conexão e tente novamente.");
+    }, 30000);
+
     try {
-      const result = await addCliente({
-        name: newUser.name,
+      console.log("📤 [AdminDashboard] Dados do usuário a ser adicionado:", newUser);
+
+      // Preparar dados do usuário para o Supabase (snake_case)
+      const userData = {
+        name: newUser.realName || newUser.name,
         email: newUser.email,
-        plan: newUser.plan,
-        status: newUser.status,
-        telegram: newUser.telegram,
-        observations: newUser.observations,
-        expirationDate: newUser.expirationDate,
-        password: newUser.password,
-        bouquets: newUser.bouquets,
-        realName: newUser.realName,
-        whatsapp: newUser.whatsapp,
-        devices: newUser.devices,
-        credits: newUser.credits,
-        notes: newUser.notes,
-        server: newUser.server, // Adiciona campo server se existir
+        plan: newUser.plan, // Campo obrigatório
+        status: newUser.status || "Ativo", // Campo obrigatório com default
+        expiration_date: newUser.expirationDate, // Campo obrigatório
+        password: newUser.password || "",
+        m3u_url: newUser.m3u_url || "",
+        bouquets: newUser.bouquets || "",
+        observations: newUser.observations || "",
+        real_name: newUser.realName || "",
+        telegram: newUser.telegram || "",
+        whatsapp: newUser.whatsapp || "",
+        devices: newUser.devices || 0,
+        credits: newUser.credits || 0,
+        notes: newUser.notes || "",
+        server: newUser.server || "",
+      };
+
+      console.log("📤 [AdminDashboard] Dados preparados para adicionar:", userData);
+
+      // Adicionar usuário usando o hook
+      console.log("🔄 [AdminDashboard] Chamando addCliente...");
+      const success = await addCliente(userData);
+      console.log("🔄 [AdminDashboard] addCliente retornou:", success);
+
+      // Verificar se a operação foi bem-sucedida
+      if (!success) {
+        console.error("❌ [AdminDashboard] addCliente retornou false");
+        const errorMessage = "Erro ao adicionar cliente. Verifique os dados e tente novamente.";
+        console.error("❌ [AdminDashboard] Mensagem de erro:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      console.log("✅ [AdminDashboard] Cliente adicionado com sucesso!");
+      
+      // Cancelar timeout de segurança já que a operação foi bem-sucedida
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
+      // Limpar formulário
+      setNewUser({
+        name: "",
+        email: "",
+        plan: "",
+        status: "Ativo",
+        telegram: "",
+        observations: "",
+        expirationDate: "",
+        password: "",
+        bouquets: "",
+        realName: "",
+        whatsapp: "",
+        devices: 0,
+        credits: 0,
+        notes: "",
+        server: "",
+        m3u_url: "",
       });
 
-      if (result && !result.error) {
-        // Limpar formulário
-        setNewUser({
-          name: "",
-          email: "",
-          plan: "",
-          status: "Ativo",
-          telegram: "",
-          observations: "",
-          expirationDate: "",
-          password: "",
-          bouquets: "",
-          realName: "",
-          whatsapp: "",
-          devices: 0,
-          credits: 0,
-          notes: "",
-          server: "",
-          m3u_url: "",
-        });
-        
-        // Fechar modal
-        setClientModal(false);
-        
-        // Atualizar dados
-        refreshUsers();
-        
-        // Atualizar dashboard
-        setRefreshTrigger(prev => prev + 1);
+      // Limpar dados de extração
+      setM3uUrl("");
+      setExtractionResult(null);
+      setExtractionError("");
+
+      // Fechar modal
+      setClientModal(false);
+
+      // Atualizar dados
+      refreshUsers();
+
+      // Atualizar dashboard
+      setRefreshTrigger(prev => prev + 1);
+    } catch (error: any) {
+      console.error("❌ [AdminDashboard] Erro ao adicionar usuário:", error);
+      
+      // Cancelar timeout de segurança já que houve erro
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
-    } catch (error) {
-      console.error("Erro ao adicionar cliente:", error);
-      alert("Erro ao adicionar cliente. Tente novamente.");
+      
+      const errorMessage = error?.message || error || "Erro desconhecido ao adicionar usuário.";
+      
+      // Mensagens específicas para diferentes tipos de erro
+      if (errorMessage.includes("duplicate key value") || errorMessage.includes("unique constraint")) {
+        alert("❌ Já existe um usuário com este e-mail!");
+      } else if (errorMessage.includes("row-level security") || errorMessage.includes("RLS")) {
+        alert("❌ Erro de permissão: Verifique se você está autenticado e se as políticas RLS estão configuradas corretamente.");
+      } else if (errorMessage.includes("autenticação") || errorMessage.includes("sessão expirou")) {
+        alert("❌ Sua sessão expirou. Por favor, faça login novamente.");
+      } else if (errorMessage.includes("NOT NULL") || errorMessage.includes("null value")) {
+        alert("❌ Erro: Alguns campos obrigatórios não foram preenchidos corretamente.");
+      } else {
+        alert(`❌ Erro ao adicionar usuário: ${errorMessage}`);
+      }
     } finally {
+      console.log("🔄 [AdminDashboard] Finalizando processo (finally)...");
       setIsAddingUser(false);
     }
   };
