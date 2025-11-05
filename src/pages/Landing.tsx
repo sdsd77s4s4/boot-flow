@@ -21,7 +21,18 @@ import {
   Users,
   PhoneCall,
   Clock,
-  BarChart3
+  BarChart3,
+  Link,
+  Mail,
+  CreditCard,
+  FileText,
+  DollarSign,
+  ShoppingCart,
+  Download,
+  Crown,
+  Headphones,
+  ArrowRightCircle,
+  BarChart
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -110,19 +121,20 @@ const Landing = () => {
       description: "Para quem está começando e quer organizar o jogo",
       clients: "5 clientes",
       features: [
-        "Gestor Bot",
-        "Link WhatsApp",
-        "WhatsAPI própria (envios ilimitados)",
-        "Campanhas WhatsApp",
-        "Envio de e-mail",
-        "Emite cobranças",
-        "Link de pagamento",
-        "Financeiro completo",
-        "Faturas de clientes",
-        "Área do cliente",
-        "Exportar dados financeiros",
-        "Integração Mercado Pago",
-        "Envio de produtos digitais"
+        { text: "5 clientes", icon: Users },
+        { text: "Gestor Bot", icon: Bot },
+        { text: "Link WhatsApp", icon: Link },
+        { text: "WhatsAPI própria (envios ilimitados)", icon: MessageSquare },
+        { text: "Campanhas WhatsApp", icon: Zap },
+        { text: "Envio de e-mail", icon: Mail },
+        { text: "Emite cobranças", icon: FileText },
+        { text: "Link de pagamento", icon: CreditCard },
+        { text: "Financeiro completo", icon: DollarSign },
+        { text: "Faturas de clientes", icon: FileText },
+        { text: "Área do cliente", icon: Users },
+        { text: "Exportar dados financeiros", icon: Download },
+        { text: "Integração Mercado Pago", icon: ShoppingCart },
+        { text: "Envio de produtos digitais", icon: ArrowRightCircle }
       ],
       popular: false,
       highlight: "Entrada perfeita para testar e já faturar. Zero desculpa."
@@ -134,8 +146,9 @@ const Landing = () => {
       description: "Para quem já tem fluxo e precisa escalar com estrutura",
       clients: "50 clientes",
       features: [
-        "Tudo do Essencial",
-        "Prioridade no suporte"
+        { text: "50 clientes", icon: Users },
+        { text: "Tudo do Essencial", icon: Check },
+        { text: "Prioridade no suporte", icon: Headphones }
       ],
       popular: true,
       highlight: "Ideal para pequenos negócios começarem a automatizar pra valer."
@@ -147,8 +160,9 @@ const Landing = () => {
       description: "Para quem está crescendo firme e quer automação séria",
       clients: "100 clientes",
       features: [
-        "Tudo do Profissional",
-        "Recursos avançados de automação"
+        { text: "100 clientes", icon: Users },
+        { text: "Tudo do Profissional", icon: Check },
+        { text: "Recursos avançados de automação", icon: BarChart }
       ],
       popular: false,
       highlight: "Aqui você começa a rodar como empresa de verdade."
@@ -160,10 +174,11 @@ const Landing = () => {
       description: "Para quem quer jogar no nível alto e dominar o mercado",
       clients: "1.000 clientes",
       features: [
-        "Tudo do Business",
-        "Suporte VIP",
-        "Migração assistida",
-        "Auditoria rápida do funil (bônus estratégico)"
+        { text: "1.000 clientes", icon: Users },
+        { text: "Tudo do Business", icon: Check },
+        { text: "Suporte VIP", icon: Crown },
+        { text: "Migração assistida", icon: ArrowRightCircle },
+        { text: "Auditoria rápida do funil", icon: BarChart }
       ],
       popular: false,
       highlight: "Esse é para quem pensa grande e não aceita travar o crescimento."
