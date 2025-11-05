@@ -27,6 +27,9 @@ import Settings from "./pages/Settings";
 import HelpCenter from "./pages/HelpCenter";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import API from "./pages/API";
+import Documentacao from "./pages/Documentacao";
+import Integracoes from "./pages/Integracoes";
 import Products from "./pages/Products";
 import Statistics from "./pages/Statistics";
 import Ecommerce from "./pages/Ecommerce";
@@ -63,6 +66,9 @@ const App = () => {
                 <Route path="/termos" element={<Terms />} />
                 <Route path="/privacidade" element={<Privacy />} />
                 <Route path="/ajuda" element={<HelpCenter />} />
+                <Route path="/api" element={<API />} />
+                <Route path="/documentacao" element={<Documentacao />} />
+                <Route path="/integracoes" element={<Integracoes />} />
                 <Route path="/empresa/sobre" element={<Sobre />} />
                 <Route path="/empresa/blog" element={<Blog />} />
 

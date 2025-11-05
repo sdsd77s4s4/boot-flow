@@ -422,11 +422,11 @@ const Landing = () => {
               <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <a 
-                    href="#funcionalidades" 
+                    href="#features" 
                     className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById('funcionalidades')?.scrollIntoView({ behavior: 'smooth' });
+                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
                     Funcionalidades
@@ -434,11 +434,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="#planos" 
+                    href="#pricing" 
                     className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' });
+                      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
                     Preços
@@ -446,11 +446,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="#api" 
+                    href="/api" 
                     className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' });
+                      navigate('/api');
                     }}
                   >
                     API
@@ -458,11 +458,11 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="#integracoes" 
+                    href="/integracoes" 
                     className="hover:text-foreground transition-colors cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById('integracoes')?.scrollIntoView({ behavior: 'smooth' });
+                      navigate('/integracoes');
                     }}
                   >
                     Integrações
@@ -474,10 +474,48 @@ const Landing = () => {
             <div>
               <h4 className="font-semibold mb-4">Suporte</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Central de Ajuda</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Documentação</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">WhatsApp</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Email</a></li>
+                <li>
+                  <a 
+                    href="/ajuda" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/ajuda');
+                    }}
+                  >
+                    Central de Ajuda
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="/documentacao" 
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/documentacao');
+                    }}
+                  >
+                    Documentação
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="https://wa.me/5511999999999" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="mailto:suporte@bootflow.com" 
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Email
+                  </a>
+                </li>
               </ul>
             </div>
 
