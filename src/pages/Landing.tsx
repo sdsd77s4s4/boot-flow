@@ -15,6 +15,7 @@ import {
   Play,
   Check,
   ArrowRight,
+  ArrowUp,
   Sparkles,
   Users,
   PhoneCall,
@@ -541,15 +542,14 @@ const Landing = () => {
 
       {/* Botão Voltar ao Topo */}
       {showScrollButton && (
-        <button
+        <Button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center z-50"
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-primary text-white shadow-lg hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 z-50 px-6 py-3"
           aria-label="Voltar ao topo"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m18 15-6-6-6 6" />
-          </svg>
-        </button>
+          <ArrowUp className="w-5 h-5" />
+          Voltar ao Topo
+        </Button>
       )}
     </div>
   );
