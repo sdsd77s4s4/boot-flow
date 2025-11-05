@@ -422,12 +422,12 @@ const Landing = () => {
                   </div>
 
                   {/* Features List */}
-                  <div className="flex-1 px-6 pt-4 pb-4">
-                    <ul className="space-y-2 mb-3">
+                  <div className="flex-1 px-6 pt-4 pb-2">
+                    <ul className="space-y-1.5 mb-2">
                       {plan.features.map((feature, i) => {
                         const FeatureIcon = feature.icon || Check;
                         return (
-                          <li key={i} className="flex items-start gap-3 group/item">
+                          <li key={i} className="flex items-start gap-2.5 group/item">
                             <div className={`mt-0.5 flex-shrink-0 rounded-full p-1 ${
                               isPopular 
                                 ? 'bg-primary/20 text-primary' 
@@ -444,7 +444,7 @@ const Landing = () => {
                     </ul>
 
                     {/* Highlight Quote */}
-                    <div className="border-t border-border/50 pt-3 mb-0">
+                    <div className="border-t border-border/50 pt-2">
                       <p className="text-xs text-muted-foreground italic text-center leading-relaxed">
                         "{plan.highlight}"
                       </p>
@@ -452,7 +452,7 @@ const Landing = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <div className="px-6 pb-6 pt-4">
+                  <div className="px-6 pb-6 pt-2">
                     <Button
                       variant={isPopular ? "hero" : isFree ? "default" : "outline"}
                       className={`w-full h-12 text-base font-semibold transition-all duration-300 ${
