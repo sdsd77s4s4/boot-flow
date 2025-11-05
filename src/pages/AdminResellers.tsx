@@ -73,11 +73,15 @@ export default function AdminResellers() {
           email: newReseller.email || undefined,
           telegram: newReseller.telegram || undefined,
           whatsapp: newReseller.whatsapp || undefined,
-          observations: newReseller.observations || undefined
+          observations: newReseller.observations || undefined,
+          status: 'Ativo' // Garantir que o revendedor seja criado como Ativo
         });
         
         try {
           setAddResellerSuccess(true);
+          
+          // Disparar evento para notificar que um revendedor foi criado
+          window.dispatchEvent(new CustomEvent('reseller-created'));
           
           // Atualizar Dashboard instantaneamente
           console.log('📤 Revendas: Disparando evento refresh-dashboard após criar revenda');
