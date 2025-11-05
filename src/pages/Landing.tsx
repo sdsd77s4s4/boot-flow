@@ -422,8 +422,8 @@ const Landing = () => {
                   </div>
 
                   {/* Features List */}
-                  <div className="flex-1 p-6 pt-4">
-                    <ul className="space-y-3 mb-6">
+                  <div className="flex-1 px-6 pt-4 pb-4">
+                    <ul className="space-y-2 mb-3">
                       {plan.features.map((feature, i) => {
                         const FeatureIcon = feature.icon || Check;
                         return (
@@ -444,7 +444,7 @@ const Landing = () => {
                     </ul>
 
                     {/* Highlight Quote */}
-                    <div className="border-t border-border/50 pt-4 mb-6">
+                    <div className="border-t border-border/50 pt-3 mb-0">
                       <p className="text-xs text-muted-foreground italic text-center leading-relaxed">
                         "{plan.highlight}"
                       </p>
@@ -452,7 +452,7 @@ const Landing = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <div className="p-6 pt-0">
+                  <div className="px-6 pb-6 pt-4">
                     <Button
                       variant={isPopular ? "hero" : isFree ? "default" : "outline"}
                       className={`w-full h-12 text-base font-semibold transition-all duration-300 ${
