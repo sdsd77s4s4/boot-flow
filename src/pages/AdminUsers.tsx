@@ -220,6 +220,11 @@ export default function AdminUsers() {
 
       console.log("✅ [DEBUG] Cliente adicionado com sucesso!");
       setAddUserSuccess(true);
+      
+      // Cancelar timeout de segurança já que a operação foi bem-sucedida
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
         // Atualizar Dashboard instantaneamente
         console.log(
@@ -276,6 +281,12 @@ export default function AdminUsers() {
         }, 1000);
       } catch (error: any) {
         console.error("❌ [DEBUG] Erro ao adicionar usuário:", error);
+        
+        // Cancelar timeout de segurança já que houve erro
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
         const errorMessage = error?.message || error || "Erro desconhecido ao adicionar usuário.";
         
         // Mensagens específicas para diferentes tipos de erro
