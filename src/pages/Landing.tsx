@@ -104,45 +104,69 @@ const Landing = () => {
 
   const plans = [
     {
-      name: "Starter",
-      price: "R$ 197",
+      name: "Essencial",
+      price: "R$ 0",
       period: "/mês",
-      description: "Perfeito para pequenas empresas",
+      description: "Para quem está começando e quer organizar o jogo",
+      clients: "5 clientes",
       features: [
-        "1 Agente de Voz",
-        "1.000 mensagens/mês",
-        "WhatsApp integrado",
-        "Suporte por email"
+        "Gestor Bot",
+        "Link WhatsApp",
+        "WhatsAPI própria (envios ilimitados)",
+        "Campanhas WhatsApp",
+        "Envio de e-mail",
+        "Emite cobranças",
+        "Link de pagamento",
+        "Financeiro completo",
+        "Faturas de clientes",
+        "Área do cliente",
+        "Exportar dados financeiros",
+        "Integração Mercado Pago",
+        "Envio de produtos digitais"
       ],
-      popular: false
+      popular: false,
+      highlight: "Entrada perfeita para testar e já faturar. Zero desculpa."
     },
     {
-      name: "Professional",
-      price: "R$ 497",
+      name: "Profissional",
+      price: "R$ 29,90",
       period: "/mês",
-      description: "Ideal para empresas em crescimento",
+      description: "Para quem já tem fluxo e precisa escalar com estrutura",
+      clients: "50 clientes",
       features: [
-        "5 Agentes de Voz",
-        "10.000 mensagens/mês",
-        "Campanhas ilimitadas",
-        "Analytics avançado",
-        "Suporte prioritário"
+        "Tudo do Essencial",
+        "Prioridade no suporte"
       ],
-      popular: true
+      popular: true,
+      highlight: "Ideal para pequenos negócios começarem a automatizar pra valer."
     },
     {
-      name: "Enterprise",
-      price: "R$ 997",
+      name: "Business",
+      price: "R$ 39,90",
       period: "/mês",
-      description: "Para grandes operações",
+      description: "Para quem está crescendo firme e quer automação séria",
+      clients: "100 clientes",
       features: [
-        "Agentes ilimitados",
-        "Mensagens ilimitadas",
-        "White-label completo",
-        "API personalizada",
-        "Suporte 24/7"
+        "Tudo do Profissional",
+        "Recursos avançados de automação"
       ],
-      popular: false
+      popular: false,
+      highlight: "Aqui você começa a rodar como empresa de verdade."
+    },
+    {
+      name: "Elite",
+      price: "R$ 59,90",
+      period: "/mês",
+      description: "Para quem quer jogar no nível alto e dominar o mercado",
+      clients: "1.000 clientes",
+      features: [
+        "Tudo do Business",
+        "Suporte VIP",
+        "Migração assistida",
+        "Auditoria rápida do funil (bônus estratégico)"
+      ],
+      popular: false,
+      highlight: "Esse é para quem pensa grande e não aceita travar o crescimento."
     }
   ];
 
@@ -322,42 +346,65 @@ const Landing = () => {
               Preços
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
-              Planos para Todos os Tamanhos
+              Estilo Premium Corporativo
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Escolha o plano ideal para automatizar sua comunicação e aumentar suas vendas
+              Vamos montar sua tabela e deixar ela tinindo pra vender
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {plans.map((plan, index) => (
-              <Card key={index} className={`glass border-border/20 hover:border-primary/20 transition-all duration-300 relative ${plan.popular ? 'ring-2 ring-primary shadow-glow' : ''}`}>
+              <Card key={index} className={`glass border-border/20 hover:border-primary/20 transition-all duration-300 relative flex flex-col overflow-hidden group ${plan.popular ? 'ring-2 ring-primary shadow-glow lg:scale-105 lg:-mt-2' : ''} ${plan.price === "R$ 0" ? 'border-green-500/30' : ''}`}>
                 {plan.popular && (
-                  <Badge variant="neon" className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    Mais Popular
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-primary"></div>
+                )}
+                {plan.price === "R$ 0" && (
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-green-500 to-green-400"></div>
+                )}
+                {plan.popular && (
+                  <Badge variant="neon" className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10 animate-pulse-glow shadow-lg">
+                    ⭐ Mais Popular
                   </Badge>
                 )}
-                <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="text-4xl font-bold gradient-text">
-                    {plan.price}
-                    <span className="text-lg text-muted-foreground">{plan.period}</span>
+                {plan.price === "R$ 0" && (
+                  <Badge className="absolute -top-3 right-4 bg-green-500 hover:bg-green-600 text-white z-10 shadow-lg font-bold">
+                    GRÁTIS
+                  </Badge>
+                )}
+                <CardHeader className="text-center pb-4 border-b border-border/20 relative">
+                  <CardTitle className="text-2xl font-bold mb-2">{plan.name}</CardTitle>
+                  <CardDescription className="text-sm mb-4 min-h-[40px]">{plan.description}</CardDescription>
+                  <div className="mb-2">
+                    <div className="text-4xl font-bold gradient-text mb-1">
+                      {plan.price}
+                      <span className="text-lg text-muted-foreground">{plan.period}</span>
+                    </div>
+                    <div className="text-sm text-primary font-semibold mt-2 bg-primary/10 rounded-full px-3 py-1 inline-block">
+                      {plan.clients}
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {plan.features.map((feature, i) => (
-                    <div key={i} className="flex items-center space-x-2">
-                      <Check className="w-4 h-4 text-primary" />
-                      <span className="text-sm">{feature}</span>
-                    </div>
-                  ))}
+                <CardContent className="flex-1 flex flex-col pt-6">
+                  <div className="space-y-3 mb-6 flex-1">
+                    {plan.features.map((feature, i) => (
+                      <div key={i} className="flex items-start space-x-2 group-hover:translate-x-1 transition-transform">
+                        <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm leading-relaxed">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-border/20 pt-4 mb-4 bg-muted/30 rounded-lg p-3">
+                    <p className="text-xs text-muted-foreground italic text-center leading-relaxed">
+                      "{plan.highlight}"
+                    </p>
+                  </div>
                   <Button 
-                    variant={plan.popular ? "hero" : "glass"} 
-                    className="w-full"
-                    onClick={() => navigate('/dashboard')}
+                    variant={plan.popular ? "hero" : plan.price === "R$ 0" ? "default" : "glass"} 
+                    className={`w-full font-semibold transition-all duration-300 ${plan.popular ? 'hover:scale-105 shadow-lg' : ''}`}
+                    onClick={() => navigate('/cadastro')}
                   >
-                    Começar Agora
+                    {plan.price === "R$ 0" ? "Começar Grátis Agora" : "Assinar Agora"}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardContent>
