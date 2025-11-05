@@ -12,7 +12,7 @@ import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, A
 import { useRevendas } from '@/hooks/useRevendas';
 import { RLSErrorBannerResellers } from '@/components/RLSErrorBannerResellers';
 
-export default function AdminResellers() {
+export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?: boolean }) {
   const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda, clearError } = useRevendas();
 
   const [newReseller, setNewReseller] = useState({
@@ -37,7 +37,7 @@ export default function AdminResellers() {
   const [viewingReseller, setViewingReseller] = useState<any | null>(null);
   const [deletingReseller, setDeletingReseller] = useState<any | null>(null);
 
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(autoOpenForm);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
