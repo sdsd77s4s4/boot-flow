@@ -34,12 +34,25 @@ import {
   ArrowRightCircle,
   BarChart
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Landing = () => {
   const [email, setEmail] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Efeito para fazer scroll até a seção de pricing quando a rota for /preco
+  useEffect(() => {
+    if (location.pathname === '/preco') {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing');
+        if (pricingElement) {
+          pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.pathname]);
 
   // Efeito para mostrar/ocultar o botão de voltar ao topo
   useEffect(() => {
@@ -60,6 +73,22 @@ const Landing = () => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const scrollToPricing = (e?: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (location.pathname !== '/preco') {
+      navigate('/preco');
+    } else {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing');
+        if (pricingElement) {
+          pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
   };
 
   const features = [
@@ -212,7 +241,11 @@ const Landing = () => {
               <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
                 Depoimentos
               </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a 
+                href="/preco" 
+                onClick={scrollToPricing}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
                 Preços
               </a>
             </div>
@@ -561,12 +594,9 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
-                    href="#pricing" 
+                    href="/preco" 
+                    onClick={scrollToPricing}
                     className="hover:text-foreground transition-colors cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
                   >
                     Preços
                   </a>

@@ -61,6 +61,7 @@ const App = () => {
                 <Routes>
                 {/* Rotas públicas */}
                 <Route path="/" element={<Landing />} />
+                <Route path="/preco" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/cadastro" element={<Signup />} />
                 <Route path="/termos" element={<Terms />} />
