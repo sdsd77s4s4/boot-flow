@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, Search, MessageSquare, Phone, Mail, Book, Video, FileText, ExternalLink, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Search, MessageSquare, Phone, Mail, Book, Video, FileText, ExternalLink, ChevronRight, ArrowUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,28 @@ import { Badge } from "@/components/ui/badge";
 const HelpCenter = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Efeito para mostrar/ocultar o botão de voltar ao topo
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const faqs = [
     {
@@ -338,6 +360,18 @@ const HelpCenter = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Botão Voltar ao Topo */}
+      {showScrollButton && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground dark:bg-[#7e22ce] dark:text-white shadow-lg hover:bg-primary/90 dark:hover:bg-[#6d1bb7] transition-all duration-300 flex items-center gap-2 z-50 px-6 py-3"
+          aria-label="Voltar ao topo"
+        >
+          <ArrowUp className="w-5 h-5" />
+          Voltar ao Topo
+        </Button>
+      )}
     </div>
   );
 };
