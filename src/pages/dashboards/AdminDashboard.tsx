@@ -176,6 +176,16 @@ const AdminDashboard = () => {
     }
   }, [realtimeClientes, realtimeRevendas, clientesFromHook, revendasFromHook]);
   
+  // Buscar dados iniciais ao montar o componente
+  useEffect(() => {
+    if (fetchClientes) {
+      fetchClientes();
+    }
+    if (fetchRevendas) {
+      fetchRevendas();
+    }
+  }, [fetchClientes, fetchRevendas]);
+
   // Exibe notificações de erro
   useEffect(() => {
     if (clientesError) {
