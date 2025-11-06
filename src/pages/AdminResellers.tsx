@@ -51,6 +51,57 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
     revenda.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Listener para atualizar a lista quando um revendedor é criado em outro lugar (ex: modal do Dashboard)
+  useEffect(() => {
+    const handleResellerCreated = () => {
+      console.log('🔄 [AdminResellers] Evento reseller-created recebido, atualizando lista...');
+      if (fetchRevendas) {
+        fetchRevendas();
+      }
+    };
+
+    const handleRefreshDashboard = (event: CustomEvent) => {
+      // Atualizar apenas se for relacionado a revendedores
+      if (event.detail?.source === 'resellers' || !event.detail?.source) {
+        console.log('🔄 [AdminResellers] Evento refresh-dashboard recebido, atualizando lista...');
+        if (fetchRevendas) {
+          fetchRevendas();
+        }
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dashboard-refresh') {
+        console.log('🔄 [AdminResellers] localStorage change detectado, atualizando lista...');
+        if (fetchRevendas) {
+          fetchRevendas();
+        }
+      }
+    };
+
+    // Escutar eventos
+    window.addEventListener('reseller-created', handleResellerCreated);
+    window.addEventListener('refresh-dashboard', handleRefreshDashboard as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+
+    // Verificar localStorage ao montar
+    const refreshFlag = localStorage.getItem('dashboard-refresh');
+    if (refreshFlag) {
+      console.log('🔄 [AdminResellers] Flag de refresh encontrada ao montar, atualizando lista...');
+      localStorage.removeItem('dashboard-refresh');
+      if (fetchRevendas) {
+        fetchRevendas();
+      }
+    }
+
+    return () => {
+      window.removeEventListener('reseller-created', handleResellerCreated);
+      window.removeEventListener('refresh-dashboard', handleRefreshDashboard as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Não depender de fetchRevendas para evitar loops
+
   const handleAddRevenda = async (e: React.FormEvent) => {
     e.preventDefault();
     
