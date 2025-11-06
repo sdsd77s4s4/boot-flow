@@ -1647,7 +1647,7 @@ const AdminDashboard = () => {
                   <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold text-white">{totalUsersCount.toLocaleString()}</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{(clientes?.length || 0).toLocaleString()}</div>
                   <p className="text-xs text-gray-400 mt-1">+12.5% em relação ao mês passado</p>
                 </CardContent>
               </Card>
@@ -1667,7 +1667,7 @@ const AdminDashboard = () => {
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold text-white">{stats.activeResellers}</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{(revendas?.length || 0).toLocaleString()}</div>
                   <p className="text-xs text-gray-400 mt-1">+8.2% em relação ao mês passado</p>
                 </CardContent>
               </Card>
@@ -2727,7 +2727,7 @@ const AdminDashboard = () => {
                       <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
-                      <div className="text-lg sm:text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</div>
+                      <div className="text-lg sm:text-2xl font-bold text-white">{(clientes?.length || 0).toLocaleString()}</div>
                       <p className="text-xs text-gray-400 mt-1">+12.5% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
@@ -2747,7 +2747,7 @@ const AdminDashboard = () => {
                       <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
-                      <div className="text-lg sm:text-2xl font-bold text-white">{stats.activeResellers}</div>
+                      <div className="text-lg sm:text-2xl font-bold text-white">{(revendas?.length || 0).toLocaleString()}</div>
                       <p className="text-xs text-gray-400 mt-1">+8.2% em relação ao mês passado</p>
                     </CardContent>
                   </Card>
