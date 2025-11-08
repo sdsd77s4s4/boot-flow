@@ -34,7 +34,9 @@ import {
   Paintbrush,
   UserPlus,
   Bell,
-  RefreshCw
+  RefreshCw,
+  AlertCircle,
+  Calendar
 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/sidebars/AdminSidebar";
