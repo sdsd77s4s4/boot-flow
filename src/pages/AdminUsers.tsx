@@ -984,10 +984,14 @@ export default function AdminUsers() {
                           Servidor *
                         </label>
                         <select
-                          disabled
-                          className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2"
+                          value={newUser.server || ""}
+                          onChange={(e) => setNewUser({ ...newUser, server: e.target.value })}
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         >
-                          <option>IPTV 2</option>
+                          <option value="">Selecione um servidor</option>
+                          <option value="Servidor 1">Servidor 1</option>
+                          <option value="Servidor 2">Servidor 2</option>
+                          <option value="Servidor 3">Servidor 3</option>
                         </select>
                       </div>
                       {/* Plano */}
@@ -1868,10 +1872,14 @@ export default function AdminUsers() {
                         Servidor *
                       </label>
                       <select
-                        disabled
-                        className="w-full bg-[#23272f] border border-gray-700 text-gray-400 rounded px-3 py-2"
+                        value={newUser.server || ""}
+                        onChange={(e) => setNewUser({ ...newUser, server: e.target.value })}
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                       >
-                        <option>IPTV 2</option>
+                        <option value="">Selecione um servidor</option>
+                        <option value="Servidor 1">Servidor 1</option>
+                        <option value="Servidor 2">Servidor 2</option>
+                        <option value="Servidor 3">Servidor 3</option>
                       </select>
                     </div>
                     {/* Plano */}
