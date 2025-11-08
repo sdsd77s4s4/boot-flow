@@ -2342,6 +2342,12 @@ export default function AdminUsers() {
                   <span className="text-gray-400">Plano:</span>{" "}
                   {deletingUser.plan}
                 </p>
+                {deletingUser.price && (
+                  <p className="text-white">
+                    <span className="text-gray-400">Preço:</span>{" "}
+                    R$ {deletingUser.price}
+                  </p>
+                )}
                 <p className="text-white">
                   <span className="text-gray-400">Status:</span>{" "}
                   {deletingUser.status}
