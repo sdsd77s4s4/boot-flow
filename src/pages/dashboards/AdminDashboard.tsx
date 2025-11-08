@@ -1352,7 +1352,7 @@ const AdminDashboard = () => {
                                 className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                 value={newUser.plan}
                                 onChange={(e) =>
-                                  setNewUser({ ...newUser, plan: e.target.value })
+                                  setNewUser({ ...newUser, plan: e.target.value, price: "" })
                                 }
                               >
                                 <option value="">Selecione um plano</option>
