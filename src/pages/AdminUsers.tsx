@@ -1440,7 +1440,9 @@ export default function AdminUsers() {
                     {user.telegram || "-"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">
-                    {user.expirationDate || "-"}
+                    {user.expiration_date 
+                      ? new Date(user.expiration_date).toLocaleDateString('pt-BR')
+                      : "-"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-400 text-xs sm:text-sm">
                     {user.createdAt}
