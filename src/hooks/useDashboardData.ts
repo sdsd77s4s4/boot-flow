@@ -171,9 +171,9 @@ function useDashboardData() {
       }).length;
       
       const radioListeners = clientes.filter(cliente => {
-        const planoId = (cliente as ClienteRow).plano_id;
+        const plan = (cliente as UserRow).plan?.toLowerCase();
         // Implemente a lógica para verificar se o plano é de Rádio
-        return planoId?.toString().toLowerCase().includes('radio');
+        return plan?.includes('radio');
       }).length;
 
       // Atualiza as estatísticas

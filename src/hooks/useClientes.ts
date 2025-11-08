@@ -21,6 +21,7 @@ export interface Cliente {
   notes?: string;
   real_name?: string;
   plan?: string;
+  price?: string;
   status?: string;
 }
 

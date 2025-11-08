@@ -333,6 +333,14 @@ const AdminDashboard = () => {
     return count;
   }, [clientes]);
 
+  // Função para formatar valor monetário em formato brasileiro
+  const formatCurrency = (value: number): string => {
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
   // Mapear clientes e revendedores para atividade recente
   const recentActivityUnified = useMemo(() => {
     const clientesAtividades = clientes.slice(0, 5).map((cliente, index) => ({
@@ -751,6 +759,7 @@ const AdminDashboard = () => {
         name: newUser.realName || newUser.name,
         email: newUser.email,
         plan: newUser.plan, // Campo obrigatório
+        price: newUser.price || "", // Campo de preço
         status: newUser.status || "Ativo", // Campo obrigatório com default
         expiration_date: newUser.expirationDate, // Campo obrigatório
         password: newUser.password || "",
@@ -1754,8 +1763,10 @@ const AdminDashboard = () => {
                   <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold text-white">R$ {stats.totalRevenue.toLocaleString()}</div>
-                  <p className="text-xs text-gray-400 mt-1">Receita acumulada</p>
+                  <div className="text-lg sm:text-2xl font-bold text-white">
+                    R$ {stats.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Receita acumulada (clientes + revendas)</p>
                 </CardContent>
               </Card>
             </div>
@@ -2861,8 +2872,10 @@ const AdminDashboard = () => {
                       <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
-                      <div className="text-lg sm:text-2xl font-bold text-white">R$ {stats.totalRevenue.toLocaleString()}</div>
-                      <p className="text-xs text-gray-400 mt-1">Receita acumulada</p>
+                      <div className="text-lg sm:text-2xl font-bold text-white">
+                        R$ {stats.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">Receita acumulada (clientes + revendas)</p>
                     </CardContent>
                   </Card>
                 </div>
