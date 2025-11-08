@@ -343,80 +343,79 @@ export default function AdminUsers() {
     console.log("Tipo do realName:", typeof editingUser.realName);
     console.log("Todos os campos do editingUser:", Object.keys(editingUser));
 
-      // Preparar dados para atualização no Neon
-      const updatedUserData = {
-        name: editingUser.realName || editingUser.name, // Usar o nome real como name principal
-        email: editingUser.email,
-        password: editingUser.password || "",
-        plan: editingUser.plan || "", // Campo plan
-        price: editingUser.price || "", // Campo price
-        server: editingUser.server || "", // Campo server
-        m3u_url: editingUser.m3u_url || "", // Campo m3u_url separado
-        bouquets: editingUser.bouquets || "",
-        expiration_date: editingUser.expirationDate || null,
-        observations: editingUser.observations || "",
-        real_name: editingUser.realName || "", // Manter também no real_name
-        telegram: editingUser.telegram || "", // Campo telegram
-        whatsapp: editingUser.whatsapp || "", // Campo whatsapp
-        status: editingUser.status || "Ativo", // Campo status
-        devices: editingUser.devices || 0, // Campo dispositivos
-        credits: editingUser.credits || 0, // Campo créditos
-        notes: editingUser.notes || "", // Campo anotações
-      };
+    // Preparar dados para atualização no Neon
+    const updatedUserData = {
+      name: editingUser.realName || editingUser.name, // Usar o nome real como name principal
+      email: editingUser.email,
+      password: editingUser.password || "",
+      plan: editingUser.plan || "", // Campo plan
+      price: editingUser.price || "", // Campo price
+      server: editingUser.server || "", // Campo server
+      m3u_url: editingUser.m3u_url || "", // Campo m3u_url separado
+      bouquets: editingUser.bouquets || "",
+      expiration_date: editingUser.expirationDate || null,
+      observations: editingUser.observations || "",
+      real_name: editingUser.realName || "", // Manter também no real_name
+      telegram: editingUser.telegram || "", // Campo telegram
+      whatsapp: editingUser.whatsapp || "", // Campo whatsapp
+      status: editingUser.status || "Ativo", // Campo status
+      devices: editingUser.devices || 0, // Campo dispositivos
+      credits: editingUser.credits || 0, // Campo créditos
+      notes: editingUser.notes || "", // Campo anotações
+    };
 
-      console.log("Dados preparados para atualização:", updatedUserData);
-      console.log("Todos os campos incluídos:", Object.keys(updatedUserData));
-      console.log("Campo real_name sendo enviado:", updatedUserData.real_name);
-      console.log("Tipo do real_name:", typeof updatedUserData.real_name);
+    console.log("Dados preparados para atualização:", updatedUserData);
+    console.log("Todos os campos incluídos:", Object.keys(updatedUserData));
+    console.log("Campo real_name sendo enviado:", updatedUserData.real_name);
+    console.log("Tipo do real_name:", typeof updatedUserData.real_name);
+    console.log(
+      "JSON sendo enviado:",
+      JSON.stringify({ id: editingUser.id, ...updatedUserData })
+    );
+    console.log("=== FIM DEBUG ===");
+
+    const success = await updateUser(editingUser.id, updatedUserData);
+
+    if (success) {
+      console.log("✅ Usuário atualizado com sucesso!");
+      console.log("Aguardando recarregamento da lista...");
+
+      // Atualizar Dashboard instantaneamente
       console.log(
-        "JSON sendo enviado:",
-        JSON.stringify({ id: editingUser.id, ...updatedUserData })
+        "📤 Clientes: Disparando evento refresh-dashboard após editar usuário"
       );
-      console.log("=== FIM DEBUG ===");
-
-      const success = await updateUser(editingUser.id, updatedUserData);
-
-      if (success) {
-        console.log("✅ Usuário atualizado com sucesso!");
-        console.log("Aguardando recarregamento da lista...");
-
-        // Atualizar Dashboard instantaneamente
-        console.log(
-          "📤 Clientes: Disparando evento refresh-dashboard após editar usuário"
+      try {
+        window.dispatchEvent(
+          new CustomEvent("refresh-dashboard", {
+            detail: { source: "users", action: "update" },
+          })
         );
-        try {
-          window.dispatchEvent(
-            new CustomEvent("refresh-dashboard", {
-              detail: { source: "users", action: "update" },
-            })
-          );
-          console.log("✅ Evento disparado com sucesso");
-        } catch (error) {
-          console.error("❌ Erro ao disparar evento:", error);
-        }
-
-        // Usar localStorage como fallback
-        try {
-          localStorage.setItem("dashboard-refresh", Date.now().toString());
-          console.log("✅ Flag localStorage definida");
-        } catch (error) {
-          console.error("❌ Erro ao definir flag localStorage:", error);
-        }
-
-        // Aguardar um pouco para o fetchUsers ser executado
-        setTimeout(() => {
-          console.log("Lista de usuários após atualização:", users);
-          const updatedUser = users.find((u) => u.id === editingUser.id);
-          console.log("Usuário atualizado na lista:", updatedUser);
-          console.log("Campo real_name na lista:", updatedUser?.real_name);
-        }, 1000);
-
-        setEditingUser(null);
-        setIsEditDialogOpen(false);
-        alert("Cliente atualizado com sucesso!");
-      } else {
-        alert("Erro ao atualizar cliente. Verifique os dados.");
+        console.log("✅ Evento disparado com sucesso");
+      } catch (error) {
+        console.error("❌ Erro ao disparar evento:", error);
       }
+
+      // Usar localStorage como fallback
+      try {
+        localStorage.setItem("dashboard-refresh", Date.now().toString());
+        console.log("✅ Flag localStorage definida");
+      } catch (error) {
+        console.error("❌ Erro ao definir flag localStorage:", error);
+      }
+
+      // Aguardar um pouco para o fetchUsers ser executado
+      setTimeout(() => {
+        console.log("Lista de usuários após atualização:", users);
+        const updatedUser = users.find((u) => u.id === editingUser.id);
+        console.log("Usuário atualizado na lista:", updatedUser);
+        console.log("Campo real_name na lista:", updatedUser?.real_name);
+      }, 1000);
+
+      setEditingUser(null);
+      setIsEditDialogOpen(false);
+      alert("Cliente atualizado com sucesso!");
+    } else {
+      alert("Erro ao atualizar cliente. Verifique os dados.");
     }
   };
 
