@@ -149,6 +149,18 @@ export default function AdminUsers() {
   );
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
+  // Função para retornar os preços baseados no plano selecionado
+  const getPlanPrices = (plan: string): string[] => {
+    const prices: { [key: string]: string[] } = {
+      "Mensal": ["30,00", "35,00", "40,00"],
+      "Bimestral": ["50,00", "60,00", "70,00"],
+      "Trimestral": ["75,00", "90,00", "100,00"],
+      "Semestral": ["150,00", "160,00", "170,00"],
+      "Anual": ["130,00", "180,00", "200,00", "250,00", "280,00"],
+    };
+    return prices[plan] || [];
+  };
+
   const handleAddUser = async () => {
     console.log("🔵 [DEBUG] handleAddUser chamado");
     console.log("🔵 [DEBUG] Estado newUser:", newUser);
