@@ -1554,6 +1554,14 @@ export default function AdminUsers() {
                         {viewingUser.plan}
                       </Badge>
                     </div>
+                    {viewingUser.price && (
+                      <div>
+                        <Label className="text-gray-400 text-sm">Preço</Label>
+                        <p className="text-white font-medium">
+                          R$ {viewingUser.price}
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <Label className="text-gray-400 text-sm">Status</Label>
                       <Badge
@@ -1908,36 +1916,43 @@ export default function AdminUsers() {
                           setEditingUser({
                             ...editingUser,
                             plan: e.target.value,
+                            price: "", // Resetar preço quando plano mudar
                           })
                         }
                       >
-                        <option value="Trial">🟧 TESTE - COMPLETO</option>
-                        <option value="Premium">🟦 PREMIUM - COMPLETO</option>
-                        <option value="Basic">🟩 BÁSICO</option>
+                        <option value="">Selecione um plano</option>
+                        <option value="Mensal">Mensal</option>
+                        <option value="Bimestral">Bimestral</option>
+                        <option value="Trimestral">Trimestral</option>
+                        <option value="Semestral">Semestral</option>
+                        <option value="Anual">Anual</option>
                       </select>
-                      <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-400 text-xs rounded mt-2 p-2 sm:text-xs text-[13px] leading-relaxed flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13 16h-1v-4h-1m1-4h.01M12 8v.01"
-                          />
-                          <circle cx="12" cy="12" r="10" />
-                        </svg>
-                        <span className="block">
-                          O <b>plano não pode ser alterado aqui</b>.
-                          <br className="sm:hidden" /> Para alterar o plano,
-                          selecione Ações na lista de clientes e escolha Alterar
-                          Plano.
-                        </span>
-                      </div>
                     </div>
+                    {/* Preço */}
+                    {editingUser.plan && (
+                      <div className="col-span-1">
+                        <label className="block text-gray-300 mb-1 font-medium">
+                          Preço *
+                        </label>
+                        <select
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          value={editingUser.price}
+                          onChange={(e) =>
+                            setEditingUser({
+                              ...editingUser,
+                              price: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">Selecione um preço</option>
+                          {getPlanPrices(editingUser.plan).map((price) => (
+                            <option key={price} value={price}>
+                              R$ {price}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                     {/* Usuário */}
                     <div className="col-span-1">
                       <label className="block text-gray-300 mb-1 font-medium">
