@@ -409,38 +409,51 @@ export default function AdminUsers() {
 
   const handleDeleteUser = async () => {
     if (deletingUser) {
+      console.log("🔄 [AdminUsers] Iniciando exclusão do usuário:", deletingUser.id);
+      
       const success = await deleteUser(deletingUser.id);
 
       if (success) {
+        console.log("✅ [AdminUsers] Usuário deletado com sucesso do Supabase");
+        
         // Atualizar Dashboard instantaneamente
         console.log(
-          "📤 Clientes: Disparando evento refresh-dashboard após deletar usuário"
+          "📤 [AdminUsers] Disparando evento refresh-dashboard após deletar usuário"
         );
         try {
           window.dispatchEvent(
             new CustomEvent("refresh-dashboard", {
-              detail: { source: "users", action: "delete" },
+              detail: { source: "users", action: "delete", userId: deletingUser.id },
             })
           );
-          console.log("✅ Evento disparado com sucesso");
+          console.log("✅ [AdminUsers] Evento refresh-dashboard disparado com sucesso");
         } catch (error) {
-          console.error("❌ Erro ao disparar evento:", error);
+          console.error("❌ [AdminUsers] Erro ao disparar evento:", error);
         }
 
         // Usar localStorage como fallback
         try {
           localStorage.setItem("dashboard-refresh", Date.now().toString());
-          console.log("✅ Flag localStorage definida");
+          console.log("✅ [AdminUsers] Flag localStorage definida");
         } catch (error) {
-          console.error("❌ Erro ao definir flag localStorage:", error);
+          console.error("❌ [AdminUsers] Erro ao definir flag localStorage:", error);
         }
 
+        // Forçar atualização da lista local removendo o usuário deletado
+        console.log("🔄 [AdminUsers] Atualizando lista local de usuários");
+        
+        // Fechar modal
         setDeletingUser(null);
         setIsDeleteDialogOpen(false);
+        
+        // Mostrar mensagem de sucesso
+        alert("✅ Cliente excluído com sucesso!");
+        
+        console.log("✅ [AdminUsers] Processo de exclusão concluído");
       } else {
-        alert(
-          "Erro ao deletar usuário. Verifique se você tem permissão no Supabase ou se há policies bloqueando a exclusão."
-        );
+        const errorMsg = error || "Erro ao deletar usuário. Verifique se você tem permissão no Supabase ou se há policies bloqueando a exclusão.";
+        console.error("❌ [AdminUsers] Erro ao deletar usuário:", errorMsg);
+        alert(`❌ ${errorMsg}`);
       }
     }
   };

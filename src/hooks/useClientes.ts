@@ -303,27 +303,87 @@ export function useClientes() {
   async function deleteCliente(id: number) {
     try {
       setError(null);
+      console.log('🔄 [useClientes] Deletando cliente com ID:', id);
       
-      const { error } = await supabase.from('users').delete().eq('id', id);
+      // Obter token de autenticação do localStorage
+      let authToken = '';
       
-      if (error) {
-        console.error('Erro ao deletar cliente:', error);
+      try {
+        const allKeys = Object.keys(localStorage);
+        const supabaseKeys = allKeys.filter(key => key.startsWith('sb-') && key.includes('auth-token'));
+        
+        for (const key of supabaseKeys) {
+          try {
+            const authData = localStorage.getItem(key);
+            if (authData) {
+              const parsed = JSON.parse(authData);
+              if (parsed?.access_token) {
+                authToken = parsed.access_token;
+                console.log('🔄 [useClientes] Token encontrado no localStorage');
+                break;
+              }
+            }
+          } catch (e) {
+            // Continuar procurando
+          }
+        }
+        
+        if (!authToken) {
+          console.log('🔄 [useClientes] Token não encontrado, usando apenas apikey');
+        }
+      } catch (e) {
+        console.log('🔄 [useClientes] Erro ao buscar token:', e);
+      }
+      
+      // Preparar headers
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Prefer': 'return=representation',
+      };
+      
+      // Adicionar token de autenticação se disponível
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      
+      // Usar fetch direto para deletar
+      const deleteUrl = `${SUPABASE_URL}/rest/v1/users?id=eq.${id}`;
+      console.log('🔄 [useClientes] URL de exclusão:', deleteUrl);
+      console.log('🔄 [useClientes] Headers:', { ...headers, Authorization: authToken ? 'Bearer ***' : 'Não fornecido' });
+      
+      const response = await fetch(deleteUrl, {
+        method: 'DELETE',
+        headers: headers,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || `Erro HTTP: ${response.status} ${response.statusText}`;
+        console.error('❌ [useClientes] Erro ao deletar cliente:', errorMessage);
         
         // Verificar se é erro de RLS
-        if (error.message.includes('row-level security policy')) {
+        if (errorMessage.includes('row-level security policy') || errorMessage.includes('permission denied')) {
           setError('Erro de permissão: As políticas de segurança estão bloqueando a exclusão. Execute o script SQL para corrigir as políticas RLS.');
         } else {
-          setError(`Erro ao deletar cliente: ${error.message}`);
+          setError(`Erro ao deletar cliente: ${errorMessage}`);
         }
         return false;
       }
       
+      console.log('✅ [useClientes] Cliente deletado com sucesso');
+      
+      // Atualizar lista de clientes
       await fetchClientes();
+      
+      // Atualizar estado local removendo o cliente deletado
+      setClientes(prevClientes => prevClientes.filter(cliente => cliente.id !== id));
+      
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(`Erro inesperado ao deletar cliente: ${errorMessage}`);
-      console.error('Erro ao deletar cliente:', err);
+      console.error('❌ [useClientes] Erro ao deletar cliente:', err);
       return false;
     }
   }
