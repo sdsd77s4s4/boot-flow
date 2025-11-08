@@ -211,6 +211,20 @@ BEGIN
   END IF;
 END $$;
 
+-- Adiciona coluna price se não existir
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_schema = 'public' 
+                 AND table_name = 'users' 
+                 AND column_name = 'price') THEN
+    ALTER TABLE public.users ADD COLUMN price VARCHAR(20);
+    RAISE NOTICE 'Coluna price adicionada com sucesso à tabela users';
+  ELSE
+    RAISE NOTICE 'Coluna price já existe na tabela users';
+  END IF;
+END $$;
+
 -- Cria índices se não existirem
 CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
 CREATE INDEX IF NOT EXISTS idx_users_status ON public.users(status);
