@@ -337,7 +337,9 @@ export default function AdminUsers() {
         name: editingUser.realName || editingUser.name, // Usar o nome real como name principal
         email: editingUser.email,
         password: editingUser.password || "",
-        m3u_url: editingUser.plan || "", // usando plan como m3u_url
+        plan: editingUser.plan || "", // Campo plan
+        price: editingUser.price || "", // Campo price
+        m3u_url: editingUser.m3u_url || "", // Campo m3u_url separado
         bouquets: editingUser.bouquets || "",
         expiration_date: editingUser.expirationDate || null,
         observations: editingUser.observations || "",
