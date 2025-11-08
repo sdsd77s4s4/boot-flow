@@ -299,6 +299,30 @@ const AdminDashboard = () => {
     return prices[plan] || [];
   };
 
+  // Função para calcular clientes que expiram em 3 dias
+  const clientesExpiramEm3Dias = useMemo(() => {
+    if (!clientes || clientes.length === 0) return 0;
+    
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    const em3Dias = new Date();
+    em3Dias.setDate(hoje.getDate() + 3);
+    em3Dias.setHours(23, 59, 59, 999);
+    
+    const count = clientes.filter(cliente => {
+      if (!cliente.expiration_date) return false;
+      
+      const expirationDate = new Date(cliente.expiration_date);
+      expirationDate.setHours(0, 0, 0, 0);
+      
+      // Verificar se a data de expiração está entre hoje e 3 dias
+      return expirationDate >= hoje && expirationDate <= em3Dias;
+    }).length;
+    
+    return count;
+  }, [clientes]);
+
   // Mapear clientes e revendedores para atividade recente
   const recentActivityUnified = useMemo(() => {
     const clientesAtividades = clientes.slice(0, 5).map((cliente, index) => ({
