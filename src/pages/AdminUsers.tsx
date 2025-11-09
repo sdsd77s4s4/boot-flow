@@ -152,7 +152,7 @@ export default function AdminUsers() {
   // Função para retornar os preços baseados no plano selecionado
   const getPlanPrices = (plan: string): string[] => {
     const prices: { [key: string]: string[] } = {
-      "Mensal": ["30,00", "35,00", "40,00"],
+      "Mensal": ["30,00", "35,00", "40,00", "50,00"],
       "Bimestral": ["50,00", "60,00", "70,00"],
       "Trimestral": ["75,00", "90,00", "100,00"],
       "Semestral": ["150,00", "160,00", "170,00"],
