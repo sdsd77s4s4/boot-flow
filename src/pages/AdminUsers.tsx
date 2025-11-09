@@ -1395,19 +1395,19 @@ export default function AdminUsers() {
             <TableHeader>
               <TableRow className="text-gray-400">
                 <TableHead className="text-xs sm:text-sm">Nome</TableHead>
-                <TableHead className="hidden sm:table-cell text-xs sm:text-sm">
-                  Email
-                </TableHead>
                 <TableHead className="text-xs sm:text-sm">Plano</TableHead>
                 <TableHead className="text-xs sm:text-sm">Status</TableHead>
                 <TableHead className="hidden md:table-cell text-xs sm:text-sm">
-                  Telegram
+                  Números de Dispositivos
                 </TableHead>
                 <TableHead className="hidden lg:table-cell text-xs sm:text-sm">
                   Vencimento
                 </TableHead>
                 <TableHead className="hidden lg:table-cell text-xs sm:text-sm">
                   Servidor
+                </TableHead>
+                <TableHead className="hidden sm:table-cell text-xs sm:text-sm">
+                  Números do WhatsApp
                 </TableHead>
                 <TableHead className="text-xs sm:text-sm">Ações</TableHead>
               </TableRow>
@@ -1420,9 +1420,6 @@ export default function AdminUsers() {
                 >
                   <TableCell className="text-white font-medium text-xs sm:text-sm">
                     {user.name}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell text-gray-300 text-xs sm:text-sm">
-                    {user.email}
                   </TableCell>
                   <TableCell className="text-gray-300 text-xs sm:text-sm">
                     {user.plan}
@@ -1443,7 +1440,7 @@ export default function AdminUsers() {
                     </Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-gray-300 text-xs sm:text-sm">
-                    {user.telegram || "-"}
+                    {user.devices || 0}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">
                     {user.expiration_date 
@@ -1452,6 +1449,9 @@ export default function AdminUsers() {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-gray-300 text-xs sm:text-sm">
                     {user.server || "-"}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell text-gray-300 text-xs sm:text-sm">
+                    {user.whatsapp || "-"}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1 sm:gap-2">
