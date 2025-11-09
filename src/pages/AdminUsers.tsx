@@ -995,16 +995,13 @@ export default function AdminUsers() {
                         <label className="block text-gray-300 mb-1 font-medium">
                           Servidor *
                         </label>
-                        <select
+                        <Input
+                          type="text"
                           value={newUser.server || ""}
                           onChange={(e) => setNewUser({ ...newUser, server: e.target.value })}
+                          placeholder="Digite o nome do servidor"
                           className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        >
-                          <option value="">Selecione um servidor</option>
-                          <option value="Servidor 1">Servidor 1</option>
-                          <option value="Servidor 2">Servidor 2</option>
-                          <option value="Servidor 3">Servidor 3</option>
-                        </select>
+                        />
                       </div>
                       {/* Plano */}
                       <div className="col-span-1">
@@ -1885,16 +1882,13 @@ export default function AdminUsers() {
                       <label className="block text-gray-300 mb-1 font-medium">
                         Servidor *
                       </label>
-                      <select
+                      <Input
+                        type="text"
                         value={editingUser.server || ""}
                         onChange={(e) => setEditingUser({ ...editingUser, server: e.target.value })}
+                        placeholder="Digite o nome do servidor"
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                      >
-                        <option value="">Selecione um servidor</option>
-                        <option value="Servidor 1">Servidor 1</option>
-                        <option value="Servidor 2">Servidor 2</option>
-                        <option value="Servidor 3">Servidor 3</option>
-                      </select>
+                      />
                     </div>
                     {/* Plano */}
                     <div className="col-span-1">
