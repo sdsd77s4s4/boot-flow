@@ -1626,6 +1626,25 @@ export default function AdminUsers() {
                       </Badge>
                     </div>
                     <div>
+                      <Label className="text-gray-400 text-sm">Status de Pagamento</Label>
+                      <Badge
+                        className={
+                          viewingUser.pago
+                            ? "bg-green-600 text-white flex items-center gap-1 w-fit"
+                            : "bg-gray-600 text-white flex items-center gap-1 w-fit"
+                        }
+                      >
+                        {viewingUser.pago ? (
+                          <>
+                            <CheckCircle className="w-3 h-3" />
+                            Pago
+                          </>
+                        ) : (
+                          "Não Pago"
+                        )}
+                      </Badge>
+                    </div>
+                    <div>
                       <Label className="text-gray-400 text-sm">
                         Data de Criação
                       </Label>
