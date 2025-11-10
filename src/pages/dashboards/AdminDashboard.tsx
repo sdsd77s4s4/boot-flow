@@ -2088,6 +2088,11 @@ const AdminDashboard = () => {
         // Chama diretamente sem atualizar o trigger para evitar loops
         refreshUsers();
         if (refreshResellers) refreshResellers();
+        // Forçar atualização das estatísticas do dashboard (receita total)
+        if (refreshStats) {
+          console.log('🔄 Atualizando estatísticas do dashboard (receita)...');
+          refreshStats();
+        }
       }
     };
     
@@ -2099,6 +2104,11 @@ const AdminDashboard = () => {
         // Chama diretamente sem atualizar o trigger para evitar loops
         refreshUsers();
         if (refreshResellers) refreshResellers();
+        // Forçar atualização das estatísticas do dashboard (receita total)
+        if (refreshStats) {
+          console.log('🔄 Atualizando estatísticas do dashboard (receita)...');
+          refreshStats();
+        }
       }
     };
     
