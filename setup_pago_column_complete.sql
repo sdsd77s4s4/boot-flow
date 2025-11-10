@@ -56,8 +56,11 @@ END $$;
 -- ============================================
 -- PASSO 3: Criar índice para performance
 -- ============================================
-CREATE INDEX IF NOT EXISTS idx_users_pago ON public.users(pago) WHERE pago = TRUE;
-RAISE NOTICE '✓ Índice criado/verificado';
+DO $$ 
+BEGIN
+  CREATE INDEX IF NOT EXISTS idx_users_pago ON public.users(pago) WHERE pago = TRUE;
+  RAISE NOTICE '✓ Índice criado/verificado';
+END $$;
 
 -- ============================================
 -- PASSO 4: Configurar RLS (Row Level Security)
