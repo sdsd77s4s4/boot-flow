@@ -1714,30 +1714,6 @@ export default function AdminUsers() {
                   </div>
                 )}
 
-                {/* Configurações */}
-                <div className="bg-[#23272f] rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-green-400" />
-                    Configurações
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-gray-400 text-sm">
-                        Dispositivos
-                      </Label>
-                      <p className="text-white font-medium">
-                        {viewingUser.devices || 0}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-gray-400 text-sm">Créditos</Label>
-                      <p className="text-white font-medium">
-                        €{viewingUser.credits || 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Observações */}
                 {(viewingUser.notes || viewingUser.observations) && (
                   <div className="bg-[#23272f] rounded-lg p-4">
