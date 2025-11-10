@@ -116,11 +116,13 @@ export default function AdminUsers() {
   const [editingUser, setEditingUser] = useState<any | null>(null);
   const [viewingUser, setViewingUser] = useState<any | null>(null);
   const [deletingUser, setDeletingUser] = useState<any | null>(null);
+  const [pagoUser, setPagoUser] = useState<any | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPagoDialogOpen, setIsPagoDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [addUserSuccess, setAddUserSuccess] = useState(false);
@@ -520,17 +522,24 @@ export default function AdminUsers() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleTogglePago = async (user: any) => {
+  const openPagoModal = (user: any) => {
+    setPagoUser(user);
+    setIsPagoDialogOpen(true);
+  };
+
+  const confirmTogglePago = async () => {
+    if (!pagoUser) return;
+
     try {
-      const newPagoStatus = !user.pago;
-      const success = await updateUser(user.id, { pago: newPagoStatus });
+      const newPagoStatus = !pagoUser.pago;
+      const success = await updateUser(pagoUser.id, { pago: newPagoStatus });
       if (success) {
         // Atualizar estado local imediatamente para feedback visual
         const updatedUsers = users.map((u) =>
-          u.id === user.id ? { ...u, pago: newPagoStatus } : u
+          u.id === pagoUser.id ? { ...u, pago: newPagoStatus } : u
         );
         // O hook useClientes já atualiza automaticamente após updateCliente
-        console.log(`Cliente ${user.name} marcado como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
+        console.log(`Cliente ${pagoUser.name} marcado como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
         
         // Disparar evento para atualizar o dashboard (receita total)
         console.log('📤 Clientes: Disparando evento refresh-dashboard após marcar como pago');
@@ -552,6 +561,10 @@ export default function AdminUsers() {
         } catch (error) {
           console.error("❌ Erro ao definir flag localStorage:", error);
         }
+
+        // Fechar o modal
+        setIsPagoDialogOpen(false);
+        setPagoUser(null);
       }
     } catch (error) {
       console.error('Erro ao atualizar status de pagamento:', error);
@@ -1531,7 +1544,7 @@ export default function AdminUsers() {
                             ? "bg-green-600 text-white hover:bg-green-700 border-green-600"
                             : "border-green-600 text-green-400 hover:bg-green-600 hover:text-white bg-background"
                         } h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-md`}
-                        onClick={() => handleTogglePago(user)}
+                        onClick={() => openPagoModal(user)}
                         title={user.pago ? "Marcar como Não Pago" : "Marcar como Pago"}
                       >
                         <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -2436,6 +2449,93 @@ export default function AdminUsers() {
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               Excluir Usuário
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Modal de Confirmação de Pagamento */}
+      <AlertDialog
+        open={isPagoDialogOpen}
+        onOpenChange={setIsPagoDialogOpen}
+      >
+        <AlertDialogContent className="bg-[#1f2937] text-white border border-gray-700">
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                pagoUser?.pago ? "bg-yellow-600" : "bg-green-600"
+              }`}>
+                <DollarSign className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <AlertDialogTitle className="text-xl font-bold text-white">
+                  {pagoUser?.pago ? "Desmarcar Pagamento" : "Confirmar Pagamento"}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-gray-400">
+                  {pagoUser?.pago 
+                    ? "Deseja realmente desmarcar o pagamento deste cliente? A receita será atualizada no dashboard."
+                    : "Confirme se este cliente realizou o pagamento. O valor será adicionado à receita total no dashboard."
+                  }
+                </AlertDialogDescription>
+              </div>
+            </div>
+          </AlertDialogHeader>
+
+          {pagoUser && (
+            <div className="bg-[#23272f] rounded-lg p-4 mb-4">
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Informações do Cliente:
+              </h3>
+              <div className="space-y-2">
+                <p className="text-white">
+                  <span className="text-gray-400">Nome:</span>{" "}
+                  {pagoUser.name}
+                </p>
+                <p className="text-white">
+                  <span className="text-gray-400">Email:</span>{" "}
+                  {pagoUser.email}
+                </p>
+                {pagoUser.plan && (
+                  <p className="text-white">
+                    <span className="text-gray-400">Plano:</span>{" "}
+                    {pagoUser.plan}
+                  </p>
+                )}
+                {pagoUser.price && (
+                  <p className="text-white font-semibold">
+                    <span className="text-gray-400">Valor:</span>{" "}
+                    <span className="text-green-400">R$ {pagoUser.price}</span>
+                  </p>
+                )}
+                <p className="text-white">
+                  <span className="text-gray-400">Status atual:</span>{" "}
+                  <span className={pagoUser.pago ? "text-green-400" : "text-gray-400"}>
+                    {pagoUser.pago ? "Pago" : "Não Pago"}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
+
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              className="bg-gray-700 text-white border border-gray-600 hover:bg-gray-600"
+              onClick={() => {
+                setIsPagoDialogOpen(false);
+                setPagoUser(null);
+              }}
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmTogglePago}
+              className={`${
+                pagoUser?.pago 
+                  ? "bg-yellow-600 hover:bg-yellow-700" 
+                  : "bg-green-600 hover:bg-green-700"
+              } text-white`}
+            >
+              {pagoUser?.pago ? "Desmarcar Pagamento" : "Confirmar Pagamento"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
