@@ -1489,6 +1489,7 @@ export default function AdminUsers() {
                         variant="outline"
                         className="border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openViewModal(user)}
+                        title="Visualizar"
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
@@ -1497,6 +1498,7 @@ export default function AdminUsers() {
                         variant="outline"
                         className="border-yellow-600 text-yellow-400 hover:bg-yellow-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openEditModal(user)}
+                        title="Editar"
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
@@ -1518,6 +1520,7 @@ export default function AdminUsers() {
                         variant="outline"
                         className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
                         onClick={() => openDeleteModal(user)}
+                        title="Remover"
                       >
                         <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
