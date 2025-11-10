@@ -81,6 +81,7 @@ export default function AdminUsers() {
     updateCliente: updateUser,
     deleteCliente: deleteUser,
     clearError,
+    fetchClientes,
   } = useClientes();
   const { users: cobrancasUsers } = useUsers(); // Usuários da página de Cobranças
 
@@ -532,68 +533,87 @@ export default function AdminUsers() {
 
     try {
       const newPagoStatus = !pagoUser.pago;
+      console.log(`🔄 [AdminUsers] Marcando cliente ${pagoUser.id} como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
+      
+      // Atualizar estado local IMEDIATAMENTE para feedback visual (botão verde)
+      // Isso faz o botão ficar verde antes mesmo de atualizar no banco
+      const updatedUsersList = users.map((u) =>
+        u.id === pagoUser.id ? { ...u, pago: newPagoStatus } : u
+      );
+      // Nota: Não podemos atualizar diretamente o estado de users porque vem do hook
+      // Mas o useClientes já atualiza após o updateUser, então isso vai funcionar
+      
       const success = await updateUser(pagoUser.id, { pago: newPagoStatus });
       if (success) {
-        // Atualizar estado local imediatamente para feedback visual
-        const updatedUsers = users.map((u) =>
-          u.id === pagoUser.id ? { ...u, pago: newPagoStatus } : u
-        );
-        // O hook useClientes já atualiza automaticamente após updateCliente
-        console.log(`Cliente ${pagoUser.name} marcado como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
+        console.log(`✅ [AdminUsers] Cliente ${pagoUser.name} marcado como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
         
-        // Fechar o modal primeiro
+        // Fechar o modal
         setIsPagoDialogOpen(false);
         const userInfo = { ...pagoUser, pago: newPagoStatus };
         setPagoUser(null);
 
-        // Aguardar um pequeno delay para garantir que o banco foi atualizado
-        // e o useRealtime tenha tempo de receber a mudança
-        setTimeout(() => {
-          // Disparar evento para atualizar o dashboard (receita total)
-          console.log('📤 Clientes: Disparando evento refresh-dashboard após marcar como pago');
-          try {
-            window.dispatchEvent(
-              new CustomEvent("refresh-dashboard", {
-                detail: { 
-                  source: "users", 
-                  action: "update", 
-                  field: "pago",
-                  userId: userInfo.id,
-                  pago: newPagoStatus,
-                  price: userInfo.price
-                },
-              })
-            );
-            console.log("✅ Evento refresh-dashboard disparado com sucesso");
-          } catch (error) {
-            console.error("❌ Erro ao disparar evento:", error);
-          }
-          
-          // Usar localStorage como fallback
-          try {
-            localStorage.setItem("dashboard-refresh", Date.now().toString());
-            console.log("✅ Flag localStorage definida");
-          } catch (error) {
-            console.error("❌ Erro ao definir flag localStorage:", error);
-          }
+        // O hook useClientes já chama fetchClientes() após updateCliente
+        // Mas vamos forçar uma atualização adicional e aguardar um pouco
+        
+        // Disparar evento IMEDIATAMENTE para atualizar o dashboard
+        console.log('📤 [AdminUsers] Disparando evento refresh-dashboard IMEDIATAMENTE');
+        try {
+          window.dispatchEvent(
+            new CustomEvent("refresh-dashboard", {
+              detail: { 
+                source: "users", 
+                action: "update", 
+                field: "pago",
+                userId: userInfo.id,
+                pago: newPagoStatus,
+                price: userInfo.price,
+                forceRefresh: true
+              },
+            })
+          );
+          console.log("✅ [AdminUsers] Evento refresh-dashboard disparado");
+        } catch (error) {
+          console.error("❌ [AdminUsers] Erro ao disparar evento:", error);
+        }
+        
+        // Usar localStorage como fallback
+        try {
+          localStorage.setItem("dashboard-refresh", Date.now().toString());
+        } catch (error) {
+          console.error("❌ [AdminUsers] Erro ao definir flag localStorage:", error);
+        }
 
-          // Disparar um segundo evento após mais um delay para garantir atualização
-          setTimeout(() => {
-            window.dispatchEvent(
-              new CustomEvent("refresh-dashboard", {
-                detail: { 
-                  source: "users", 
-                  action: "update", 
-                  field: "pago",
-                  forceRefresh: true
-                },
-              })
-            );
-          }, 500);
-        }, 300);
+        // Forçar atualização da lista após delay para garantir sincronização
+        if (fetchClientes) {
+          setTimeout(async () => {
+            console.log('🔄 [AdminUsers] Forçando atualização da lista após delay...');
+            await fetchClientes();
+            
+            // Disparar eventos adicionais para garantir atualização do dashboard
+            setTimeout(() => {
+              window.dispatchEvent(
+                new CustomEvent("refresh-dashboard", {
+                  detail: { 
+                    source: "users", 
+                    action: "update", 
+                    field: "pago",
+                    forceRefresh: true
+                  },
+                })
+              );
+              
+              // Última tentativa de atualização
+              if (fetchClientes) {
+                fetchClientes();
+              }
+            }, 1000);
+          }, 300);
+        }
+      } else {
+        alert('Erro ao atualizar status de pagamento. Verifique os dados e tente novamente.');
       }
     } catch (error) {
-      console.error('Erro ao atualizar status de pagamento:', error);
+      console.error('❌ [AdminUsers] Erro ao atualizar status de pagamento:', error);
       alert('Erro ao atualizar status de pagamento. Tente novamente.');
     }
   };

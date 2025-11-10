@@ -403,10 +403,32 @@ export function useClientes() {
       
       console.log('✅ [useClientes] Cliente atualizado com sucesso:', data);
       
-      // Atualizar a lista de clientes
-      console.log('🔄 [useClientes] Atualizando lista de clientes...');
-      await fetchClientes();
-      console.log('✅ [useClientes] Lista atualizada!');
+      // Atualizar estado local IMEDIATAMENTE para feedback visual
+      // Se a resposta contém dados, usar os dados retornados
+      // Caso contrário, atualizar apenas o campo pago
+      setClientes(prevClientes => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          const updatedCliente = data[0] as Cliente;
+          return prevClientes.map(cliente => 
+            cliente.id === id ? { ...cliente, ...updatedCliente } : cliente
+          );
+        } else {
+          // Se não retornou dados, atualizar apenas o campo que foi modificado
+          return prevClientes.map(cliente => 
+            cliente.id === id ? { ...cliente, ...updates } : cliente
+          );
+        }
+      });
+      console.log('✅ [useClientes] Estado local atualizado imediatamente');
+      
+      // Atualizar a lista de clientes do banco (para sincronização completa)
+      console.log('🔄 [useClientes] Atualizando lista de clientes do banco...');
+      // Aguardar um pouco antes de buscar para garantir que o banco processou
+      setTimeout(async () => {
+        await fetchClientes();
+        console.log('✅ [useClientes] Lista atualizada!');
+      }, 200);
+      
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';

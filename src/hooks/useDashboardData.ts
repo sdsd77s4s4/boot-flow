@@ -92,16 +92,32 @@ function useDashboardData() {
       // Calcular receita total dos clientes marcados como pagos (soma dos preços)
       let revenueFromClientes = 0;
       try {
-        revenueFromClientes = clientes.reduce((sum, cliente) => {
+        const clientesPagos = clientes.filter((cliente) => {
           const clienteRow = cliente as UserRow;
-          // Só soma a receita se o cliente estiver marcado como pago
-          if (clienteRow.pago === true) {
-            const price = clienteRow.price;
-            return sum + parsePrice(price);
-          }
-          return sum;
+          // Verificar se o cliente está marcado como pago
+          // Pode ser true, "true", 1, ou qualquer valor truthy
+          const isPago = clienteRow.pago === true || 
+                        clienteRow.pago === "true" || 
+                        clienteRow.pago === 1 ||
+                        clienteRow.pago === "1";
+          return isPago;
+        });
+        
+        console.log(`💰 [useDashboardData] Total de clientes: ${clientes.length}, Clientes pagos: ${clientesPagos.length}`);
+        
+        revenueFromClientes = clientesPagos.reduce((sum, cliente) => {
+          const clienteRow = cliente as UserRow;
+          const price = clienteRow.price;
+          const parsedPrice = parsePrice(price);
+          console.log(`💰 [useDashboardData] Cliente ${clienteRow.name}: pago=${clienteRow.pago}, price=${price}, parsed=${parsedPrice}`);
+          return sum + parsedPrice;
         }, 0);
-        console.log('💰 [useDashboardData] Receita dos clientes pagos:', revenueFromClientes);
+        
+        console.log('💰 [useDashboardData] Receita dos clientes pagos:', revenueFromClientes, {
+          totalClientes: clientes.length,
+          clientesPagos: clientesPagos.length,
+          detalhes: clientesPagos.map(c => ({ name: c.name, price: c.price, pago: c.pago }))
+        });
       } catch (error) {
         console.error('Erro ao calcular receita dos clientes:', error);
       }
@@ -247,11 +263,38 @@ function useDashboardData() {
           pago: event.detail?.pago,
           price: event.detail?.price
         });
-        // Aguardar um pouco para garantir que o useRealtime recebeu a atualização do Supabase
-        // O realtime do Supabase pode levar alguns milissegundos para propagar
-        setTimeout(() => {
-          refresh();
-        }, 400);
+        
+        // Primeiro, forçar atualização dos dados do useRealtime
+        const updateData = async () => {
+          try {
+            // Forçar refresh dos clientes
+            if (refreshClientes) {
+              console.log('🔄 [useDashboardData] Forçando refresh dos clientes...');
+              await refreshClientes();
+            }
+            
+            // Aguardar um pouco para os dados serem atualizados
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // Recalcular estatísticas
+            console.log('🔄 [useDashboardData] Recalculando estatísticas após refresh...');
+            await calculateStats();
+            
+            // Se ainda não atualizou, tentar novamente
+            setTimeout(async () => {
+              if (refreshClientes) {
+                await refreshClientes();
+              }
+              await calculateStats();
+            }, 1000);
+          } catch (error) {
+            console.error('❌ [useDashboardData] Erro ao atualizar:', error);
+            // Em caso de erro, tentar recalcular com os dados atuais
+            calculateStats();
+          }
+        };
+        
+        updateData();
       }
     };
 
@@ -259,7 +302,7 @@ function useDashboardData() {
     return () => {
       window.removeEventListener('refresh-dashboard', handleRefreshEvent as EventListener);
     };
-  }, [refresh]);
+  }, [refresh, refreshClientes, calculateStats]);
 
   return {
     stats,
