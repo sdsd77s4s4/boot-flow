@@ -59,6 +59,7 @@ import {
   Activity,
   CheckCircle,
   Copy,
+  DollarSign,
 } from "lucide-react";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
@@ -515,6 +516,24 @@ export default function AdminUsers() {
   const openDeleteModal = (user: any) => {
     setDeletingUser(user);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleTogglePago = async (user: any) => {
+    try {
+      const newPagoStatus = !user.pago;
+      const success = await updateUser(user.id, { pago: newPagoStatus });
+      if (success) {
+        // Atualizar estado local imediatamente para feedback visual
+        const updatedUsers = users.map((u) =>
+          u.id === user.id ? { ...u, pago: newPagoStatus } : u
+        );
+        // O hook useClientes já atualiza automaticamente após updateCliente
+        console.log(`Cliente ${user.name} marcado como ${newPagoStatus ? 'Pago' : 'Não Pago'}`);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status de pagamento:', error);
+      alert('Erro ao atualizar status de pagamento. Tente novamente.');
+    }
   };
 
   // Função para copiar todos os clientes da página de Cobranças
@@ -1419,7 +1438,15 @@ export default function AdminUsers() {
                   className="hover:bg-[#232a36] transition-colors"
                 >
                   <TableCell className="text-white font-medium text-xs sm:text-sm">
-                    {user.name}
+                    <div className="flex items-center gap-2">
+                      {user.name}
+                      {user.pago && (
+                        <Badge className="bg-green-600 text-white text-xs px-1.5 py-0.5">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Pago
+                        </Badge>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-gray-300 text-xs sm:text-sm">
                     {user.plan}
@@ -1470,6 +1497,19 @@ export default function AdminUsers() {
                         onClick={() => openEditModal(user)}
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className={`${
+                          user.pago
+                            ? "border-green-600 text-green-400 hover:bg-green-600 hover:text-white bg-green-600/20"
+                            : "border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
+                        } h-8 w-8 sm:h-9 sm:w-9 p-0`}
+                        onClick={() => handleTogglePago(user)}
+                        title={user.pago ? "Marcar como Não Pago" : "Marcar como Pago"}
+                      >
+                        <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
                       <Button
                         size="sm"
