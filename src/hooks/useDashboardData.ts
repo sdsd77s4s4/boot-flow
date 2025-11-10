@@ -205,16 +205,50 @@ function useDashboardData() {
 
   // Atualiza as estatísticas quando os dados mudam
   useEffect(() => {
-    if (clientes.length > 0 || revendas.length > 0) {
+    if (clientes.length > 0 || revendas.length > 0 || clientes.length === 0) {
       calculateStats();
     }
   }, [clientes, revendas, calculateStats]);
+
+  // Função de refresh que atualiza os dados e recalcula as estatísticas
+  const refresh = useCallback(async () => {
+    console.log('🔄 [useDashboardData] Refresh manual chamado');
+    // Forçar atualização dos dados do useRealtime
+    if (refreshClientes) {
+      await refreshClientes();
+    }
+    if (refreshRevendas) {
+      await refreshRevendas();
+    }
+    // Aguardar um pouco para os dados serem atualizados
+    setTimeout(() => {
+      calculateStats();
+    }, 100);
+  }, [refreshClientes, refreshRevendas, calculateStats]);
+
+  // Listener para eventos de atualização
+  useEffect(() => {
+    const handleRefreshEvent = (event: CustomEvent) => {
+      if (event.detail?.field === 'pago' || event.detail?.forceRefresh) {
+        console.log('🔄 [useDashboardData] Evento de pagamento detectado, atualizando receita...');
+        // Aguardar um pouco para garantir que o useRealtime recebeu a atualização
+        setTimeout(() => {
+          refresh();
+        }, 200);
+      }
+    };
+
+    window.addEventListener('refresh-dashboard', handleRefreshEvent as EventListener);
+    return () => {
+      window.removeEventListener('refresh-dashboard', handleRefreshEvent as EventListener);
+    };
+  }, [refresh]);
 
   return {
     stats,
     loading,
     error: error || clientesError?.message || revendasError?.message,
-    refresh: calculateStats
+    refresh
   };
 }
 
