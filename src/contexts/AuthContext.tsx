@@ -22,6 +22,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   userRole: 'admin' | 'reseller' | 'client' | null;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signUp: (email: string, password: string, userData: { full_name: string; role?: 'admin' | 'reseller' | 'client' }) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<{ error: AuthError | null }>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
@@ -109,12 +110,45 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id);
+        let userProfile = await fetchUserProfile(session.user.id);
+        
+        // Se o perfil não existir (primeiro login com OAuth), cria um perfil básico
+        if (!userProfile && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+          try {
+            const fullName = session.user.user_metadata?.full_name || 
+                           session.user.user_metadata?.name || 
+                           session.user.email?.split('@')[0] || 
+                           'Usuário';
+            
+            const { data: newProfile, error: profileError } = await supabase
+              .from('profiles')
+              .insert([
+                {
+                  id: session.user.id,
+                  email: session.user.email?.toLowerCase() || '',
+                  full_name: fullName,
+                  role: 'client', // Role padrão para novos usuários OAuth
+                },
+              ])
+              .select()
+              .single();
+            
+            if (profileError) {
+              console.error('Erro ao criar perfil para usuário OAuth:', profileError);
+            } else {
+              userProfile = newProfile as UserProfile;
+              console.log('Perfil criado automaticamente para usuário OAuth:', userProfile);
+            }
+          } catch (error) {
+            console.error('Erro ao criar perfil para usuário OAuth:', error);
+          }
+        }
+        
         setProfile(userProfile);
         const role = userProfile?.role || 'client';
         setUserRole(role);
 
-        if (window.location.pathname === '/login') {
+        if (window.location.pathname === '/login' || window.location.pathname === '/auth/callback') {
           if (role === 'admin' || role === 'reseller' || role === 'client') {
             redirectBasedOnRole(role);
           } else {
@@ -133,7 +167,7 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, redirectBasedOnRole]);
+  }, [navigate, redirectBasedOnRole, fetchUserProfile]);
 
   // Gerenciar mudanças de autenticação
   useEffect(() => {
@@ -319,6 +353,53 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
       }
 
       return { error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      
+      // Inicia o fluxo OAuth do Google
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) throw error;
+      
+      // O redirecionamento será feito automaticamente pelo Supabase
+      // O callback será tratado pelo onAuthStateChange
+      return { error: null };
+    } catch (error: any) {
+      console.error('Erro no login com Google:', error);
+      
+      let errorMessage = 'Erro ao fazer login com Google. Tente novamente.';
+      
+      if (error?.message?.includes('Failed to fetch') || 
+          error?.message?.includes('ERR_NAME_NOT_RESOLVED') ||
+          error?.message?.includes('NetworkError')) {
+        errorMessage = 'Erro de conexão: Não foi possível conectar ao servidor. Verifique sua conexão com a internet.';
+      } else if (error?.message?.includes('popup_closed_by_user')) {
+        errorMessage = 'Login cancelado. A janela de autenticação foi fechada.';
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage, {
+        duration: 10000,
+        description: '💡 Certifique-se de que o Google OAuth está configurado no Supabase.',
+      });
+
+      return { error: error as AuthError };
     } finally {
       setLoading(false);
     }
@@ -575,6 +656,7 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
     isAuthenticated: !!user,
     userRole: profile?.role || null,
     signIn,
+    signInWithGoogle,
     signUp,
     signOut,
     resetPassword,
