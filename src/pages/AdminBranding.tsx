@@ -3063,7 +3063,7 @@ const AdminBranding: React.FC = () => {
               </Label>
             </div>
           </div>
-
+          
           <DialogFooter>
             <Button
               variant="outline"
@@ -3079,6 +3079,8 @@ const AdminBranding: React.FC = () => {
               {editingPage ? 'Salvar Alterações' : 'Criar Página'}
             </Button>
           </DialogFooter>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
