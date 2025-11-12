@@ -100,5 +100,19 @@ export class OneSignalService {
   }
 }
 
-export const oneSignalService = new OneSignalService();
+// Lazy initialization para evitar problemas de inicialização
+let _oneSignalService: OneSignalService | null = null;
+
+export const getOneSignalService = (): OneSignalService => {
+  if (!_oneSignalService) {
+    _oneSignalService = new OneSignalService();
+  }
+  return _oneSignalService;
+};
+
+export const oneSignalService = new Proxy({} as OneSignalService, {
+  get(_target, prop) {
+    return getOneSignalService()[prop as keyof OneSignalService];
+  }
+});
 

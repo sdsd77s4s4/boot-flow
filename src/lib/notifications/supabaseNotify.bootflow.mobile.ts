@@ -108,5 +108,19 @@ export class SupabaseNotificationService {
   }
 }
 
-export const supabaseNotificationService = new SupabaseNotificationService();
+// Lazy initialization para evitar problemas de inicialização
+let _supabaseNotificationService: SupabaseNotificationService | null = null;
+
+export const getSupabaseNotificationService = (): SupabaseNotificationService => {
+  if (!_supabaseNotificationService) {
+    _supabaseNotificationService = new SupabaseNotificationService();
+  }
+  return _supabaseNotificationService;
+};
+
+export const supabaseNotificationService = new Proxy({} as SupabaseNotificationService, {
+  get(_target, prop) {
+    return getSupabaseNotificationService()[prop as keyof SupabaseNotificationService];
+  }
+});
 

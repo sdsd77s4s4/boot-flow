@@ -145,4 +145,9 @@ export const getDefaultAIClient = (): AgentAIClient => {
   return _defaultAIClient;
 };
 
-export const defaultAIClient = getDefaultAIClient();
+// Exportar getter em vez de valor inicializado
+export const defaultAIClient = new Proxy({} as AgentAIClient, {
+  get(_target, prop) {
+    return getDefaultAIClient()[prop as keyof AgentAIClient];
+  }
+});
