@@ -12,7 +12,7 @@ interface PIXGenerateRequest {
 // Mock implementation - substituir por integração real (MercadoPago, Gerencianet, etc.)
 export const POST = async (request: Request) => {
   try {
-    const body: PIXGenerateRequest = await request.json();
+    const body = await request.json() as PIXGenerateRequest;
     const { amount, description, payerName, payerDocument } = body;
 
     if (!amount || amount < 1) {
