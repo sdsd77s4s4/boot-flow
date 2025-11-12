@@ -1548,7 +1548,7 @@ const AdminDashboard = () => {
                         </div>
                         
                         {/* Informações Adicionais */}
-                        <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+                        <div className="hidden md:block bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
                           <span className="block text-white font-semibold mb-4">Informações Adicionais</span>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Nome Real */}
@@ -2387,7 +2387,7 @@ const AdminDashboard = () => {
                             </div>
                             
                             {/* Informações Adicionais */}
-                            <div className="bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
+                            <div className="hidden md:block bg-[#23272f] border border-gray-700 rounded-lg p-4 mb-6">
                               <span className="block text-white font-semibold mb-4">Informações Adicionais</span>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {/* Nome Real */}
