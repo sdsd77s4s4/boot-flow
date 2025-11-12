@@ -1,8 +1,7 @@
-import type { APIRoute } from 'astro';
-
 // Mock implementation - substituir por verificação real
-export const GET: APIRoute = async ({ url }) => {
+export const GET = async (request: Request) => {
   try {
+    const url = new URL(request.url);
     const transactionId = url.searchParams.get('transactionId');
 
     if (!transactionId) {

@@ -1,10 +1,9 @@
-import type { APIRoute } from 'astro';
 import { agentLogger } from '@/lib/logger.agent';
 
 const logger = agentLogger;
 
 // Mock implementation - substituir por integração real (MercadoPago, Gerencianet, etc.)
-export const POST: APIRoute = async ({ request }) => {
+export const POST = async (request: Request) => {
   try {
     const { amount, description, payerName, payerDocument } = await request.json();
 

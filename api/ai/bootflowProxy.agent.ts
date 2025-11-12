@@ -1,12 +1,10 @@
-import type { APIRoute } from 'astro';
 import OpenAI from 'openai';
 import { agentLogger } from '@/lib/logger.agent';
 
 const logger = agentLogger;
 
-const openai = import.meta.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY })
-  : null;
+const openaiApiKey = process.env.OPENAI_API_KEY || import.meta.env.OPENAI_API_KEY || import.meta.env.VITE_OPENAI_API_KEY;
+const openai = openaiApiKey ? new OpenAI({ apiKey: openaiApiKey }) : null;
 
 // Mock responses quando OpenAI não está configurado
 const mockResponse = (prompt: string): string => {
@@ -19,7 +17,7 @@ const mockResponse = (prompt: string): string => {
   return 'Resposta automática (modo mock). Configure OPENAI_API_KEY para usar IA real.';
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST = async (request: Request) => {
   try {
     const { messages, context, type = 'chat' } = await request.json();
 

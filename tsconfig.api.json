@@ -19,7 +19,7 @@
     },
     "types": ["@types/node", "vite/client"]
   },
-  "include": ["api/**/*"],
+  "include": ["api/**/*", "src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
 
