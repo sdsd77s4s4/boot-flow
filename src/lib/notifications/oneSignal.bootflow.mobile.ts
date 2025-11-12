@@ -80,7 +80,7 @@ export class OneSignalService {
     // Registrar device no Supabase
     try {
       const { supabase } = await import('@/lib/supabase');
-      const { error } = await supabase.from('devices').upsert({
+      const { error } = await (supabase.from('devices') as any).upsert({
         user_id: userId,
         one_signal_id: oneSignalId,
         platform: navigator.platform,
