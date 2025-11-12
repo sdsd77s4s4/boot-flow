@@ -129,4 +129,14 @@ export class AgentAIClient {
   }
 }
 
-export const defaultAIClient = new AgentAIClient();
+// Lazy initialization para evitar problemas de inicialização
+let _defaultAIClient: AgentAIClient | null = null;
+
+export const getDefaultAIClient = (): AgentAIClient => {
+  if (!_defaultAIClient) {
+    _defaultAIClient = new AgentAIClient();
+  }
+  return _defaultAIClient;
+};
+
+export const defaultAIClient = getDefaultAIClient();

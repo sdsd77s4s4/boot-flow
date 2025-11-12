@@ -50,4 +50,14 @@ export const createAgentLogger = (options?: LoggerOptions) => {
   };
 };
 
-export const agentLogger = createAgentLogger();
+// Lazy initialization para evitar problemas de inicialização
+let _agentLogger: ReturnType<typeof createAgentLogger> | null = null;
+
+export const getAgentLogger = () => {
+  if (!_agentLogger) {
+    _agentLogger = createAgentLogger();
+  }
+  return _agentLogger;
+};
+
+export const agentLogger = getAgentLogger();
