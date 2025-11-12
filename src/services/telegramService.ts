@@ -78,9 +78,16 @@ export const getTelegramService = (): TelegramService => {
   return _telegramService;
 };
 
-export const telegramService = new Proxy({} as TelegramService, {
-  get(_target, prop) {
-    return getTelegramService()[prop as keyof TelegramService];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const telegramService = (() => {
+  let instance: TelegramService | null = null;
+  return new Proxy({} as TelegramService, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new TelegramService();
+      }
+      return instance[prop as keyof TelegramService];
+    }
+  });
+})();
 

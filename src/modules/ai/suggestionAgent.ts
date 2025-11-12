@@ -114,9 +114,16 @@ export const getBootFlowSuggestionAgent = (): BootFlowSuggestionAgent => {
   return _bootFlowSuggestionAgent;
 };
 
-export const bootFlowSuggestionAgent = new Proxy({} as BootFlowSuggestionAgent, {
-  get(_target, prop) {
-    return getBootFlowSuggestionAgent()[prop as keyof BootFlowSuggestionAgent];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const bootFlowSuggestionAgent = (() => {
+  let instance: BootFlowSuggestionAgent | null = null;
+  return new Proxy({} as BootFlowSuggestionAgent, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new BootFlowSuggestionAgent();
+      }
+      return instance[prop as keyof BootFlowSuggestionAgent];
+    }
+  });
+})();
 

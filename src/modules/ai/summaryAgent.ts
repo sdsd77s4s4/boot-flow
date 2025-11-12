@@ -74,9 +74,16 @@ export const getBootFlowSummaryAgent = (): BootFlowSummaryAgent => {
   return _bootFlowSummaryAgent;
 };
 
-export const bootFlowSummaryAgent = new Proxy({} as BootFlowSummaryAgent, {
-  get(_target, prop) {
-    return getBootFlowSummaryAgent()[prop as keyof BootFlowSummaryAgent];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const bootFlowSummaryAgent = (() => {
+  let instance: BootFlowSummaryAgent | null = null;
+  return new Proxy({} as BootFlowSummaryAgent, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new BootFlowSummaryAgent();
+      }
+      return instance[prop as keyof BootFlowSummaryAgent];
+    }
+  });
+})();
 

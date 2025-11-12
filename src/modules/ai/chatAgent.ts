@@ -89,9 +89,16 @@ export const getBootFlowChatAgent = (): BootFlowChatAgent => {
   return _bootFlowChatAgent;
 };
 
-export const bootFlowChatAgent = new Proxy({} as BootFlowChatAgent, {
-  get(_target, prop) {
-    return getBootFlowChatAgent()[prop as keyof BootFlowChatAgent];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const bootFlowChatAgent = (() => {
+  let instance: BootFlowChatAgent | null = null;
+  return new Proxy({} as BootFlowChatAgent, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new BootFlowChatAgent();
+      }
+      return instance[prop as keyof BootFlowChatAgent];
+    }
+  });
+})();
 

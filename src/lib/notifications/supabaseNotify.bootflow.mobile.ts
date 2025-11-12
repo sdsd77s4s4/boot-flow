@@ -116,9 +116,16 @@ export const getSupabaseNotificationService = (): SupabaseNotificationService =>
   return _supabaseNotificationService;
 };
 
-export const supabaseNotificationService = new Proxy({} as SupabaseNotificationService, {
-  get(_target, prop) {
-    return getSupabaseNotificationService()[prop as keyof SupabaseNotificationService];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const supabaseNotificationService = (() => {
+  let instance: SupabaseNotificationService | null = null;
+  return new Proxy({} as SupabaseNotificationService, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new SupabaseNotificationService();
+      }
+      return instance[prop as keyof SupabaseNotificationService];
+    }
+  });
+})();
 

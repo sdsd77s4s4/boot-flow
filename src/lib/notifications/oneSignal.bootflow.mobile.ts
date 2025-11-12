@@ -108,9 +108,16 @@ export const getOneSignalService = (): OneSignalService => {
   return _oneSignalService;
 };
 
-export const oneSignalService = new Proxy({} as OneSignalService, {
-  get(_target, prop) {
-    return getOneSignalService()[prop as keyof OneSignalService];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const oneSignalService = (() => {
+  let instance: OneSignalService | null = null;
+  return new Proxy({} as OneSignalService, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new OneSignalService();
+      }
+      return instance[prop as keyof OneSignalService];
+    }
+  });
+})();
 

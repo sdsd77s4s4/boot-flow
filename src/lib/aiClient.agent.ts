@@ -145,9 +145,15 @@ export const getDefaultAIClient = (): AgentAIClient => {
   return _defaultAIClient;
 };
 
-// Exportar getter em vez de valor inicializado
-export const defaultAIClient = new Proxy({} as AgentAIClient, {
-  get(_target, prop) {
-    return getDefaultAIClient()[prop as keyof AgentAIClient];
-  }
-});
+// Exportar função factory para evitar problemas de inicialização
+export const defaultAIClient = (() => {
+  let instance: AgentAIClient | null = null;
+  return new Proxy({} as AgentAIClient, {
+    get(_target, prop) {
+      if (!instance) {
+        instance = new AgentAIClient();
+      }
+      return instance[prop as keyof AgentAIClient];
+    }
+  });
+})();
