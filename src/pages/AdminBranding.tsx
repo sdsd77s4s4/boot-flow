@@ -63,6 +63,17 @@ const AdminBranding: React.FC = () => {
         console.error('Erro ao carregar configuração de marca:', error);
       }
     }
+    
+    // Carregar dashboards salvos
+    const savedDashboards = localStorage.getItem('custom-dashboards');
+    if (savedDashboards) {
+      try {
+        const parsedDashboards = JSON.parse(savedDashboards);
+        setDashboards(parsedDashboards);
+      } catch (error) {
+        console.error('Erro ao carregar dashboards:', error);
+      }
+    }
   }, []);
 
   // Verificar mudanças
@@ -210,15 +221,28 @@ const AdminBranding: React.FC = () => {
     setDashboardModal(true);
   };
   const saveDashboard = () => {
-    if (!dashboardForm.name.trim()) return;
+    if (!dashboardForm.name.trim()) {
+      toast.error('O nome do dashboard é obrigatório');
+      return;
+    }
+    
+    let updatedDashboards;
     if (editingDashboard) {
-      setDashboards(dashboards.map(db => db.id === editingDashboard.id ? { ...editingDashboard, ...dashboardForm } : db));
+      updatedDashboards = dashboards.map(db => 
+        db.id === editingDashboard.id ? { ...editingDashboard, ...dashboardForm } : db
+      );
+      toast.success('Dashboard atualizado com sucesso!');
     } else {
-      setDashboards([
+      updatedDashboards = [
         ...dashboards,
         { ...dashboardForm, id: Date.now() },
-      ]);
+      ];
+      toast.success('Dashboard criado com sucesso!');
     }
+    
+    setDashboards(updatedDashboards);
+    // Salvar no localStorage
+    localStorage.setItem('custom-dashboards', JSON.stringify(updatedDashboards));
     setDashboardModal(false);
   };
   const removeDashboard = (id: number) => {
