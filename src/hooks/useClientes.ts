@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase, SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface Cliente {
   id: number;
@@ -24,9 +25,11 @@ export interface Cliente {
   price?: string;
   status?: string;
   pago?: boolean;
+  admin_id?: string; // ID do admin responsável por este cliente
 }
 
 export function useClientes() {
+  const { user } = useAuth(); // Obter o admin logado
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +53,15 @@ export function useClientes() {
       console.log('🔄 [useClientes] fetchClientes chamado');
       setLoading(true);
       setError(null);
+      
+      // Se não houver usuário logado, não buscar clientes
+      if (!user?.id) {
+        console.log('⚠️ [useClientes] Nenhum usuário logado, não buscando clientes');
+        setClientes([]);
+        setLoading(false);
+        isFetchingRef.current = false;
+        return;
+      }
       
       // Usar fetch direto para evitar travamentos
       const allKeys = Object.keys(localStorage);
@@ -80,7 +92,12 @@ export function useClientes() {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
       
-      const fetchUrl = `${SUPABASE_URL}/rest/v1/users?select=*`;
+      // Filtrar clientes pelo admin_id do usuário logado
+      // A política RLS já filtra automaticamente, mas adicionamos o filtro explícito para clareza
+      const adminId = user.id;
+      const fetchUrl = `${SUPABASE_URL}/rest/v1/users?select=*&admin_id=eq.${adminId}`;
+      
+      console.log('🔄 [useClientes] Buscando clientes do admin:', adminId);
       
       const controller = new AbortController();
       abortControllerRef.current = controller;
@@ -100,7 +117,7 @@ export function useClientes() {
         }
         
         const data = await response.json();
-        console.log('✅ [useClientes] Clientes buscados:', data.length);
+        console.log('✅ [useClientes] Clientes buscados:', data.length, 'para o admin:', adminId);
         setClientes(data || []);
       } catch (fetchError: any) {
         clearTimeout(timeoutId);
@@ -120,16 +137,29 @@ export function useClientes() {
       isFetchingRef.current = false;
       abortControllerRef.current = null;
     }
-  }, []);
+  }, [user?.id]);
 
   async function addCliente(cliente: Omit<Cliente, 'id'>) {
     try {
       console.log('🔄 [useClientes] addCliente chamado com:', cliente);
       setError(null);
       
+      // Se não houver usuário logado, não pode criar cliente
+      if (!user?.id) {
+        setError('Erro: Você precisa estar logado para criar um cliente.');
+        return false;
+      }
+      
+      // Associar o cliente ao admin logado
+      const clienteComAdmin = {
+        ...cliente,
+        admin_id: user.id,
+      };
+      
       // Usar fetch direto ao invés do cliente Supabase para evitar travamentos
       console.log('🔄 [useClientes] Inserindo cliente usando fetch direto...');
-      console.log('🔄 [useClientes] Dados que serão inseridos:', JSON.stringify(cliente, null, 2));
+      console.log('🔄 [useClientes] Dados que serão inseridos:', JSON.stringify(clienteComAdmin, null, 2));
+      console.log('🔄 [useClientes] Cliente associado ao admin:', user.id);
       
       // Obter token de autenticação do localStorage
       // O Supabase armazena a sessão em uma chave específica
@@ -190,7 +220,7 @@ export function useClientes() {
         response = await fetch(insertUrl, {
           method: 'POST',
           headers,
-          body: JSON.stringify(cliente),
+          body: JSON.stringify(clienteComAdmin),
           signal: controller.signal,
         });
         
