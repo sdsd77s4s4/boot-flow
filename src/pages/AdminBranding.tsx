@@ -2861,12 +2861,141 @@ const AdminBranding: React.FC = () => {
               {viewingPage.components && viewingPage.components.length > 0 ? (
                 <div className="space-y-6">
                   {viewingPage.components
-                    .sort((a: any, b: any) => a.order - b.order)
-                    .map((component: any) => (
-                      <div key={component.id}>
-                        {renderComponent(component)}
-                      </div>
-                    ))}
+                    .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
+                    .map((component: any) => {
+                      // Criar uma função de renderização local que usa viewingPage
+                      const renderViewingComponent = (comp: any) => {
+                        const { type, config } = comp;
+                        switch (type) {
+                          case 'metric-card':
+                            return (
+                              <Card className="bg-[#181e29] border border-gray-700">
+                                <CardHeader>
+                                  <CardTitle className="text-white text-sm">{config.title || 'Métrica'}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="text-3xl font-bold" style={{ color: config.color || viewingPage.primaryColor }}>
+                                    {config.value || '0'}
+                                  </div>
+                                  <div className="text-sm text-gray-400 mt-1">{config.label || 'Descrição'}</div>
+                                </CardContent>
+                              </Card>
+                            );
+                          case 'stats-grid':
+                            const gridCols = config.columns === 2 ? 'grid-cols-2' : config.columns === 4 ? 'grid-cols-4' : 'grid-cols-3';
+                            return (
+                              <div className={`grid ${gridCols} gap-4`}>
+                                {config.metrics?.map((metric: string, idx: number) => {
+                                  const metricData: any = {
+                                    totalUsers: { value: stats?.totalUsers || 0, label: 'Total de Usuários', icon: Users },
+                                    totalRevenue: { value: `R$ ${stats?.totalRevenue?.toLocaleString('pt-BR') || '0'}`, label: 'Receita Total', icon: DollarSign },
+                                    activeClients: { value: stats?.activeClients || 0, label: 'Clientes Ativos', icon: Users },
+                                  };
+                                  const data = metricData[metric] || { value: '0', label: metric, icon: BarChart3 };
+                                  const Icon = data.icon;
+                                  return (
+                                    <Card key={idx} className="bg-[#181e29] border border-gray-700">
+                                      <CardContent className="p-4">
+                                        <div className="flex items-center justify-between">
+                                          <div>
+                                            <div className="text-2xl font-bold text-white">{data.value}</div>
+                                            <div className="text-xs text-gray-400 mt-1">{data.label}</div>
+                                          </div>
+                                          <Icon className="w-8 h-8 text-blue-400 opacity-50" />
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  );
+                                })}
+                              </div>
+                            );
+                          case 'revenue-card':
+                            return (
+                              <Card className="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700">
+                                <CardHeader>
+                                  <CardTitle className="text-green-300">Receita</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="text-4xl font-bold text-white mb-2">
+                                    R$ {stats?.totalRevenue?.toLocaleString('pt-BR') || '0'}
+                                  </div>
+                                  {config.showGrowth && (
+                                    <div className="text-sm text-green-400 flex items-center gap-1">
+                                      <TrendingUp className="w-4 h-4" />
+                                      Crescimento este mês
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            );
+                          case 'users-table':
+                            return (
+                              <Card className="bg-[#181e29] border border-gray-700">
+                                <CardHeader>
+                                  <CardTitle className="text-white">Usuários</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                      <thead>
+                                        <tr className="border-b border-gray-700">
+                                          <th className="text-left p-2 text-gray-400">Nome</th>
+                                          <th className="text-left p-2 text-gray-400">Email</th>
+                                          <th className="text-left p-2 text-gray-400">Status</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {clientes.slice(0, config.pageSize || 5).map((cliente: any, idx: number) => (
+                                          <tr key={idx} className="border-b border-gray-800">
+                                            <td className="p-2 text-white">{cliente.name || 'N/A'}</td>
+                                            <td className="p-2 text-gray-400">{cliente.email || 'N/A'}</td>
+                                            <td className="p-2">
+                                              <span className="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">
+                                                {cliente.status || 'Ativo'}
+                                              </span>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            );
+                          case 'button':
+                            return (
+                              <Button
+                                className={`w-full ${
+                                  config.variant === 'primary' ? 'bg-blue-600 hover:bg-blue-700' :
+                                  config.variant === 'secondary' ? 'bg-gray-600 hover:bg-gray-700' :
+                                  'bg-green-600 hover:bg-green-700'
+                                } text-white`}
+                                onClick={() => {
+                                  if (config.link) window.open(config.link, '_blank');
+                                  if (config.action) toast.info(`Ação: ${config.action}`);
+                                }}
+                              >
+                                {config.text || 'Clique aqui'}
+                              </Button>
+                            );
+                          case 'text':
+                            const textSizes: any = { small: 'text-sm', medium: 'text-base', large: 'text-lg', xlarge: 'text-2xl' };
+                            const textAligns: any = { left: 'text-left', center: 'text-center', right: 'text-right' };
+                            return (
+                              <div className={`${textSizes[config.size || 'medium']} ${textAligns[config.align || 'left']}`} style={{ color: viewingPage.textColor }}>
+                                {config.content || 'Digite seu texto aqui'}
+                              </div>
+                            );
+                          default:
+                            return renderComponent(comp);
+                        }
+                      };
+                      return (
+                        <div key={component.id}>
+                          {renderViewingComponent(component)}
+                        </div>
+                      );
+                    })}
                 </div>
               ) : (
                 /* Fallback para conteúdo HTML se não houver componentes */
