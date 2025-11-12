@@ -591,6 +591,732 @@ const AdminBranding: React.FC = () => {
     toast.success('URL copiada para a área de transferência!');
   };
 
+  // Componente SortableItem para drag and drop
+  const SortableComponentItem = ({ component, onSelect, onRemove }: any) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: component.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`relative group border-2 rounded-lg p-4 mb-3 cursor-pointer transition-all ${
+          selectedComponent?.id === component.id
+            ? 'border-blue-500 bg-blue-900/20'
+            : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+        }`}
+        onClick={() => onSelect(component)}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <GripVertical
+              {...attributes}
+              {...listeners}
+              className="w-5 h-5 text-gray-500 cursor-move hover:text-gray-300"
+            />
+            <span className="font-semibold text-white">{component.name}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(component.id);
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+        <div className="text-xs text-gray-400">Tipo: {component.type}</div>
+      </div>
+    );
+  };
+
+  // Renderizar componente na preview
+  const renderComponent = (component: any) => {
+    const { type, config } = component;
+
+    switch (type) {
+      case 'metric-card':
+        return (
+          <Card className="bg-[#181e29] border border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white text-sm">{config.title || 'Métrica'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold" style={{ color: config.color || pageForm.primaryColor }}>
+                {config.value || '0'}
+              </div>
+              <div className="text-sm text-gray-400 mt-1">{config.label || 'Descrição'}</div>
+            </CardContent>
+          </Card>
+        );
+
+      case 'stats-grid':
+        const gridCols = config.columns === 2 ? 'grid-cols-2' : config.columns === 4 ? 'grid-cols-4' : 'grid-cols-3';
+        return (
+          <div className={`grid ${gridCols} gap-4`}>
+            {config.metrics?.map((metric: string, idx: number) => {
+              const metricData: any = {
+                totalUsers: { value: stats?.totalUsers || 0, label: 'Total de Usuários', icon: Users },
+                totalRevenue: { value: `R$ ${stats?.totalRevenue?.toLocaleString('pt-BR') || '0'}`, label: 'Receita Total', icon: DollarSign },
+                activeClients: { value: stats?.activeClients || 0, label: 'Clientes Ativos', icon: Users },
+              };
+              const data = metricData[metric] || { value: '0', label: metric, icon: BarChart3 };
+              const Icon = data.icon;
+              return (
+                <Card key={idx} className="bg-[#181e29] border border-gray-700">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-2xl font-bold text-white">{data.value}</div>
+                        <div className="text-xs text-gray-400 mt-1">{data.label}</div>
+                      </div>
+                      <Icon className="w-8 h-8 text-blue-400 opacity-50" />
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        );
+
+      case 'revenue-card':
+        return (
+          <Card className="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700">
+            <CardHeader>
+              <CardTitle className="text-green-300">Receita</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold text-white mb-2">
+                R$ {stats?.totalRevenue?.toLocaleString('pt-BR') || '0'}
+              </div>
+              {config.showGrowth && (
+                <div className="text-sm text-green-400 flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4" />
+                  Crescimento este mês
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+
+      case 'users-table':
+        return (
+          <Card className="bg-[#181e29] border border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white">Usuários</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="text-left p-2 text-gray-400">Nome</th>
+                      <th className="text-left p-2 text-gray-400">Email</th>
+                      <th className="text-left p-2 text-gray-400">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clientes.slice(0, config.pageSize || 5).map((cliente: any, idx: number) => (
+                      <tr key={idx} className="border-b border-gray-800">
+                        <td className="p-2 text-white">{cliente.name || 'N/A'}</td>
+                        <td className="p-2 text-gray-400">{cliente.email || 'N/A'}</td>
+                        <td className="p-2">
+                          <span className="px-2 py-1 bg-green-900/30 text-green-300 rounded text-xs">
+                            {cliente.status || 'Ativo'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 'chart':
+        return (
+          <Card className="bg-[#181e29] border border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white">Gráfico - {config.type || 'Line'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 flex items-center justify-center bg-gray-900/50 rounded border border-gray-800">
+                <div className="text-center text-gray-400">
+                  <TrendingUp className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Gráfico {config.type || 'Line'}</p>
+                  <p className="text-xs">Fonte: {config.dataSource || 'revenue'}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 'form':
+        return (
+          <Card className="bg-[#181e29] border border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white">Formulário</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {config.fields?.length > 0 ? (
+                  config.fields.map((field: any, idx: number) => (
+                    <div key={idx} className="space-y-1">
+                      <Label className="text-gray-300">{field.label}</Label>
+                      <Input
+                        type={field.type || 'text'}
+                        placeholder={field.placeholder}
+                        className="bg-gray-900 border-gray-700 text-white"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm">Nenhum campo configurado. Edite o componente para adicionar campos.</p>
+                )}
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  {config.submitText || 'Enviar'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 'button':
+        return (
+          <Button
+            className={`w-full ${
+              config.variant === 'primary' ? 'bg-blue-600 hover:bg-blue-700' :
+              config.variant === 'secondary' ? 'bg-gray-600 hover:bg-gray-700' :
+              'bg-green-600 hover:bg-green-700'
+            } text-white`}
+            onClick={() => {
+              if (config.link) window.open(config.link, '_blank');
+              if (config.action) toast.info(`Ação: ${config.action}`);
+            }}
+          >
+            {config.text || 'Clique aqui'}
+          </Button>
+        );
+
+      case 'text':
+        const textSizes: any = { small: 'text-sm', medium: 'text-base', large: 'text-lg', xlarge: 'text-2xl' };
+        const textAligns: any = { left: 'text-left', center: 'text-center', right: 'text-right' };
+        return (
+          <div className={`${textSizes[config.size || 'medium']} ${textAligns[config.align || 'left']} text-white`}>
+            {config.content || 'Digite seu texto aqui'}
+          </div>
+        );
+
+      case 'image':
+        return config.src ? (
+          <img
+            src={config.src}
+            alt={config.alt || ''}
+            style={{ width: config.width || '100%', height: config.height || 'auto' }}
+            className="rounded-lg"
+          />
+        ) : (
+          <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center text-gray-400">
+            <Image className="w-12 h-12 mx-auto mb-2 opacity-50" />
+            <p>Nenhuma imagem configurada</p>
+          </div>
+        );
+
+      case 'video':
+        return config.src ? (
+          <video
+            src={config.src}
+            controls={config.controls}
+            autoPlay={config.autoplay}
+            className="w-full rounded-lg"
+          />
+        ) : (
+          <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center text-gray-400">
+            <Video className="w-12 h-12 mx-auto mb-2 opacity-50" />
+            <p>Nenhum vídeo configurado</p>
+          </div>
+        );
+
+      case 'list':
+        return (
+          <div className={config.ordered ? 'list-decimal list-inside' : 'list-disc list-inside'}>
+            {config.items?.length > 0 ? (
+              config.items.map((item: string, idx: number) => (
+                <li key={idx} className="text-white mb-1">{item}</li>
+              ))
+            ) : (
+              <p className="text-gray-400 text-sm">Nenhum item na lista. Edite o componente para adicionar itens.</p>
+            )}
+          </div>
+        );
+
+      case 'columns':
+        const colCount = config.count || 2;
+        return (
+          <div className={`grid grid-cols-${colCount} gap-${config.gap || 'medium'}`}>
+            {Array.from({ length: colCount }).map((_, idx) => (
+              <div key={idx} className="border border-gray-700 rounded p-4 bg-gray-900/30">
+                <p className="text-gray-400 text-sm">Coluna {idx + 1}</p>
+              </div>
+            ))}
+          </div>
+        );
+
+      default:
+        return (
+          <div className="border border-gray-700 rounded p-4 text-gray-400 text-center">
+            Componente desconhecido: {type}
+          </div>
+        );
+    }
+  };
+
+  // Componente PageBuilderContent
+  const PageBuilderContent = ({
+    pageForm,
+    setPageForm,
+    availableComponents,
+    addComponent,
+    removeComponent,
+    updateComponent,
+    selectedComponent,
+    setSelectedComponent,
+    handleDragEnd,
+    sensors,
+    stats,
+    clientes,
+    generateSlug,
+  }: any) => {
+    const categories = Array.from(new Set(availableComponents.map((c: any) => c.category)));
+
+    return (
+      <div className="flex h-[calc(95vh-100px)]">
+        {/* Sidebar de Componentes */}
+        <div className="w-64 border-r border-gray-700 bg-[#1a1f2e] overflow-y-auto">
+          <div className="p-4 border-b border-gray-700">
+            <h3 className="font-semibold text-white mb-2">Componentes</h3>
+            <Input
+              placeholder="Buscar..."
+              className="bg-gray-900 border-gray-700 text-white text-sm"
+            />
+          </div>
+          <div className="p-4 space-y-4">
+            {categories.map((category: string) => (
+              <div key={category}>
+                <h4 className="text-xs font-semibold text-gray-400 uppercase mb-2">{category}</h4>
+                <div className="space-y-1">
+                  {availableComponents
+                    .filter((c: any) => c.category === category)
+                    .map((component: any) => (
+                      <button
+                        key={component.id}
+                        onClick={() => addComponent(component.id)}
+                        className="w-full flex items-center gap-2 p-2 rounded hover:bg-gray-800 text-left text-sm text-gray-300 hover:text-white transition-colors"
+                      >
+                        <component.icon className="w-4 h-4" />
+                        {component.name}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Área de Edição/Preview */}
+        <div className="flex-1 flex flex-col">
+          {/* Tabs: Informações Básicas e Preview */}
+          <Tabs defaultValue="preview" className="flex-1 flex flex-col">
+            <TabsList className="mx-4 mt-4">
+              <TabsTrigger value="info">Informações</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="info" className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-4 max-w-2xl">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">Título <span className="text-red-400">*</span></Label>
+                    <Input
+                      value={pageForm.title}
+                      onChange={(e) => {
+                        setPageForm({
+                          ...pageForm,
+                          title: e.target.value,
+                          slug: pageForm.slug || generateSlug(e.target.value),
+                        });
+                      }}
+                      className="bg-gray-900 border-gray-700 text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">URL <span className="text-red-400">*</span></Label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400 text-sm">/page/</span>
+                      <Input
+                        value={pageForm.slug}
+                        onChange={(e) => setPageForm({ ...pageForm, slug: e.target.value.toLowerCase() })}
+                        className="flex-1 bg-gray-900 border-gray-700 text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-300">Descrição</Label>
+                  <Input
+                    value={pageForm.description}
+                    onChange={(e) => setPageForm({ ...pageForm, description: e.target.value })}
+                    className="bg-gray-900 border-gray-700 text-white"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">Cor de Fundo</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={pageForm.backgroundColor}
+                        onChange={(e) => setPageForm({ ...pageForm, backgroundColor: e.target.value })}
+                        className="w-12 h-10 rounded border border-gray-700"
+                      />
+                      <Input
+                        value={pageForm.backgroundColor}
+                        onChange={(e) => setPageForm({ ...pageForm, backgroundColor: e.target.value })}
+                        className="flex-1 bg-gray-900 border-gray-700 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">Cor do Texto</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={pageForm.textColor}
+                        onChange={(e) => setPageForm({ ...pageForm, textColor: e.target.value })}
+                        className="w-12 h-10 rounded border border-gray-700"
+                      />
+                      <Input
+                        value={pageForm.textColor}
+                        onChange={(e) => setPageForm({ ...pageForm, textColor: e.target.value })}
+                        className="flex-1 bg-gray-900 border-gray-700 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-300">Cor Primária</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={pageForm.primaryColor}
+                        onChange={(e) => setPageForm({ ...pageForm, primaryColor: e.target.value })}
+                        className="w-12 h-10 rounded border border-gray-700"
+                      />
+                      <Input
+                        value={pageForm.primaryColor}
+                        onChange={(e) => setPageForm({ ...pageForm, primaryColor: e.target.value })}
+                        className="flex-1 bg-gray-900 border-gray-700 text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="preview" className="flex-1 overflow-y-auto p-6">
+              <div
+                className="min-h-full p-8 rounded-lg"
+                style={{
+                  backgroundColor: pageForm.backgroundColor,
+                  color: pageForm.textColor,
+                }}
+              >
+                {pageForm.components.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    <Layout className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg mb-2">Nenhum componente adicionado</p>
+                    <p className="text-sm">Arraste componentes da barra lateral para começar</p>
+                  </div>
+                ) : (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={pageForm.components.map((c: any) => c.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {pageForm.components
+                        .sort((a: any, b: any) => a.order - b.order)
+                        .map((component: any) => (
+                          <div key={component.id} className="mb-4">
+                            {renderComponent(component)}
+                          </div>
+                        ))}
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Lista de Componentes (Lateral Direita) */}
+          <div className="w-80 border-l border-gray-700 bg-[#1a1f2e] overflow-y-auto">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-semibold text-white">Componentes da Página</h3>
+            </div>
+            <div className="p-4">
+              {pageForm.components.length === 0 ? (
+                <p className="text-gray-400 text-sm text-center py-8">
+                  Nenhum componente adicionado
+                </p>
+              ) : (
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={pageForm.components.map((c: any) => c.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {pageForm.components
+                      .sort((a: any, b: any) => a.order - b.order)
+                      .map((component: any) => (
+                        <SortableComponentItem
+                          key={component.id}
+                          component={component}
+                          onSelect={setSelectedComponent}
+                          onRemove={removeComponent}
+                        />
+                      ))}
+                  </SortableContext>
+                </DndContext>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Painel de Propriedades */}
+        {selectedComponent && (
+          <div className="w-80 border-l border-gray-700 bg-[#1a1f2e] overflow-y-auto">
+            <div className="p-4 border-b border-gray-700 flex items-center justify-between">
+              <h3 className="font-semibold text-white">Propriedades</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedComponent(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="p-4 space-y-4">
+              <ComponentPropertiesEditor
+                component={selectedComponent}
+                onUpdate={(config: any) => updateComponent(selectedComponent.id, config)}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Editor de Propriedades do Componente
+  const ComponentPropertiesEditor = ({ component, onUpdate }: any) => {
+    const { type, config } = component;
+
+    const updateConfig = (key: string, value: any) => {
+      onUpdate({ [key]: value });
+    };
+
+    switch (type) {
+      case 'metric-card':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Título</Label>
+              <Input
+                value={config.title || ''}
+                onChange={(e) => updateConfig('title', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Valor</Label>
+              <Input
+                value={config.value || ''}
+                onChange={(e) => updateConfig('value', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Label</Label>
+              <Input
+                value={config.label || ''}
+                onChange={(e) => updateConfig('label', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Cor</Label>
+              <div className="flex gap-2">
+                <input
+                  type="color"
+                  value={config.color || pageForm.primaryColor}
+                  onChange={(e) => updateConfig('color', e.target.value)}
+                  className="w-12 h-10 rounded border border-gray-700"
+                />
+                <Input
+                  value={config.color || pageForm.primaryColor}
+                  onChange={(e) => updateConfig('color', e.target.value)}
+                  className="flex-1 bg-gray-900 border-gray-700 text-white"
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'stats-grid':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Colunas</Label>
+              <select
+                value={config.columns || 3}
+                onChange={(e) => updateConfig('columns', parseInt(e.target.value))}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value={2}>2 Colunas</option>
+                <option value={3}>3 Colunas</option>
+                <option value={4}>4 Colunas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Métricas</Label>
+              <div className="space-y-2">
+                {['totalUsers', 'totalRevenue', 'activeClients'].map((metric) => (
+                  <label key={metric} className="flex items-center gap-2 text-sm text-gray-300">
+                    <input
+                      type="checkbox"
+                      checked={config.metrics?.includes(metric) || false}
+                      onChange={(e) => {
+                        const current = config.metrics || [];
+                        const updated = e.target.checked
+                          ? [...current, metric]
+                          : current.filter((m: string) => m !== metric);
+                        updateConfig('metrics', updated);
+                      }}
+                      className="accent-blue-500"
+                    />
+                    {metric}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </>
+        );
+
+      case 'button':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Texto</Label>
+              <Input
+                value={config.text || ''}
+                onChange={(e) => updateConfig('text', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Variante</Label>
+              <select
+                value={config.variant || 'primary'}
+                onChange={(e) => updateConfig('variant', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="primary">Primário</option>
+                <option value="secondary">Secundário</option>
+                <option value="success">Sucesso</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Link (URL)</Label>
+              <Input
+                value={config.link || ''}
+                onChange={(e) => updateConfig('link', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+                placeholder="https://..."
+              />
+            </div>
+          </>
+        );
+
+      case 'text':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Conteúdo</Label>
+              <textarea
+                value={config.content || ''}
+                onChange={(e) => updateConfig('content', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[100px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Tamanho</Label>
+              <select
+                value={config.size || 'medium'}
+                onChange={(e) => updateConfig('size', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="small">Pequeno</option>
+                <option value="medium">Médio</option>
+                <option value="large">Grande</option>
+                <option value="xlarge">Extra Grande</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Alinhamento</Label>
+              <select
+                value={config.align || 'left'}
+                onChange={(e) => updateConfig('align', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="left">Esquerda</option>
+                <option value="center">Centro</option>
+                <option value="right">Direita</option>
+              </select>
+            </div>
+          </>
+        );
+
+      default:
+        return (
+          <div className="text-gray-400 text-sm">
+            Propriedades específicas para este componente em breve.
+          </div>
+        );
+    }
+  };
+
   const navItems = [
     { id: 'marca', title: 'Marca', icon: Paintbrush, description: 'Logo, nome e informações.', color: 'purple' },
     { id: 'visual', title: 'Visual', icon: Palette, description: 'Cores, fontes e temas.', color: 'green' },
@@ -1763,21 +2489,38 @@ const AdminBranding: React.FC = () => {
           </DialogHeader>
           
           {builderMode ? (
-            <PageBuilderContent
-              pageForm={pageForm}
-              setPageForm={setPageForm}
-              availableComponents={availableComponents}
-              addComponent={addComponent}
-              removeComponent={removeComponent}
-              updateComponent={updateComponent}
-              selectedComponent={selectedComponent}
-              setSelectedComponent={setSelectedComponent}
-              handleDragEnd={handleDragEnd}
-              sensors={sensors}
-              stats={stats}
-              clientes={clientes}
-              generateSlug={generateSlug}
-            />
+            <>
+              <PageBuilderContent
+                pageForm={pageForm}
+                setPageForm={setPageForm}
+                availableComponents={availableComponents}
+                addComponent={addComponent}
+                removeComponent={removeComponent}
+                updateComponent={updateComponent}
+                selectedComponent={selectedComponent}
+                setSelectedComponent={setSelectedComponent}
+                handleDragEnd={handleDragEnd}
+                sensors={sensors}
+                stats={stats}
+                clientes={clientes}
+                generateSlug={generateSlug}
+              />
+              <DialogFooter className="p-4 border-t border-gray-700">
+                <Button
+                  variant="outline"
+                  onClick={() => setPageModal(false)}
+                  className="bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={savePage}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {editingPage ? 'Salvar Alterações' : 'Criar Página'}
+                </Button>
+              </DialogFooter>
+            </>
           ) : (
             <div className="space-y-6 py-4 p-6 overflow-y-auto max-h-[calc(95vh-100px)]">
             {/* Informações Básicas */}
@@ -2113,10 +2856,26 @@ const AdminBranding: React.FC = () => {
                   )}
                 </header>
               )}
-              <div 
-                dangerouslySetInnerHTML={{ __html: viewingPage.content || '<p>Nenhum conteúdo adicionado ainda.</p>' }}
-                style={{ color: viewingPage.textColor }}
-              />
+              
+              {/* Renderizar componentes do page builder se existirem */}
+              {viewingPage.components && viewingPage.components.length > 0 ? (
+                <div className="space-y-6">
+                  {viewingPage.components
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((component: any) => (
+                      <div key={component.id}>
+                        {renderComponent(component)}
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                /* Fallback para conteúdo HTML se não houver componentes */
+                <div 
+                  dangerouslySetInnerHTML={{ __html: viewingPage.content || '<p>Nenhum conteúdo adicionado ainda.</p>' }}
+                  style={{ color: viewingPage.textColor }}
+                />
+              )}
+              
               {viewingPage.showFooter && (
                 <footer className="mt-8 pt-4 border-t" style={{ borderColor: viewingPage.primaryColor }}>
                   <p className="text-sm opacity-60">© {new Date().getFullYear()} {brand.name || 'Sua Empresa'}</p>
