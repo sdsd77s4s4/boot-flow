@@ -1,5 +1,5 @@
-import { AgentAIClient } from '@/lib/aiClient.agent';
-import { agentLogger } from '@/lib/logger.agent';
+import { AgentAIClient } from '../src/lib/aiClient.agent';
+import { agentLogger } from '../src/lib/logger.agent';
 
 export interface InsightsRequestBody {
   prompt: string;

@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { agentLogger } from '@/lib/logger.agent';
+import { agentLogger } from '../src/lib/logger.agent';
 
 const logger = agentLogger;
 
