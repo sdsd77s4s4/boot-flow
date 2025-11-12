@@ -1308,6 +1308,289 @@ const AdminBranding: React.FC = () => {
           </>
         );
 
+      case 'revenue-card':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Mostrar Crescimento</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.showGrowth || false}
+                  onChange={(e) => updateConfig('showGrowth', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Exibir indicador de crescimento</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Período</Label>
+              <select
+                value={config.period || 'month'}
+                onChange={(e) => updateConfig('period', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="day">Dia</option>
+                <option value="week">Semana</option>
+                <option value="month">Mês</option>
+                <option value="year">Ano</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'users-table':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Mostrar Busca</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.showSearch || false}
+                  onChange={(e) => updateConfig('showSearch', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Habilitar campo de busca</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Mostrar Paginação</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.showPagination || false}
+                  onChange={(e) => updateConfig('showPagination', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Habilitar paginação</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Itens por Página</Label>
+              <Input
+                type="number"
+                value={config.pageSize || 10}
+                onChange={(e) => updateConfig('pageSize', parseInt(e.target.value) || 10)}
+                className="bg-gray-900 border-gray-700 text-white"
+                min="1"
+                max="100"
+              />
+            </div>
+          </>
+        );
+
+      case 'chart':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Tipo de Gráfico</Label>
+              <select
+                value={config.type || 'line'}
+                onChange={(e) => updateConfig('type', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="line">Linha</option>
+                <option value="bar">Barras</option>
+                <option value="pie">Pizza</option>
+                <option value="area">Área</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Fonte de Dados</Label>
+              <select
+                value={config.dataSource || 'revenue'}
+                onChange={(e) => updateConfig('dataSource', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="revenue">Receita</option>
+                <option value="users">Usuários</option>
+                <option value="clients">Clientes</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Período</Label>
+              <select
+                value={config.period || 'month'}
+                onChange={(e) => updateConfig('period', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="day">Dia</option>
+                <option value="week">Semana</option>
+                <option value="month">Mês</option>
+                <option value="year">Ano</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'form':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Texto do Botão</Label>
+              <Input
+                value={config.submitText || 'Enviar'}
+                onChange={(e) => updateConfig('submitText', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Ação (URL)</Label>
+              <Input
+                value={config.action || ''}
+                onChange={(e) => updateConfig('action', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+                placeholder="/api/submit"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Campos do Formulário</Label>
+              <p className="text-xs text-gray-400">Adicione campos editando o componente diretamente no código.</p>
+            </div>
+          </>
+        );
+
+      case 'image':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">URL da Imagem</Label>
+              <Input
+                value={config.src || ''}
+                onChange={(e) => updateConfig('src', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+                placeholder="https://..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Texto Alternativo</Label>
+              <Input
+                value={config.alt || ''}
+                onChange={(e) => updateConfig('alt', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-gray-300">Largura</Label>
+                <Input
+                  value={config.width || '100%'}
+                  onChange={(e) => updateConfig('width', e.target.value)}
+                  className="bg-gray-900 border-gray-700 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-300">Altura</Label>
+                <Input
+                  value={config.height || 'auto'}
+                  onChange={(e) => updateConfig('height', e.target.value)}
+                  className="bg-gray-900 border-gray-700 text-white"
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'video':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">URL do Vídeo</Label>
+              <Input
+                value={config.src || ''}
+                onChange={(e) => updateConfig('src', e.target.value)}
+                className="bg-gray-900 border-gray-700 text-white"
+                placeholder="https://..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Controles</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.controls !== false}
+                  onChange={(e) => updateConfig('controls', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Mostrar controles</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Autoplay</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.autoplay || false}
+                  onChange={(e) => updateConfig('autoplay', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Reproduzir automaticamente</span>
+              </div>
+            </div>
+          </>
+        );
+
+      case 'list':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Lista Ordenada</Label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={config.ordered || false}
+                  onChange={(e) => updateConfig('ordered', e.target.checked)}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">Usar numeração</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Itens da Lista (um por linha)</Label>
+              <textarea
+                value={config.items?.join('\n') || ''}
+                onChange={(e) => {
+                  const items = e.target.value.split('\n').filter(item => item.trim());
+                  updateConfig('items', items);
+                }}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[100px]"
+                placeholder="Item 1&#10;Item 2&#10;Item 3"
+              />
+            </div>
+          </>
+        );
+
+      case 'columns':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Número de Colunas</Label>
+              <select
+                value={config.count || 2}
+                onChange={(e) => updateConfig('count', parseInt(e.target.value))}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value={2}>2 Colunas</option>
+                <option value={3}>3 Colunas</option>
+                <option value={4}>4 Colunas</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-300">Espaçamento</Label>
+              <select
+                value={config.gap || 'medium'}
+                onChange={(e) => updateConfig('gap', e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+              >
+                <option value="small">Pequeno</option>
+                <option value="medium">Médio</option>
+                <option value="large">Grande</option>
+              </select>
+            </div>
+          </>
+        );
+
       default:
         return (
           <div className="text-gray-400 text-sm">
