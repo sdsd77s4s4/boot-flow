@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { agentLogger } from '@/lib/logger.agent';
+import { agentLogger } from '../src/lib/logger.agent';
 
 const logger = agentLogger;
 
