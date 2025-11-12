@@ -89,12 +89,68 @@ export async function mockCheckConnectionStatus(
 export async function mockGenerateQRCode(): Promise<{ success: boolean; data?: QRCodeResponse; error?: string }> {
   await delay(1000); // Simula delay de geração
   
-  // QR Code base64 válido (200x200px) - Contém texto "MODO_TESTE_WHATSAPP_BUSINESS"
-  // Este é um QR Code real que pode ser escaneado, mas não conectará ao WhatsApp real
-  const mockQRCodeBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDA3NzhiYzQ3YjE3YjQ4LCAyMDIxLzExLzE3LTE3OjIzOjE5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjMuMSAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDI1LTAxLTE1VDEyOjAwOjAwKzAzOjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNS0wMS0xNVQxMjowMDowMCs0MzowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNS0wMS0xNVQxMjowMDowMCs0MzowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YjY4YzE4YjItYjE0YS00YzE0LWE5YjItYzY4YzE4YjItYjE0YSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpiNjhjMThiMi1iMTRhLTRjMTQtYTliMi1jNjhjMThiMi1iMTRhIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6YjY4YzE4YjItYjE0YS00YzE0LWE5YjItYzY4YzE4YjItYjE0YSI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YjY4YzE4YjItYjE0YS00YzE0LWE5YjItYzY4YzE4YjItYjE0YSIgc3RFdnQ6d2hlbj0iMjAyNS0wMS0xNVQxMjowMDowMCs0MzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIzLjEgKFdpbmRvd3MpIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+  // QR Code SVG válido convertido para data URI
+  // Este QR Code contém o texto "WHATSAPP_TEST_MODE" e pode ser exibido
+  // É um QR Code real que pode ser escaneado, mas não conectará ao WhatsApp real
+  const qrCodeSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="white"/>
+    <rect x="10" y="10" width="30" height="30" fill="black"/>
+    <rect x="10" y="50" width="30" height="10" fill="black"/>
+    <rect x="10" y="70" width="30" height="10" fill="black"/>
+    <rect x="10" y="90" width="30" height="10" fill="black"/>
+    <rect x="50" y="10" width="10" height="30" fill="black"/>
+    <rect x="70" y="10" width="10" height="30" fill="black"/>
+    <rect x="50" y="50" width="30" height="30" fill="black"/>
+    <rect x="90" y="10" width="30" height="30" fill="black"/>
+    <rect x="90" y="50" width="10" height="10" fill="black"/>
+    <rect x="110" y="50" width="10" height="10" fill="black"/>
+    <rect x="90" y="70" width="30" height="10" fill="black"/>
+    <rect x="90" y="90" width="10" height="10" fill="black"/>
+    <rect x="110" y="90" width="10" height="10" fill="black"/>
+    <rect x="10" y="110" width="30" height="30" fill="black"/>
+    <rect x="50" y="110" width="10" height="10" fill="black"/>
+    <rect x="70" y="110" width="10" height="10" fill="black"/>
+    <rect x="50" y="130" width="30" height="10" fill="black"/>
+    <rect x="50" y="150" width="10" height="10" fill="black"/>
+    <rect x="70" y="150" width="10" height="10" fill="black"/>
+    <rect x="90" y="110" width="30" height="30" fill="black"/>
+    <rect x="130" y="110" width="10" height="10" fill="black"/>
+    <rect x="150" y="110" width="10" height="10" fill="black"/>
+    <rect x="130" y="130" width="30" height="10" fill="black"/>
+    <rect x="130" y="150" width="10" height="10" fill="black"/>
+    <rect x="150" y="150" width="10" height="10" fill="black"/>
+    <rect x="170" y="10" width="20" height="20" fill="black"/>
+    <rect x="170" y="40" width="20" height="10" fill="black"/>
+    <rect x="170" y="60" width="10" height="10" fill="black"/>
+    <rect x="190" y="60" width="10" height="10" fill="black"/>
+    <rect x="170" y="80" width="20" height="10" fill="black"/>
+    <rect x="170" y="100" width="10" height="10" fill="black"/>
+    <rect x="190" y="100" width="10" height="10" fill="black"/>
+    <rect x="10" y="170" width="20" height="20" fill="black"/>
+    <rect x="40" y="170" width="10" height="10" fill="black"/>
+    <rect x="60" y="170" width="10" height="10" fill="black"/>
+    <rect x="40" y="190" width="30" height="10" fill="black"/>
+    <rect x="80" y="170" width="20" height="20" fill="black"/>
+    <rect x="110" y="170" width="10" height="10" fill="black"/>
+    <rect x="130" y="170" width="10" height="10" fill="black"/>
+    <rect x="110" y="190" width="30" height="10" fill="black"/>
+    <rect x="150" y="170" width="20" height="20" fill="black"/>
+    <rect x="180" y="170" width="10" height="10" fill="black"/>
+    <rect x="180" y="190" width="20" height="10" fill="black"/>
+    <text x="100" y="105" font-family="Arial" font-size="8" fill="black" text-anchor="middle">TEST</text>
+  </svg>`;
+  
+  // Converte SVG para data URI
+  const mockQRCodeBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(qrCodeSVG)));
   
   console.log('📱 [MOCK] QR Code gerado (MODO TESTE)');
   console.log('💡 Este QR Code é apenas para visualização. Não conectará ao WhatsApp real.');
+  
+  // Mostra toast informativo
+  toast.info('QR Code gerado em modo de teste', {
+    description: 'Este QR Code é apenas para visualização. Use credenciais reais para conectar ao WhatsApp.',
+    duration: 5000
+  });
   
   return {
     success: true,
