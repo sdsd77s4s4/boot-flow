@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { DialogWrapper } from '@/components/ui/DialogWrapper';
-import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp, Users } from 'lucide-react';
+import { Plus, Send, MessageSquare, CheckCircle2, XCircle, TrendingUp, Users, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useClientes } from '@/hooks/useClientes';
 import { useRevendas } from '@/hooks/useRevendas';
 import { toast } from 'sonner';
@@ -41,6 +41,7 @@ type Template = {
   status: TemplateStatus;
   envios: number;
   taxa: number;
+  imagem?: string; // URL ou base64 da imagem
 };
 
 // Removendo a declaração duplicada de HistoricoStatus
@@ -113,6 +114,7 @@ type FormData = {
   texto: string;
   status: TemplateStatus;
   variaveis: string;
+  imagem?: string; // URL ou base64 da imagem
 };
 
 type Destinatario = {
@@ -146,8 +148,10 @@ export default function Notifications() {
     nome: '', 
     texto: '', 
     status: 'Ativo',
-    variaveis: '' 
+    variaveis: '',
+    imagem: undefined
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
   const [searchDestValue, setSearchDestValue] = useState('');
   const { clientes = [] } = useClientes();
@@ -157,6 +161,42 @@ export default function Notifications() {
   const { isConnected, connectionStatus } = useWhatsAppStatus();
   
   const variaveisSugeridas = ['nome', 'servico', 'data', 'hora', 'valor', 'desconto', 'validade', 'pix', 'promocao'] as const;
+
+  // Função para lidar com upload de imagem
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validar tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        toast.error('Por favor, selecione apenas arquivos de imagem');
+        return;
+      }
+      
+      // Validar tamanho (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('A imagem deve ter no máximo 5MB');
+        return;
+      }
+      
+      // Converter para base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setForm({ ...form, imagem: base64String });
+        setImagePreview(base64String);
+      };
+      reader.onerror = () => {
+        toast.error('Erro ao carregar a imagem');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Função para remover imagem
+  const handleRemoveImage = () => {
+    setForm({ ...form, imagem: undefined });
+    setImagePreview(null);
+  };
 
   // Função para renderizar o modal de novo template
   const renderNovoTemplateModal = () => (
@@ -309,10 +349,12 @@ export default function Notifications() {
         variaveis: Array.from(new Set((form.texto.match(/\{(.*?)\}/g) || []).map(v => v.replace(/[{}]/g, '')))),
         status: form.status,
         envios: 0,
-        taxa: 0
+        taxa: 0,
+        imagem: form.imagem
       };
       setTemplates([...templates, newTemplate]);
-      setForm({ nome: '', texto: '', status: 'Ativo', variaveis: '' });
+      setForm({ nome: '', texto: '', status: 'Ativo', variaveis: '', imagem: undefined });
+      setImagePreview(null);
       setModal({ type: null });
       toast.success('Template criado com sucesso!');
     } else {
@@ -329,11 +371,14 @@ export default function Notifications() {
               nome: form.nome,
               texto: form.texto,
               variaveis: Array.from(new Set((form.texto.match(/\{(.*?)\}/g) || []).map(v => v.replace(/[{}]/g, '')))),
-              status: form.status
+              status: form.status,
+              imagem: form.imagem
             } 
           : t
       ));
       setModal({ type: null });
+      setForm({ nome: '', texto: '', status: 'Ativo', variaveis: '', imagem: undefined });
+      setImagePreview(null);
       toast.success('Template atualizado com sucesso!');
     } else {
       toast.error('Preencha todos os campos obrigatórios');
@@ -441,7 +486,11 @@ export default function Notifications() {
                   <span>{t.taxa}% entrega</span>
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-400" onClick={() => { setModal({ type: 'editar', template: t }); setForm({ nome: t.nome, texto: t.texto, variaveis: t.variaveis.join(','), status: t.status }); }}>Editar</Button>
+                  <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-400" onClick={() => { 
+                    setModal({ type: 'editar', template: t }); 
+                    setForm({ nome: t.nome, texto: t.texto, variaveis: t.variaveis.join(','), status: t.status, imagem: t.imagem }); 
+                    setImagePreview(t.imagem || null);
+                  }}>Editar</Button>
                 </div>
               </div>
             ))}
@@ -467,7 +516,13 @@ export default function Notifications() {
         </Card>
       </div>
       {/* Modal Novo Template */}
-      <Dialog open={modal.type === 'novo'} onOpenChange={(isOpen) => !isOpen && setModal({ type: null })}>
+      <Dialog open={modal.type === 'novo'} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          setModal({ type: null });
+          setForm({ nome: '', texto: '', status: 'Ativo', variaveis: '', imagem: undefined });
+          setImagePreview(null);
+        }
+      }}>
         <DialogContent className="bg-gradient-to-br from-[#232a36] to-[#1f1930] border border-purple-700 text-white max-w-lg shadow-2xl rounded-2xl">
           <DialogHeader>
             <DialogTitle>Novo Template</DialogTitle>
@@ -550,8 +605,64 @@ export default function Notifications() {
               </div>
             </div>
             
+            {/* Área de Upload de Imagem */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Imagem do Template (Opcional)</label>
+              {imagePreview || form.imagem ? (
+                <div className="relative">
+                  <div className="relative w-full h-48 bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
+                    <img 
+                      src={imagePreview || form.imagem} 
+                      alt="Preview" 
+                      className="w-full h-full object-contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 transition-colors"
+                      aria-label="Remover imagem"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Clique no X para remover a imagem</p>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-purple-600 transition-colors">
+                  <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                  >
+                    <div className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center">
+                      <Upload className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div className="text-sm text-gray-300">
+                      <span className="text-purple-400 font-medium">Clique para fazer upload</span> ou arraste a imagem aqui
+                    </div>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF até 5MB</p>
+                  </label>
+                </div>
+              )}
+            </div>
+            
             <div className="bg-[#181825] border border-purple-800 rounded-lg p-3 text-sm text-gray-200">
               <div className="font-semibold text-purple-300 mb-1">Visualização:</div>
+              {imagePreview || form.imagem ? (
+                <div className="mb-2">
+                  <img 
+                    src={imagePreview || form.imagem} 
+                    alt="Preview" 
+                    className="w-full max-h-48 object-contain rounded mb-2"
+                  />
+                </div>
+              ) : null}
               <div className="whitespace-pre-line">{form.texto || 'Sua mensagem aparecerá aqui...'}</div>
             </div>
             
@@ -594,8 +705,10 @@ export default function Notifications() {
             nome: '', 
             texto: '', 
             status: TEMPLATE_STATUS.ATIVO,
-            variaveis: '' 
+            variaveis: '',
+            imagem: undefined
           });
+          setImagePreview(null);
         }
       }}>
         <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-lg">
@@ -649,6 +762,55 @@ export default function Notifications() {
               <p className="text-xs text-gray-400 mt-1">
                 Separe as variáveis por vírgula. Ex: nome, data, hora
               </p>
+            </div>
+
+            {/* Área de Upload de Imagem */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-300">
+                Imagem do Template (Opcional)
+              </label>
+              {imagePreview || form.imagem ? (
+                <div className="relative">
+                  <div className="relative w-full h-48 bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
+                    <img 
+                      src={imagePreview || form.imagem} 
+                      alt="Preview" 
+                      className="w-full h-full object-contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 transition-colors"
+                      aria-label="Remover imagem"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Clique no X para remover a imagem</p>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-purple-600 transition-colors">
+                  <input
+                    type="file"
+                    id="image-upload-edit"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="image-upload-edit"
+                    className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                  >
+                    <div className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center">
+                      <Upload className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div className="text-sm text-gray-300">
+                      <span className="text-purple-400 font-medium">Clique para fazer upload</span> ou arraste a imagem aqui
+                    </div>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF até 5MB</p>
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* Campo Status */}
