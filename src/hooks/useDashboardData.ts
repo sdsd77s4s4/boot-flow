@@ -242,7 +242,8 @@ function useDashboardData() {
     if (clientes.length > 0 || revendas.length > 0 || clientes.length === 0) {
       calculateStats();
     }
-  }, [clientes, revendas, calculateStats]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientes.length, revendas.length, user?.id]); // Removido calculateStats para evitar loop infinito
 
   // Função de refresh que atualiza os dados e recalcula as estatísticas
   const refresh = useCallback(async () => {

@@ -37,6 +37,40 @@ export function shouldUseMock(): boolean {
   const envMock = import.meta.env.VITE_USE_API_MOCK === 'true';
   const storageMock = localStorage.getItem('useApiBrasilMock') === 'true';
   
+  // Ativa automaticamente se estiver usando credenciais de teste
+  if (typeof window !== 'undefined') {
+    try {
+      // Verifica no localStorage como JSON (formato usado em AdminWhatsApp)
+      const configStr = localStorage.getItem('apiBrasilConfig');
+      if (configStr) {
+        const config = JSON.parse(configStr);
+        const bearerToken = config.bearerToken || '';
+        const profileId = config.profileId || '';
+        
+        // Se as credenciais forem as de teste, ativa o mock automaticamente
+        if (bearerToken === MOCK_CREDENTIALS.BEARER_TOKEN || 
+            profileId === MOCK_CREDENTIALS.PROFILE_ID ||
+            bearerToken.includes('MOCK_TOKEN_FOR_TESTING')) {
+          localStorage.setItem('useApiBrasilMock', 'true');
+          return true;
+        }
+      }
+      
+      // Também verifica chaves individuais (fallback)
+      const bearerToken = localStorage.getItem('apiBrasil_bearerToken') || '';
+      const profileId = localStorage.getItem('apiBrasil_profileId') || '';
+      
+      if (bearerToken === MOCK_CREDENTIALS.BEARER_TOKEN || 
+          profileId === MOCK_CREDENTIALS.PROFILE_ID ||
+          bearerToken.includes('MOCK_TOKEN_FOR_TESTING')) {
+        localStorage.setItem('useApiBrasilMock', 'true');
+        return true;
+      }
+    } catch (e) {
+      // Ignora erros de parsing
+    }
+  }
+  
   return envMock || storageMock;
 }
 

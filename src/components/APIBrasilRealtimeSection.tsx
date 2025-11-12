@@ -69,7 +69,9 @@ export const APIBrasilRealtimeSection: React.FC<APIBrasilRealtimeSectionProps> =
       setError(null);
       
       try {
-        const qrRes = await generateQRCode(apiToken, profileId, 'temporary');
+        // generateQRCode espera: token, devicePassword, deviceToken, authorization
+        // Passamos apenas o token (apiToken), os outros têm valores padrão
+        const qrRes = await generateQRCode(apiToken);
         console.log('[APIBrasilRealtimeSection] Resposta do QR Code:', { 
           success: qrRes.success,
           hasQRCode: !!(qrRes.data?.qrCode),
@@ -148,7 +150,9 @@ export const APIBrasilRealtimeSection: React.FC<APIBrasilRealtimeSectionProps> =
     
     try {
       console.log('[APIBrasilRealtimeSection] Gerando novo QR Code...');
-      const qrRes = await generateQRCode(apiToken, profileId, 'temporary');
+      // generateQRCode espera: token, devicePassword, deviceToken, authorization
+      // Passamos apenas o token (apiToken), os outros têm valores padrão
+      const qrRes = await generateQRCode(apiToken);
       console.log('[APIBrasilRealtimeSection] Resposta do QR Code (recarregado):', { 
         success: qrRes.success,
         hasQRCode: !!(qrRes.data?.qrCode),
