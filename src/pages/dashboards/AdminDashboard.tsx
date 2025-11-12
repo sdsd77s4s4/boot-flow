@@ -1304,7 +1304,7 @@ const AdminDashboard = () => {
                 <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
                 <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
               </div>
-              <div className="flex flex-col sm:flex-row items-center sm:items-stretch sm:items-center gap-2 sm:space-x-2">
+              <div className="flex flex-row items-center gap-2">
                 <Dialog open={clientModal} onOpenChange={setClientModal}>
                   <DialogTrigger asChild>
                     <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
