@@ -1300,11 +1300,11 @@ const AdminDashboard = () => {
           <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
+              <div className="text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
                 <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
               </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
+              <div className="flex flex-col sm:flex-row items-center sm:items-stretch sm:items-center gap-2 sm:space-x-2">
                 <Dialog open={clientModal} onOpenChange={setClientModal}>
                   <DialogTrigger asChild>
                     <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white h-10 sm:h-auto">
@@ -2138,11 +2138,11 @@ const AdminDashboard = () => {
             {currentPage === "dashboard" && (
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
+                  <div className="text-center sm:text-left">
                     <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
                     <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
                   </div>
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-stretch sm:items-center gap-2 sm:space-x-2">
                     <ThemeToggle />
                     <Dialog open={clientModal} onOpenChange={setClientModal}>
                       <DialogTrigger asChild>
