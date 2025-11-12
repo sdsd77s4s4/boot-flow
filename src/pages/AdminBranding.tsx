@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Paintbrush, UploadCloud, X, Check, GripVertical, Plus, Edit, Trash2, Palette, Code, Sliders, Star, Eye, ArrowLeft, BarChart3, TrendingUp, Activity, Bell, Table, Calendar, Map, FileText, PieChart, Globe, ExternalLink, Copy, Link2 } from 'lucide-react';
+import { Paintbrush, UploadCloud, X, Check, GripVertical, Plus, Edit, Trash2, Palette, Code, Sliders, Star, Eye, ArrowLeft, BarChart3, TrendingUp, Activity, Bell, Table, Calendar, Map, FileText, PieChart, Globe, ExternalLink, Copy, Link2, Layout, Move, Settings2, Type, Image, Video, List, Grid3x3, Columns, DollarSign, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { DndContext, closestCenter, DragEndEvent, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import useDashboardData from '@/hooks/useDashboardData';
+import { useClientes } from '@/hooks/useClientes';
 
 const initialBrand = {
   name: 'Sua Empresa Ltda',
@@ -72,7 +78,21 @@ const AdminBranding: React.FC = () => {
     metaTitle: '',
     metaDescription: '',
     isPublished: false,
+    components: [] as any[], // Array de componentes do page builder
   });
+  
+  const [builderMode, setBuilderMode] = useState(false);
+  const [selectedComponent, setSelectedComponent] = useState<any>(null);
+  
+  // Hooks para dados reais
+  const { stats } = useDashboardData();
+  const { clientes } = useClientes();
+  
+  // Sensores para drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor)
+  );
 
   // Carregar dados salvos do localStorage ao montar o componente
   useEffect(() => {
@@ -368,8 +388,25 @@ const AdminBranding: React.FC = () => {
   };
 
   // Funções para gerenciar páginas personalizadas
+  // Componentes disponíveis para o page builder
+  const availableComponents = [
+    { id: 'metric-card', name: 'Card de Métrica', icon: BarChart3, category: 'Métricas' },
+    { id: 'stats-grid', name: 'Grid de Estatísticas', icon: Grid3x3, category: 'Métricas' },
+    { id: 'revenue-card', name: 'Card de Receita', icon: DollarSign, category: 'Financeiro' },
+    { id: 'users-table', name: 'Tabela de Usuários', icon: Table, category: 'Dados' },
+    { id: 'chart', name: 'Gráfico', icon: TrendingUp, category: 'Visualização' },
+    { id: 'form', name: 'Formulário', icon: Type, category: 'Interação' },
+    { id: 'button', name: 'Botão', icon: Settings2, category: 'Interação' },
+    { id: 'text', name: 'Texto', icon: Type, category: 'Conteúdo' },
+    { id: 'image', name: 'Imagem', icon: Image, category: 'Mídia' },
+    { id: 'video', name: 'Vídeo', icon: Video, category: 'Mídia' },
+    { id: 'list', name: 'Lista', icon: List, category: 'Conteúdo' },
+    { id: 'columns', name: 'Colunas', icon: Columns, category: 'Layout' },
+  ];
+
   const openNewPage = () => {
     setEditingPage(null);
+    setBuilderMode(false);
     setPageForm({
       title: '',
       slug: '',
@@ -385,14 +422,109 @@ const AdminBranding: React.FC = () => {
       metaTitle: '',
       metaDescription: '',
       isPublished: false,
+      components: [],
     });
     setPageModal(true);
   };
 
   const openEditPage = (page: any) => {
     setEditingPage(page);
-    setPageForm({ ...page });
+    setPageForm({ 
+      ...page,
+      components: page.components || []
+    });
+    setBuilderMode(false);
     setPageModal(true);
+  };
+
+  // Adicionar componente à página
+  const addComponent = (componentType: string) => {
+    const component = availableComponents.find(c => c.id === componentType);
+    if (!component) return;
+
+    const newComponent = {
+      id: `comp-${Date.now()}`,
+      type: componentType,
+      name: component.name,
+      config: getDefaultComponentConfig(componentType),
+      order: pageForm.components.length,
+    };
+
+    setPageForm({
+      ...pageForm,
+      components: [...pageForm.components, newComponent]
+    });
+  };
+
+  // Obter configuração padrão do componente
+  const getDefaultComponentConfig = (type: string) => {
+    switch (type) {
+      case 'metric-card':
+        return { title: 'Métrica', value: '0', label: 'Descrição', color: pageForm.primaryColor };
+      case 'stats-grid':
+        return { columns: 3, metrics: ['totalUsers', 'totalRevenue', 'activeClients'] };
+      case 'revenue-card':
+        return { showGrowth: true, period: 'month' };
+      case 'users-table':
+        return { showSearch: true, showPagination: true, pageSize: 10 };
+      case 'chart':
+        return { type: 'line', dataSource: 'revenue', period: 'month' };
+      case 'form':
+        return { fields: [], submitText: 'Enviar', action: '' };
+      case 'button':
+        return { text: 'Clique aqui', variant: 'primary', action: '', link: '' };
+      case 'text':
+        return { content: 'Digite seu texto aqui', size: 'medium', align: 'left' };
+      case 'image':
+        return { src: '', alt: '', width: '100%', height: 'auto' };
+      case 'video':
+        return { src: '', autoplay: false, controls: true };
+      case 'list':
+        return { items: [], ordered: false };
+      case 'columns':
+        return { count: 2, gap: 'medium' };
+      default:
+        return {};
+    }
+  };
+
+  // Remover componente
+  const removeComponent = (componentId: string) => {
+    setPageForm({
+      ...pageForm,
+      components: pageForm.components.filter(c => c.id !== componentId)
+    });
+    if (selectedComponent?.id === componentId) {
+      setSelectedComponent(null);
+    }
+  };
+
+  // Atualizar componente
+  const updateComponent = (componentId: string, config: any) => {
+    setPageForm({
+      ...pageForm,
+      components: pageForm.components.map(c => 
+        c.id === componentId ? { ...c, config: { ...c.config, ...config } } : c
+      )
+    });
+  };
+
+  // Reordenar componentes (drag and drop)
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = pageForm.components.findIndex((c: any) => c.id === active.id);
+    const newIndex = pageForm.components.findIndex((c: any) => c.id === over.id);
+
+    const newComponents = [...pageForm.components];
+    const [removed] = newComponents.splice(oldIndex, 1);
+    newComponents.splice(newIndex, 0, removed);
+
+    setPageForm({
+      ...pageForm,
+      components: newComponents.map((c, index) => ({ ...c, order: index }))
+    });
   };
 
   const savePage = () => {
