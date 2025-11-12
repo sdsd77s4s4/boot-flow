@@ -246,7 +246,11 @@ const AdminBranding: React.FC = () => {
     setDashboardModal(false);
   };
   const removeDashboard = (id: number) => {
-    setDashboards(dashboards.filter(db => db.id !== id));
+    const updatedDashboards = dashboards.filter(db => db.id !== id);
+    setDashboards(updatedDashboards);
+    // Salvar no localStorage
+    localStorage.setItem('custom-dashboards', JSON.stringify(updatedDashboards));
+    toast.success('Dashboard removido com sucesso!');
   };
   // Drag & drop simples para ordem dos widgets
   const moveWidget = (from: number, to: number) => {
@@ -677,7 +681,8 @@ const AdminBranding: React.FC = () => {
           </div>
         )}
         {tab === 'funcionalidades' && (
-          <div className="max-w-2xl space-y-6">
+          <div className="space-y-6">
+            {/* Módulos e Funcionalidades */}
             <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
               <span className="block text-purple-300 font-semibold mb-4 text-lg">Módulos e Funcionalidades</span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -706,6 +711,99 @@ const AdminBranding: React.FC = () => {
                   <span className="text-gray-300">Chatbot IA</span>
                 </div>
               </div>
+            </div>
+
+            {/* Dashboards Personalizados */}
+            <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <span className="block text-purple-300 font-semibold text-lg">Dashboards Personalizados</span>
+                <Button 
+                  onClick={openNewDashboard}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Dashboard
+                </Button>
+              </div>
+              
+              {dashboards.length === 0 ? (
+                <div className="text-center py-8 text-gray-400">
+                  <p className="mb-2">Nenhum dashboard personalizado criado ainda.</p>
+                  <p className="text-sm">Clique em "Novo Dashboard" para criar um.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {dashboards.map((dashboard) => (
+                    <Card 
+                      key={dashboard.id} 
+                      className="bg-[#181e29] border border-gray-700 hover:border-purple-500 transition-colors"
+                    >
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-white text-base mb-1">{dashboard.name}</CardTitle>
+                            <p className="text-xs text-gray-400">Layout: {dashboard.layout}</p>
+                          </div>
+                          <div 
+                            className="w-4 h-4 rounded-full border-2 border-white"
+                            style={{ backgroundColor: dashboard.color }}
+                          />
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2 mb-4">
+                          <p className="text-xs text-gray-400 font-medium">Widgets:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {dashboard.widgets.slice(0, 3).map((widget, idx) => (
+                              <span 
+                                key={idx}
+                                className="text-xs px-2 py-1 bg-purple-900/30 text-purple-300 rounded"
+                              >
+                                {widget}
+                              </span>
+                            ))}
+                            {dashboard.widgets.length > 3 && (
+                              <span className="text-xs px-2 py-1 bg-gray-700 text-gray-400 rounded">
+                                +{dashboard.widgets.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mb-4">
+                          {dashboard.realtime && (
+                            <span className="text-xs px-2 py-1 bg-green-900/30 text-green-300 rounded">
+                              Tempo Real
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDashboard(dashboard)}
+                            className="flex-1 bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
+                          >
+                            <Edit className="w-3 h-3 mr-1" />
+                            Editar
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm('Tem certeza que deseja remover este dashboard?')) {
+                                removeDashboard(dashboard.id);
+                              }
+                            }}
+                            className="bg-red-600 hover:bg-red-700 text-white border-red-600"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
