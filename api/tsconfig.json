@@ -17,6 +17,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "resolveJsonModule": true,
     "types": ["@types/node", "vite/client"],
     "typeRoots": ["./node_modules/@types", "../node_modules/@types"]
   },

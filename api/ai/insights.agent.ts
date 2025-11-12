@@ -1,5 +1,5 @@
-import { AgentAIClient } from '../src/lib/aiClient.agent';
-import { agentLogger } from '../src/lib/logger.agent';
+import { AgentAIClient } from '../../src/lib/aiClient.agent';
+import { agentLogger } from '../../src/lib/logger.agent';
 
 export interface InsightsRequestBody {
   prompt: string;
@@ -10,7 +10,7 @@ const logger = agentLogger;
 
 export const POST = async (request: Request) => {
   try {
-    const body: InsightsRequestBody = await request.json();
+    const body: InsightsRequestBody = await request.json() as InsightsRequestBody;
 
     const client = new AgentAIClient();
     const insight = await client.createInsight(body.prompt, body.context ?? {});
