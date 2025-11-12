@@ -359,30 +359,34 @@ export default function AdminCobrancas() {
 
   // Funções auxiliares para seleção de clientes/revendas
   const handleClienteChange = (clienteId: string) => {
-    const cliente = clientes.find(c => c.id.toString() === clienteId);
+    // Extrair o ID do valor "cliente-15" -> "15"
+    const id = clienteId.replace('cliente-', '');
+    const cliente = clientes.find(c => c.id.toString() === id);
     if (cliente) {
       setNova({
         ...nova,
         cliente: clienteId,
         nomeCliente: cliente.name,
         email: cliente.email,
-        telefone: cliente.phone || '',
-        descricao: 'Cobrança Mensal - Cliente',
-        valor: '99.90',
-        vencimento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        telefone: cliente.phone || cliente.whatsapp || '',
+        descricao: cliente.observations || 'Cobrança Mensal - Cliente',
+        valor: cliente.price || '99.90',
+        vencimento: cliente.expiration_date ? new Date(cliente.expiration_date).toISOString().split('T')[0] : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       });
     }
   };
 
   const handleRevendaChange = (revendaId: string) => {
-    const revenda = revendas.find(r => r.id.toString() === revendaId);
+    // Extrair o ID do valor "revenda-15" -> "15"
+    const id = revendaId.replace('revenda-', '');
+    const revenda = revendas.find(r => r.id.toString() === id);
     if (revenda) {
       setNova({
         ...nova,
         cliente: revendaId,
         nomeCliente: revenda.personal_name || revenda.username,
         email: revenda.email || '',
-        telefone: '',
+        telefone: revenda.phone || '',
         descricao: 'Cobrança Mensal - Revenda',
         valor: '149.90',
         vencimento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
