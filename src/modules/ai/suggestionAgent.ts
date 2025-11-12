@@ -1,7 +1,7 @@
 import { AgentAIClient, defaultAIClient } from '@/lib/aiClient.agent';
-import { agentLogger } from '@/lib/logger.agent';
+import { agentLogger } from '@/lib/agentLogger.agent';
 
-const logger = agentLogger;
+
 
 export interface UserHistory {
   userId: string;
@@ -60,7 +60,7 @@ Gere 3-5 sugestões práticas e acionáveis, priorizando ações que podem aumen
 
       return suggestions;
     } catch (error) {
-      logger.error('Erro ao gerar sugestões', { error: (error as Error).message });
+      agentLogger.error('Erro ao gerar sugestões', { error: (error as Error).message });
       return this.getDefaultSuggestions(history.role);
     }
   }

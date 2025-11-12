@@ -60,9 +60,18 @@ export const getAgentLogger = () => {
   return _agentLogger;
 };
 
-// Exportar getter em vez de valor inicializado
-export const agentLogger = new Proxy({} as ReturnType<typeof createAgentLogger>, {
-  get(_target, prop) {
-    return getAgentLogger()[prop as keyof ReturnType<typeof createAgentLogger>];
-  }
-});
+// Exportar objeto com getters lazy para evitar problemas de inicialização
+export const agentLogger = {
+  get info() {
+    return getAgentLogger().info;
+  },
+  get warn() {
+    return getAgentLogger().warn;
+  },
+  get error() {
+    return getAgentLogger().error;
+  },
+  get debug() {
+    return getAgentLogger().debug;
+  },
+};

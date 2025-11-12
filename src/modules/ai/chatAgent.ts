@@ -1,8 +1,6 @@
 import { AgentAIClient, defaultAIClient } from '@/lib/aiClient.agent';
 import { agentLogger } from '@/lib/logger.agent';
 
-const logger = agentLogger;
-
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -65,7 +63,7 @@ Forneça respostas úteis, concisas e profissionais. Se o usuário for ${context
         suggestions: insight.actions.slice(0, 3),
       };
     } catch (error) {
-      logger.error('Erro no chat agent', { error: (error as Error).message });
+      agentLogger.error('Erro no chat agent', { error: (error as Error).message });
       return {
         response: 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
       };
