@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase, SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface Revenda {
   id: number;
@@ -20,9 +21,11 @@ export interface Revenda {
   telegram?: string;
   whatsapp?: string;
   observations?: string;
+  admin_id?: string; // ID do admin responsável por este revenda
 }
 
 export function useRevendas() {
+  const { user } = useAuth(); // Obter o admin logado
   const [revendas, setRevendas] = useState<Revenda[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +44,15 @@ export function useRevendas() {
       console.log('🔄 [useRevendas] Iniciando busca de revendedores...');
       setLoading(true);
       setError(null);
+      
+      // Se não houver usuário logado, não buscar revendas
+      if (!user?.id) {
+        console.log('⚠️ [useRevendas] Nenhum usuário logado, não buscando revendas');
+        setRevendas([]);
+        setLoading(false);
+        isFetchingRef.current = false;
+        return;
+      }
       
       // Usar fetch direto para evitar travamentos (igual ao useClientes)
       const allKeys = Object.keys(localStorage);
@@ -71,8 +83,12 @@ export function useRevendas() {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
       
-      const fetchUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*`;
+      // Filtrar revendas pelo admin_id do usuário logado
+      // A política RLS já filtra automaticamente, mas adicionamos o filtro explícito para clareza
+      const adminId = user.id;
+      const fetchUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*&admin_id=eq.${adminId}`;
       
+      console.log('🔄 [useRevendas] Buscando revendas do admin:', adminId);
       console.log('🔄 [useRevendas] Chamando:', fetchUrl);
       
       const controller = new AbortController();
@@ -122,7 +138,7 @@ export function useRevendas() {
       isFetchingRef.current = false;
       console.log('✅ [useRevendas] Busca finalizada');
     }
-  }, []);
+  }, [user?.id]); // Recarregar quando o admin mudar
 
   async function addRevenda(revenda: Omit<Revenda, 'id'>) {
     try {
@@ -146,6 +162,18 @@ export function useRevendas() {
         return false;
       }
       
+      // Obter o admin logado para associar o revenda (user já está disponível no escopo do hook)
+      const adminId = user?.id;
+      
+      if (!adminId) {
+        const errorMsg = 'Erro: Você precisa estar logado como admin para criar um revenda.';
+        console.error('❌ [useRevendas]', errorMsg);
+        setError(errorMsg);
+        return false;
+      }
+      
+      console.log('🔄 [useRevendas] Associando revenda ao admin:', adminId);
+      
       const revendaData: any = {
         username: revenda.username.trim(),
         email: email.trim(),
@@ -154,6 +182,7 @@ export function useRevendas() {
         credits: revenda.credits ?? 10,
         personal_name: revenda.personal_name?.trim() || null,
         status: revenda.status || 'Ativo',
+        admin_id: adminId, // Associar o revenda ao admin logado
         force_password_change: typeof revenda.force_password_change === 'string' 
           ? revenda.force_password_change === 'true' 
           : revenda.force_password_change ?? false,

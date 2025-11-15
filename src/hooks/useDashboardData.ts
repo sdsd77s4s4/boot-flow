@@ -113,14 +113,23 @@ function useDashboardData() {
         return status === 'ativo' || status === 'active';
       }).length;
 
-      // Contagem de revendedores ativos
-      const activeResellers = revendas.filter(revenda => {
+      // Filtrar revendas apenas do admin logado (se houver admin logado)
+      const revendasDoAdmin = user?.id 
+        ? revendas.filter((revenda) => {
+            const revendaRow = revenda as ResellerRow & { admin_id?: string };
+            // Incluir revendas associados ao admin logado ou revendas sem admin (NULL)
+            return revendaRow.admin_id === user.id || revendaRow.admin_id === null || revendaRow.admin_id === undefined;
+          })
+        : revendas;
+      
+      // Contagem de revendedores ativos (apenas do admin logado)
+      const activeResellers = revendasDoAdmin.filter(revenda => {
         const status = (revenda as ResellerRow).status?.toLowerCase();
         return status === 'ativo' || status === 'active';
       }).length;
 
-      // Total de usuários (clientes do admin + revendedores)
-      const totalUsers = clientesDoAdmin.length + revendas.length;
+      // Total de usuários (clientes do admin + revendas do admin)
+      const totalUsers = clientesDoAdmin.length + revendasDoAdmin.length;
 
       // Função auxiliar para converter preço de string (formato brasileiro) para número
       const parsePrice = (price: string | number | undefined): number => {
@@ -171,10 +180,10 @@ function useDashboardData() {
         console.error('Erro ao calcular receita dos clientes:', error);
       }
 
-      // Calcular receita total das revendas (soma dos créditos ou preços se houver)
+      // Calcular receita total das revendas (soma dos créditos ou preços se houver) - apenas do admin
       let revenueFromRevendas = 0;
       try {
-        revenueFromRevendas = revendas.reduce((sum, revenda) => {
+        revenueFromRevendas = revendasDoAdmin.reduce((sum, revenda) => {
           // Primeiro tenta usar o campo price, depois credits
           const price = (revenda as ResellerRow).price;
           const credits = (revenda as ResellerRow).credits || 0;
@@ -246,6 +255,8 @@ function useDashboardData() {
         // Implemente a lógica para verificar se o plano é de Rádio
         return plan?.includes('radio');
       }).length;
+      
+      console.log(`💰 [useDashboardData] Admin logado: ${user?.id}, Total de revendas: ${revendas.length}, Revendas do admin: ${revendasDoAdmin.length}`);
 
       // Atualiza as estatísticas
       setStats(prevStats => {
