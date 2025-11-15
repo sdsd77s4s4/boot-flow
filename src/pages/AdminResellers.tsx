@@ -402,6 +402,30 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
           <RLSErrorBannerResellers error={error} onClearError={clearError} />
         )}
 
+        {/* Mensagem de sucesso */}
+        {addResellerSuccess && (
+          <div className="bg-green-900/40 border border-green-700 text-green-300 rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>✅ Revendedor adicionado com sucesso! Os dados serão atualizados em breve.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Mensagem de erro ao adicionar */}
+        {error && !error.includes('RLS') && (
+          <div className="bg-red-900/40 border border-red-700 text-red-300 rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{error}</span>
+            </div>
+          </div>
+        )}
+
         {/* Formulário direto sem Dialog */}
         <div className="w-full flex flex-col">
           <form onSubmit={handleAddRevenda} className="space-y-6 flex-1 overflow-y-auto">
