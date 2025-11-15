@@ -1688,29 +1688,29 @@ const AdminDashboard = () => {
                       <div className="flex-1 overflow-y-auto">
                         <AdminResellersWrapper 
                           onResellerCreated={() => {
-                            console.log('🔄 [AdminDashboard] Revendedor criado, atualizando dados...');
+                            console.log('🔄 [AdminDashboard] Revendedor criado, preparando navegação...');
+                            // Garantir que a flag esteja definida antes de navegar
+                            try {
+                              localStorage.setItem('reseller-created', Date.now().toString());
+                              localStorage.setItem('dashboard-refresh', Date.now().toString());
+                              console.log('✅ [AdminDashboard] Flags definidas no localStorage');
+                            } catch (error) {
+                              console.error('❌ [AdminDashboard] Erro ao definir flags:', error);
+                            }
+                            
                             // Fechar modal após criar revendedor com sucesso
                             setTimeout(() => {
                               setResellerModal(false);
-                              // Navegar para a página de Gerenciamento de Revendedores
-                              setCurrentPage("resellers");
-                              // Forçar atualização dos dados
-                              console.log('🔄 [AdminDashboard] Chamando fetchRevendas...');
-                              if (fetchRevendas) {
-                                fetchRevendas().then(() => {
-                                  console.log('✅ [AdminDashboard] fetchRevendas concluído');
-                                  // Aguardar um pouco antes de atualizar stats para garantir que os dados foram atualizados
-                                  setTimeout(() => {
-                                    if (refreshResellers) refreshResellers();
-                                    if (refreshStats) refreshStats();
-                                    console.log('✅ [AdminDashboard] Dados atualizados');
-                                  }, 500);
-                                });
-                              } else {
-                                if (refreshResellers) refreshResellers();
-                                if (refreshStats) refreshStats();
+                              // Atualizar stats do dashboard
+                              if (refreshStats) {
+                                refreshStats();
                               }
-                            }, 1000);
+                              // Navegar para a página de Gerenciamento de Revendedores
+                              // A página AdminResellers irá buscar os dados atualizados automaticamente
+                              console.log('🔄 [AdminDashboard] Navegando para página de revendedores...');
+                              setCurrentPage("resellers");
+                              console.log('✅ [AdminDashboard] Navegação concluída - AdminResellers irá buscar dados atualizados');
+                            }, 800);
                           }}
                           onCloseModal={() => {
                             setResellerModal(false);
