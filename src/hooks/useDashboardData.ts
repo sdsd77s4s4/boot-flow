@@ -322,6 +322,12 @@ function useDashboardData() {
 
   // Função de refresh que atualiza os dados e recalcula as estatísticas
   const refresh = useCallback(async () => {
+    // Proteção contra múltiplas chamadas simultâneas
+    if (isCalculatingRef.current) {
+      console.log('🔄 [useDashboardData] Refresh já em execução, ignorando chamada');
+      return;
+    }
+    
     console.log('🔄 [useDashboardData] Refresh manual chamado');
     try {
       // Forçar atualização dos dados do useRealtime
@@ -333,18 +339,12 @@ function useDashboardData() {
         console.log('🔄 [useDashboardData] Atualizando revendas...');
         await refreshRevendas();
       }
-      // Aguardar um pouco para os dados serem atualizados e então recalcular
-      // Usar um delay maior para garantir que o Supabase atualizou
-      setTimeout(async () => {
-        console.log('🔄 [useDashboardData] Recalculando estatísticas após refresh...');
-        await calculateStats();
-      }, 300);
+      // Não chamar calculateStats aqui - o useEffect vai detectar a mudança e recalcular
+      // Isso evita loops infinitos
     } catch (error) {
       console.error('❌ [useDashboardData] Erro no refresh:', error);
-      // Mesmo com erro, tenta recalcular com os dados atuais
-      calculateStats();
     }
-  }, [refreshClientes, refreshRevendas, calculateStats]);
+  }, [refreshClientes, refreshRevendas]);
 
   // Listener para eventos de atualização
   useEffect(() => {
