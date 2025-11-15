@@ -449,10 +449,17 @@ export function useRevendas() {
               }
             }
             
-            // Forçar atualização da lista
+            // Forçar atualização da lista múltiplas vezes para garantir
+            console.log('🔄 [useRevendas] Forçando atualização da lista após inserção bem-sucedida...');
             setTimeout(() => {
               fetchRevendas();
-            }, 500);
+            }, 300);
+            setTimeout(() => {
+              fetchRevendas();
+            }, 1000);
+            setTimeout(() => {
+              fetchRevendas();
+            }, 2000);
             
             setError('⚠️ Revendedor criado, mas a coluna admin_id ainda não existe na tabela resellers. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase para habilitar a separação completa por admin.');
             return true;
@@ -635,9 +642,16 @@ export function useRevendas() {
             console.log('⚠️ [useRevendas] Revendedor já existe na lista, atualizando...');
             return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
           }
+          console.log('✅ [useRevendas] Adicionando revenda ao estado. Total antes:', prevRevendas.length, 'Total depois:', prevRevendas.length + 1);
           return [...prevRevendas, newRevenda];
         });
         console.log('✅ [useRevendas] Revendedor adicionado ao estado local');
+        
+        // Forçar atualização da lista também
+        setTimeout(() => {
+          console.log('🔄 [useRevendas] Forçando atualização da lista após adicionar ao estado...');
+          fetchRevendas();
+        }, 500);
       } else if (data && typeof data === 'object' && !Array.isArray(data)) {
         // Se retornou um objeto único ao invés de array
         console.log('✅ [useRevendas] Revendedor retornado como objeto único:', data);
@@ -648,9 +662,16 @@ export function useRevendas() {
             console.log('⚠️ [useRevendas] Revendedor já existe na lista, atualizando...');
             return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
           }
+          console.log('✅ [useRevendas] Adicionando revenda ao estado. Total antes:', prevRevendas.length, 'Total depois:', prevRevendas.length + 1);
           return [...prevRevendas, newRevenda];
         });
         console.log('✅ [useRevendas] Revendedor adicionado ao estado local');
+        
+        // Forçar atualização da lista também
+        setTimeout(() => {
+          console.log('🔄 [useRevendas] Forçando atualização da lista após adicionar ao estado...');
+          fetchRevendas();
+        }, 500);
       } else {
         // Se não conseguiu adicionar ao estado, verificar se foi inserido no banco
         console.log('⚠️ [useRevendas] Resposta não contém dados retornados');
@@ -690,9 +711,17 @@ export function useRevendas() {
                 if (exists) {
                   return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
                 }
+                console.log('✅ [useRevendas] Adicionando revenda verificado ao estado. Total antes:', prevRevendas.length, 'Total depois:', prevRevendas.length + 1);
                 return [...prevRevendas, newRevenda];
               });
               console.log('✅ [useRevendas] Lista atualizada com revenda inserido!');
+              
+              // Forçar atualização da lista também
+              setTimeout(() => {
+                console.log('🔄 [useRevendas] Forçando atualização da lista após verificação...');
+                fetchRevendas();
+              }, 500);
+              
               return true;
             } else {
               console.error('❌ [useRevendas] Revenda não encontrado após inserção');
