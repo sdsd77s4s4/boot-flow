@@ -346,57 +346,57 @@ function useDashboardData() {
     }
   }, [refreshClientes, refreshRevendas]);
 
-  // Listener para eventos de atualização
+  // Listener para eventos de atualização (sem dependências que causam loops)
   useEffect(() => {
+    let eventTimeout: NodeJS.Timeout | null = null;
+    
     const handleRefreshEvent = (event: CustomEvent) => {
+      // Limpar timeout anterior se houver
+      if (eventTimeout) {
+        clearTimeout(eventTimeout);
+      }
+      
       console.log('🔄 [useDashboardData] Evento refresh-dashboard recebido:', event.detail);
-      if (event.detail?.field === 'pago' || event.detail?.forceRefresh || event.detail?.source === 'users') {
-        console.log('🔄 [useDashboardData] Evento de pagamento detectado, atualizando receita...');
-        console.log('🔄 [useDashboardData] Detalhes:', {
-          userId: event.detail?.userId,
-          pago: event.detail?.pago,
-          price: event.detail?.price
-        });
+      
+      // Só processar eventos relevantes
+      if (event.detail?.field === 'pago' || event.detail?.forceRefresh || event.detail?.source === 'users' || event.detail?.source === 'resellers') {
+        console.log('🔄 [useDashboardData] Evento relevante detectado, agendando atualização...');
         
-        // Primeiro, forçar atualização dos dados do useRealtime
-        const updateData = async () => {
+        // Debounce: aguardar um pouco antes de atualizar para evitar múltiplas chamadas
+        eventTimeout = setTimeout(async () => {
           try {
-            // Forçar refresh dos clientes
-            if (refreshClientes) {
-              console.log('🔄 [useDashboardData] Forçando refresh dos clientes...');
-              await refreshClientes();
-            }
-            
-            // Aguardar um pouco para os dados serem atualizados
-            await new Promise(resolve => setTimeout(resolve, 600));
-            
-            // Recalcular estatísticas
-            console.log('🔄 [useDashboardData] Recalculando estatísticas após refresh...');
-            await calculateStats();
-            
-            // Se ainda não atualizou, tentar novamente
-            setTimeout(async () => {
+            // Forçar refresh apenas dos dados relevantes
+            if (event.detail?.source === 'users' || event.detail?.field === 'pago') {
               if (refreshClientes) {
+                console.log('🔄 [useDashboardData] Atualizando clientes...');
                 await refreshClientes();
               }
-              await calculateStats();
-            }, 1000);
+            }
+            
+            if (event.detail?.source === 'resellers') {
+              if (refreshRevendas) {
+                console.log('🔄 [useDashboardData] Atualizando revendas...');
+                await refreshRevendas();
+              }
+            }
+            
+            // Não chamar calculateStats aqui - o useEffect vai detectar a mudança e recalcular
+            // Isso evita loops infinitos
           } catch (error) {
             console.error('❌ [useDashboardData] Erro ao atualizar:', error);
-            // Em caso de erro, tentar recalcular com os dados atuais
-            calculateStats();
           }
-        };
-        
-        updateData();
+        }, 300); // Debounce de 300ms
       }
     };
 
     window.addEventListener('refresh-dashboard', handleRefreshEvent as EventListener);
     return () => {
       window.removeEventListener('refresh-dashboard', handleRefreshEvent as EventListener);
+      if (eventTimeout) {
+        clearTimeout(eventTimeout);
+      }
     };
-  }, [refresh, refreshClientes, calculateStats]);
+  }, [refreshClientes, refreshRevendas]); // Removido refresh e calculateStats para evitar loops
 
   return {
     stats,
