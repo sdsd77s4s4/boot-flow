@@ -86,7 +86,7 @@ export function useRevendas() {
       // Filtrar revendas pelo admin_id do usuário logado
       // A política RLS já filtra automaticamente, mas adicionamos o filtro explícito para clareza
       const adminId = user.id;
-      const fetchUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*&admin_id=eq.${adminId}`;
+      let fetchUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*&admin_id=eq.${adminId}`;
       
       console.log('🔄 [useRevendas] Buscando revendas do admin:', adminId);
       console.log('🔄 [useRevendas] Chamando:', fetchUrl);
@@ -95,13 +95,56 @@ export function useRevendas() {
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       
       try {
-        const response = await fetch(fetchUrl, {
+        let response = await fetch(fetchUrl, {
           method: 'GET',
           headers,
           signal: controller.signal,
         });
         
         clearTimeout(timeoutId);
+        
+        // Se der erro 400, pode ser que a coluna admin_id ainda não exista
+        // Tentar buscar sem filtro como fallback temporário
+        if (!response.ok && response.status === 400) {
+          console.warn('⚠️ [useRevendas] Erro 400 ao buscar com filtro admin_id. A coluna pode não existir ainda.');
+          console.warn('⚠️ [useRevendas] Tentando buscar sem filtro como fallback...');
+          
+          // Tentar buscar sem filtro
+          const fallbackUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*`;
+          const fallbackController = new AbortController();
+          const fallbackTimeoutId = setTimeout(() => fallbackController.abort(), 10000);
+          
+          try {
+            response = await fetch(fallbackUrl, {
+              method: 'GET',
+              headers,
+              signal: fallbackController.signal,
+            });
+            clearTimeout(fallbackTimeoutId);
+            
+            if (response.ok) {
+              const data = await response.json();
+              console.warn('⚠️ [useRevendas] Busca sem filtro bem-sucedida. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase para habilitar a separação por admin.');
+              console.log('✅ [useRevendas] Revendedores buscados (sem filtro):', data?.length || 0, 'revendedores');
+              
+              // Filtrar manualmente no frontend (temporário até executar o script SQL)
+              const filteredData = Array.isArray(data) ? data.filter((revenda: any) => {
+                // Se não tiver admin_id, incluir (dados antigos)
+                // Se tiver admin_id, incluir apenas se for do admin logado
+                return !revenda.admin_id || revenda.admin_id === adminId;
+              }) : [];
+              
+              setRevendas(filteredData);
+              setError('⚠️ A coluna admin_id ainda não existe na tabela resellers. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase para habilitar a separação completa por admin.');
+              return;
+            }
+          } catch (fallbackError: any) {
+            clearTimeout(fallbackTimeoutId);
+            if (fallbackError.name !== 'AbortError') {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}. A coluna admin_id pode não existir. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase.`);
+            }
+          }
+        }
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -187,13 +230,16 @@ export function useRevendas() {
         credits: revenda.credits ?? 10,
         personal_name: revenda.personal_name?.trim() || null,
         status: revenda.status || 'Ativo',
-        admin_id: adminId, // Associar o revenda ao admin logado
         force_password_change: typeof revenda.force_password_change === 'string' 
           ? revenda.force_password_change === 'true' 
           : revenda.force_password_change ?? false,
         monthly_reseller: revenda.monthly_reseller ?? false,
         disable_login_days: revenda.disable_login_days ?? 0,
       };
+      
+      // Adicionar admin_id apenas se a coluna existir (será testado na inserção)
+      // Se der erro 400, tentaremos sem admin_id
+      revendaData.admin_id = adminId; // Associar o revenda ao admin logado
       
       // Adicionar campos opcionais apenas se tiverem valor
       if (revenda.servers) revendaData.servers = revenda.servers;
