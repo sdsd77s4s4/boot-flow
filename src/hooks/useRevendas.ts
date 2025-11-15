@@ -139,6 +139,11 @@ export function useRevendas() {
       console.log('✅ [useRevendas] Busca finalizada');
     }
   }, [user?.id]); // Recarregar quando o admin mudar
+  
+  // Buscar revendas quando o componente montar ou quando o admin mudar
+  useEffect(() => {
+    fetchRevendas();
+  }, [fetchRevendas]);
 
   async function addRevenda(revenda: Omit<Revenda, 'id'>) {
     try {
