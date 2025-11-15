@@ -141,29 +141,53 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
 
   const handleAddRevenda = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     console.log('🔄 [AdminResellers] handleAddRevenda chamado');
+    console.log('🔄 [AdminResellers] Event:', e);
     console.log('🔄 [AdminResellers] Dados do formulário:', newReseller);
+    console.log('🔄 [AdminResellers] autoOpenForm:', autoOpenForm);
     
-    if (!newReseller.username || !newReseller.password || !newReseller.permission) {
+    // Validação detalhada
+    const errors: string[] = [];
+    
+    if (!newReseller.username || newReseller.username.trim() === '') {
+      errors.push('Usuário é obrigatório');
+      console.error('❌ [AdminResellers] Usuário não preenchido');
+    }
+    
+    if (!newReseller.password || newReseller.password.trim() === '') {
+      errors.push('Senha é obrigatória');
+      console.error('❌ [AdminResellers] Senha não preenchida');
+    }
+    
+    if (!newReseller.permission || newReseller.permission.trim() === '') {
+      errors.push('Permissão é obrigatória');
+      console.error('❌ [AdminResellers] Permissão não selecionada');
+    }
+    
+    if (errors.length > 0) {
       console.error('❌ [AdminResellers] Campos obrigatórios não preenchidos:', {
         username: !!newReseller.username,
         password: !!newReseller.password,
-        permission: !!newReseller.permission
+        permission: !!newReseller.permission,
+        errors
       });
-      alert('Por favor, preencha todos os campos obrigatórios: Usuário, Senha e Permissão.');
+      alert(`❌ Por favor, preencha todos os campos obrigatórios:\n\n${errors.join('\n')}`);
       return;
     }
     
     // Validar email se fornecido (deve ser válido se não estiver vazio)
-    if (newReseller.email && !newReseller.email.includes('@')) {
+    if (newReseller.email && newReseller.email.trim() !== '' && !newReseller.email.includes('@')) {
       console.error('❌ [AdminResellers] Email inválido:', newReseller.email);
-      alert('Por favor, forneça um email válido ou deixe o campo vazio.');
+      alert('❌ Por favor, forneça um email válido ou deixe o campo vazio.');
       return;
     }
     
+    console.log('✅ [AdminResellers] Validação passou, iniciando criação...');
     setIsAddingReseller(true);
     setAddResellerSuccess(false);
+    setError(null); // Limpar erros anteriores
     
     try {
       console.log('🔄 [AdminResellers] Chamando addRevenda...');
@@ -428,7 +452,16 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
 
         {/* Formulário direto sem Dialog */}
         <div className="w-full flex flex-col">
-          <form onSubmit={handleAddRevenda} className="space-y-6 flex-1 overflow-y-auto">
+          <form 
+            onSubmit={(e) => {
+              console.log('🔄 [AdminResellers] Formulário submit acionado');
+              console.log('🔄 [AdminResellers] Event:', e);
+              console.log('🔄 [AdminResellers] Dados do formulário no submit:', newReseller);
+              handleAddRevenda(e);
+            }} 
+            className="space-y-6 flex-1 overflow-y-auto"
+            noValidate
+          >
             {/* Copiar o conteúdo do formulário aqui */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -508,9 +541,16 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 <Label className="text-sm font-medium text-white">
                   Permissão <span className="text-red-500">*</span>
                 </Label>
-                <Select value={newReseller.permission} onValueChange={(value) => setNewReseller({...newReseller, permission: value})}>
+                <Select 
+                  value={newReseller.permission} 
+                  onValueChange={(value) => {
+                    console.log('🔄 [AdminResellers] Permissão selecionada:', value);
+                    setNewReseller({...newReseller, permission: value});
+                  }}
+                  required
+                >
                   <SelectTrigger className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
-                    <SelectValue placeholder="Selecione" />
+                    <SelectValue placeholder="Selecione uma permissão" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#23272f] border-gray-600">
                     <SelectItem value="admin">Administrador</SelectItem>
@@ -518,6 +558,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                     <SelectItem value="subreseller">Sub-Revendedor</SelectItem>
                   </SelectContent>
                 </Select>
+                {!newReseller.permission && (
+                  <p className="text-red-400 text-xs mt-1">⚠️ Campo obrigatório</p>
+                )}
               </div>
               
               <div className="space-y-2">
