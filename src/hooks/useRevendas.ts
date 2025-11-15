@@ -327,7 +327,115 @@ export function useRevendas() {
       console.log('🔄 [useRevendas] Resposta recebida:', response.status, response.statusText);
       console.log('🔄 [useRevendas] Headers da resposta:', Object.fromEntries(response.headers.entries()));
       
+      // Ler o responseText primeiro (só pode ser lido uma vez)
       const responseText = await response.text();
+      
+      // Se der erro 400, pode ser que a coluna admin_id ainda não exista
+      // Tentar inserir sem admin_id como fallback temporário
+      if (!response.ok && response.status === 400) {
+        console.warn('⚠️ [useRevendas] Erro 400 ao inserir com admin_id. A coluna pode não existir ainda.');
+        console.warn('⚠️ [useRevendas] Tentando inserir sem admin_id como fallback...');
+        
+        // Remover admin_id dos dados e tentar novamente
+        const { admin_id, ...revendaDataWithoutAdminId } = revendaData;
+        const fallbackController = new AbortController();
+        const fallbackTimeoutId = setTimeout(() => fallbackController.abort(), 15000);
+        
+        try {
+          const fallbackResponse = await fetch(insertUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(revendaDataWithoutAdminId),
+            signal: fallbackController.signal,
+          });
+          clearTimeout(fallbackTimeoutId);
+          
+          if (fallbackResponse.ok) {
+            const fallbackResponseText = await fallbackResponse.text();
+            let fallbackData;
+            
+            try {
+              fallbackData = fallbackResponseText ? JSON.parse(fallbackResponseText) : null;
+            } catch (e) {
+              // Se não conseguir fazer parse, tentar verificar pelo username
+              console.warn('⚠️ [useRevendas] Resposta do fallback não é JSON válido, verificando inserção...');
+            }
+            
+            console.warn('⚠️ [useRevendas] Inserção sem admin_id bem-sucedida. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase para habilitar a separação por admin.');
+            
+            // Se não tiver dados na resposta, verificar pelo username
+            if (!fallbackData || (Array.isArray(fallbackData) && fallbackData.length === 0) || (!Array.isArray(fallbackData) && !fallbackData)) {
+              console.log('🔄 [useRevendas] Resposta vazia, verificando inserção pelo username...');
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+              const verifyHeaders: HeadersInit = {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY,
+              };
+              
+              if (authToken) {
+                verifyHeaders['Authorization'] = `Bearer ${authToken}`;
+              }
+              
+              const verifyUrl = `${SUPABASE_URL}/rest/v1/resellers?username=eq.${encodeURIComponent(revendaDataWithoutAdminId.username)}&select=*`;
+              const verifyResponse = await fetch(verifyUrl, {
+                method: 'GET',
+                headers: verifyHeaders,
+              });
+              
+              if (verifyResponse.ok) {
+                const verifyData = await verifyResponse.json();
+                if (verifyData && Array.isArray(verifyData) && verifyData.length > 0) {
+                  fallbackData = verifyData;
+                }
+              }
+            }
+            
+            // Adicionar ao estado local
+            if (fallbackData) {
+              if (Array.isArray(fallbackData) && fallbackData.length > 0) {
+                const newRevenda = fallbackData[0] as Revenda;
+                setRevendas(prevRevendas => {
+                  const exists = prevRevendas.find(r => r.id === newRevenda.id || r.username === newRevenda.username);
+                  if (exists) {
+                    return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
+                  }
+                  return [...prevRevendas, newRevenda];
+                });
+              } else if (typeof fallbackData === 'object' && !Array.isArray(fallbackData)) {
+                const newRevenda = fallbackData as Revenda;
+                setRevendas(prevRevendas => {
+                  const exists = prevRevendas.find(r => r.id === newRevenda.id || r.username === newRevenda.username);
+                  if (exists) {
+                    return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
+                  }
+                  return [...prevRevendas, newRevenda];
+                });
+              }
+            }
+            
+            // Forçar atualização da lista
+            setTimeout(() => {
+              fetchRevendas();
+            }, 500);
+            
+            setError('⚠️ Revendedor criado, mas a coluna admin_id ainda não existe na tabela resellers. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase para habilitar a separação completa por admin.');
+            return true;
+          } else {
+            // Se ainda der erro, usar o erro original
+            const fallbackErrorText = await fallbackResponse.text();
+            console.error('❌ [useRevendas] Erro também ao inserir sem admin_id:', fallbackResponse.status, fallbackErrorText);
+            throw new Error(`HTTP ${response.status}: ${responseText}. A coluna admin_id pode não existir. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase.`);
+          }
+        } catch (fallbackError: any) {
+          clearTimeout(fallbackTimeoutId);
+          if (fallbackError.name !== 'AbortError') {
+            throw new Error(`HTTP ${response.status}: ${responseText}. A coluna admin_id pode não existir. Execute o script SQL adicionar_admin_id_resellers.sql no Supabase.`);
+          }
+        }
+      }
+      
+      // Se chegou aqui, a resposta foi OK ou não foi erro 400
       console.log('🔄 [useRevendas] Resposta completa (texto):', responseText);
       console.log('🔄 [useRevendas] Tamanho da resposta:', responseText.length);
       
