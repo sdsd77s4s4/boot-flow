@@ -152,6 +152,41 @@ export function useRevendas() {
         
         const data = await response.json();
         console.log('✅ [useRevendas] Revendedores buscados com sucesso:', data?.length || 0, 'revendedores');
+        
+        // Se não encontrou nenhum revenda com admin_id, pode ser que os revendas existentes não tenham admin_id
+        // Tentar buscar todos os revendas e filtrar manualmente
+        if ((!data || data.length === 0) && adminId) {
+          console.log('🔄 [useRevendas] Nenhum revenda encontrado com admin_id. Buscando todos os revendas para verificar...');
+          
+          try {
+            const allRevendasUrl = `${SUPABASE_URL}/rest/v1/resellers?select=*`;
+            const allResponse = await fetch(allRevendasUrl, {
+              method: 'GET',
+              headers,
+            });
+            
+            if (allResponse.ok) {
+              const allData = await allResponse.json();
+              console.log('🔄 [useRevendas] Total de revendas no banco:', allData?.length || 0);
+              
+              // Filtrar manualmente: incluir revendas sem admin_id ou com admin_id do admin logado
+              const filteredData = Array.isArray(allData) ? allData.filter((revenda: any) => {
+                return !revenda.admin_id || revenda.admin_id === adminId;
+              }) : [];
+              
+              console.log('✅ [useRevendas] Revendas filtrados manualmente:', filteredData?.length || 0);
+              setRevendas(filteredData);
+              
+              if (allData && allData.length > 0 && filteredData.length === 0) {
+                console.warn('⚠️ [useRevendas] Existem revendas no banco, mas nenhum pertence a este admin. Execute o script SQL adicionar_admin_id_resellers.sql para associar revendas aos admins.');
+              }
+              return;
+            }
+          } catch (allError) {
+            console.error('❌ [useRevendas] Erro ao buscar todos os revendas:', allError);
+          }
+        }
+        
         setRevendas(data || []);
       } catch (fetchError: any) {
         clearTimeout(timeoutId);
@@ -674,7 +709,7 @@ export function useRevendas() {
           console.error('❌ [useRevendas] Erro ao verificar inserção:', verifyError);
           // Tentar buscar todos os revendas como fallback
           console.log('🔄 [useRevendas] Buscando lista completa de revendas como fallback...');
-          await fetchRevendas();
+        await fetchRevendas();
           // Retornar true porque não sabemos ao certo se falhou ou não
           return true;
         }
