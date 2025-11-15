@@ -8,6 +8,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { useRevendas } from '@/hooks/useRevendas';
 import { useRealtimeClientes, useRealtimeRevendas } from '@/hooks/useRealtime';
 import useDashboardData from '@/hooks/useDashboardData';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { 
@@ -92,6 +93,9 @@ const AdminResellersWrapper = ({ onResellerCreated, onCloseModal }: { onReseller
 
 
 const AdminDashboard = () => {
+  // Obter o admin logado para filtrar dados
+  const { user } = useAuth();
+  
   // --- Estados para integração APIBrasil QR Code ---
   const [apiBrasilConfig, setApiBrasilConfig] = useState(() => {
     const saved = localStorage.getItem('apiBrasilConfig');
@@ -179,8 +183,23 @@ const AdminDashboard = () => {
   useEffect(() => {
     console.log('🔄 [AdminDashboard] useEffect sincronização - revendasFromHook:', revendasFromHook?.length, 'realtimeRevendas:', realtimeRevendas?.length);
     // Priorizar dados do hook se disponíveis, caso contrário usar dados em tempo real
-    const clientesToUse = clientesFromHook && clientesFromHook.length > 0 ? clientesFromHook : realtimeClientes;
-    const revendasToUse = revendasFromHook && revendasFromHook.length > 0 ? revendasFromHook : realtimeRevendas;
+    let clientesToUse = clientesFromHook && clientesFromHook.length > 0 ? clientesFromHook : realtimeClientes;
+    let revendasToUse = revendasFromHook && revendasFromHook.length > 0 ? revendasFromHook : realtimeRevendas;
+    
+    // Filtrar por admin_id se houver admin logado (garantir que apenas dados do admin sejam exibidos)
+    if (user?.id) {
+      if (clientesToUse && Array.isArray(clientesToUse)) {
+        clientesToUse = clientesToUse.filter((cliente: any) => {
+          return cliente.admin_id === user.id || cliente.admin_id === null || cliente.admin_id === undefined;
+        });
+      }
+      if (revendasToUse && Array.isArray(revendasToUse)) {
+        revendasToUse = revendasToUse.filter((revenda: any) => {
+          return revenda.admin_id === user.id || revenda.admin_id === null || revenda.admin_id === undefined;
+        });
+      }
+      console.log('🔄 [AdminDashboard] Dados filtrados por admin_id:', user.id, 'Clientes:', clientesToUse?.length, 'Revendas:', revendasToUse?.length);
+    }
     
     if (clientesToUse) {
       setClientes(clientesToUse);
@@ -192,7 +211,7 @@ const AdminDashboard = () => {
       setRevendas(revendasToUse);
       setLoadingRevendas(false);
     }
-  }, [realtimeClientes, realtimeRevendas, clientesFromHook, revendasFromHook]);
+  }, [realtimeClientes, realtimeRevendas, clientesFromHook, revendasFromHook, user?.id]);
   
   // Buscar dados iniciais ao montar o componente (apenas uma vez)
   useEffect(() => {
