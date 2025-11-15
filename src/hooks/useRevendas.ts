@@ -257,17 +257,84 @@ export function useRevendas() {
       // Verificar se a resposta está vazia
       if (!responseText || responseText.trim().length === 0) {
         console.warn('⚠️ [useRevendas] Resposta vazia do Supabase');
+        console.warn('⚠️ [useRevendas] Status:', response.status);
+        console.warn('⚠️ [useRevendas] Status Text:', response.statusText);
+        
         // Se a resposta está OK mas vazia, pode ser que o Prefer não funcionou
-        // Vamos buscar os dados novamente
-        if (response.ok) {
-          console.log('🔄 [useRevendas] Resposta OK mas vazia, buscando dados atualizados...');
-          await fetchRevendas();
-          return true;
+        // Mas também pode ser um problema de RLS que não está retornando erro
+        if (response.ok && (response.status === 201 || response.status === 200 || response.status === 204)) {
+          console.log('🔄 [useRevendas] Resposta OK mas vazia (status ' + response.status + '), verificando se inserção foi bem-sucedida...');
+          
+          // Aguardar um pouco para garantir que o Supabase processou a inserção
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Tentar buscar o revenda recém-criado pelo username
+          try {
+            console.log('🔄 [useRevendas] Buscando revenda recém-criado pelo username:', revendaData.username);
+            const verifyHeaders: HeadersInit = {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_ANON_KEY,
+            };
+            
+            if (authToken) {
+              verifyHeaders['Authorization'] = `Bearer ${authToken}`;
+            }
+            
+            const verifyUrl = `${SUPABASE_URL}/rest/v1/resellers?username=eq.${encodeURIComponent(revendaData.username)}&select=*`;
+            console.log('🔄 [useRevendas] URL de verificação:', verifyUrl);
+            
+            const verifyResponse = await fetch(verifyUrl, {
+              method: 'GET',
+              headers: verifyHeaders,
+            });
+            
+            if (verifyResponse.ok) {
+              const verifyData = await verifyResponse.json();
+              console.log('🔄 [useRevendas] Dados de verificação:', verifyData);
+              
+              if (verifyData && Array.isArray(verifyData) && verifyData.length > 0) {
+                console.log('✅ [useRevendas] Revenda encontrado após inserção!');
+                const newRevenda = verifyData[0] as Revenda;
+                setRevendas(prevRevendas => {
+                  const exists = prevRevendas.find(r => r.id === newRevenda.id || r.username === newRevenda.username);
+                  if (exists) {
+                    return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
+                  }
+                  return [...prevRevendas, newRevenda];
+                });
+                return true;
+              } else {
+                console.error('❌ [useRevendas] Revenda não encontrado após inserção. Pode ser um problema de RLS ou a inserção não foi bem-sucedida.');
+                setError('Erro: A inserção foi confirmada pelo servidor, mas o revenda não foi encontrado. Isso pode indicar um problema com as políticas RLS. Verifique as políticas no Supabase.');
+                return false;
+              }
+            } else {
+              console.error('❌ [useRevendas] Erro ao verificar inserção:', verifyResponse.status, verifyResponse.statusText);
+              const verifyErrorText = await verifyResponse.text();
+              console.error('❌ [useRevendas] Erro de verificação:', verifyErrorText);
+              
+              // Se o erro for 403 ou relacionado a RLS, indicar problema de RLS
+              if (verifyResponse.status === 403 || verifyErrorText.includes('row-level security') || verifyErrorText.includes('permission denied')) {
+                setError('Erro de permissão: As políticas de segurança (RLS) estão bloqueando a inserção ou leitura. Execute o script SQL para corrigir as políticas RLS no Supabase Dashboard.');
+                return false;
+              }
+              
+              // Se não conseguir verificar, tratar como erro
+              setError(`Erro ao verificar inserção: ${verifyResponse.status} ${verifyResponse.statusText}. A inserção pode não ter sido bem-sucedida. Verifique as políticas RLS no Supabase.`);
+              return false;
+            }
+          } catch (verifyError) {
+            console.error('❌ [useRevendas] Erro ao verificar inserção:', verifyError);
+            const errorMsg = verifyError instanceof Error ? verifyError.message : 'Erro desconhecido ao verificar inserção';
+            setError(`Erro ao verificar inserção: ${errorMsg}. A inserção pode não ter sido bem-sucedida. Verifique as políticas RLS no Supabase.`);
+            return false;
+          }
         } else {
+          // Se não está OK, tratar como erro
           error = {
             code: response.status.toString(),
             message: response.statusText || 'Erro desconhecido',
-            details: 'Resposta vazia do servidor',
+            details: 'Resposta vazia do servidor - Status: ' + response.status,
           };
         }
       } else {
@@ -287,37 +354,44 @@ export function useRevendas() {
         }
       }
       
-      if (!response.ok || error) {
+      // Verificar se houve erro (não OK ou erro retornado)
+      // IMPORTANTE: Status 201, 200, 204 são considerados sucesso
+      const isSuccess = response.ok && (response.status === 201 || response.status === 200 || response.status === 204);
+      
+      if (!isSuccess || error) {
         const errorObj = error || data || {
           code: response.status.toString(),
           message: response.statusText || 'Erro desconhecido',
-          details: responseText,
+          details: responseText || 'Nenhum detalhe disponível',
         };
         
         console.error('❌ [useRevendas] Erro do Supabase:', errorObj);
         console.error('❌ [useRevendas] Status:', response.status);
         console.error('❌ [useRevendas] Status Text:', response.statusText);
+        console.error('❌ [useRevendas] Response OK:', response.ok);
         console.error('❌ [useRevendas] Dados enviados:', JSON.stringify(revendaData, null, 2));
+        console.error('❌ [useRevendas] Response Text:', responseText);
         
         // Verificar tipo de erro
-        if (response.status === 401 || errorObj.message?.includes('401') || errorObj.message?.includes('Unauthorized')) {
+        if (response.status === 401 || errorObj.message?.includes('401') || errorObj.message?.includes('Unauthorized') || errorObj.details?.includes('401')) {
           const errorMsg = 'Erro de autenticação: Sua sessão expirou. Por favor, faça login novamente.';
           console.error('❌ [useRevendas]', errorMsg);
           setError(errorMsg);
-        } else if (errorObj.message?.includes('row-level security policy') || errorObj.message?.includes('new row violates row-level security') || errorObj.details?.includes('row-level security')) {
-          const errorMsg = 'Erro de permissão: As políticas de segurança (RLS) estão bloqueando a inserção. Execute o script SQL para corrigir as políticas RLS ou verifique se você está autenticado.';
+        } else if (response.status === 403 || errorObj.message?.includes('row-level security policy') || errorObj.message?.includes('new row violates row-level security') || errorObj.details?.includes('row-level security') || errorObj.message?.includes('permission denied') || errorObj.details?.includes('permission denied')) {
+          const errorMsg = 'Erro de permissão: As políticas de segurança (RLS) estão bloqueando a inserção. Execute o script SQL para corrigir as políticas RLS ou verifique se você está autenticado. Status: ' + response.status;
           console.error('❌ [useRevendas]', errorMsg);
           setError(errorMsg);
-        } else if (response.status === 409 || errorObj.message?.includes('duplicate key') || errorObj.details?.includes('duplicate')) {
+        } else if (response.status === 409 || errorObj.message?.includes('duplicate key') || errorObj.details?.includes('duplicate') || errorObj.message?.includes('already exists')) {
           const errorMsg = 'Erro: Já existe um revendedor com este username ou email.';
           console.error('❌ [useRevendas]', errorMsg);
           setError(errorMsg);
-        } else if (response.status === 400 || errorObj.message?.includes('violates')) {
+        } else if (response.status === 400 || errorObj.message?.includes('violates') || errorObj.message?.includes('constraint') || errorObj.details?.includes('violates')) {
           const errorMsg = `Erro de validação: ${errorObj.message || errorObj.details || 'Dados inválidos'} (Status: ${response.status})`;
           console.error('❌ [useRevendas]', errorMsg);
           setError(errorMsg);
         } else {
-          const errorMsg = `Erro ao adicionar revendedor: ${errorObj.message || errorObj.details || 'Erro desconhecido'} (Status: ${response.status})`;
+          // Para outros erros, mostrar mensagem mais detalhada
+          const errorMsg = `Erro ao adicionar revendedor (Status: ${response.status}): ${errorObj.message || errorObj.details || response.statusText || 'Erro desconhecido'}`;
           console.error('❌ [useRevendas]', errorMsg);
           setError(errorMsg);
         }
@@ -355,9 +429,67 @@ export function useRevendas() {
         });
         console.log('✅ [useRevendas] Revendedor adicionado ao estado local');
       } else {
-        // Se não conseguiu adicionar ao estado, buscar novamente
-        console.log('🔄 [useRevendas] Resposta não contém dados, buscando lista atualizada...');
-        await fetchRevendas();
+        // Se não conseguiu adicionar ao estado, verificar se foi inserido no banco
+        console.log('⚠️ [useRevendas] Resposta não contém dados retornados');
+        console.log('🔄 [useRevendas] Verificando se revenda foi inserido no banco...');
+        
+        // Aguardar um pouco para garantir que o Supabase processou
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Tentar buscar o revenda recém-criado pelo username
+        try {
+          const verifyHeaders: HeadersInit = {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+          };
+          
+          if (authToken) {
+            verifyHeaders['Authorization'] = `Bearer ${authToken}`;
+          }
+          
+          const verifyUrl = `${SUPABASE_URL}/rest/v1/resellers?username=eq.${encodeURIComponent(revendaData.username)}&select=*`;
+          console.log('🔄 [useRevendas] Verificando inserção:', verifyUrl);
+          
+          const verifyResponse = await fetch(verifyUrl, {
+            method: 'GET',
+            headers: verifyHeaders,
+          });
+          
+          if (verifyResponse.ok) {
+            const verifyData = await verifyResponse.json();
+            console.log('🔄 [useRevendas] Dados encontrados na verificação:', verifyData);
+            
+            if (verifyData && Array.isArray(verifyData) && verifyData.length > 0) {
+              console.log('✅ [useRevendas] Revenda encontrado após inserção!');
+              const newRevenda = verifyData[0] as Revenda;
+              setRevendas(prevRevendas => {
+                const exists = prevRevendas.find(r => r.id === newRevenda.id || r.username === newRevenda.username);
+                if (exists) {
+                  return prevRevendas.map(r => r.id === newRevenda.id ? newRevenda : r);
+                }
+                return [...prevRevendas, newRevenda];
+              });
+              console.log('✅ [useRevendas] Lista atualizada com revenda inserido!');
+              return true;
+            } else {
+              console.error('❌ [useRevendas] Revenda não encontrado após inserção');
+              console.error('❌ [useRevendas] Isso indica que a inserção não foi bem-sucedida, possivelmente devido a RLS');
+              setError('Erro: A inserção não foi bem-sucedida. O revenda não foi encontrado no banco de dados. Isso pode indicar um problema com as políticas RLS. Verifique as políticas no Supabase Dashboard.');
+              return false;
+            }
+          } else {
+            console.error('❌ [useRevendas] Erro ao verificar inserção:', verifyResponse.status, verifyResponse.statusText);
+            setError(`Erro ao verificar inserção: ${verifyResponse.status} ${verifyResponse.statusText}. A inserção pode não ter sido bem-sucedida.`);
+            return false;
+          }
+        } catch (verifyError) {
+          console.error('❌ [useRevendas] Erro ao verificar inserção:', verifyError);
+          // Tentar buscar todos os revendas como fallback
+          console.log('🔄 [useRevendas] Buscando lista completa de revendas como fallback...');
+          await fetchRevendas();
+          // Retornar true porque não sabemos ao certo se falhou ou não
+          return true;
+        }
       }
       console.log('✅ [useRevendas] Lista atualizada!');
       return true;
