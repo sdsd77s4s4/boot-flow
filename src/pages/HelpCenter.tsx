@@ -246,7 +246,8 @@ const HelpCenter = () => {
     },
     {
       title: "Telefone",
-      description: "+55 11 4000-0000",
+      description: "+55 27 99958-7725",
+      phoneNumber: "5527999587725",
       icon: Phone,
       action: "Ligar",
       available: true
@@ -628,7 +629,25 @@ const HelpCenter = () => {
                       window.open(`https://wa.me/${phoneNumber}?text=${defaultMessage}`, "_blank", "noopener,noreferrer");
                     }
                   } else if (option.title === "Telefone") {
-                    window.open(`tel:${option.description.replace(/\s/g, "")}`, "_self");
+                    // Usa o número do WhatsApp para ligação
+                    const phoneNumber = option.phoneNumber || "5527999587725";
+                    // Formata o número para o protocolo tel: (adiciona + se necessário)
+                    const telNumber = phoneNumber.startsWith("+") ? phoneNumber : `+${phoneNumber}`;
+                    
+                    // Tenta fazer a ligação
+                    window.location.href = `tel:${telNumber}`;
+                    
+                    // Fallback para desktop: mostra mensagem ou abre aplicativo de telefone
+                    setTimeout(() => {
+                      // Se estiver em desktop e não conseguir ligar, pode mostrar uma mensagem
+                      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                      if (!isMobile) {
+                        // Em desktop, pode abrir um link de telefone ou mostrar instruções
+                        // Alguns navegadores desktop suportam tel: através de aplicativos
+                        const formattedNumber = telNumber.replace(/\s/g, "");
+                        window.open(`tel:${formattedNumber}`, "_self");
+                      }
+                    }, 100);
                   } else if (option.title === "Email") {
                     window.open(`mailto:${option.description}`, "_self");
                   }
