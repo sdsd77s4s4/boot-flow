@@ -584,24 +584,21 @@ const HelpCenter = () => {
                 const IconComponent = option.icon;
                 const handleAction = () => {
                   if (option.title === "Chat ao Vivo") {
-                    // Tenta abrir no app primeiro, se não funcionar, abre no web
-                    const whatsappUrl = "https://wa.me/5527999587725";
-                    // Tenta abrir diretamente no app WhatsApp
-                    const appUrl = "whatsapp://send?phone=5527999587725";
-                    
-                    // Verifica se está em mobile e tenta abrir no app
+                    // Verifica se está em mobile
                     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                     
                     if (isMobile) {
-                      // Tenta abrir no app primeiro
+                      // Mobile: tenta abrir no app primeiro
+                      const appUrl = "whatsapp://send?phone=5527999587725";
                       window.location.href = appUrl;
-                      // Fallback: se o app não abrir em 500ms, abre no web
+                      
+                      // Fallback: se o app não abrir, usa o link web
                       setTimeout(() => {
-                        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-                      }, 500);
+                        window.open("https://wa.me/5527999587725", "_blank", "noopener,noreferrer");
+                      }, 1000);
                     } else {
-                      // Desktop: abre direto no WhatsApp Web
-                      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+                      // Desktop: abre direto no WhatsApp Web (sem página intermediária)
+                      window.open("https://web.whatsapp.com/send?phone=5527999587725", "_blank", "noopener,noreferrer");
                     }
                   } else if (option.title === "Telefone") {
                     window.open(`tel:${option.description.replace(/\s/g, "")}`, "_self");
