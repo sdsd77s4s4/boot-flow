@@ -629,13 +629,17 @@ const HelpCenter = () => {
                       window.open(`https://wa.me/${phoneNumber}?text=${defaultMessage}`, "_blank", "noopener,noreferrer");
                     }
                   } else if (option.title === "Telefone") {
-                    // Usa o número do WhatsApp para ligação
+                    // Usa o número do WhatsApp para ligação, mas remove o código do país +55
                     const phoneNumber = option.phoneNumber || "5527999587725";
-                    // Formata o número para o protocolo tel: (adiciona + se necessário)
-                    const telNumber = phoneNumber.startsWith("+") ? phoneNumber : `+${phoneNumber}`;
+                    // Remove o código do país (55) do início do número
+                    const telNumber = phoneNumber.replace(/^55/, "").replace(/\D/g, "");
+                    // Formata como 27 99958-7725 para a ligação
+                    const formattedTel = telNumber.length === 11 
+                      ? `${telNumber.slice(0, 2)} ${telNumber.slice(2, 7)}-${telNumber.slice(7)}`
+                      : telNumber;
                     
-                    // Tenta fazer a ligação
-                    window.location.href = `tel:${telNumber}`;
+                    // Tenta fazer a ligação sem o código do país
+                    window.location.href = `tel:${formattedTel}`;
                     
                     // Fallback para desktop: mostra mensagem ou abre aplicativo de telefone
                     setTimeout(() => {
@@ -644,8 +648,7 @@ const HelpCenter = () => {
                       if (!isMobile) {
                         // Em desktop, pode abrir um link de telefone ou mostrar instruções
                         // Alguns navegadores desktop suportam tel: através de aplicativos
-                        const formattedNumber = telNumber.replace(/\s/g, "");
-                        window.open(`tel:${formattedNumber}`, "_self");
+                        window.open(`tel:${formattedTel}`, "_self");
                       }
                     }, 100);
                   } else if (option.title === "Email") {
