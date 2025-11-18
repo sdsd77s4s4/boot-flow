@@ -191,24 +191,24 @@ const AdminDashboard = () => {
       if (clientesToUse && Array.isArray(clientesToUse)) {
         clientesToUse = clientesToUse.filter((cliente: any) => {
           return cliente.admin_id === user.id || cliente.admin_id === null || cliente.admin_id === undefined;
-        });
+        }) as any[];
       }
       if (revendasToUse && Array.isArray(revendasToUse)) {
         revendasToUse = revendasToUse.filter((revenda: any) => {
           return revenda.admin_id === user.id || revenda.admin_id === null || revenda.admin_id === undefined;
-        });
+        }) as any[];
       }
       console.log('🔄 [AdminDashboard] Dados filtrados por admin_id:', user.id, 'Clientes:', clientesToUse?.length, 'Revendas:', revendasToUse?.length);
     }
     
     if (clientesToUse) {
-      setClientes(clientesToUse);
+      setClientes(clientesToUse as any[]);
       setLoadingClientes(false);
     }
     
     if (revendasToUse) {
       console.log('✅ [AdminDashboard] Atualizando estado revendas com', revendasToUse.length, 'revendedores');
-      setRevendas(revendasToUse);
+      setRevendas(revendasToUse as any[]);
       setLoadingRevendas(false);
     }
   }, [realtimeClientes, realtimeRevendas, clientesFromHook, revendasFromHook, user?.id]);
@@ -278,6 +278,7 @@ const AdminDashboard = () => {
   // Função para adicionar um novo revendedor
   const addRevenda = useCallback(async (revendaData: any) => {
     try {
+      // @ts-ignore - Tipo do Supabase não corresponde exatamente à estrutura da tabela
       const { data, error } = await supabase
         .from('revendas')
         .insert([revendaData])
@@ -551,33 +552,36 @@ const AdminDashboard = () => {
 
             console.log("Sucesso com acesso direto!");
 
-            // Aplicar dados extraídos ao formulário
-            const extractedData = {
-              name: data.user_info.username,
-              email: `${data.user_info.username}@iptv.com`,
-              plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
-              status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
-              telegram: data.user_info.username
-                ? `@${data.user_info.username}`
-                : "",
-              observations: `Usuário: ${data.user_info.username} | Acesso direto`,
-              expirationDate: data.user_info.exp_date
-                ? new Date(parseInt(data.user_info.exp_date) * 1000)
-                    .toISOString()
-                    .split("T")[0]
-                : "",
-              password: data.user_info.password || password,
-              bouquets: "",
-              realName: "",
-              whatsapp: "",
-              devices: data.user_info.max_connections
-                ? parseInt(data.user_info.max_connections)
-                : 1,
-              credits: 0,
-              notes: "",
-            };
+          // Aplicar dados extraídos ao formulário
+          const extractedData = {
+            name: data.user_info.username,
+            email: `${data.user_info.username}@iptv.com`,
+            plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+            price: "",
+            status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
+            telegram: data.user_info.username
+              ? `@${data.user_info.username}`
+              : "",
+            observations: `Usuário: ${data.user_info.username} | Acesso direto`,
+            expirationDate: data.user_info.exp_date
+              ? new Date(parseInt(data.user_info.exp_date) * 1000)
+                  .toISOString()
+                  .split("T")[0]
+              : "",
+            password: data.user_info.password || password,
+            bouquets: "",
+            realName: "",
+            whatsapp: "",
+            devices: data.user_info.max_connections
+              ? parseInt(data.user_info.max_connections)
+              : 1,
+            credits: 0,
+            notes: "",
+            server: "",
+            m3u_url: "",
+          };
 
-            setNewUser(extractedData);
+            setNewUser(extractedData as typeof newUser);
 
             setExtractionResult({
               success: true,
@@ -660,6 +664,7 @@ const AdminDashboard = () => {
             name: data.user_info.username || username,
             email: `${data.user_info.username || username}@iptv.com`,
             plan: data.user_info.is_trial === "1" ? "Trial" : "Premium",
+            price: "",
             status: data.user_info.status === "Active" ? "Ativo" : "Inativo",
             telegram: data.user_info.username
               ? `@${data.user_info.username}`
@@ -680,6 +685,8 @@ const AdminDashboard = () => {
               : 1,
             credits: 0,
             notes: "",
+            server: "",
+            m3u_url: "",
           };
 
           setNewUser(extractedData);
@@ -705,6 +712,7 @@ const AdminDashboard = () => {
               name: username,
               email: `${username}@iptv.com`,
               plan: "Premium",
+              price: "",
               status: "Ativo",
               telegram: `@${username}`,
               observations: `Usuário: ${username} | Senha: ${password} | Dados simulados`,
@@ -716,9 +724,11 @@ const AdminDashboard = () => {
               devices: 1,
               credits: 0,
               notes: "",
+              server: "",
+              m3u_url: "",
             };
 
-            setNewUser(extractedData);
+            setNewUser(extractedData as typeof newUser);
 
             setExtractionResult({
               success: true,
