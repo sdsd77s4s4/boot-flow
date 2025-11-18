@@ -45,7 +45,7 @@ import { AIModalManager } from "@/components/modals/AIModalManager";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogHeader } from '@/components/ui/dialog';
 import { DndContext, closestCenter } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 // Importando as páginas como componentes
@@ -278,10 +278,9 @@ const AdminDashboard = () => {
   // Função para adicionar um novo revendedor
   const addRevenda = useCallback(async (revendaData: any) => {
     try {
-      // @ts-ignore - Tipo do Supabase não corresponde exatamente à estrutura da tabela
-      const { data, error } = await supabase
-        .from('revendas')
-        .insert([revendaData])
+      const { data, error } = await (supabase
+        .from('revendas') as any)
+        .insert([revendaData] as any)
         .select();
         
       if (error) throw error;
