@@ -626,7 +626,7 @@ const Landing = () => {
                       }
                     }}
                   >
-                    API
+                    Início
                   </a>
                 </li>
                 <li>
@@ -638,7 +638,7 @@ const Landing = () => {
                       navigate('/demo');
                     }}
                   >
-                    Integrações
+                    Demo
                   </a>
                 </li>
               </ul>
