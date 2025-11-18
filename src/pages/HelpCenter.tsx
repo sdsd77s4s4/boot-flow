@@ -699,6 +699,39 @@ const HelpCenter = () => {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de Recursos Adicionais */}
+      {selectedResource && (
+        <Dialog open={!!selectedResource} onOpenChange={() => setSelectedResource(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {additionalResources.find(r => r.id === selectedResource)?.title}
+              </DialogTitle>
+              <DialogDescription>
+                {additionalResources.find(r => r.id === selectedResource)?.description}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4 space-y-6">
+              {additionalResources.find(r => r.id === selectedResource)?.content?.sections.map((section, index) => (
+                <div key={index} className="border-b border-border/50 pb-4 last:border-0">
+                  <h3 className="text-lg font-semibold mb-2 text-primary">
+                    {section.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {section.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={() => setSelectedResource(null)}>
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
