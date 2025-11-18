@@ -597,9 +597,10 @@ const HelpCenter = () => {
                         window.open("https://wa.me/5527999587725", "_blank", "noopener,noreferrer");
                       }, 1000);
                     } else {
-                      // Desktop: usa o link wa.me que redireciona direto para o número
-                      // Este formato funciona melhor e vai direto para a conversa
-                      window.open("https://wa.me/5527999587725?text=", "_blank", "noopener,noreferrer");
+                      // Desktop: abre direto no WhatsApp Web com o número
+                      // Usa window.location para garantir que abre na mesma aba/janela do WhatsApp Web
+                      const whatsappWebUrl = "https://web.whatsapp.com/send?phone=5527999587725&text=";
+                      window.open(whatsappWebUrl, "_blank", "noopener,noreferrer");
                     }
                   } else if (option.title === "Telefone") {
                     window.open(`tel:${option.description.replace(/\s/g, "")}`, "_self");
