@@ -260,6 +260,173 @@ const HelpCenter = () => {
     }
   ];
 
+  const additionalResources = [
+    {
+      id: "documentacao-api",
+      title: "Documentação da API",
+      description: "Integre com nossa API",
+      icon: FileText,
+      content: {
+        sections: [
+          {
+            title: "O que é a API do BootFlow?",
+            content: "A API REST do BootFlow permite que você integre todas as funcionalidades da plataforma com seus próprios sistemas, aplicativos e serviços. Com ela, você pode automatizar processos, sincronizar dados e criar integrações personalizadas."
+          },
+          {
+            title: "Autenticação",
+            content: "Para usar a API, você precisa de uma chave de API (API Key). Gere sua chave em 'Configurações' > 'API' > 'Gerar Nova Chave'. Todas as requisições devem incluir o header 'Authorization: Bearer {sua-api-key}'. Mantenha sua chave segura e nunca a compartilhe publicamente."
+          },
+          {
+            title: "Endpoints Principais",
+            content: "Nossa API oferece endpoints para: gerenciar clientes (CRUD completo), enviar mensagens via WhatsApp, criar e gerenciar campanhas, configurar assistentes de IA, gerenciar revendedores, consultar estatísticas e relatórios, e muito mais."
+          },
+          {
+            title: "Formato de Resposta",
+            content: "Todas as respostas da API seguem o formato JSON padrão. Respostas de sucesso retornam status HTTP 200-299 com os dados solicitados. Erros retornam status 400-500 com uma mensagem de erro descritiva no formato: { 'error': 'mensagem de erro', 'code': 'codigo_erro' }."
+          },
+          {
+            title: "Rate Limiting",
+            content: "Para garantir a estabilidade do serviço, aplicamos limites de taxa (rate limiting). O plano Essencial permite 100 requisições/minuto, Profissional 500/minuto, Business 2000/minuto e Elite ilimitado. Exceder o limite retorna status 429 (Too Many Requests)."
+          },
+          {
+            title: "Webhooks",
+            content: "Configure webhooks para receber notificações em tempo real sobre eventos importantes: novos clientes, mensagens recebidas, pagamentos confirmados, campanhas finalizadas, etc. Configure os webhooks em 'Configurações' > 'Webhooks'."
+          },
+          {
+            title: "Exemplos de Código",
+            content: "Fornecemos exemplos de código em várias linguagens (JavaScript, Python, PHP, cURL) na documentação completa. Acesse '/api' para ver exemplos práticos e começar a integrar rapidamente."
+          },
+          {
+            title: "Suporte para Desenvolvedores",
+            content: "Nossa equipe oferece suporte técnico especializado para desenvolvedores. Entre em contato através do email dev@bootflow.com ou acesse nossa comunidade de desenvolvedores para compartilhar experiências e obter ajuda."
+          }
+        ]
+      }
+    },
+    {
+      id: "changelog",
+      title: "Changelog",
+      description: "Veja as últimas atualizações",
+      icon: FileText,
+      content: {
+        sections: [
+          {
+            title: "Versão 3.5.0 - Janeiro 2024",
+            content: "Nova integração com Mercado Pago para pagamentos diretos na plataforma. Melhorias significativas na performance do sistema de IA emocional. Novo dashboard de analytics com métricas em tempo real. Suporte a múltiplos idiomas na interface."
+          },
+          {
+            title: "Versão 3.4.0 - Dezembro 2023",
+            content: "Sistema de campanhas multicanal aprimorado com suporte a Instagram e Facebook. Nova funcionalidade de agendamento inteligente de mensagens. Melhorias na interface do módulo IPTV. Correções de bugs e otimizações gerais."
+          },
+          {
+            title: "Versão 3.3.0 - Novembro 2023",
+            content: "Lançamento do sistema de gamificação completo. Novo módulo de rádio web multicanal. Integração com Telegram para campanhas. Melhorias no sistema de notificações. Nova API v2 com mais endpoints e melhor documentação."
+          },
+          {
+            title: "Versão 3.2.0 - Outubro 2023",
+            content: "Sistema de IA emocional com vozes mais realistas. Novo editor de fluxos visuais para automações. Suporte a envio de mídias (imagens, vídeos, documentos) via WhatsApp. Dashboard de revendedores redesenhado."
+          },
+          {
+            title: "Versão 3.1.0 - Setembro 2023",
+            content: "Sistema de cobranças automatizadas. Integração com gateways de pagamento. Novo módulo de e-commerce. Melhorias na segurança com autenticação de dois fatores. Sistema de backup automático."
+          },
+          {
+            title: "Como Acompanhar Atualizações",
+            content: "Você pode acompanhar todas as atualizações através desta página, que é atualizada sempre que uma nova versão é lançada. Também enviamos notificações por email sobre atualizações importantes. Configure suas preferências de notificação em 'Configurações' > 'Notificações'."
+          },
+          {
+            title: "Sugestões de Melhorias",
+            content: "Tem uma ideia para melhorar a plataforma? Envie suas sugestões através do email feedback@bootflow.com ou participe da nossa comunidade de desenvolvedores. Suas sugestões são muito importantes para nós!"
+          }
+        ]
+      }
+    },
+    {
+      id: "comunidade",
+      title: "Comunidade",
+      description: "Participe do fórum",
+      icon: MessageSquare,
+      content: {
+        sections: [
+          {
+            title: "O que é a Comunidade BootFlow?",
+            content: "A Comunidade BootFlow é um espaço onde usuários, desenvolvedores e entusiastas da plataforma se reúnem para compartilhar conhecimento, experiências, dicas, tutoriais e ajudar uns aos outros."
+          },
+          {
+            title: "Benefícios de Participar",
+            content: "Ao participar da comunidade, você terá acesso a: tutoriais criados por outros usuários, soluções para problemas comuns, dicas de otimização e melhores práticas, networking com outros empreendedores, acesso antecipado a novas funcionalidades, e suporte da comunidade além do suporte oficial."
+          },
+          {
+            title: "Como Participar",
+            content: "Para participar, acesse nosso fórum em forum.bootflow.com e crie sua conta gratuita. Você pode fazer perguntas, responder dúvidas de outros membros, compartilhar seus casos de sucesso e contribuir com a documentação colaborativa."
+          },
+          {
+            title: "Categorias do Fórum",
+            content: "O fórum está organizado em categorias: 'Primeiros Passos' para iniciantes, 'Dúvidas Técnicas' para questões técnicas, 'Integrações e API' para desenvolvedores, 'Casos de Sucesso' para compartilhar resultados, 'Sugestões' para melhorias, e 'Marketplace' para serviços e produtos relacionados."
+          },
+          {
+            title: "Regras da Comunidade",
+            content: "Mantenha o respeito e cordialidade em todas as interações. Compartilhe conhecimento de forma clara e útil. Não faça spam ou autopromoção excessiva. Respeite a privacidade e dados de outros membros. Siga as diretrizes de cada categoria do fórum."
+          },
+          {
+            title: "Programa de Moderadores",
+            content: "Membros ativos e experientes podem se tornar moderadores da comunidade. Moderadores ajudam a manter a qualidade das discussões, respondem dúvidas e guiam novos membros. Entre em contato se tiver interesse em se tornar moderador."
+          },
+          {
+            title: "Eventos e Webinars",
+            content: "Regularmente organizamos webinars, workshops e eventos online para a comunidade. Participe para aprender novas funcionalidades, conhecer casos de sucesso e interagir diretamente com a equipe BootFlow e outros membros."
+          },
+          {
+            title: "Contribuindo com Conteúdo",
+            content: "Você pode contribuir criando tutoriais, vídeos, artigos ou compartilhando suas experiências. Conteúdo de qualidade pode ser destacado e até mesmo integrado à documentação oficial. Entre em contato para saber como contribuir."
+          }
+        ]
+      }
+    },
+    {
+      id: "status-plataforma",
+      title: "Status da Plataforma",
+      description: "Verificar status dos serviços",
+      icon: FileText,
+      content: {
+        sections: [
+          {
+            title: "O que é a Página de Status?",
+            content: "A página de Status da Plataforma fornece informações em tempo real sobre a disponibilidade e performance de todos os serviços do BootFlow. Você pode verificar se há incidentes, manutenções programadas ou problemas conhecidos."
+          },
+          {
+            title: "Status dos Serviços",
+            content: "Monitoramos continuamente: API e endpoints, sistema de mensagens WhatsApp, processamento de IA e voz, servidores IPTV, sistema de pagamentos, dashboard e interface web, sincronização de dados, e webhooks e notificações."
+          },
+          {
+            title: "Indicadores de Status",
+            content: "Verde (Operacional): Todos os sistemas funcionando normalmente. Amarelo (Degradado): Alguns serviços podem estar mais lentos ou com funcionalidades limitadas. Vermelho (Indisponível): Serviço temporariamente fora do ar. Azul (Manutenção): Manutenção programada em andamento."
+          },
+          {
+            title: "Histórico de Incidentes",
+            content: "Mantemos um histórico completo de todos os incidentes, incluindo: data e horário do incidente, duração, serviços afetados, causa raiz, e ações tomadas para resolução. Isso ajuda a manter a transparência e permite que você entenda o que aconteceu."
+          },
+          {
+            title: "Manutenções Programadas",
+            content: "Anunciamos todas as manutenções programadas com pelo menos 48 horas de antecedência. Durante a manutenção, alguns serviços podem ficar temporariamente indisponíveis. Tentamos sempre agendar manutenções em horários de menor uso."
+          },
+          {
+            title: "Notificações de Status",
+            content: "Você pode se inscrever para receber notificações sobre mudanças de status através de email, SMS ou webhook. Configure suas preferências em 'Configurações' > 'Notificações' > 'Status da Plataforma'."
+          },
+          {
+            title: "SLA e Garantias",
+            content: "Nosso objetivo é manter 99.9% de uptime para todos os serviços. Planos Enterprise e Elite têm SLAs garantidos com compensações em caso de indisponibilidade. Consulte os termos de serviço para mais detalhes sobre garantias do seu plano."
+          },
+          {
+            title: "Reportar Problemas",
+            content: "Se você notar um problema que não está listado na página de status, entre em contato imediatamente através do suporte. Isso nos ajuda a identificar e resolver problemas mais rapidamente. Inclua detalhes sobre o que você estava fazendo quando o problema ocorreu."
+          }
+        ]
+      }
+    }
+  ];
+
   const filteredFaqs = faqs.filter(faq =>
     faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchTerm.toLowerCase())
@@ -387,45 +554,25 @@ const HelpCenter = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button variant="outline" className="justify-between h-auto p-4">
-                    <div className="text-left">
-                      <h4 className="font-medium">Documentação da API</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Integre com nossa API
-                      </p>
-                    </div>
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-
-                  <Button variant="outline" className="justify-between h-auto p-4">
-                    <div className="text-left">
-                      <h4 className="font-medium">Changelog</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Veja as últimas atualizações
-                      </p>
-                    </div>
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-
-                  <Button variant="outline" className="justify-between h-auto p-4">
-                    <div className="text-left">
-                      <h4 className="font-medium">Comunidade</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Participe do fórum
-                      </p>
-                    </div>
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-
-                  <Button variant="outline" className="justify-between h-auto p-4">
-                    <div className="text-left">
-                      <h4 className="font-medium">Status da Plataforma</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Verificar status dos serviços
-                      </p>
-                    </div>
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
+                  {additionalResources.map((resource, index) => {
+                    const IconComponent = resource.icon;
+                    return (
+                      <Button 
+                        key={index}
+                        variant="outline" 
+                        className="justify-between h-auto p-4 cursor-pointer hover:bg-accent"
+                        onClick={() => setSelectedResource(resource.id)}
+                      >
+                        <div className="text-left">
+                          <h4 className="font-medium">{resource.title}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {resource.description}
+                          </p>
+                        </div>
+                        <IconComponent className="h-4 w-4" />
+                      </Button>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
