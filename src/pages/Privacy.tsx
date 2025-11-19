@@ -1,25 +1,83 @@
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Bot } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 const Privacy = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToPricing = (e?: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (location.pathname !== '/preco') {
+      navigate('/preco');
+    } else {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing');
+        if (pricingElement) {
+          pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Política de Privacidade</h1>
-            <p className="text-muted-foreground">Última atualização: 15 de janeiro de 2024</p>
-          </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border/20 backdrop-blur-xl bg-background/80 fixed top-0 left-0 right-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div 
+              className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate('/')}
+            >
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-bold gradient-text">BootFlow</span>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+                Funcionalidades
+              </a>
+              <a 
+                href="/preco" 
+                onClick={scrollToPricing}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                Preços
+              </a>
+              <Button variant="ghost" onClick={() => navigate('/login')}>
+                Entrar
+              </Button>
+              <Button onClick={() => navigate('/cadastro')}>
+                Começar Grátis
+              </Button>
+            </div>
+          </nav>
         </div>
+      </header>
+
+      {/* Spacer para compensar o header fixo */}
+      <div className="h-[73px]"></div>
+
+      <div className="p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">Política de Privacidade</h1>
+              <p className="text-muted-foreground">Última atualização: 15 de janeiro de 2024</p>
+            </div>
+          </div>
 
         <Card>
           <CardHeader>
