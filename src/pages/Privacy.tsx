@@ -131,7 +131,10 @@ const Privacy = () => {
               <Button variant="ghost" onClick={() => navigate('/login')}>
                 Entrar
               </Button>
-              <Button onClick={() => navigate('/cadastro')}>
+              <Button
+                className="bg-gradient-primary text-white shadow-lg hover:opacity-90"
+                onClick={() => navigate('/cadastro')}
+              >
                 Teste Grátis
               </Button>
             </div>
