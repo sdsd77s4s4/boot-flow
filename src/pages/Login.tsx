@@ -15,8 +15,31 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  
+  // Verificar se o AuthProvider está disponível
+  let authContext;
+  try {
+    authContext = useAuth();
+  } catch (err) {
+    console.error('AuthContext não disponível:', err);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20">
+        <div className="text-center p-8">
+          <h1 className="text-2xl font-bold mb-4">Erro de Configuração</h1>
+          <p className="text-muted-foreground mb-4">O sistema de autenticação não está disponível.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+          >
+            Recarregar Página
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  const { signIn, signInWithGoogle } = authContext;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
