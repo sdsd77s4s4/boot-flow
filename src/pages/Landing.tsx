@@ -53,6 +53,11 @@ const Landing = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Efeito para garantir que a página sempre comece no topo
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Efeito para fazer scroll até a seção de pricing quando a rota for /preco
   useEffect(() => {
     if (location.pathname === '/preco') {
@@ -62,6 +67,9 @@ const Landing = () => {
           pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
+    } else {
+      // Se não for /preco, garantir que está no topo
+      window.scrollTo(0, 0);
     }
   }, [location.pathname]);
 
