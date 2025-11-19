@@ -651,7 +651,7 @@ const Landing = () => {
                       size="lg"
                       onClick={handleNextStep}
                       disabled={!formData.name.trim()}
-                      className="w-full"
+                      className="w-full bg-white text-primary hover:bg-white/90 font-semibold"
                     >
                       Continuar
                       <ArrowRight className="w-4 h-4 ml-2" />
