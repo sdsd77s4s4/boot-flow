@@ -12,7 +12,9 @@ import {
   ShoppingBag,
   Bell,
   User,
-  BarChart3
+  BarChart3,
+  CreditCard,
+  Palette
 } from "lucide-react";
 import {
   Sidebar,
