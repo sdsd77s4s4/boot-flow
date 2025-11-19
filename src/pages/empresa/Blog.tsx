@@ -105,7 +105,22 @@ const Blog = () => {
     const body = encodeURIComponent(
       `Olá, gostaria de assinar a newsletter da BootFlow.${newsletterEmail ? `\n\nMeu e-mail: ${newsletterEmail}` : ""}`
     );
+    // Envia para o e-mail de suporte
     window.location.href = `mailto:suporte@bootflow.com.br?subject=${subject}&body=${body}`;
+
+    // Também abre o WhatsApp com uma mensagem pronta sobre a inscrição na newsletter
+    const whatsappNumber = "5527999587725";
+    const whatsappMessage = encodeURIComponent(
+      `Olá! Gostaria de assinar a newsletter da BootFlow.${
+        newsletterEmail ? `\n\nMeu e-mail: ${newsletterEmail}` : ""
+      }`
+    );
+    window.open(
+      `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
     setIsNewsletterModalOpen(false);
   };
 
