@@ -102,6 +102,56 @@ const Landing = () => {
     }
   };
 
+  const handleNextStep = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    // Enviar para email
+    const emailSubject = encodeURIComponent('Novo Lead - BootFlow');
+    const emailBody = encodeURIComponent(
+      `Novo cadastro recebido:\n\n` +
+      `Nome: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Telefone: ${formData.phone}\n\n` +
+      `Data: ${new Date().toLocaleString('pt-BR')}`
+    );
+    window.location.href = `mailto:suporte@bootflow.com.br?subject=${emailSubject}&body=${emailBody}`;
+
+    // Enviar para WhatsApp
+    const whatsappMessage = encodeURIComponent(
+      `🚀 *Novo Lead - BootFlow*\n\n` +
+      `👤 *Nome:* ${formData.name}\n` +
+      `📧 *Email:* ${formData.email}\n` +
+      `📱 *Telefone:* ${formData.phone}\n\n` +
+      `📅 *Data:* ${new Date().toLocaleString('pt-BR')}`
+    );
+    
+    const phoneNumber = "5527999587725";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      window.open(`https://wa.me/${phoneNumber}?text=${whatsappMessage}`, "_blank");
+    } else {
+      window.open(`https://web.whatsapp.com/send?phone=${phoneNumber}&text=${whatsappMessage}`, "_blank");
+    }
+
+    // Resetar formulário
+    setFormData({ name: "", email: "", phone: "" });
+    setCurrentStep(1);
+    
+    // Opcional: mostrar mensagem de sucesso
+    alert("Dados enviados com sucesso! Você será redirecionado.");
+  };
+
   const features = [
     {
       icon: Bot,
