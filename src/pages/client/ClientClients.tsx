@@ -70,10 +70,13 @@ import {
 import React from "react";
 import { useClientes } from "@/hooks/useClientes";
 import { RLSErrorBanner } from "@/components/RLSErrorBanner";
+import { useNavigate } from "react-router-dom";
+import { ArrowUp } from "lucide-react";
 
 const MAX_CLIENTS = 5; // Limite de clientes para o plano Essencial
 
 export default function ClientClients() {
+  const navigate = useNavigate();
   const {
     clientes: users,
     loading,
@@ -953,15 +956,32 @@ export default function ClientClients() {
       {/* Aviso de limite de clientes */}
       {usersSafe.length >= MAX_CLIENTS && (
         <div className="bg-yellow-900/40 border border-yellow-700 text-yellow-300 rounded-lg p-4">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5" />
-            <div>
-              <strong>Limite de clientes atingido!</strong>
-              <p className="text-sm mt-1">
-                Você atingiu o limite de {MAX_CLIENTS} clientes do seu plano Essencial. 
-                Para adicionar mais clientes, faça upgrade do seu plano.
-              </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-2 flex-1">
+              <Shield className="w-5 h-5 flex-shrink-0" />
+              <div>
+                <strong>Limite de clientes atingido!</strong>
+                <p className="text-sm mt-1">
+                  Você atingiu o limite de {MAX_CLIENTS} clientes do seu plano Essencial. 
+                  Para adicionar mais clientes, faça upgrade do seu plano.
+                </p>
+              </div>
             </div>
+            <Button
+              onClick={() => {
+                navigate('/');
+                setTimeout(() => {
+                  const pricingElement = document.getElementById('pricing');
+                  if (pricingElement) {
+                    pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }, 100);
+              }}
+              className="bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 font-semibold shadow-lg shadow-purple-500/50 whitespace-nowrap"
+            >
+              <ArrowUp className="w-4 h-4 mr-2" />
+              Fazer Upgrade
+            </Button>
           </div>
         </div>
       )}
