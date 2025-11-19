@@ -1,24 +1,17 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { ClientSidebar } from "@/components/sidebars/ClientSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ClientNotifications() {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <ClientSidebar />
-        <main className="flex-1 p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notificações</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Visualize suas notificações aqui.</p>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
-    </SidebarProvider>
+    <div className="space-y-4 sm:space-y-6 min-h-screen bg-[#09090b] p-3 sm:p-6">
+      <Card className="bg-[#1f2937] border border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white">Notificações</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-400">Visualize suas notificações aqui.</p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
