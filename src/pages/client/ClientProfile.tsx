@@ -22,10 +22,10 @@ const ClientProfile = () => {
     name: userName,
     email: userEmail,
     phone: "+55 11 99999-9999",
-    bio: "Cliente da plataforma SaaS",
+    bio: "Administrador da plataforma SaaS",
     location: "São Paulo, SP",
     joinDate: "Janeiro 2024",
-    role: "Cliente",
+    role: "Administrador",
     notifications: {
       email: true,
       sms: false,
