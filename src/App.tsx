@@ -85,6 +85,9 @@ const App = () => {
                 {/* Dashboard Cliente */}
                 <Route path="/dashboard/client" element={<ClientDashboard />} />
                 
+                {/* Redirecionamento para /dashboard */}
+                <Route path="/dashboard" element={<ClientDashboard />} />
+                
                 {/* Outras rotas */}
                 <Route path="/configuracoes" element={<Settings />} />
                 <Route path="/produtos" element={<Products />} />
