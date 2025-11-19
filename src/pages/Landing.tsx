@@ -651,10 +651,10 @@ const Landing = () => {
                       size="lg"
                       onClick={handleNextStep}
                       disabled={!formData.name.trim()}
-                      className="w-full bg-white text-primary hover:bg-white/90 font-semibold"
+                      className="w-full bg-white text-primary hover:bg-white/90 font-semibold [&_svg]:text-primary"
                     >
                       Continuar
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      <ArrowRight className="w-4 h-4 ml-2 text-primary" />
                     </Button>
                   </div>
                 )}
@@ -688,10 +688,10 @@ const Landing = () => {
                         size="lg"
                         onClick={handleNextStep}
                         disabled={!formData.email.trim() || !formData.email.includes('@')}
-                        className="flex-1 bg-white text-primary hover:bg-white/90 font-semibold"
+                        className="flex-1 bg-white text-primary hover:bg-white/90 font-semibold [&_svg]:text-primary"
                       >
                         Continuar
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className="w-4 h-4 ml-2 text-primary" />
                       </Button>
                     </div>
                   </div>
@@ -740,10 +740,10 @@ const Landing = () => {
                         size="lg"
                         onClick={handleSubmit}
                         disabled={!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 10}
-                        className="flex-1 bg-white text-primary hover:bg-white/90 font-semibold"
+                        className="flex-1 bg-white text-primary hover:bg-white/90 font-semibold [&_svg]:text-primary"
                       >
                         Enviar
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className="w-4 h-4 ml-2 text-primary" />
                       </Button>
                     </div>
                   </div>
