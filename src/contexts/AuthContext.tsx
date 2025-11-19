@@ -442,25 +442,9 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
 
       if (signUpError) throw signUpError;
       
-      // Cria o perfil do usuário na tabela profiles
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authData.user.id,
-              email: email.trim().toLowerCase(),
-              full_name: userData.full_name.trim(),
-              role: userData.role || 'client',
-            },
-          ]);
-          
-        if (profileError) {
-          // Se houver erro ao criar o perfil, tenta excluir o usuário criado
-          await supabase.auth.admin.deleteUser(authData.user.id).catch(console.error);
-          throw profileError;
-        }
-      }
+      // O perfil será criado automaticamente pelo trigger handle_new_user()
+      // que é executado quando um novo usuário é inserido em auth.users
+      // Não é necessário inserir manualmente na tabela profiles
       
       toast.success('Conta criada com sucesso! Verifique seu e-mail para confirmar sua conta.');
       return { error: null };
