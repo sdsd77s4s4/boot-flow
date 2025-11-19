@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft, User, MessageSquare, AlertTriangle, Phone, Check } from "lucide-react";
+import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft, User, Bot, AlertTriangle, Phone, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Signup() {
@@ -181,8 +181,8 @@ export default function Signup() {
           className="max-w-md w-full space-y-6"
         >
           <div className="text-center space-y-4 mb-8">
-            <div className="mx-auto w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-              <MessageSquare className="w-12 h-12 text-primary" />
+            <div className="mx-auto w-24 h-24 bg-gradient-primary rounded-lg flex items-center justify-center mb-6 shadow-lg">
+              <Bot className="w-12 h-12 text-white" />
             </div>
             <h2 className="text-3xl font-bold tracking-tight">Junte-se a nós!</h2>
             <p className="text-muted-foreground">
