@@ -114,42 +114,112 @@ const Landing = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Enviar para email
-    const emailSubject = encodeURIComponent('Novo Lead - BootFlow');
-    const emailBody = encodeURIComponent(
-      `Novo cadastro recebido:\n\n` +
-      `Nome: ${formData.name}\n` +
-      `Email: ${formData.email}\n` +
-      `Telefone: ${formData.phone}\n\n` +
-      `Data: ${new Date().toLocaleString('pt-BR')}`
-    );
-    window.location.href = `mailto:suporte@bootflow.com.br?subject=${emailSubject}&body=${emailBody}`;
+  const handleSubmit = async () => {
+    try {
+      // Enviar para email via API
+      const emailData = {
+        to: 'suporte@bootflow.com.br',
+        subject: 'Novo Lead - BootFlow',
+        body: `Novo cadastro recebido:\n\n` +
+              `Nome: ${formData.name}\n` +
+              `Email: ${formData.email}\n` +
+              `Telefone: ${formData.phone}\n\n` +
+              `Data: ${new Date().toLocaleString('pt-BR')}`,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone
+      };
 
-    // Enviar para WhatsApp
-    const whatsappMessage = encodeURIComponent(
-      `🚀 *Novo Lead - BootFlow*\n\n` +
-      `👤 *Nome:* ${formData.name}\n` +
-      `📧 *Email:* ${formData.email}\n` +
-      `📱 *Telefone:* ${formData.phone}\n\n` +
-      `📅 *Data:* ${new Date().toLocaleString('pt-BR')}`
-    );
-    
-    const phoneNumber = "5527999587725";
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      window.open(`https://wa.me/${phoneNumber}?text=${whatsappMessage}`, "_blank");
-    } else {
-      window.open(`https://web.whatsapp.com/send?phone=${phoneNumber}&text=${whatsappMessage}`, "_blank");
+      // Tentar enviar via API endpoint (ajuste a URL conforme seu backend)
+      const apiUrl = import.meta.env.VITE_EMAIL_API_URL || '/api/send-email';
+      
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        });
+
+        if (response.ok) {
+          console.log('Email enviado com sucesso via API');
+        } else {
+          // Se a API não estiver disponível, usar EmailJS como fallback
+          throw new Error('API não disponível');
+        }
+      } catch (apiError) {
+        // Fallback: usar EmailJS (requer configuração)
+        const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+        const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+        if (emailjsPublicKey && emailjsServiceId && emailjsTemplateId) {
+          // Carregar EmailJS dinamicamente
+          const emailjs = await import('@emailjs/browser');
+          await emailjs.send(
+            emailjsServiceId,
+            emailjsTemplateId,
+            {
+              to_email: 'suporte@bootflow.com.br',
+              subject: emailData.subject,
+              message: emailData.body,
+              from_name: emailData.name,
+              from_email: emailData.email,
+              phone: emailData.phone,
+            },
+            emailjsPublicKey
+          );
+          console.log('Email enviado via EmailJS');
+        } else {
+          // Se EmailJS não estiver configurado, usar Webhook/Formspree como último recurso
+          const webhookUrl = import.meta.env.VITE_WEBHOOK_URL || 'https://formspree.io/f/YOUR_FORM_ID';
+          
+          await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              _subject: emailData.subject,
+              name: emailData.name,
+              email: emailData.email,
+              phone: emailData.phone,
+              message: emailData.body,
+            }),
+          });
+          console.log('Email enviado via Webhook');
+        }
+      }
+
+      // Enviar para WhatsApp
+      const whatsappMessage = encodeURIComponent(
+        `🚀 *Novo Lead - BootFlow*\n\n` +
+        `👤 *Nome:* ${formData.name}\n` +
+        `📧 *Email:* ${formData.email}\n` +
+        `📱 *Telefone:* ${formData.phone}\n\n` +
+        `📅 *Data:* ${new Date().toLocaleString('pt-BR')}`
+      );
+      
+      const phoneNumber = "5527999587725";
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        window.open(`https://wa.me/${phoneNumber}?text=${whatsappMessage}`, "_blank");
+      } else {
+        window.open(`https://web.whatsapp.com/send?phone=${phoneNumber}&text=${whatsappMessage}`, "_blank");
+      }
+
+      // Resetar formulário
+      setFormData({ name: "", email: "", phone: "" });
+      setCurrentStep(1);
+      
+      // Mostrar mensagem de sucesso
+      alert("Dados enviados com sucesso! Obrigado pelo seu interesse.");
+    } catch (error) {
+      console.error('Erro ao enviar email:', error);
+      alert("Ocorreu um erro ao enviar os dados. Por favor, tente novamente ou entre em contato diretamente.");
     }
-
-    // Resetar formulário
-    setFormData({ name: "", email: "", phone: "" });
-    setCurrentStep(1);
-    
-    // Opcional: mostrar mensagem de sucesso
-    alert("Dados enviados com sucesso! Você será redirecionado.");
   };
 
   const features = [
