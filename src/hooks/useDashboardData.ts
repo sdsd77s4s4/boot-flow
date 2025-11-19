@@ -38,8 +38,8 @@ export interface DashboardStats {
 }
 
 function useDashboardData() {
-  // Obter o admin logado
-  const { user } = useAuth();
+  // Obter o admin logado e seu role
+  const { user, userRole } = useAuth();
   
   // Estados para os dados em tempo real
   // Usando o hook useRealtime para buscar dados em tempo real
@@ -64,7 +64,7 @@ function useDashboardData() {
   
   // Proteção contra múltiplas chamadas simultâneas
   const isCalculatingRef = useRef(false);
-  const lastCalculationRef = useRef<{ clientesLength: number; revendasLength: number; userId: string | undefined } | null>(null);
+  const lastCalculationRef = useRef<{ clientesLength: number; revendasLength: number; userId: string | undefined; userRole: 'admin' | 'reseller' | 'client' | null } | null>(null);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Função para calcular as estatísticas
@@ -79,14 +79,16 @@ function useDashboardData() {
     const currentState = {
       clientesLength: clientes.length,
       revendasLength: revendas.length,
-      userId: user?.id
+      userId: user?.id,
+      userRole: userRole
     };
     
     if (lastCalculationRef.current) {
       const hasChanged = 
         lastCalculationRef.current.clientesLength !== currentState.clientesLength ||
         lastCalculationRef.current.revendasLength !== currentState.revendasLength ||
-        lastCalculationRef.current.userId !== currentState.userId;
+        lastCalculationRef.current.userId !== currentState.userId ||
+        lastCalculationRef.current.userRole !== currentState.userRole;
       
       if (!hasChanged) {
         console.log('🔄 [useDashboardData] Dados não mudaram, ignorando cálculo');
@@ -98,14 +100,17 @@ function useDashboardData() {
     try {
       setLoading(true);
       
-      // Filtrar clientes apenas do admin logado (se houver admin logado)
-      const clientesDoAdmin = user?.id 
-        ? clientes.filter((cliente) => {
-            const clienteRow = cliente as UserRow & { admin_id?: string };
-            // Incluir clientes associados ao admin logado ou clientes sem admin (NULL)
-            return clienteRow.admin_id === user.id || clienteRow.admin_id === null || clienteRow.admin_id === undefined;
-          })
-        : clientes;
+      // Se for admin, usar TODOS os clientes (sem filtrar por admin_id)
+      // Se for cliente ou revendedor, filtrar apenas os seus clientes
+      const clientesDoAdmin = userRole === 'admin'
+        ? clientes // Admin vê todos os clientes
+        : user?.id 
+          ? clientes.filter((cliente) => {
+              const clienteRow = cliente as UserRow & { admin_id?: string };
+              // Incluir clientes associados ao admin logado ou clientes sem admin (NULL)
+              return clienteRow.admin_id === user.id || clienteRow.admin_id === null || clienteRow.admin_id === undefined;
+            })
+          : clientes;
       
       // Contagem de clientes ativos (apenas do admin logado)
       const activeClients = clientesDoAdmin.filter(cliente => {
@@ -113,14 +118,17 @@ function useDashboardData() {
         return status === 'ativo' || status === 'active';
       }).length;
 
-      // Filtrar revendas apenas do admin logado (se houver admin logado)
-      const revendasDoAdmin = user?.id 
-        ? revendas.filter((revenda) => {
-            const revendaRow = revenda as ResellerRow & { admin_id?: string };
-            // Incluir revendas associados ao admin logado ou revendas sem admin (NULL)
-            return revendaRow.admin_id === user.id || revendaRow.admin_id === null || revendaRow.admin_id === undefined;
-          })
-        : revendas;
+      // Se for admin, usar TODAS as revendas (sem filtrar por admin_id)
+      // Se for cliente ou revendedor, filtrar apenas as suas revendas
+      const revendasDoAdmin = userRole === 'admin'
+        ? revendas // Admin vê todas as revendas
+        : user?.id 
+          ? revendas.filter((revenda) => {
+              const revendaRow = revenda as ResellerRow & { admin_id?: string };
+              // Incluir revendas associados ao admin logado ou revendas sem admin (NULL)
+              return revendaRow.admin_id === user.id || revendaRow.admin_id === null || revendaRow.admin_id === undefined;
+            })
+          : revendas;
       
       // Contagem de revendedores ativos (apenas do admin logado)
       const activeResellers = revendasDoAdmin.filter(revenda => {
@@ -297,7 +305,7 @@ function useDashboardData() {
       setLoading(false);
       isCalculatingRef.current = false;
     }
-  }, [clientes, revendas, user?.id]);
+  }, [clientes, revendas, user?.id, userRole]);
 
   // Atualiza as estatísticas quando os dados mudam (com debounce)
   useEffect(() => {
@@ -329,7 +337,7 @@ function useDashboardData() {
         clearTimeout(refreshTimeoutRef.current);
       }
     };
-  }, [clientes.length, revendas.length, user?.id, calculateStats]);
+  }, [clientes.length, revendas.length, user?.id, userRole, calculateStats]);
 
   // Função de refresh que atualiza os dados e recalcula as estatísticas
   const refresh = useCallback(async () => {
