@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Tag, ArrowUp, Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
+import { DialogWrapper } from "@/components/ui/DialogWrapper";
 
 const Blog = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
 
   // Efeito para mostrar/ocultar o botão de voltar ao topo
   useEffect(() => {
@@ -85,6 +88,24 @@ const Blog = () => {
     const emailSubject = encodeURIComponent('Contato - BootFlow');
     const emailBody = encodeURIComponent('Olá! Gostaria de entrar em contato sobre o BootFlow.');
     window.location.href = `mailto:suporte@bootflow.com.br?subject=${emailSubject}&body=${emailBody}`;
+  };
+
+  const handleNewsletterSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!newsletterEmail) {
+      setIsNewsletterModalOpen(true);
+      return;
+    }
+    setIsNewsletterModalOpen(true);
+  };
+
+  const handleNewsletterEmail = () => {
+    const subject = encodeURIComponent('Assinatura da newsletter - BootFlow');
+    const body = encodeURIComponent(
+      `Olá, gostaria de assinar a newsletter da BootFlow.${newsletterEmail ? `\n\nMeu e-mail: ${newsletterEmail}` : ""}`
+    );
+    window.location.href = `mailto:suporte@bootflow.com.br?subject=${subject}&body=${body}`;
+    setIsNewsletterModalOpen(false);
   };
 
   const posts = [
@@ -228,20 +249,20 @@ const Blog = () => {
               <CardHeader>
                 <CardTitle className="text-xl">Assine nossa newsletter</CardTitle>
                 <CardDescription>Receba as últimas atualizações diretamente no seu e-mail.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <input 
-                    type="email" 
-                    placeholder="Seu e-mail" 
-                    className="w-full p-2 border rounded"
-                  />
-                  <Button className="w-full">Assinar</Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
+          <div>
+            <h4 className="font-semibold mb-4">Produto</h4>
+            <ul className="space-y-2 text-muted-foreground">
+              <li>
+                <a 
+                  href="#features" 
+                  className="hover:text-foreground transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (location.pathname !== '/') {
+                      navigate('/');
+                      setTimeout(() => {
           {/* Posts */}
           <div className="md:w-3/4">
             <div className="grid md:grid-cols-2 gap-6">
@@ -508,6 +529,38 @@ const Blog = () => {
           Voltar ao Topo
         </Button>
       )}
+
+      <DialogWrapper
+        open={isNewsletterModalOpen}
+        onOpenChange={setIsNewsletterModalOpen}
+        title="Assinatura da newsletter"
+        description="Vamos enviar suas informações diretamente para o nosso time por e-mail."
+        className="bg-zinc-900 text-white max-w-md"
+      >
+        <div className="space-y-4 mt-4">
+          <p className="text-sm text-gray-300">
+            Ao continuar, vamos abrir o seu cliente de e-mail padrão com uma mensagem pronta para o
+            endereço <span className="font-semibold">suporte@bootflow.com.br</span>, sem passar por
+            aplicativos de mensagem.
+          </p>
+          {newsletterEmail && (
+            <p className="text-sm text-gray-300">
+              E-mail informado: <span className="font-mono">{newsletterEmail}</span>
+            </p>
+          )}
+          <div className="flex justify-end gap-2 pt-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsNewsletterModalOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={handleNewsletterEmail}>
+              Enviar e-mail agora
+            </Button>
+          </div>
+        </div>
+      </DialogWrapper>
     </div>
   );
 };
