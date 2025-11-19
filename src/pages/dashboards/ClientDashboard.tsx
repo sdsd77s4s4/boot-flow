@@ -18,6 +18,17 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { ClientSidebar } from "@/components/sidebars/ClientSidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import ClientClients from "../client/ClientClients";
+import ClientResellers from "../client/ClientResellers";
+import ClientBilling from "../client/ClientBilling";
+import ClientNotifications from "../client/ClientNotifications";
+import ClientWhatsApp from "../client/ClientWhatsApp";
+import ClientGateways from "../client/ClientGateways";
+import ClientBranding from "../client/ClientBranding";
+import ClientShop from "../client/ClientShop";
+import ClientAI from "../client/ClientAI";
+import ClientGames from "../client/ClientGames";
+import ClientAnalytics from "../client/ClientAnalytics";
+import ClientSettings from "../client/ClientSettings";
 
 const ClientDashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
@@ -159,22 +170,17 @@ const ClientDashboard = () => {
           )}
           
           {currentPage === "clients" && <ClientClients />}
-          
-          {/* Outras páginas podem ser adicionadas aqui */}
-          {currentPage !== "dashboard" && currentPage !== "clients" && (
-            <div className="max-w-7xl mx-auto">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Página em desenvolvimento</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Esta página está em desenvolvimento e estará disponível em breve.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+          {currentPage === "resellers" && <ClientResellers />}
+          {currentPage === "billing" && <ClientBilling />}
+          {currentPage === "notifications" && <ClientNotifications />}
+          {currentPage === "whatsapp" && <ClientWhatsApp />}
+          {currentPage === "gateways" && <ClientGateways />}
+          {currentPage === "branding" && <ClientBranding />}
+          {currentPage === "shop" && <ClientShop />}
+          {currentPage === "ai" && <ClientAI />}
+          {currentPage === "games" && <ClientGames />}
+          {currentPage === "analytics" && <ClientAnalytics />}
+          {currentPage === "settings" && <ClientSettings />}
         </main>
       </div>
     </SidebarProvider>
