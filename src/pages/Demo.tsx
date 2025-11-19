@@ -491,17 +491,17 @@ const Demo = () => {
                 <li>
                   <a 
                     href="https://wa.me/5527999587725" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors"
+                    onClick={handleWhatsAppClick}
+                    className="hover:text-foreground transition-colors cursor-pointer"
                   >
                     WhatsApp
                   </a>
                 </li>
                 <li>
                   <a 
-                    href="mailto:suporte@bootflow.com" 
-                    className="hover:text-foreground transition-colors"
+                    href="mailto:suporte@bootflow.com.br" 
+                    onClick={handleEmailClick}
+                    className="hover:text-foreground transition-colors cursor-pointer"
                   >
                     Email
                   </a>
