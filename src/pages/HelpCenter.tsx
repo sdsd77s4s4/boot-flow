@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Search, MessageSquare, Phone, Mail, Book, Video, FileText, ExternalLink, ChevronRight, ArrowUp, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Search, MessageSquare, Phone, Mail, Book, Video, FileText, ExternalLink, ChevronRight, ArrowUp, X, Bot } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const HelpCenter = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [selectedGuide, setSelectedGuide] = useState<string | null>(null);
@@ -35,6 +37,22 @@ const HelpCenter = () => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const scrollToPricing = (e?: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (location.pathname !== '/preco') {
+      navigate('/preco');
+    } else {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing');
+        if (pricingElement) {
+          pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
   };
 
   const faqs = [
@@ -434,18 +452,84 @@ const HelpCenter = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Central de Ajuda</h1>
-            <p className="text-muted-foreground">Encontre respostas e obtenha suporte</p>
-          </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border/20 backdrop-blur-xl bg-background/80 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-bold gradient-text">BootFlow</span>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-8">
+              <a 
+                href="#features" 
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (location.pathname !== '/') {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                Funcionalidades
+              </a>
+              <a 
+                href="#avisos" 
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (location.pathname !== '/') {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById('avisos')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    document.getElementById('avisos')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                Avisos
+              </a>
+              <a 
+                href="/preco" 
+                onClick={scrollToPricing}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                Preços
+              </a>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              <Button variant="ghost" onClick={() => navigate('/login')}>
+                Entrar
+              </Button>
+              <Button variant="hero" onClick={() => navigate('/cadastro')}>
+                Teste Grátis
+              </Button>
+            </div>
+          </nav>
         </div>
+      </header>
+
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Page Header */}
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Central de Ajuda</h1>
+              <p className="text-muted-foreground">Encontre respostas e obtenha suporte</p>
+            </div>
+          </div>
 
         {/* Search */}
         <Card>
