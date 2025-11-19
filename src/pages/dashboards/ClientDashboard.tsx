@@ -29,6 +29,7 @@ import ClientAI from "../client/ClientAI";
 import ClientGames from "../client/ClientGames";
 import ClientAnalytics from "../client/ClientAnalytics";
 import ClientSettings from "../client/ClientSettings";
+import ClientProfile from "../client/ClientProfile";
 
 const ClientDashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
@@ -181,6 +182,7 @@ const ClientDashboard = () => {
           {currentPage === "games" && <ClientGames />}
           {currentPage === "analytics" && <ClientAnalytics />}
           {currentPage === "settings" && <ClientSettings />}
+          {currentPage === "profile" && <ClientProfile />}
         </main>
       </div>
     </SidebarProvider>

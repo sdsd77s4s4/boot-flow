@@ -70,7 +70,7 @@ export function ClientSidebar({ onPageChange, currentPage }: ClientSidebarProps)
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   const handleProfileClick = () => {
-    navigate('/profile');
+    onPageChange('profile');
   };
 
   const handlePageChange = (page: string) => {
