@@ -8,31 +8,200 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 const Documentacao = () => {
   const navigate = useNavigate();
+  const [selectedGuide, setSelectedGuide] = useState<string | null>(null);
 
   const guides = [
     {
+      id: "inicio-rapido",
       icon: Zap,
       title: "Início Rápido",
       description: "Configure sua conta em minutos",
-      category: "Básico"
+      category: "Básico",
+      content: {
+        sections: [
+          {
+            title: "1. Criando sua Conta",
+            content: "Acesse a página de cadastro e preencha seus dados básicos: nome completo, email e senha. Após confirmar seu email, você terá acesso completo à plataforma. O processo leva menos de 2 minutos."
+          },
+          {
+            title: "2. Configuração Inicial",
+            content: "No primeiro acesso, você será guiado por um assistente de configuração. Defina o nome da sua empresa, escolha seu plano e configure as preferências básicas. Não se preocupe, você pode alterar tudo depois."
+          },
+          {
+            title: "3. Conectando WhatsApp",
+            content: "Para começar a usar o BootFlow, você precisa conectar seu WhatsApp Business. Acesse 'Configurações' > 'WhatsApp' e escaneie o QR Code exibido. O processo é simples e seguro."
+          },
+          {
+            title: "4. Primeiro Assistente de IA",
+            content: "Crie seu primeiro assistente virtual acessando 'IA' > 'Novo Assistente'. Escolha um nome, selecione a voz (masculina ou feminina) e defina a personalidade. Você pode testar antes de ativar."
+          },
+          {
+            title: "5. Enviando sua Primeira Mensagem",
+            content: "Com tudo configurado, você pode começar a enviar mensagens. Acesse 'Mensagens' > 'Nova Mensagem', escolha o contato e envie. A IA responderá automaticamente quando configurada."
+          },
+          {
+            title: "6. Explorando o Dashboard",
+            content: "O dashboard central mostra todas as informações importantes: mensagens recebidas, estatísticas de atendimento, campanhas ativas e muito mais. Explore todas as seções para conhecer as funcionalidades."
+          },
+          {
+            title: "Próximos Passos",
+            content: "Agora que você configurou o básico, explore os outros guias para aprender sobre integração com API, configuração avançada de IA e criação de campanhas WhatsApp. Nossa equipe está sempre disponível para ajudar!"
+          }
+        ]
+      }
     },
     {
+      id: "integracao-api",
       icon: Code,
       title: "Integração com API",
       description: "Conecte sua aplicação com nossa API",
-      category: "Desenvolvimento"
+      category: "Desenvolvimento",
+      content: {
+        sections: [
+          {
+            title: "1. Obtendo suas Credenciais",
+            content: "Para usar a API, você precisa de uma chave de API. Acesse 'Configurações' > 'API' > 'Gerar Nova Chave'. Guarde esta chave com segurança - ela não será exibida novamente. Use o header 'Authorization: Bearer {sua-chave}' em todas as requisições."
+          },
+          {
+            title: "2. Base URL da API",
+            content: "Todas as requisições devem ser feitas para: https://api.bootflow.com.br/v1. Certifique-se de usar HTTPS em todas as chamadas. A API suporta apenas requisições HTTPS por segurança."
+          },
+          {
+            title: "3. Autenticação",
+            content: "Todas as requisições requerem autenticação via Bearer Token. Inclua o header 'Authorization: Bearer {sua-api-key}' em cada requisição. Sem este header, você receberá um erro 401 (Não autorizado)."
+          },
+          {
+            title: "4. Endpoints Principais",
+            content: "Principais endpoints disponíveis: POST /messages (enviar mensagem), GET /messages (listar mensagens), POST /campaigns (criar campanha), GET /campaigns (listar campanhas), GET /contacts (listar contatos), POST /ai/chat (chat com IA), GET /stats (estatísticas)."
+          },
+          {
+            title: "5. Formato de Requisição",
+            content: "Todas as requisições devem usar Content-Type: application/json. O corpo das requisições POST deve ser um objeto JSON válido. Exemplo: { 'to': '5511999999999', 'message': 'Olá!', 'type': 'text' }."
+          },
+          {
+            title: "6. Formato de Resposta",
+            content: "Todas as respostas são em formato JSON. Respostas de sucesso retornam status HTTP 200-299. Erros retornam status 400-500 com um objeto JSON contendo 'error' e 'message'. Exemplo de erro: { 'error': 'invalid_token', 'message': 'Token inválido ou expirado' }."
+          },
+          {
+            title: "7. Rate Limiting",
+            content: "A API possui limites de taxa para garantir estabilidade. Planos Essencial: 100 req/min, Profissional: 500 req/min, Business: 2000 req/min, Elite: ilimitado. Exceder o limite retorna status 429. Verifique os headers 'X-RateLimit-Limit' e 'X-RateLimit-Remaining'."
+          },
+          {
+            title: "8. Webhooks",
+            content: "Configure webhooks para receber notificações em tempo real. Acesse 'Configurações' > 'Webhooks' e adicione sua URL. Eventos disponíveis: message.received, message.sent, campaign.completed, payment.received. Os webhooks usam POST com JSON no corpo."
+          },
+          {
+            title: "9. Exemplos de Código",
+            content: "Fornecemos exemplos em JavaScript, Python, PHP e cURL na documentação completa. Acesse '/api' para ver exemplos práticos e começar rapidamente. Todos os exemplos incluem tratamento de erros e boas práticas."
+          },
+          {
+            title: "10. Suporte para Desenvolvedores",
+            content: "Nossa equipe oferece suporte técnico especializado. Entre em contato através de dev@bootflow.com.br ou acesse nossa comunidade de desenvolvedores. Respondemos em até 24 horas úteis."
+          }
+        ]
+      }
     },
     {
+      id: "configuracao-ia",
       icon: FileText,
       title: "Configuração de IA",
       description: "Personalize sua assistente virtual",
-      category: "IA"
+      category: "IA",
+      content: {
+        sections: [
+          {
+            title: "1. Acessando Configurações de IA",
+            content: "No menu principal, acesse 'IA' > 'Configurações'. Aqui você pode criar, editar e gerenciar todos os seus assistentes virtuais. Cada assistente pode ter configurações independentes."
+          },
+          {
+            title: "2. Escolhendo o Modelo de IA",
+            content: "BootFlow oferece múltiplos modelos de IA: GPT-4 (mais avançado), GPT-3.5 (rápido e eficiente), Claude (excelente para análise) e modelos personalizados. Escolha baseado em suas necessidades de velocidade, custo e qualidade."
+          },
+          {
+            title: "3. Configurando a Voz",
+            content: "Escolha entre vozes masculinas e femininas, cada uma com diferentes tons e estilos. Você pode ouvir amostras antes de escolher. As vozes são geradas com IA emocional, permitindo expressões naturais e empáticas."
+          },
+          {
+            title: "4. Definindo Personalidade",
+            content: "Configure a personalidade do assistente: formal ou casual, empático ou direto, técnico ou simples. Use exemplos de conversas para treinar o comportamento. Quanto mais exemplos, melhor a personalidade será replicada."
+          },
+          {
+            title: "5. Treinamento com Base de Conhecimento",
+            content: "Adicione documentos, FAQs e informações da sua empresa para treinar a IA. Ela aprenderá sobre seus produtos, serviços e políticas. Suporte a PDF, TXT, DOCX e até mesmo URLs de sites para indexação automática."
+          },
+          {
+            title: "6. Configurando Fluxos de Conversa",
+            content: "Crie fluxos condicionais para guiar conversas. Defina respostas para perguntas frequentes, ações para palavras-chave e transições entre tópicos. Use o editor visual para criar fluxos complexos sem código."
+          },
+          {
+            title: "7. Testando o Assistente",
+            content: "Use o chat de teste integrado para conversar com seu assistente antes de ativá-lo. Teste diferentes cenários, perguntas difíceis e situações de erro. Ajuste as configurações baseado nos resultados."
+          },
+          {
+            title: "8. Ativando e Monitorando",
+            content: "Após configurar, ative o assistente. Monitore conversas em tempo real, analise métricas de satisfação e ajuste conforme necessário. A IA aprende continuamente com as interações."
+          },
+          {
+            title: "9. Configurações Avançadas",
+            content: "Ajuste temperatura (criatividade), max_tokens (tamanho de resposta), timeout (tempo de resposta) e fallback (ação quando não souber responder). Essas configurações afetam performance e custos."
+          },
+          {
+            title: "10. Integração com Sistemas",
+            content: "Conecte a IA com seus sistemas via API. Configure webhooks para ações externas, integre com CRMs e use funções customizadas. A IA pode consultar bancos de dados, fazer cálculos e muito mais."
+          }
+        ]
+      }
     },
     {
+      id: "campanhas-whatsapp",
       icon: Video,
       title: "Campanhas WhatsApp",
       description: "Crie e gerencie campanhas de marketing",
-      category: "Marketing"
+      category: "Marketing",
+      content: {
+        sections: [
+          {
+            title: "1. Acessando Campanhas",
+            content: "No menu principal, acesse 'Campanhas' > 'WhatsApp'. Aqui você vê todas as suas campanhas: ativas, agendadas, concluídas e rascunhos. Clique em 'Nova Campanha' para começar."
+          },
+          {
+            title: "2. Definindo o Objetivo",
+            content: "Escolha o objetivo da campanha: promoção, lançamento, reengajamento, suporte ou personalizado. Isso ajuda a configurar métricas e templates apropriados. Cada objetivo tem templates pré-configurados."
+          },
+          {
+            title: "3. Selecionando o Público",
+            content: "Escolha os destinatários: lista de contatos, segmentos, filtros personalizados ou importe de arquivo CSV. Você pode criar segmentos baseados em tags, histórico de compras, localização e muito mais."
+          },
+          {
+            title: "4. Criando a Mensagem",
+            content: "Use o editor visual para criar mensagens ricas: texto formatado, imagens, vídeos, documentos, botões interativos e listas. Use variáveis personalizadas como {nome}, {empresa} para personalização em massa."
+          },
+          {
+            title: "5. Agendando o Envio",
+            content: "Escolha quando enviar: imediatamente, agendado (data e hora específica) ou recorrente (diário, semanal, mensal). Configure fusos horários e evite horários de descanso para melhor engajamento."
+          },
+          {
+            title: "6. Configurando Automações",
+            content: "Configure respostas automáticas, ações condicionais e follow-ups. Exemplo: se o cliente responder 'sim', envie mais informações. Se não responder em 24h, envie um lembrete. Use fluxos visuais para criar lógicas complexas."
+          },
+          {
+            title: "7. Testando a Campanha",
+            content: "Antes de enviar para todos, envie uma mensagem de teste para você mesmo ou um grupo de teste. Verifique formatação, links, mídias e variáveis. Corrija qualquer problema antes do envio em massa."
+          },
+          {
+            title: "8. Monitorando Resultados",
+            content: "Acompanhe em tempo real: mensagens enviadas, entregues, lidas, respondidas e bloqueadas. Analise taxas de abertura, cliques em links, respostas e conversões. Use gráficos e relatórios detalhados."
+          },
+          {
+            title: "9. Otimizando Campanhas",
+            content: "Use A/B testing para testar diferentes mensagens, horários e públicos. Analise quais campanhas performam melhor e replique o sucesso. Ajuste estratégias baseado em dados reais de engajamento."
+          },
+          {
+            title: "10. Boas Práticas",
+            content: "Seguir boas práticas: personalize mensagens, evite spam, respeite horários comerciais, forneça opção de descadastro, use imagens de qualidade, mantenha mensagens concisas e inclua call-to-action claro. Isso melhora engajamento e evita bloqueios."
+          }
+        ]
+      }
     }
   ];
 
@@ -69,25 +238,32 @@ const Documentacao = () => {
 
             <TabsContent value="guides" className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
-                {guides.map((guide, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                    <CardHeader>
-                      <div className="flex items-center gap-3 mb-2">
-                        <guide.icon className="w-6 h-6 text-primary" />
-                        <CardTitle>{guide.title}</CardTitle>
-                      </div>
-                      <CardDescription>{guide.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">{guide.category}</span>
-                        <Button variant="ghost" size="sm">
-                          Ler mais →
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {guides.map((guide, index) => {
+                  const IconComponent = guide.icon;
+                  return (
+                    <Card 
+                      key={index} 
+                      className="hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => setSelectedGuide(guide.id)}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center gap-3 mb-2">
+                          <IconComponent className="w-6 h-6 text-primary" />
+                          <CardTitle>{guide.title}</CardTitle>
+                        </div>
+                        <CardDescription>{guide.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">{guide.category}</span>
+                          <Button variant="ghost" size="sm">
+                            Ler mais →
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </TabsContent>
 
@@ -183,6 +359,39 @@ const Documentacao = () => {
           </Card>
         </div>
       </div>
+
+      {/* Modal de Guias */}
+      {selectedGuide && (
+        <Dialog open={!!selectedGuide} onOpenChange={() => setSelectedGuide(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {guides.find(g => g.id === selectedGuide)?.title}
+              </DialogTitle>
+              <DialogDescription>
+                {guides.find(g => g.id === selectedGuide)?.description}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4 space-y-6">
+              {guides.find(g => g.id === selectedGuide)?.content?.sections.map((section, index) => (
+                <div key={index} className="border-b border-border/50 pb-4 last:border-0">
+                  <h3 className="text-lg font-semibold mb-2 text-primary">
+                    {section.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {section.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={() => setSelectedGuide(null)}>
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
