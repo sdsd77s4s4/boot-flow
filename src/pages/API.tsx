@@ -1,11 +1,52 @@
-import { ArrowLeft, Code, Book, Zap, Shield, MessageSquare } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Code, Book, Zap, Shield, MessageSquare, Bot, ArrowUp } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const API = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Efeito para mostrar/ocultar o botão de voltar ao topo
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  const scrollToPricing = (e?: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (location.pathname !== '/preco') {
+      navigate('/preco');
+    } else {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing');
+        if (pricingElement) {
+          pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  };
 
   const endpoints = [
     {
@@ -54,15 +95,75 @@ const API = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
-        </Button>
+      {/* Header */}
+      <header className="border-b border-border/20 backdrop-blur-xl bg-background/80 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-bold gradient-text">BootFlow</span>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-8">
+              <a 
+                href="#features" 
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (location.pathname !== '/') {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                Funcionalidades
+              </a>
+              <a 
+                href="#avisos" 
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (location.pathname !== '/') {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById('avisos')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    document.getElementById('avisos')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                Avisos
+              </a>
+              <a 
+                href="/preco" 
+                onClick={scrollToPricing}
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                Preços
+              </a>
+            </div>
 
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              <Button variant="ghost" onClick={() => navigate('/login')}>
+                Entrar
+              </Button>
+              <Button variant="hero" onClick={() => navigate('/cadastro')}>
+                Teste Grátis
+              </Button>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
