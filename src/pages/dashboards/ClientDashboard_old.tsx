@@ -1,54 +1,22 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useClientes } from '@/hooks/useClientes';
-import { useRevendas } from '@/hooks/useRevendas';
-import { useRealtimeClientes, useRealtimeRevendas } from '@/hooks/useRealtime';
-import useDashboardData from '@/hooks/useDashboardData';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
-import { toast } from 'sonner';
 import { 
-  Brain, 
-  Users, 
   Tv, 
   Radio, 
-  ShoppingCart, 
+  MessageSquare, 
   BarChart3, 
-  Settings, 
-  Plus,
-  MessageSquare,
-  Gamepad2,
-  Zap,
-  Eye,
-  Edit,
-  Trash2,
   Play,
   Pause,
-  DollarSign,
-  TrendingUp,
-  Clock,
-  Home,
-  Paintbrush,
-  UserPlus,
-  Bell,
-  RefreshCw,
-  AlertCircle,
-  Calendar
+  Settings,
+  Brain,
+  Gamepad2,
+  Star
 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ClientSidebar } from "@/components/sidebars/ClientSidebar";
-import { AIModalManager } from "@/components/modals/AIModalManager";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogHeader } from '@/components/ui/dialog';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-
-// Importando as páginas como componentes
 import ClientClients from "../client/ClientClients";
 import ClientResellers from "../client/ClientResellers";
 import ClientBilling from "../client/ClientBilling";
@@ -62,31 +30,6 @@ import ClientGames from "../client/ClientGames";
 import ClientAnalytics from "../client/ClientAnalytics";
 import ClientSettings from "../client/ClientSettings";
 import ClientProfile from "../client/ClientProfile";
-
-// Wrapper para ClientResellers que aceita callback quando um revendedor é criado
-const ClientResellersWrapper = ({ onResellerCreated, onCloseModal }: { onResellerCreated: () => void; onCloseModal: () => void }) => {
-  useEffect(() => {
-    const handleResellerCreated = () => {
-      onResellerCreated();
-    };
-    
-    const handleCloseModal = () => {
-      onCloseModal();
-    };
-    
-    // Escutar evento de revendedor criado
-    window.addEventListener('reseller-created', handleResellerCreated);
-    // Escutar evento para fechar modal
-    window.addEventListener('close-reseller-modal', handleCloseModal);
-    
-    return () => {
-      window.removeEventListener('reseller-created', handleResellerCreated);
-      window.removeEventListener('close-reseller-modal', handleCloseModal);
-    };
-  }, [onResellerCreated, onCloseModal]);
-  
-  return <ClientResellers />;
-};
 
 const ClientDashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>("dashboard");
