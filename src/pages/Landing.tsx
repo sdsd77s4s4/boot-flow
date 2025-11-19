@@ -559,18 +559,147 @@ const Landing = () => {
             Comece gratuitamente hoje e veja como a IA emocional pode transformar seus resultados
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <Input 
-              type="email" 
-              placeholder="Seu melhor email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-xl"
-            />
-            <Button variant="secondary" size="lg" onClick={() => navigate('/dashboard')}>
-              Teste Grátis
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+          {/* Formulário de 3 Etapas */}
+          <div className="max-w-md mx-auto">
+            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <CardContent className="p-6">
+                {/* Indicador de Steps */}
+                <div className="flex justify-center mb-6 gap-2">
+                  {[1, 2, 3].map((step) => (
+                    <div
+                      key={step}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                        step === currentStep
+                          ? "bg-primary text-white scale-110"
+                          : step < currentStep
+                          ? "bg-primary/50 text-white"
+                          : "bg-white/20 text-white/60"
+                      }`}
+                    >
+                      {step < currentStep ? <Check className="w-5 h-5" /> : step}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Step 1: Nome */}
+                {currentStep === 1 && (
+                  <div className="space-y-4">
+                    <Label htmlFor="name" className="text-white text-left block mb-2">
+                      Qual é o seu nome?
+                    </Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Digite seu nome completo"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-xl"
+                      autoFocus
+                    />
+                    <Button
+                      variant="secondary"
+                      size="lg"
+                      onClick={handleNextStep}
+                      disabled={!formData.name.trim()}
+                      className="w-full"
+                    >
+                      Continuar
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                )}
+
+                {/* Step 2: Email */}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    <Label htmlFor="email" className="text-white text-left block mb-2">
+                      Qual é o seu melhor email?
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-xl"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={handlePreviousStep}
+                        className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      >
+                        Voltar
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={handleNextStep}
+                        disabled={!formData.email.trim() || !formData.email.includes('@')}
+                        className="flex-1"
+                      >
+                        Continuar
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Telefone */}
+                {currentStep === 3 && (
+                  <div className="space-y-4">
+                    <Label htmlFor="phone" className="text-white text-left block mb-2">
+                      Qual é o seu WhatsApp?
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(27) 99999-9999"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length <= 11) {
+                          if (value.length > 0) {
+                            if (value.length <= 2) {
+                              value = `(${value}`;
+                            } else if (value.length <= 7) {
+                              value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+                            } else {
+                              value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+                            }
+                          }
+                          setFormData({ ...formData, phone: value });
+                        }
+                      }}
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-xl"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={handlePreviousStep}
+                        className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      >
+                        Voltar
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={handleSubmit}
+                        disabled={!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 10}
+                        className="flex-1"
+                      >
+                        Enviar
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
           
           <p className="text-sm text-white/60 mt-4">
