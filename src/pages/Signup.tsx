@@ -178,15 +178,82 @@ export default function Signup() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-md text-center space-y-6"
+          className="max-w-md w-full space-y-6"
         >
-          <div className="mx-auto w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <MessageSquare className="w-12 h-12 text-primary" />
+          <div className="text-center space-y-4 mb-8">
+            <div className="mx-auto w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+              <MessageSquare className="w-12 h-12 text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight">Junte-se a nós!</h2>
+            <p className="text-muted-foreground">
+              Crie sua conta e comece a transformar seu negócio com nossas soluções.
+            </p>
           </div>
-          <h2 className="text-3xl font-bold tracking-tight">Junte-se a nós!</h2>
-          <p className="text-muted-foreground">
-            Crie sua conta e comece a transformar seu negócio com nossas soluções.
-          </p>
+
+          {/* Plano Gratuito */}
+          <div className="bg-background/80 backdrop-blur-sm rounded-lg border border-border/20 p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">Plano Essencial</h3>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-primary">R$ 0</div>
+                <div className="text-sm text-muted-foreground">/mês</div>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Para quem está começando e quer organizar o jogo
+            </p>
+            <div className="space-y-3">
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">5 clientes</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Gestor Bot</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Link WhatsApp</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">WhatsAPI própria (envios ilimitados)</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Campanhas WhatsApp</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Envio de e-mail</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Emite cobranças</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Link de pagamento</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Financeiro completo</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Integração Mercado Pago</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm">E muito mais...</span>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-border/20">
+              <p className="text-xs text-muted-foreground italic">
+                "Entrada perfeita para testar e já faturar. Zero desculpa."
+              </p>
+            </div>
+          </div>
         </motion.div>
       </div>
 
