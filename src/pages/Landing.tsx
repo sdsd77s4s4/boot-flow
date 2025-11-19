@@ -131,46 +131,73 @@ const Landing = () => {
       };
 
       // Enviar email diretamente via API (sem abrir cliente de email)
-      // Opção 1: Se você tiver um endpoint de API backend
+      let emailSent = false;
+
+      // Opção 1: Tentar enviar via API própria primeiro
       const apiUrl = import.meta.env.VITE_EMAIL_API_URL;
       
-      if (apiUrl) {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(emailData),
-        });
+      if (apiUrl && apiUrl.trim() !== '') {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(emailData),
+          });
 
-        if (!response.ok) {
-          throw new Error('Erro ao enviar email via API');
+          if (response.ok) {
+            emailSent = true;
+            console.log('Email enviado com sucesso via API');
+          }
+        } catch (apiError) {
+          console.log('API não disponível, tentando Formspree...', apiError);
         }
-      } else {
-        // Opção 2: Usar Formspree ou similar (gratuito, sem backend necessário)
-        // Configure em: https://formspree.io/
-        const formspreeId = import.meta.env.VITE_FORMSPREE_ID || 'YOUR_FORM_ID';
-        const formspreeUrl = `https://formspree.io/f/${formspreeId}`;
+      }
+
+      // Opção 2: Se API não funcionou, tentar Formspree
+      if (!emailSent) {
+        const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
         
-        const response = await fetch(formspreeUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            _subject: emailData.subject,
-            name: emailData.name,
-            email: emailData.email,
-            phone: emailData.phone,
-            message: emailData.body,
-            _to: emailData.to,
-          }),
-        });
+        if (formspreeId && formspreeId.trim() !== '' && formspreeId !== 'YOUR_FORM_ID') {
+          try {
+            const formspreeUrl = `https://formspree.io/f/${formspreeId}`;
+            
+            const response = await fetch(formspreeUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: JSON.stringify({
+                _subject: emailData.subject,
+                name: emailData.name,
+                email: emailData.email,
+                phone: emailData.phone,
+                message: emailData.body,
+                _to: emailData.to,
+              }),
+            });
 
-        if (!response.ok) {
-          throw new Error('Erro ao enviar email via Formspree');
+            if (response.ok) {
+              emailSent = true;
+              console.log('Email enviado com sucesso via Formspree');
+            } else {
+              const errorData = await response.json().catch(() => ({}));
+              console.error('Erro Formspree:', errorData);
+            }
+          } catch (formspreeError) {
+            console.error('Erro ao enviar via Formspree:', formspreeError);
+          }
         }
+      }
+
+      // Se nenhum método funcionou, usar mailto como fallback
+      if (!emailSent) {
+        console.warn('Nenhum método de envio configurado, usando mailto como fallback');
+        const emailSubject = encodeURIComponent(emailData.subject);
+        const emailBody = encodeURIComponent(emailData.body);
+        window.location.href = `mailto:${emailData.to}?subject=${emailSubject}&body=${emailBody}`;
       }
 
       // Enviar para WhatsApp
@@ -196,7 +223,11 @@ const Landing = () => {
       setCurrentStep(1);
       
       // Mostrar mensagem de sucesso
-      alert("Dados enviados com sucesso! Obrigado pelo seu interesse.");
+      if (emailSent) {
+        alert("Dados enviados com sucesso! Obrigado pelo seu interesse.");
+      } else {
+        alert("Dados preparados! Seu cliente de email será aberto para envio. Obrigado pelo seu interesse.");
+      }
     } catch (error) {
       console.error('Erro ao enviar email:', error);
       alert("Ocorreu um erro ao enviar os dados. Por favor, tente novamente ou entre em contato diretamente.");
