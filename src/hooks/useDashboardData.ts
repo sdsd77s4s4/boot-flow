@@ -320,13 +320,15 @@ function useDashboardData() {
       const currentState = {
         clientesLength: clientes.length,
         revendasLength: revendas.length,
-        userId: user?.id
+        userId: user?.id,
+        userRole: userRole
       };
       
       if (!lastCalculationRef.current || 
           lastCalculationRef.current.clientesLength !== currentState.clientesLength ||
           lastCalculationRef.current.revendasLength !== currentState.revendasLength ||
-          lastCalculationRef.current.userId !== currentState.userId) {
+          lastCalculationRef.current.userId !== currentState.userId ||
+          lastCalculationRef.current.userRole !== currentState.userRole) {
         console.log('🔄 [useDashboardData] Dados mudaram, recalculando estatísticas...');
         calculateStats();
       }
