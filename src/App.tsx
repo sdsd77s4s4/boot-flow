@@ -80,6 +80,7 @@ const App = () => {
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/empresa/sobre" element={<Sobre />} />
                 <Route path="/empresa/blog" element={<Blog />} />
+                <Route path="/empresa/blog/:category" element={<Blog />} />
 
                 {/* Dashboard Admin - Acesso direto */}
                 <Route path="/admin" element={<AdminDashboard />} />
