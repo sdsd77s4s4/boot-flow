@@ -8,13 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, Activity, CheckCircle, RefreshCw, Maximize2, Moon } from "lucide-react";
+import { Users, Plus, Search, Edit, Trash2, Eye, User, Mail, Calendar, Shield, Activity, CheckCircle, RefreshCw, Maximize2, Moon, ArrowUp } from "lucide-react";
 import { useRevendas } from '@/hooks/useRevendas';
 import { RLSErrorBannerResellers } from '@/components/RLSErrorBannerResellers';
+import { useNavigate } from "react-router-dom";
 
 const MAX_RESELLERS = 5; // Limite de revendas para o plano Essencial
 
 export default function ClientResellers() {
+  const navigate = useNavigate();
   const { revendas, loading, error, addRevenda, updateRevenda, deleteRevenda, fetchRevendas, clearError } = useRevendas();
 
   const [newReseller, setNewReseller] = useState({
