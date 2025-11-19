@@ -456,9 +456,8 @@ const API = () => {
                 <li>
                   <a 
                     href="https://wa.me/5527999587725" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors"
+                    onClick={handleWhatsAppClick}
+                    className="hover:text-foreground transition-colors cursor-pointer"
                   >
                     WhatsApp
                   </a>
@@ -466,7 +465,8 @@ const API = () => {
                 <li>
                   <a 
                     href="mailto:suporte@bootflow.com.br" 
-                    className="hover:text-foreground transition-colors"
+                    onClick={handleEmailClick}
+                    className="hover:text-foreground transition-colors cursor-pointer"
                   >
                     Email
                   </a>
