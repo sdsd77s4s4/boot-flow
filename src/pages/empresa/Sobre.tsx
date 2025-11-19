@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ArrowUp, Bot } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Sobre = () => {
   const navigate = useNavigate();
@@ -107,6 +108,9 @@ const Sobre = () => {
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                 Funcionalidades
               </a>
+              <a href="#avisos" className="text-muted-foreground hover:text-foreground transition-colors">
+                Avisos
+              </a>
               <a 
                 href="/preco" 
                 onClick={scrollToPricing}
@@ -114,11 +118,15 @@ const Sobre = () => {
               >
                 Preços
               </a>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <Button variant="ghost" onClick={() => navigate('/login')}>
                 Entrar
               </Button>
-              <Button onClick={() => navigate('/cadastro')}>
-                Começar Grátis
+              <Button variant="hero" onClick={() => navigate('/cadastro')}>
+                Teste Grátis
               </Button>
             </div>
           </nav>

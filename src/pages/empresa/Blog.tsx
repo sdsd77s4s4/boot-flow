@@ -5,6 +5,7 @@ import { Calendar, Clock, Tag, ArrowUp, Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { DialogWrapper } from "@/components/ui/DialogWrapper";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Blog = () => {
   const navigate = useNavigate();
@@ -241,6 +242,9 @@ const Blog = () => {
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                 Funcionalidades
               </a>
+              <a href="#avisos" className="text-muted-foreground hover:text-foreground transition-colors">
+                Avisos
+              </a>
               <a 
                 href="/preco" 
                 onClick={scrollToPricing}
@@ -248,11 +252,15 @@ const Blog = () => {
               >
                 Preços
               </a>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <Button variant="ghost" onClick={() => navigate('/login')}>
                 Entrar
               </Button>
-              <Button onClick={() => navigate('/cadastro')}>
-                Começar Grátis
+              <Button variant="hero" onClick={() => navigate('/cadastro')}>
+                Teste Grátis
               </Button>
             </div>
           </nav>
