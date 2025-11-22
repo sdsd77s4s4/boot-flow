@@ -32,9 +32,23 @@ CREATE POLICY "Enable update for users based on id"
 -- Create a trigger to handle new user sign ups
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  user_role TEXT := COALESCE(NEW.raw_user_meta_data->>'role', 'client');
+  user_full_name TEXT := NEW.raw_user_meta_data->>'full_name';
+  username_candidate TEXT := split_part(NEW.email, '@', 1);
 BEGIN
+  -- Insere/garante o perfil do usuário
   INSERT INTO public.profiles (id, email, role, full_name)
-  VALUES (NEW.id, NEW.email, 'client', NEW.raw_user_meta_data->>'full_name');
+  VALUES (NEW.id, NEW.email, user_role, user_full_name)
+  ON CONFLICT (id) DO NOTHING;
+
+  -- Se for revendedor, insere também na tabela de resellers (revendas)
+  IF user_role = 'reseller' THEN
+    INSERT INTO public.resellers (username, email, personal_name)
+    VALUES (username_candidate, NEW.email, user_full_name)
+    ON CONFLICT (email) DO NOTHING;
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

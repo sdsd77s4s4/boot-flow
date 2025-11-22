@@ -27,13 +27,22 @@ CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Usa o role passado via user_metadata, default para 'client' se não houver
   INSERT INTO public.profiles (id, email, role, full_name)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'role', 'client'),
     NEW.raw_user_meta_data->>'full_name'
-  );
+  )
+  ON CONFLICT (id) DO NOTHING;
+
+  -- Se o usuário for revendedor, cria também a entrada na tabela resellers
+  IF COALESCE(NEW.raw_user_meta_data->>'role', 'client') = 'reseller' THEN
+    INSERT INTO public.resellers (username, email, personal_name)
+    VALUES (split_part(NEW.email, '@', 1), NEW.email, NEW.raw_user_meta_data->>'full_name')
+    ON CONFLICT (email) DO NOTHING;
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
