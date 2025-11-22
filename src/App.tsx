@@ -23,6 +23,7 @@ import Blog from "./pages/empresa/Blog";
 
 // Dashboards
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import ResellerDashboard from "./pages/dashboards/ResellerDashboard";
 import ClientDashboard from "./pages/dashboards/ClientDashboard";
 
 
@@ -83,6 +84,8 @@ const App = () => {
 
                 {/* Dashboard Admin - Acesso direto */}
                 <Route path="/admin" element={<AdminDashboard />} />
+                {/* Dashboard Revendedor */}
+                <Route path="/reseller" element={<ResellerDashboard />} />
                 <Route path="/admin/revendedores" element={<AdminResellers />} />
                 
                 {/* Dashboard Cliente */}
