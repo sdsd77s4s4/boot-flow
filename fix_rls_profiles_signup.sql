@@ -81,11 +81,12 @@ CREATE POLICY "Enable read access for all users"
 
 -- Política: Permitir inserção via trigger (SECURITY DEFINER)
 -- Esta política permite que a função handle_new_user() insira perfis
+-- Observação: não usamos `TO service_role` (não é um role DB válido em Postgres/Supabase).
+-- Para permitir inserção a partir do token de serviço do Supabase, checamos `auth.role()`.
 CREATE POLICY "Enable insert for service role"
   ON public.profiles
   FOR INSERT
-  TO service_role
-  WITH CHECK (true);
+  WITH CHECK (auth.role() = 'service_role');
 
 -- Política alternativa: Permitir inserção para usuários autenticados criando seu próprio perfil
 CREATE POLICY "Enable insert for authenticated users only"
