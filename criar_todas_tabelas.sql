@@ -163,6 +163,13 @@ CREATE POLICY "Resellers can insert all"
   ON public.resellers FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Permitir inserção por funções SECURITY DEFINER / service_role (para triggers que criam registros automaticamente)
+DROP POLICY IF EXISTS "Enable insert for service role resellers" ON public.resellers;
+CREATE POLICY "Enable insert for service role resellers"
+  ON public.resellers FOR INSERT
+  TO service_role
+  WITH CHECK (true);
+
 CREATE POLICY "Resellers can update all"
   ON public.resellers FOR UPDATE
   USING (auth.role() = 'authenticated')
