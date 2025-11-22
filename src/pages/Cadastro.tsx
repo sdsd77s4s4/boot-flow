@@ -10,7 +10,8 @@ const Cadastro: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'client' | 'reseller'>('client');
+  // Forçar cadastro como revendedor (revenda)
+  const [role, setRole] = useState<'client' | 'reseller'>('reseller');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -83,17 +84,9 @@ const Cadastro: React.FC = () => {
             required
           />
         </div>
-        <div>
-          <label className="block text-gray-700 mb-1">Tipo de conta</label>
-          <select
-            value={role}
-            onChange={e => setRole(e.target.value as 'client' | 'reseller')}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="client">Cliente</option>
-            <option value="reseller">Revendedor</option>
-          </select>
-        </div>
+        {/* Forçar role 'reseller' no cadastro; envia como metadata mas não exibe seleção ao usuário */}
+        <input type="hidden" value={role} />
+        <div className="text-sm text-gray-600">O cadastro será realizado como <strong>Revendedor</strong>.</div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? 'Cadastrando...' : 'Cadastrar'}
         </Button>
