@@ -1057,7 +1057,7 @@ const AdminDashboard = () => {
         <CardContent className="bg-[#1f2937] rounded-b-lg">
           <p className="text-gray-300 mb-4">Gerencie todos os seus clientes cadastrados</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Clientes:</span><span className="text-sm font-semibold text-white">{(clientes?.length || 0).toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Clientes:</span><span className="text-sm font-semibold text-white">{shouldShow ? (clientes?.length || 0).toLocaleString() : '0'}</span></div>
             <div className="flex justify-between"><span className="text-sm text-gray-400">Clientes Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeClients.toLocaleString()}</span></div>
             <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+{stats.monthlyGrowth}%</span></div>
           </div>
@@ -1107,7 +1107,7 @@ const AdminDashboard = () => {
         <CardContent className="bg-[#1f2937] rounded-b-lg">
           <p className="text-gray-300 mb-4">Controle e visualize cobranças e pagamentos</p>
           <div className="space-y-2">
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Receita Total:</span><span className="text-sm font-semibold text-white">R$ {stats.totalRevenue.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Receita Total:</span><span className="text-sm font-semibold text-white">R$ {formatCurrency(shouldShow ? stats.totalRevenue : 0)}</span></div>
             <div className="flex justify-between"><span className="text-sm text-gray-400">Pagamentos este mês:</span><span className="text-sm font-semibold text-green-400">+15</span></div>
           </div>
         </CardContent>
@@ -1214,7 +1214,7 @@ const AdminDashboard = () => {
               <CardContent className="bg-[#1f2937] rounded-b-lg">
                 <p className="text-gray-300 mb-4">Gerencie todos os seus clientes cadastrados</p>
                 <div className="space-y-2">
-                  <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Clientes:</span><span className="text-sm font-semibold text-white">{(clientes?.length || 0).toLocaleString()}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Clientes:</span><span className="text-sm font-semibold text-white">{shouldShow ? (clientes?.length || 0).toLocaleString() : '0'}</span></div>
                   <div className="flex justify-between"><span className="text-sm text-gray-400">Clientes Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeClients.toLocaleString()}</span></div>
                   <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+{stats.monthlyGrowth}%</span></div>
                 </div>
@@ -1246,8 +1246,8 @@ const AdminDashboard = () => {
               <CardContent className="bg-[#1f2937] rounded-b-lg">
                 <p className="text-gray-300 mb-4">Gerencie suas revendas e parceiros</p>
                 <div className="space-y-2">
-                  <div className="flex justify-between"><span className="text-sm text-gray-400">Revendedores Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeResellers}</span></div>
-                  <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Revendas:</span><span className="text-sm font-semibold text-white">{(revendas?.length || 0).toLocaleString()}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-400">Revendedores Ativos:</span><span className="text-sm font-semibold text-white">{shouldShow ? stats.activeResellers : '0'}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Revendas:</span><span className="text-sm font-semibold text-white">{shouldShow ? (revendas?.length || 0).toLocaleString() : '0'}</span></div>
                   <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+8</span></div>
                 </div>
               </CardContent>
@@ -1386,7 +1386,7 @@ const AdminDashboard = () => {
                 <div className="text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold text-white">{isResellerRoute ? 'Dashboard Revenda' : 'Dashboard Admin'}</h1>
                 <p className="text-gray-400 text-sm sm:text-base">Visão geral do sistema</p>
-                {!showRealData && (
+                {!shouldShow && (
                   <p className="text-xs text-yellow-300 mt-2">Os dados reais serão exibidos somente quando forem adicionados pela página de Revenda.</p>
                 )}
               </div>
@@ -1808,7 +1808,7 @@ const AdminDashboard = () => {
                   <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold text-white">{showRealData ? (clientes?.length || 0).toLocaleString() : '0'}</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{shouldShow ? (clientes?.length || 0).toLocaleString() : '0'}</div>
                   <p className="text-xs text-gray-400 mt-1">Clientes cadastrados</p>
                 </CardContent>
               </Card>
@@ -1819,7 +1819,7 @@ const AdminDashboard = () => {
                   <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
-                  <div className="text-lg sm:text-2xl font-bold text-white">{showRealData ? (revendas?.length || 0).toLocaleString() : '0'}</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white">{shouldShow ? (revendas?.length || 0).toLocaleString() : '0'}</div>
                   <p className="text-xs text-gray-400 mt-1">Revendedores cadastrados</p>
                 </CardContent>
               </Card>
@@ -1842,7 +1842,7 @@ const AdminDashboard = () => {
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
                   <div className="text-lg sm:text-2xl font-bold text-white">
-                    R$ {formatCurrency(showRealData ? stats.totalRevenue : 0)}
+                    R$ {formatCurrency(shouldShow ? stats.totalRevenue : 0)}
                   </div>
                   <p className="text-xs text-gray-400 mt-1">Receita acumulada (clientes + revendas)</p>
                 </CardContent>
