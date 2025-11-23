@@ -1183,9 +1183,6 @@ const ClientDashboard = () => {
           tabIndex={0} 
           role="button" 
           aria-pressed="false"
-          style={{
-            cursor: isDragging ? 'grabbing' : 'grab'
-          }}
         >
           {content}
           {body}
