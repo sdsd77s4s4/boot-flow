@@ -15,12 +15,22 @@ const Progress = React.forwardRef<
     )}
     {...props}
   >
-    <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
+    <ProgressPrimitive.Indicator asChild>
+      <div className="h-full w-full flex-1 bg-primary transition-all">
+        <ProgressTransformIndicator value={value} />
+      </div>
+    </ProgressPrimitive.Indicator>
   </ProgressPrimitive.Root>
 ))
 Progress.displayName = ProgressPrimitive.Root.displayName
 
 export { Progress }
+
+function ProgressTransformIndicator({ value }: { value?: number | null }) {
+  const ref = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    ref.current.style.transform = `translateX(-${100 - (value || 0)}%)`;
+  }, [value]);
+  return <div ref={ref} />;
+}
