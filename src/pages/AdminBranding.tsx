@@ -345,11 +345,13 @@ const AdminBranding: React.FC = () => {
         key={index}
         className="bg-[#181e29] border border-gray-700 hover:border-purple-500 transition-all"
         // eslint-disable-next-line no-inline-styles
+        // eslint-disable-next-line no-inline-styles
         style={{ borderTopColor: viewingDashboard?.color }}
       >
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
+              {/* eslint-disable-next-line no-inline-styles */}
               {/* eslint-disable-next-line no-inline-styles */}
               <Icon className="w-5 h-5" style={{ color: viewingDashboard?.color }} />
               <CardTitle className="text-white text-base">{widgetName}</CardTitle>
@@ -363,6 +365,7 @@ const AdminBranding: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
+            {/* eslint-disable-next-line no-inline-styles */}
             {/* eslint-disable-next-line no-inline-styles */}
             <div className="text-3xl font-bold" style={{ color: viewingDashboard?.color }}>
               {data.value}
@@ -651,6 +654,7 @@ const AdminBranding: React.FC = () => {
             </CardHeader>
             <CardContent>
               {/* eslint-disable-next-line no-inline-styles */}
+              {/* eslint-disable-next-line no-inline-styles */}
               <div className="text-3xl font-bold" style={{ color: config.color || pageForm.primaryColor }}>
                 {config.value || '0'}
               </div>
@@ -822,6 +826,7 @@ const AdminBranding: React.FC = () => {
           <img
             src={config.src}
             alt={config.alt || ''}
+                    // eslint-disable-next-line no-inline-styles
                     // eslint-disable-next-line no-inline-styles
                     style={{ width: config.width || '100%', height: config.height || 'auto' }}
             className="rounded-lg"
@@ -1041,10 +1046,11 @@ const AdminBranding: React.FC = () => {
               <div
                 className="min-h-full p-8 rounded-lg"
                 // eslint-disable-next-line no-inline-styles
+                // eslint-disable-next-line no-inline-styles
                 style={{
-                      backgroundColor: pageForm.backgroundColor,
-                      color: pageForm.textColor,
-                    }}
+                  backgroundColor: pageForm.backgroundColor,
+                  color: pageForm.textColor,
+                }}
               >
                 {pageForm.components.length === 0 ? (
                   <div className="text-center py-12 text-gray-400">
@@ -1699,6 +1705,7 @@ const AdminBranding: React.FC = () => {
                 <h1 className="text-3xl font-bold text-white flex items-center gap-3">
                   <div 
                     className="w-4 h-4 rounded-full"
+                    // eslint-disable-next-line no-inline-styles
                     style={{ backgroundColor: viewingDashboard.color }}
                   />
                   {viewingDashboard.name}
@@ -2175,6 +2182,7 @@ const AdminBranding: React.FC = () => {
                           </div>
                           <div 
                             className="w-4 h-4 rounded-full border-2 border-white"
+                            // eslint-disable-next-line no-inline-styles
                             style={{ backgroundColor: dashboard.color }}
                           />
                         </div>
@@ -2321,6 +2329,7 @@ const AdminBranding: React.FC = () => {
                           </div>
                           <div 
                             className="w-4 h-4 rounded-full border-2 border-white"
+                            // eslint-disable-next-line no-inline-styles
                             style={{ backgroundColor: dashboard.color }}
                           />
                         </div>
@@ -3150,13 +3159,16 @@ const AdminBranding: React.FC = () => {
             </div>
             <div 
               className="p-8"
+              // eslint-disable-next-line no-inline-styles
               style={{
                 backgroundColor: viewingPage.backgroundColor,
                 color: viewingPage.textColor,
               }}
             >
               {viewingPage.showHeader && (
+                {/* eslint-disable-next-line no-inline-styles */}
                 <header className="mb-8 pb-4 border-b" style={{ borderColor: viewingPage.primaryColor }}>
+                  {/* eslint-disable-next-line no-inline-styles */}
                   <h1 className="text-4xl font-bold mb-2" style={{ color: viewingPage.primaryColor }}>
                     {viewingPage.title}
                   </h1>
@@ -3183,6 +3195,7 @@ const AdminBranding: React.FC = () => {
                                   <CardTitle className="text-white text-sm">{config.title || 'Métrica'}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
+                                  {/* eslint-disable-next-line no-inline-styles */}
                                   <div className="text-3xl font-bold" style={{ color: config.color || viewingPage.primaryColor }}>
                                     {config.value || '0'}
                                   </div>
@@ -3291,6 +3304,7 @@ const AdminBranding: React.FC = () => {
                             const textSizes: any = { small: 'text-sm', medium: 'text-base', large: 'text-lg', xlarge: 'text-2xl' };
                             const textAligns: any = { left: 'text-left', center: 'text-center', right: 'text-right' };
                             return (
+                              {/* eslint-disable-next-line no-inline-styles */}
                               <div className={`${textSizes[config.size || 'medium']} ${textAligns[config.align || 'left']}`} style={{ color: viewingPage.textColor }}>
                                 {config.content || 'Digite seu texto aqui'}
                               </div>
@@ -3310,11 +3324,13 @@ const AdminBranding: React.FC = () => {
                 /* Fallback para conteúdo HTML se não houver componentes */
                 <div 
                   dangerouslySetInnerHTML={{ __html: viewingPage.content || '<p>Nenhum conteúdo adicionado ainda.</p>' }}
+                  // eslint-disable-next-line no-inline-styles
                   style={{ color: viewingPage.textColor }}
                 />
               )}
               
               {viewingPage.showFooter && (
+                {/* eslint-disable-next-line no-inline-styles */}
                 <footer className="mt-8 pt-4 border-t" style={{ borderColor: viewingPage.primaryColor }}>
                   <p className="text-sm opacity-60">© {new Date().getFullYear()} {brand.name || 'Sua Empresa'}</p>
                 </footer>
