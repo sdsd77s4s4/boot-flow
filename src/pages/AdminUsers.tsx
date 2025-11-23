@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,8 +71,35 @@ import React from "react";
 import { useClientes } from "@/hooks/useClientes";
 import { useUsers } from "@/hooks/useUsers";
 import { RLSErrorBanner } from "@/components/RLSErrorBanner";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminUsers() {
+  const { user } = useAuth();
+
+  // Mostrar dados reais somente após ação vinda da página de Revendas para usuários tipo 'reseller'
+  const [showRealData, setShowRealData] = useState(false);
+  useEffect(() => {
+    try {
+      const flag = localStorage.getItem('dashboard-refresh') || localStorage.getItem('reseller-created');
+      if (flag) setShowRealData(true);
+    } catch (err) {
+      // ignore
+    }
+
+    const handler = (e: any) => {
+      try {
+        const source = e?.detail?.source;
+        if (source === 'resellers') setShowRealData(true);
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener('refresh-dashboard', handler as EventListener);
+    return () => window.removeEventListener('refresh-dashboard', handler as EventListener);
+  }, []);
+
+  const shouldShow = (user?.user_metadata?.role === 'reseller') ? showRealData : true;
   const {
     clientes: users,
     loading,

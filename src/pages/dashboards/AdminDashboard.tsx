@@ -1248,7 +1248,7 @@ const AdminDashboard = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between"><span className="text-sm text-gray-400">Revendedores Ativos:</span><span className="text-sm font-semibold text-white">{shouldShow ? stats.activeResellers : '0'}</span></div>
                   <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Revendas:</span><span className="text-sm font-semibold text-white">{shouldShow ? (revendas?.length || 0).toLocaleString() : '0'}</span></div>
-                  <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+8</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">{shouldShow ? '+8' : '+0'}</span></div>
                 </div>
               </CardContent>
             )
