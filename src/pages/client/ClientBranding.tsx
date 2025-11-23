@@ -594,6 +594,7 @@ export default function ClientBranding() {
                     value={font}
                     onChange={e => setFont(e.target.value)}
                     className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
+                    aria-label="Selecionar fonte"
                   >
                     <option>Inter</option>
                     <option>Roboto</option>
