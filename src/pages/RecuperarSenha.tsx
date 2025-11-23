@@ -33,8 +33,9 @@ const RecuperarSenha: React.FC = () => {
         {error && <div className="bg-red-100 text-red-700 rounded px-3 py-2 text-sm">{error}</div>}
         {success && <div className="bg-green-100 text-green-700 rounded px-3 py-2 text-sm">{success}</div>}
         <div>
-          <label className="block text-gray-700 mb-1">E-mail</label>
+          <label htmlFor="recuperar-email" className="block text-gray-700 mb-1">E-mail</label>
           <input
+            id="recuperar-email"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}

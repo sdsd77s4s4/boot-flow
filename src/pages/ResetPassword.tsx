@@ -127,8 +127,9 @@ const ResetPassword: React.FC = () => {
         {error && <div className="bg-red-100 text-red-700 rounded px-3 py-2 text-sm">{error}</div>}
         
         <div>
-          <label className="block text-gray-700 mb-1">Nova Senha</label>
+          <label htmlFor="reset-nova" className="block text-gray-700 mb-1">Nova Senha</label>
           <input
+            id="reset-nova"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -141,8 +142,9 @@ const ResetPassword: React.FC = () => {
         </div>
         
         <div>
-          <label className="block text-gray-700 mb-1">Confirmar Nova Senha</label>
+          <label htmlFor="reset-confirm" className="block text-gray-700 mb-1">Confirmar Nova Senha</label>
           <input
+            id="reset-confirm"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
