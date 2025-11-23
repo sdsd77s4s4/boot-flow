@@ -611,7 +611,6 @@ export default function ClientBranding() {
                     className="accent-blue-500"
                     aria-label="Ativar modo escuro"
                   />
-                  />
                   <span className="text-gray-300">Modo escuro</span>
                 </div>
               </div>
@@ -675,7 +674,6 @@ export default function ClientBranding() {
                   onChange={e => setEnableCDN(e.target.checked)}
                   className="accent-green-500"
                   aria-label="Habilitar CDN"
-                />
                 />
                 <span className="text-gray-300">Ativar CDN de performance</span>
               </div>
