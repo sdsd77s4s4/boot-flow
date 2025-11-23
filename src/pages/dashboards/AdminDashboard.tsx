@@ -117,6 +117,8 @@ const AdminDashboard = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [viewMode, setViewMode] = useState<'grid' | 'kanban'>('grid');
+  // Mostrar dados reais somente após ação vinda da página de Revendas
+  const [showRealData, setShowRealData] = useState(false);
   // Usando o hook personalizado para gerenciar os dados do dashboard
   const { stats, loading: loadingStats, error: statsError, refresh: refreshStats } = useDashboardData();
 
@@ -218,14 +220,38 @@ const AdminDashboard = () => {
   
   // Buscar dados iniciais ao montar o componente (apenas uma vez)
   useEffect(() => {
-    if (fetchClientes) {
-      fetchClientes();
-    }
-    if (fetchRevendas) {
-      fetchRevendas();
+    // Não buscar dados automaticamente na montagem — somente quando habilitado
+    if (showRealData) {
+      if (fetchClientes) {
+        fetchClientes();
+      }
+      if (fetchRevendas) {
+        fetchRevendas();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Executar apenas uma vez ao montar
+
+  // Escutar eventos globais disparados pela página de Revendas para exibir dados reais
+  useEffect(() => {
+    const handler = (e: any) => {
+      try {
+        const source = e?.detail?.source;
+        if (source === 'resellers') {
+          // Habilitar dados reais e forçar atualização
+          setShowRealData(true);
+          if (fetchRevendas) fetchRevendas();
+          if (fetchClientes) fetchClientes();
+          if (refreshStats) refreshStats();
+        }
+      } catch (err) {
+        console.error('Erro ao processar evento refresh-dashboard:', err);
+      }
+    };
+
+    window.addEventListener('refresh-dashboard', handler as EventListener);
+    return () => window.removeEventListener('refresh-dashboard', handler as EventListener);
+  }, [fetchRevendas, fetchClientes, refreshStats]);
 
   // Calcular total de usuários diretamente dos dados atualizados (usando estados locais que são atualizados em tempo real)
   const totalUsersCount = useMemo(() => {
