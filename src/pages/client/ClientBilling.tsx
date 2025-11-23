@@ -575,6 +575,8 @@ export default function ClientBilling() {
             />
           </div>
           <select
+            id="filtro-status"
+            aria-label="Filtrar status"
             className="bg-[#1f2937] border border-gray-700 text-gray-300 rounded px-3 py-2"
             value={filtroStatus || ''}
             onChange={e => setFiltroStatus(e.target.value || null)}
@@ -813,18 +815,20 @@ export default function ClientBilling() {
             <div className="space-y-6">
               {/* Cliente */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
-                  Cliente <span className="text-red-500">*</span>
-                </label>
-                <select 
-                  className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
-                  value={nova.cliente}
-                  onChange={e => {
-                    if (e.target.value.startsWith('cliente-')) {
-                      handleClienteChange(e.target.value);
-                    }
-                  }}
-                >
+                  <label htmlFor="nova-cliente" className="block text-gray-300 mb-2 font-medium">
+                    Cliente <span className="text-red-500">*</span>
+                  </label>
+                  <select 
+                    id="nova-cliente"
+                    aria-label="Cliente"
+                    className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
+                    value={nova.cliente}
+                    onChange={e => {
+                      if (e.target.value.startsWith('cliente-')) {
+                        handleClienteChange(e.target.value);
+                      }
+                    }}
+                  >
                   <option value="">Selecionar</option>
                   <optgroup label="Clientes">
                     {clientes.map(user => (
@@ -836,10 +840,11 @@ export default function ClientBilling() {
 
               {/* Nome do Cliente */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-nomeCliente" className="block text-gray-300 mb-2 font-medium">
                   Nome do Cliente <span className="text-red-500">*</span>
                 </label>
                 <Input 
+                  id="nova-nomeCliente"
                   placeholder="Nome completo do cliente"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.nomeCliente}
@@ -849,10 +854,11 @@ export default function ClientBilling() {
 
               {/* Email */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-email" className="block text-gray-300 mb-2 font-medium">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <Input 
+                  id="nova-email"
                   placeholder="Email do cliente"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.email}
@@ -862,10 +868,11 @@ export default function ClientBilling() {
 
               {/* Telefone */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-telefone" className="block text-gray-300 mb-2 font-medium">
                   Telefone
                 </label>
                 <Input 
+                  id="nova-telefone"
                   placeholder="(11) 99999-9999"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.telefone}
@@ -875,10 +882,11 @@ export default function ClientBilling() {
 
               {/* Descrição */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-descricao" className="block text-gray-300 mb-2 font-medium">
                   Descrição <span className="text-red-500">*</span>
                 </label>
                 <textarea 
+                  id="nova-descricao"
                   placeholder="Descrição da cobrança"
                   className="w-full bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 rounded-lg px-3 py-2 min-h-[80px] resize-none"
                   value={nova.descricao}
@@ -888,10 +896,11 @@ export default function ClientBilling() {
 
               {/* Valor */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-valor" className="block text-gray-300 mb-2 font-medium">
                   Valor <span className="text-red-500">*</span>
                 </label>
                 <Input 
+                  id="nova-valor"
                   placeholder="R$ 0,00"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.valor}
@@ -901,10 +910,12 @@ export default function ClientBilling() {
 
               {/* Status */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-status" className="block text-gray-300 mb-2 font-medium">
                   Status
                 </label>
                 <select 
+                  id="nova-status"
+                  aria-label="Status da cobrança"
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
                   value={nova.status}
                   onChange={e => setNova({ ...nova, status: e.target.value })}
@@ -917,11 +928,12 @@ export default function ClientBilling() {
 
               {/* Data de Vencimento */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-vencimento" className="block text-gray-300 mb-2 font-medium">
                   Data de Vencimento <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input 
+                    id="nova-vencimento"
                     type="date"
                     className="bg-[#23272f] border border-gray-600 text-white focus:border-purple-500 pr-10"
                     value={nova.vencimento}
@@ -933,10 +945,11 @@ export default function ClientBilling() {
 
               {/* Observações */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-observacoes" className="block text-gray-300 mb-2 font-medium">
                   Observações
                 </label>
                 <textarea 
+                  id="nova-observacoes"
                   placeholder="Observações adicionais sobre a cobrança"
                   className="w-full bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 rounded-lg px-3 py-2 min-h-[100px] resize-y"
                   value={nova.observacoes}
@@ -993,24 +1006,27 @@ export default function ClientBilling() {
           <div className="p-6 max-h-[80vh] overflow-y-auto scrollbar-hide">
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-300 mb-1 font-medium">Nome do Cliente *</label>
+                <label htmlFor="edit-nomeCliente" className="block text-gray-300 mb-1 font-medium">Nome do Cliente *</label>
                 <Input 
+                  id="edit-nomeCliente"
                   className="bg-[#23272f] border border-gray-700 text-white"
                   value={edit.nomeCliente}
                   onChange={e => setEdit({ ...edit, nomeCliente: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-gray-300 mb-1 font-medium">E-mail *</label>
+                <label htmlFor="edit-email" className="block text-gray-300 mb-1 font-medium">E-mail *</label>
                 <Input 
+                  id="edit-email"
                   className="bg-[#23272f] border border-gray-700 text-white"
                   value={edit.email}
                   onChange={e => setEdit({ ...edit, email: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-gray-300 mb-1 font-medium">Descrição *</label>
+                <label htmlFor="edit-descricao" className="block text-gray-300 mb-1 font-medium">Descrição *</label>
                 <textarea 
+                  id="edit-descricao"
                   className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
                   value={edit.descricao}
                   onChange={e => setEdit({ ...edit, descricao: e.target.value })}
@@ -1018,16 +1034,19 @@ export default function ClientBilling() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Valor *</label>
+                  <label htmlFor="edit-valor" className="block text-gray-300 mb-1 font-medium">Valor *</label>
                   <Input 
+                    id="edit-valor"
                     className="bg-[#23272f] border border-gray-700 text-white"
                     value={edit.valor}
                     onChange={e => setEdit({ ...edit, valor: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Status</label>
+                  <label htmlFor="edit-status" className="block text-gray-300 mb-1 font-medium">Status</label>
                   <select 
+                    id="edit-status"
+                    aria-label="Status da cobrança (editar)"
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.status}
                     onChange={e => setEdit({ ...edit, status: e.target.value })}
@@ -1039,8 +1058,9 @@ export default function ClientBilling() {
                 </div>
               </div>
               <div>
-                <label className="block text-gray-300 mb-1 font-medium">Data de Vencimento *</label>
+                <label htmlFor="edit-vencimento" className="block text-gray-300 mb-1 font-medium">Data de Vencimento *</label>
                 <Input 
+                  id="edit-vencimento"
                   type="date"
                   className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                   value={edit.vencimento}
