@@ -657,6 +657,7 @@ export default function AdminCobrancas() {
             />
           </div>
           <select
+            aria-label="Filtrar por status"
             className="bg-[#1f2937] border border-gray-700 text-gray-300 rounded px-3 py-2"
             value={filtroStatus || ''}
             onChange={e => setFiltroStatus(e.target.value || null)}
@@ -847,10 +848,12 @@ export default function AdminCobrancas() {
             <div className="space-y-6">
               {/* Cliente */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-cliente" className="block text-gray-300 mb-2 font-medium">
                   Cliente <span className="text-red-500">*</span>
                 </label>
                 <select 
+                  id="nova-cliente"
+                  aria-label="Selecionar cliente ou revenda"
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
                   value={nova.cliente}
                   onChange={e => {
@@ -934,10 +937,12 @@ export default function AdminCobrancas() {
 
               {/* Status */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-status" className="block text-gray-300 mb-2 font-medium">
                   Status
                 </label>
                 <select 
+                  id="nova-status"
+                  aria-label="Selecionar status da cobrança"
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
                   value={nova.status}
                   onChange={e => setNova({ ...nova, status: e.target.value })}
@@ -950,11 +955,13 @@ export default function AdminCobrancas() {
 
               {/* Data de Vencimento */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-vencimento" className="block text-gray-300 mb-2 font-medium">
                   Data de Vencimento <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input 
+                    id="nova-vencimento"
+                    aria-label="Data de vencimento"
                     type="date"
                     className="bg-[#23272f] border border-gray-600 text-white focus:border-purple-500 pr-10"
                     value={nova.vencimento}
