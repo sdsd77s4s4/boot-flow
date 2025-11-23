@@ -803,8 +803,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-white">Observações (Opcional)</Label>
+              <Label htmlFor="add-observations-inline" className="text-sm font-medium text-white">Observações (Opcional)</Label>
               <textarea
+                id="add-observations-inline"
                 rows={4}
                 placeholder="Adicione observações sobre este revendedor..."
                 className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none placeholder-gray-400 resize-none"
@@ -1195,8 +1196,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white">Observações (Opcional)</Label>
+                  <Label htmlFor="add-observations-modal" className="text-sm font-medium text-white">Observações (Opcional)</Label>
                   <textarea
+                    id="add-observations-modal"
                     rows={4}
                     placeholder="Adicione observações sobre este revendedor..."
                     className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none placeholder-gray-400 resize-none"
