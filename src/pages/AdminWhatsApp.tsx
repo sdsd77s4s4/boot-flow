@@ -110,14 +110,14 @@ const AdminWhatsApp: React.FC = () => {
   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
   const [isLoadingQR, setIsLoadingQR] = useState(false);
 
-  // Gating dos cards: só mostra dados reais se houver pelo menos um template
-  const showRealData = templates.length > 0;
-  const totalEnviados = showRealData ? templates.reduce((acc, tpl) => acc + (tpl.sent || 0), 0) : 0;
-  const entregues = showRealData ? templates.reduce((acc, tpl) => acc + Math.round((tpl.sent || 0) * (tpl.delivery || 0) / 100), 0) : 0;
+  // Gating dos cards: só mostra dados reais se pelo menos uma mensagem foi enviada (sent > 0)
+  const hasSentMessages = templates.some(tpl => (tpl.sent || 0) > 0);
+  const totalEnviados = hasSentMessages ? templates.reduce((acc, tpl) => acc + (tpl.sent || 0), 0) : 0;
+  const entregues = hasSentMessages ? templates.reduce((acc, tpl) => acc + Math.round((tpl.sent || 0) * (tpl.delivery || 0) / 100), 0) : 0;
   // lidos e falhas: ajuste conforme sua fonte de dados, aqui ficam zerados
   const lidos = 0;
   const falhas = 0;
-  const taxaEntrega = showRealData && totalEnviados ? ((entregues / totalEnviados) * 100).toFixed(1) : '0.0';
+  const taxaEntrega = hasSentMessages && totalEnviados ? ((entregues / totalEnviados) * 100).toFixed(1) : '0.0';
 
   // Função para enviar mensagem via API Brasil
   const sendWhatsAppMessage = async (phoneNumber: string, message: string) => {
