@@ -88,7 +88,7 @@ const App = () => {
                 <Route path="/admin" element={<AdminDashboard />} />
                 {/* Dashboard Revendas (protegido: apenas role 'reseller') */}
                 <Route element={<ProtectedRoute allowedRoles={[ 'reseller' ]} />}>
-                  <Route path="/revendas" element={<ResellerDashboard />} />
+                  <Route path="/dashboard/revendas" element={<ResellerDashboard />} />
                 </Route>
                 {/* Página de acesso negado */}
                 <Route path="/unauthorized" element={<Unauthorized />} />

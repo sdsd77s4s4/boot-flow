@@ -36,9 +36,9 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const { error } = await signUp(email, password, { 
+      const { error } = await signUp(email, password, {
         full_name: name,
-        role: 'client' // Defina o papel padrão como 'client'
+        role: 'reseller' // Forçar cadastro como revendedor (revendas)
       });
       
       if (error) throw error;
