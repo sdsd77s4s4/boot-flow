@@ -495,7 +495,7 @@ export default function ClientResellers() {
                         onChange={(e) => setNewReseller({...newReseller, password: e.target.value})}
                         required
                       />
-                      <Button type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
+                      <Button aria-label="Gerar senha" type="button" variant="outline" size="sm" className="border-gray-600 text-gray-400 hover:text-white">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
@@ -537,7 +537,7 @@ export default function ClientResellers() {
                       Permissão <span className="text-red-500">*</span>
                     </Label>
                     <Select value={newReseller.permission} onValueChange={(value) => setNewReseller({...newReseller, permission: value})}>
-                      <SelectTrigger className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
+                      <SelectTrigger aria-label="Permissão do revendedor" className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent className="bg-[#23272f] border-gray-600">
@@ -557,6 +557,7 @@ export default function ClientResellers() {
                         type="button" 
                         variant="outline" 
                         size="sm" 
+                        aria-label="Diminuir créditos"
                         className="border-gray-600 text-gray-400 hover:text-white"
                         onClick={() => setNewReseller({...newReseller, credits: Math.max(0, newReseller.credits - 1)})}
                       >
@@ -576,6 +577,7 @@ export default function ClientResellers() {
                         type="button" 
                         variant="outline" 
                         size="sm" 
+                        aria-label="Aumentar créditos"
                         className="border-gray-600 text-gray-400 hover:text-white"
                         onClick={() => setNewReseller({...newReseller, credits: newReseller.credits + 1})}
                       >
@@ -591,7 +593,7 @@ export default function ClientResellers() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-white">Servidores (Opcional)</Label>
                   <Select value={newReseller.servers} onValueChange={(value) => setNewReseller({...newReseller, servers: value})}>
-                    <SelectTrigger className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
+                    <SelectTrigger aria-label="Servidores permitidos" className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
                       <SelectValue placeholder="Opcional" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#23272f] border-gray-600">
@@ -626,20 +628,21 @@ export default function ClientResellers() {
                         type="button" 
                         variant="outline" 
                         size="sm" 
+                        aria-label="Diminuir dias de desativação"
                         className="border-gray-600 text-gray-400 hover:text-white"
                         onClick={() => setNewReseller({...newReseller, disable_login_days: Math.max(0, newReseller.disable_login_days - 1)})}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                         </svg>
-                      </Button>
-                      <Input
-                        type="number"
-                        className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
-                        placeholder="0"
-                        value={newReseller.disable_login_days}
-                        onChange={(e) => setNewReseller({...newReseller, disable_login_days: parseInt(e.target.value) || 0})}
-                        min="0"
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        aria-label="Aumentar dias de desativação"
+                        className="border-gray-600 text-gray-400 hover:text-white"
+                        onClick={() => setNewReseller({...newReseller, disable_login_days: newReseller.disable_login_days + 1})}
+                      >
                       />
                       <Button 
                         type="button" 
@@ -727,8 +730,10 @@ export default function ClientResellers() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white">Observações (Opcional)</Label>
+                  <Label htmlFor="newResellerObservations" className="text-sm font-medium text-white">Observações (Opcional)</Label>
                   <textarea
+                    id="newResellerObservations"
+                    aria-label="Observações do revendedor"
                     rows={4}
                     placeholder="Adicione observações sobre este revendedor..."
                     className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none placeholder-gray-400 resize-none"
@@ -833,6 +838,7 @@ export default function ClientResellers() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
+            aria-label="Buscar revendedores"
             placeholder="Buscar revendedores..."
             className="pl-10 bg-[#1f2937] border-gray-700 text-white"
             value={searchTerm}
@@ -892,6 +898,7 @@ export default function ClientResellers() {
                         variant="outline"
                         size="sm"
                         onClick={() => openViewModal(revenda)}
+                        aria-label={`Ver ${revenda.username}`}
                         className="text-blue-400 hover:text-blue-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -900,6 +907,7 @@ export default function ClientResellers() {
                         variant="outline"
                         size="sm"
                         onClick={() => openEditModal(revenda)}
+                        aria-label={`Editar ${revenda.username}`}
                         className="text-green-400 hover:text-green-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -908,6 +916,7 @@ export default function ClientResellers() {
                         variant="outline"
                         size="sm"
                         onClick={() => openDeleteModal(revenda)}
+                        aria-label={`Excluir ${revenda.username}`}
                         className="text-red-400 hover:text-red-300 h-8 w-8 sm:h-9 sm:w-9 p-0"
                       >
                         <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -994,7 +1003,7 @@ export default function ClientResellers() {
                 <div>
                   <Label className="text-sm font-medium text-white">Permissão</Label>
                   <Select value={editingReseller.permission} onValueChange={(value) => setEditingReseller({...editingReseller, permission: value as any})}>
-                    <SelectTrigger className="bg-[#23272f] border-gray-600 text-white">
+                    <SelectTrigger aria-label="Permissão do revendedor" className="bg-[#23272f] border-gray-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#23272f] border-gray-600">
@@ -1033,7 +1042,10 @@ export default function ClientResellers() {
               </div>
               <div>
                 <Label className="text-sm font-medium text-white">Observações</Label>
+                <Label htmlFor="editResellerObservations" className="sr-only">Observações</Label>
                 <textarea
+                  id="editResellerObservations"
+                  aria-label="Observações do revendedor (edição)"
                   value={editingReseller.observations || ''}
                   onChange={(e) => setEditingReseller({...editingReseller, observations: e.target.value})}
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2"
