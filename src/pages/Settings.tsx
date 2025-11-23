@@ -145,31 +145,31 @@ const PerfilContent = ({ perfil, handleChange }) => {
     <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 rounded-xl p-3 sm:p-6 border border-purple-700/40 mt-4">
       <h2 className="text-lg sm:text-xl font-bold text-white mb-2 flex items-center gap-2">👤 Informações Pessoais</h2>
       <p className="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6">Atualize suas informações básicas</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
         <div>
-          <label className="block text-gray-300 mb-1 font-medium">Nome</label>
-          <Input name="nome" value={perfil.nome} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+          <label htmlFor="perfil-nome" className="block text-gray-300 mb-1 font-medium">Nome</label>
+          <Input id="perfil-nome" name="nome" value={perfil.nome} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
         </div>
         <div>
-          <label className="block text-gray-300 mb-1 font-medium">Sobrenome</label>
-          <Input name="sobrenome" value={perfil.sobrenome} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+          <label htmlFor="perfil-sobrenome" className="block text-gray-300 mb-1 font-medium">Sobrenome</label>
+          <Input id="perfil-sobrenome" name="sobrenome" value={perfil.sobrenome} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
         </div>
       </div>
       <div className="mb-4">
-        <label className="block text-gray-300 mb-1 font-medium">Email</label>
-        <Input name="email" value={perfil.email} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+        <label htmlFor="perfil-email" className="block text-gray-300 mb-1 font-medium">Email</label>
+        <Input id="perfil-email" name="email" value={perfil.email} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-300 mb-1 font-medium">Empresa</label>
-        <Input name="empresa" value={perfil.empresa} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+        <label htmlFor="perfil-empresa" className="block text-gray-300 mb-1 font-medium">Empresa</label>
+        <Input id="perfil-empresa" name="empresa" value={perfil.empresa} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-300 mb-1 font-medium">Telefone</label>
-        <Input name="telefone" value={perfil.telefone} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+        <label htmlFor="perfil-telefone" className="block text-gray-300 mb-1 font-medium">Telefone</label>
+        <Input id="perfil-telefone" name="telefone" value={perfil.telefone} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
       </div>
       <div className="mb-2">
-        <label className="block text-gray-300 mb-1 font-medium">Fuso Horário</label>
-        <Input name="fuso" value={perfil.fuso} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
+        <label htmlFor="perfil-fuso" className="block text-gray-300 mb-1 font-medium">Fuso Horário</label>
+        <Input id="perfil-fuso" name="fuso" value={perfil.fuso} onChange={handleChange} className="bg-[#1f2937] border border-gray-700 text-white" />
       </div>
     </div>
   );
