@@ -2641,6 +2641,7 @@ const AdminBranding: React.FC = () => {
               </Label>
               <select
                 id="dashboard-layout"
+                aria-label="Selecionar layout do dashboard"
                 value={dashboardForm.layout}
                 onChange={(e) => setDashboardForm({ ...dashboardForm, layout: e.target.value })}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:border-purple-500 focus:outline-none"
@@ -2755,6 +2756,7 @@ const AdminBranding: React.FC = () => {
                   <input
                     type="checkbox"
                     id="dashboard-realtime"
+                    aria-label="Atualização em Tempo Real"
                     checked={dashboardForm.realtime}
                     onChange={(e) => setDashboardForm({ ...dashboardForm, realtime: e.target.checked })}
                     className="accent-purple-500"
@@ -2912,6 +2914,7 @@ const AdminBranding: React.FC = () => {
                 </Label>
                 <select
                   id="page-type"
+                  aria-label="Selecionar tipo de página"
                   value={pageForm.type}
                   onChange={(e) => setPageForm({ ...pageForm, type: e.target.value })}
                   className="w-full bg-gray-900 border border-gray-700 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none"
@@ -3024,6 +3027,7 @@ const AdminBranding: React.FC = () => {
                   <input
                     type="checkbox"
                     id="page-show-header"
+                    aria-label="Mostrar cabeçalho"
                     checked={pageForm.showHeader}
                     onChange={(e) => setPageForm({ ...pageForm, showHeader: e.target.checked })}
                     className="accent-blue-500"
@@ -3037,6 +3041,7 @@ const AdminBranding: React.FC = () => {
                   <input
                     type="checkbox"
                     id="page-show-footer"
+                    aria-label="Mostrar rodapé"
                     checked={pageForm.showFooter}
                     onChange={(e) => setPageForm({ ...pageForm, showFooter: e.target.checked })}
                     className="accent-blue-500"
@@ -3098,6 +3103,7 @@ const AdminBranding: React.FC = () => {
               <input
                 type="checkbox"
                 id="page-is-published"
+                aria-label="Publicar página"
                 checked={pageForm.isPublished}
                 onChange={(e) => setPageForm({ ...pageForm, isPublished: e.target.checked })}
                 className="accent-blue-500"
