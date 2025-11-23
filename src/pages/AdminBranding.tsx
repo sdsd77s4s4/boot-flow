@@ -1590,6 +1590,7 @@ const AdminBranding: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-gray-300">Número de Colunas</Label>
               <select
+                aria-label="Selecionar número de colunas"
                 value={config.count || 2}
                 onChange={(e) => updateConfig('count', parseInt(e.target.value))}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
@@ -1602,6 +1603,7 @@ const AdminBranding: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-gray-300">Espaçamento</Label>
               <select
+                aria-label="Selecionar espaçamento das colunas"
                 value={config.gap || 'medium'}
                 onChange={(e) => updateConfig('gap', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
