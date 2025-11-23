@@ -2963,7 +2963,7 @@ const AdminDashboard = () => {
                     </CardHeader>
                     <CardContent className="p-3 sm:p-6">
                       <div className="text-lg sm:text-2xl font-bold text-white">
-                        R$ {formatCurrency(stats.totalRevenue)}
+                        R$ {formatCurrency(shouldShow ? stats.totalRevenue : 0)}
                       </div>
                       <p className="text-xs text-gray-400 mt-1">Receita acumulada (clientes + revendas)</p>
                     </CardContent>
