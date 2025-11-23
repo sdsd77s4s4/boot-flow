@@ -55,6 +55,9 @@ export const RealtimeChart = ({
     return base;
   }, [edgeData, fallbackData, realtimePayload]);
 
+  const TOOLTIP_CONTENT_STYLE = { backgroundColor: '#111827', borderRadius: '0.75rem', border: '1px solid #1f2937' } as const;
+  const TOOLTIP_LABEL_STYLE = { color: '#cbd5f5' } as const;
+
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-950/90 p-6 shadow-xl">
       {title && <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-slate-400">{title}</h3>}
@@ -71,8 +74,8 @@ export const RealtimeChart = ({
             <XAxis dataKey="label" stroke="#475569" tickLine={false} axisLine={false} />
             <YAxis stroke="#475569" tickLine={false} axisLine={false} tickFormatter={(value) => `${value}${unit ?? ''}`} />
             <Tooltip
-              contentStyle={{ backgroundColor: '#111827', borderRadius: '0.75rem', border: '1px solid #1f2937' }}
-              labelStyle={{ color: '#cbd5f5' }}
+              contentStyle={TOOLTIP_CONTENT_STYLE}
+              labelStyle={TOOLTIP_LABEL_STYLE}
             />
             <Area
               type="monotone"

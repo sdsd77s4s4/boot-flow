@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart3, TrendingUp, Users, DollarSign, Eye, Download, Calendar } from "lucide-react";
+import DynamicStyle from '@/components/ui/dynamic-style';
 
 export default function ClientAnalytics() {
   const [timeRange, setTimeRange] = useState("7d");
@@ -168,10 +169,7 @@ export default function ClientAnalytics() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-32 bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(activity.users / 250) * 100}%` }}
-                      ></div>
+                      <DynamicStyle styles={{ width: `${(activity.users / 250) * 100}%` }} className="bg-blue-600 h-2 rounded-full" />
                     </div>
                     <span className="text-sm text-gray-400 w-12 text-right">
                       {activity.users}
@@ -215,7 +213,7 @@ export default function ClientAnalytics() {
                 <span className="text-sm text-gray-400">Plano Básico</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    <DynamicStyle styles={{ width: '60%' }} className="bg-green-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-green-400">60%</span>
                 </div>
@@ -224,7 +222,7 @@ export default function ClientAnalytics() {
                 <span className="text-sm text-gray-400">Plano Pro</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '30%' }}></div>
+                    <DynamicStyle styles={{ width: '30%' }} className="bg-blue-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-blue-400">30%</span>
                 </div>
@@ -233,7 +231,7 @@ export default function ClientAnalytics() {
                 <span className="text-sm text-gray-400">Plano Enterprise</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '10%' }}></div>
+                    <DynamicStyle styles={{ width: '10%' }} className="bg-purple-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-purple-400">10%</span>
                 </div>

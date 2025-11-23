@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Paintbrush, UploadCloud, X, Check, Palette, Code, Settings } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import DynamicStyle from '@/components/ui/dynamic-style';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -43,7 +44,7 @@ const colorClasses = {
   },
   green: {
     from: 'from-green-900/50',
-    to: 'to-green-800/30',
+                    <DynamicStyle styles={{ backgroundColor: primaryColor, opacity: 0.8 }} className="h-3 w-2/3 rounded mb-1" />
     border: 'border-green-700/40',
     hoverBorder: 'hover:border-green-500',
     icon: 'text-green-400',
@@ -52,16 +53,16 @@ const colorClasses = {
 };
 
 export default function ClientBranding() {
-  const [tab, setTab] = useState('marca');
+                    <DynamicStyle styles={{ backgroundColor: primaryColor }} className="w-10 h-10 rounded-full" />
   const [brand, setBrand] = useState(initialBrand);
   const [originalBrand, setOriginalBrand] = useState(initialBrand);
   const [hasChanges, setHasChanges] = useState(false);
   const [logoModal, setLogoModal] = useState(false);
-  const [faviconModal, setFaviconModal] = useState(false);
+                    <DynamicStyle styles={{ backgroundColor: primaryColor, opacity: 0.8 }} className="h-3 w-2/3 rounded mb-1" />
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [faviconFile, setFaviconFile] = useState<File | null>(null);
   const [primaryColor, setPrimaryColor] = useState('#7c3aed');
-  const [secondaryColor, setSecondaryColor] = useState('#9333ea');
+                    <DynamicStyle styles={{ backgroundColor: secondaryColor, opacity: 0.6 }} className="h-3 w-1/2 rounded" />
   const [font, setFont] = useState('Inter');
   const [darkMode, setDarkMode] = useState(false);
   const [customDomain, setCustomDomain] = useState('');
