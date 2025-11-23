@@ -1473,6 +1473,7 @@ const AdminDashboard = () => {
                                 Plano *
                               </label>
                               <select
+                                aria-label="Plano do usuário"
                                 className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                 value={newUser.plan}
                                 onChange={(e) =>
@@ -1494,6 +1495,7 @@ const AdminDashboard = () => {
                                   Preço *
                                 </label>
                                 <select
+                                  aria-label="Preço do plano"
                                   className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                   value={newUser.price}
                                   onChange={(e) =>
@@ -1543,6 +1545,7 @@ const AdminDashboard = () => {
                                 Status *
                               </label>
                               <select
+                                aria-label="Status do usuário"
                                 className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                 value={newUser.status}
                                 onChange={(e) =>
@@ -2315,6 +2318,7 @@ const AdminDashboard = () => {
                                     Plano *
                                   </label>
                                   <select
+                                    aria-label="Plano do usuário"
                                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                     value={newUser.plan}
                                     onChange={(e) =>
@@ -2336,6 +2340,7 @@ const AdminDashboard = () => {
                                       Preço *
                                     </label>
                                     <select
+                                      aria-label="Preço do plano"
                                       className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                       value={newUser.price}
                                       onChange={(e) =>
@@ -2385,6 +2390,7 @@ const AdminDashboard = () => {
                                     Status *
                                   </label>
                                   <select
+                                    aria-label="Status do usuário"
                                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                     value={newUser.status}
                                     onChange={(e) =>
@@ -2737,8 +2743,10 @@ const AdminDashboard = () => {
                             </div>
 
                             <div className="space-y-2">
-                              <Label className="text-sm font-medium text-white">Servidores (Opcional)</Label>
+                              <Label htmlFor="reseller-servers" className="text-sm font-medium text-white">Servidores (Opcional)</Label>
                               <select 
+                                id="reseller-servers"
+                                aria-label="Servidores permitidos"
                                 className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                 value={newReseller.servers}
                                 onChange={(e) => setNewReseller({...newReseller, servers: e.target.value})}
