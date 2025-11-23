@@ -1059,8 +1059,10 @@ export default function AdminCobrancas() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Cliente */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Cliente *</label>
+                  <label htmlFor="edit-cliente" className="block text-gray-300 mb-1 font-medium">Cliente *</label>
                   <select 
+                    id="edit-cliente"
+                    aria-label="Selecionar cliente para edição"
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.cliente}
                     onChange={e => {
@@ -1097,8 +1099,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Nome */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Nome</label>
+                  <label htmlFor="edit-nome" className="block text-gray-300 mb-1 font-medium">Nome</label>
                   <input 
+                    id="edit-nome"
+                    aria-label="Nome do cliente"
                     placeholder="Nome do cliente" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.nomeCliente}
@@ -1107,8 +1111,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* E-mail */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">E-mail *</label>
+                  <label htmlFor="edit-email" className="block text-gray-300 mb-1 font-medium">E-mail *</label>
                   <input 
+                    id="edit-email"
+                    aria-label="E-mail do cliente"
                     placeholder="Email do cliente" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.email}
@@ -1117,8 +1123,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Telefone */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Telefone</label>
+                  <label htmlFor="edit-telefone" className="block text-gray-300 mb-1 font-medium">Telefone</label>
                   <input 
+                    id="edit-telefone"
+                    aria-label="Telefone do cliente"
                     placeholder="(11) 99999-9999" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.telefone}
@@ -1127,8 +1135,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Telegram */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Telegram</label>
+                  <label htmlFor="edit-telegram" className="block text-gray-300 mb-1 font-medium">Telegram</label>
                   <input 
+                    id="edit-telegram"
+                    aria-label="Telegram do cliente"
                     placeholder="@usuario" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.telegram}
@@ -1137,8 +1147,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* WhatsApp */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">WhatsApp</label>
+                  <label htmlFor="edit-whatsapp" className="block text-gray-300 mb-1 font-medium">WhatsApp</label>
                   <input 
+                    id="edit-whatsapp"
+                    aria-label="WhatsApp do cliente"
                     placeholder="+55 11 99999-9999" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.whatsapp}
@@ -1148,8 +1160,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Descrição */}
                 <div className="col-span-2">
-                  <label className="block text-gray-300 mb-1 font-medium">Descrição *</label>
+                  <label htmlFor="edit-descricao" className="block text-gray-300 mb-1 font-medium">Descrição *</label>
                   <textarea 
+                    id="edit-descricao"
+                    aria-label="Descrição da cobrança"
                     placeholder="Descrição da cobrança" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
                     value={edit.descricao}
@@ -1158,8 +1172,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Valor */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Valor *</label>
+                  <label htmlFor="edit-valor" className="block text-gray-300 mb-1 font-medium">Valor *</label>
                   <input 
+                    id="edit-valor"
+                    aria-label="Valor da cobrança"
                     placeholder="R$ 0,00" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.valor}
@@ -1168,8 +1184,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Status */}
                 <div className="col-span-1">
-                  <label className="block text-gray-300 mb-1 font-medium">Status</label>
+                  <label htmlFor="edit-status" className="block text-gray-300 mb-1 font-medium">Status</label>
                   <select 
+                    id="edit-status"
+                    aria-label="Status da cobrança"
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.status}
                     onChange={e => setEdit({ ...edit, status: e.target.value })}
@@ -1181,8 +1199,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Data de Vencimento */}
                 <div className="col-span-2">
-                  <label className="block text-gray-300 mb-1 font-medium">Data de Vencimento *</label>
+                  <label htmlFor="edit-vencimento" className="block text-gray-300 mb-1 font-medium">Data de Vencimento *</label>
                   <input 
+                    id="edit-vencimento"
+                    aria-label="Data de vencimento"
                     type="date"
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.vencimento}
@@ -1191,8 +1211,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Observações */}
                 <div className="col-span-2">
-                  <label className="block text-gray-300 mb-1 font-medium">Observações</label>
+                  <label htmlFor="edit-observacoes" className="block text-gray-300 mb-1 font-medium">Observações</label>
                   <textarea 
+                    id="edit-observacoes"
+                    aria-label="Observações sobre a cobrança"
                     placeholder="Observações sobre a cobrança" 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
                     value={edit.observacoes}
