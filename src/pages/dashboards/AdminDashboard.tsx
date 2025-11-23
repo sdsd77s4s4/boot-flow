@@ -2629,10 +2629,12 @@ const AdminDashboard = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div className="space-y-2">
-                                <Label className="text-sm font-medium text-white">
+                                <Label htmlFor="resellerPermission" className="text-sm font-medium text-white">
                                   Permissão <span className="text-red-500">*</span>
                                 </Label>
                                 <select 
+                                  id="resellerPermission"
+                                  aria-label="Permissão do revendedor"
                                   className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                                   value={newReseller.permission}
                                   onChange={(e) => setNewReseller({...newReseller, permission: e.target.value})}
@@ -3681,10 +3683,10 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Permissão */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">
+                    <label htmlFor="resellerPermission2" className="text-sm font-medium text-white">
                       Permissão <span className="text-red-500">*</span>
                     </label>
-                    <select className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none">
+                    <select id="resellerPermission2" aria-label="Permissão do revendedor" className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none">
                       <option value="">Selecione</option>
                       <option value="admin">Administrador</option>
                       <option value="reseller">Revendedor</option>
@@ -3719,8 +3721,8 @@ const AdminDashboard = () => {
 
                 {/* Servidores */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Servidores (Opcional)</label>
-                  <select className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none">
+                  <label htmlFor="resellerServers" className="text-sm font-medium text-white">Servidores (Opcional)</label>
+                  <select id="resellerServers" aria-label="Servidores permitidos para revenda" className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2 focus:border-blue-500 focus:outline-none">
                     <option value="">Opcional</option>
                     <option value="server1">Servidor 1</option>
                     <option value="server2">Servidor 2</option>
