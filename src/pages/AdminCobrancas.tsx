@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useCobrancas } from '@/hooks/useCobrancas';
+import { useAuth } from '@/contexts/AuthContext';
 import { RLSErrorBannerCobrancas } from '@/components/RLSErrorBannerCobrancas';
 
 interface Cobranca {
@@ -121,7 +122,37 @@ const generateCobrancasFromRevendas = (revendas: Revenda[]): Cobranca[] => {
 export default function AdminCobrancas() {
   const { clientes } = useClientes();
   const { revendas } = useRevendas();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('cobrancas');
+
+  // Mostrar dados reais somente após ação vinda da página de Revendas
+  const [showRealData, setShowRealData] = useState(false);
+  useEffect(() => {
+    try {
+      const flag = localStorage.getItem('dashboard-refresh') || localStorage.getItem('reseller-created');
+      if (flag) setShowRealData(true);
+    } catch (err) {
+      // ignore
+    }
+
+    const handler = (e: any) => {
+      try {
+        const source = e?.detail?.source;
+        if (source === 'resellers') setShowRealData(true);
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener('refresh-dashboard', handler as EventListener);
+    window.addEventListener('reseller-created', handler as EventListener);
+    return () => {
+      window.removeEventListener('refresh-dashboard', handler as EventListener);
+      window.removeEventListener('reseller-created', handler as EventListener);
+    };
+  }, []);
+
+  const shouldShow = (user?.user_metadata?.role === 'reseller') ? showRealData : true;
   
   // Estado para cobranças virtuais (baseadas em clientes e revendas)
   const [cobrancasVirtuais, setCobrancasVirtuais] = useState<Cobranca[]>([]);
@@ -357,6 +388,8 @@ export default function AdminCobrancas() {
   const valorRecebido = cobrancasVirtuais.filter(c => c.status === 'Paga').reduce((acc, c) => acc + c.valor, 0);
   const taxaConversao = totalCobrancas > 0 ? (cobrancasPagas / totalCobrancas) * 100 : 0;
 
+  const formatCurrency = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   // Funções auxiliares para seleção de clientes/revendas
   const handleClienteChange = (clienteId: string) => {
     // Extrair o ID do valor "cliente-15" -> "15"
@@ -464,7 +497,7 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalCobrancas}</div>
+            <div className="text-2xl font-bold text-white">{shouldShow ? totalCobrancas.toLocaleString() : '0'}</div>
             <div className="text-xs text-gray-400 mt-1">Cobranças</div>
           </CardContent>
         </Card>
@@ -477,8 +510,8 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{cobrancasPagas}</div>
-            <div className="text-xs text-gray-400 mt-1">{taxaConversao.toFixed(1)}% taxa</div>
+            <div className="text-2xl font-bold text-green-400">{shouldShow ? cobrancasPagas.toLocaleString() : '0'}</div>
+            <div className="text-xs text-gray-400 mt-1">{shouldShow ? `${taxaConversao.toFixed(1)}% taxa` : '0.0% taxa'}</div>
           </CardContent>
         </Card>
         
@@ -490,7 +523,7 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-400">{cobrancasPendentes}</div>
+            <div className="text-2xl font-bold text-yellow-400">{shouldShow ? cobrancasPendentes.toLocaleString() : '0'}</div>
             <div className="text-xs text-gray-400 mt-1">Aguardando</div>
           </CardContent>
         </Card>
@@ -503,7 +536,7 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-400">{cobrancasVencidas}</div>
+            <div className="text-2xl font-bold text-red-400">{shouldShow ? cobrancasVencidas.toLocaleString() : '0'}</div>
             <div className="text-xs text-gray-400 mt-1">Ação necessária</div>
           </CardContent>
         </Card>
@@ -516,7 +549,7 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-400">R$ {valorRecebido.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-blue-400">R$ {formatCurrency(shouldShow ? valorRecebido : 0)}</div>
             <div className="text-xs text-gray-400 mt-1">Recebido</div>
           </CardContent>
         </Card>
@@ -529,7 +562,7 @@ export default function AdminCobrancas() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-indigo-400">R$ {(valorTotal - valorRecebido).toLocaleString()}</div>
+            <div className="text-2xl font-bold text-indigo-400">R$ {formatCurrency(shouldShow ? (valorTotal - valorRecebido) : 0)}</div>
             <div className="text-xs text-gray-400 mt-1">Pendente</div>
           </CardContent>
         </Card>
@@ -560,14 +593,14 @@ export default function AdminCobrancas() {
         <TabsContent value="cobrancas" className="space-y-6">
         {/* Alertas */}
         <div className="mb-4">
-          {cobrancasVencidas > 0 && (
+          {shouldShow && cobrancasVencidas > 0 && (
             <div className="bg-red-900/80 text-red-200 rounded-lg px-4 py-3 mb-2 font-semibold">
-              <span className="mr-2">⚠️</span> Você tem {cobrancasVencidas} cobrança(s) vencida(s) totalizando R$ {(cobrancasVirtuais.filter(c => c.status === 'Vencida').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
+              <span className="mr-2">⚠️</span> Você tem {cobrancasVencidas} cobrança(s) vencida(s) totalizando R$ {formatCurrency(cobrancasVirtuais.filter(c => c.status === 'Vencida').reduce((acc, c) => acc + c.valor, 0))}
             </div>
           )}
-          {cobrancasPendentes > 0 && (
+          {shouldShow && cobrancasPendentes > 0 && (
             <div className="bg-yellow-900/80 text-yellow-200 rounded-lg px-4 py-3 font-semibold">
-              <span className="mr-2">⏰</span> Você tem {cobrancasPendentes} cobrança(s) pendente(s) totalizando R$ {(cobrancasVirtuais.filter(c => c.status === 'Pendente').reduce((acc, c) => acc + c.valor, 0)).toLocaleString()}
+              <span className="mr-2">⏰</span> Você tem {cobrancasPendentes} cobrança(s) pendente(s) totalizando R$ {formatCurrency(cobrancasVirtuais.filter(c => c.status === 'Pendente').reduce((acc, c) => acc + c.valor, 0))}
             </div>
           )}
         </div>
@@ -583,9 +616,9 @@ export default function AdminCobrancas() {
             </CardHeader>
             <CardContent>
               <div className="text-center">
-                <div className="text-4xl font-bold text-green-400 mb-2">{taxaConversao.toFixed(1)}%</div>
-                <Progress value={taxaConversao} className="h-3" />
-                <p className="text-gray-400 text-sm mt-2">{cobrancasPagas} de {totalCobrancas} cobranças pagas</p>
+                <div className="text-4xl font-bold text-green-400 mb-2">{shouldShow ? `${taxaConversao.toFixed(1)}%` : '0.0%'}</div>
+                <Progress value={shouldShow ? taxaConversao : 0} className="h-3" />
+                <p className="text-gray-400 text-sm mt-2">{shouldShow ? cobrancasPagas : 0} de {shouldShow ? totalCobrancas : 0} cobranças pagas</p>
               </div>
             </CardContent>
           </Card>
