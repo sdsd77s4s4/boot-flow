@@ -1275,6 +1275,8 @@ const AdminBranding: React.FC = () => {
                 value={config.content || ''}
                 onChange={(e) => updateConfig('content', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[100px]"
+                placeholder="Digite o conteúdo aqui..."
+                aria-label="Conteúdo do texto"
               />
             </div>
             <div className="space-y-2">
@@ -1512,27 +1514,29 @@ const AdminBranding: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Controles</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
+                  aria-label="Mostrar controles"
                   type="checkbox"
                   checked={config.controls !== false}
                   onChange={(e) => updateConfig('controls', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Mostrar controles</span>
-              </div>
+              </label>
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Autoplay</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
+                  aria-label="Reproduzir automaticamente"
                   type="checkbox"
                   checked={config.autoplay || false}
                   onChange={(e) => updateConfig('autoplay', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Reproduzir automaticamente</span>
-              </div>
+              </label>
             </div>
           </>
         );
@@ -1542,15 +1546,16 @@ const AdminBranding: React.FC = () => {
           <>
             <div className="space-y-2">
               <Label className="text-gray-300">Lista Ordenada</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
+                  aria-label="Usar numeração"
                   type="checkbox"
                   checked={config.ordered || false}
                   onChange={(e) => updateConfig('ordered', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Usar numeração</span>
-              </div>
+              </label>
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Itens da Lista (um por linha)</Label>
@@ -2040,27 +2045,27 @@ const AdminBranding: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-gray-300 mb-1 font-medium">Cor Primária</label>
-                  <input type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
+                  <input aria-label="Cor Primária" type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
                 </div>
                 <div>
                   <label className="block text-gray-300 mb-1 font-medium">Cor Secundária</label>
-                  <input type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
+                  <input aria-label="Cor Secundária" type="color" className="w-12 h-12 p-0 border-none bg-transparent" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-gray-300 mb-1 font-medium">Fonte</label>
-                  <select className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2">
+                  <select aria-label="Selecionar fonte" className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2">
                     <option>Inter</option>
                     <option>Roboto</option>
                     <option>Montserrat</option>
                     <option>Poppins</option>
                   </select>
                 </div>
-                <div className="flex items-center gap-3 mt-6">
-                  <input type="checkbox" className="accent-purple-500" />
+                <label className="flex items-center gap-3 mt-6">
+                  <input aria-label="Modo escuro" type="checkbox" className="accent-purple-500" />
                   <span className="text-gray-300">Modo escuro</span>
-                </div>
+                </label>
               </div>
               <div className="mt-6">
                 <span className="block text-gray-400 mb-2">Preview</span>
@@ -2091,10 +2096,10 @@ const AdminBranding: React.FC = () => {
                 <label className="block text-gray-300 mb-1 font-medium">Scripts Customizados</label>
                 <textarea className="w-full bg-gray-900 border border-gray-700 text-white rounded p-2 min-h-[60px]" placeholder="Cole aqui seu script..."></textarea>
               </div>
-              <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" className="accent-purple-500" />
+              <label className="flex items-center gap-3 mt-2">
+                <input aria-label="Ativar CDN de performance" type="checkbox" className="accent-purple-500" />
                 <span className="text-gray-300">Ativar CDN de performance</span>
-              </div>
+              </label>
             </div>
           </div>
         )}
@@ -2104,28 +2109,28 @@ const AdminBranding: React.FC = () => {
             <div className="rounded-2xl border border-purple-700/40 bg-gradient-to-br from-purple-900/50 to-purple-800/30 p-6 shadow-lg">
               <span className="block text-purple-300 font-semibold mb-4 text-lg">Módulos e Funcionalidades</span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                <label className="flex items-center gap-3">
+                  <input aria-label="E-commerce" type="checkbox" className="accent-purple-500" defaultChecked />
                   <span className="text-gray-300">E-commerce</span>
-                </div>
+                </label>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <input aria-label="Gamificação" type="checkbox" className="accent-purple-500" defaultChecked />
                   <span className="text-gray-300">Gamificação</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" />
+                  <input aria-label="Notificações" type="checkbox" className="accent-purple-500" />
                   <span className="text-gray-300">Notificações</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" />
+                  <input aria-label="Exportação de Dados" type="checkbox" className="accent-purple-500" />
                   <span className="text-gray-300">Exportação de Dados</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" />
+                  <input aria-label="Relatórios Avançados" type="checkbox" className="accent-purple-500" />
                   <span className="text-gray-300">Relatórios Avançados</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <input aria-label="Chatbot IA" type="checkbox" className="accent-purple-500" defaultChecked />
                   <span className="text-gray-300">Chatbot IA</span>
                 </div>
               </div>
