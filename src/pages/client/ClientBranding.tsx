@@ -559,7 +559,8 @@ export default function ClientBranding() {
                       type="color" 
                       value={primaryColor}
                       onChange={e => setPrimaryColor(e.target.value)}
-                      className="w-12 h-12 p-0 border-none bg-transparent cursor-pointer rounded" 
+                      className="w-12 h-12 p-0 border-none bg-transparent cursor-pointer rounded"
+                      aria-label="Selecionar cor primária"
                     />
                     <Input 
                       value={primaryColor}
@@ -575,7 +576,8 @@ export default function ClientBranding() {
                       type="color" 
                       value={secondaryColor}
                       onChange={e => setSecondaryColor(e.target.value)}
-                      className="w-12 h-12 p-0 border-none bg-transparent cursor-pointer rounded" 
+                      className="w-12 h-12 p-0 border-none bg-transparent cursor-pointer rounded"
+                      aria-label="Selecionar cor secundária"
                     />
                     <Input 
                       value={secondaryColor}
