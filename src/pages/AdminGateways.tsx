@@ -41,7 +41,7 @@ export default function AdminGateways() {
     if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig);
-        setConfigGeral({ ...configGeral, ...parsed });
+        setConfigGeral(prev => ({ ...prev, ...parsed }));
       } catch (error) {
         console.error('Erro ao carregar configurações gerais:', error);
       }
