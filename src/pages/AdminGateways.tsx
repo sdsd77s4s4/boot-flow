@@ -35,6 +35,7 @@ export default function AdminGateways() {
     apiTimeout: 30
   });
   const [testValue, setTestValue] = useState('');
+  const [config, setConfig] = useState({ apiKey: '', secret: '', webhook: '' });
 
   // Carregar configurações salvas
   useEffect(() => {
