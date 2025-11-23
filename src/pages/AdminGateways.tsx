@@ -22,7 +22,7 @@ interface Gateway {
 
 export default function AdminGateways() {
   const [gateways, setGateways] = useState<Gateway[]>([]);
-  const [modal, setModal] = useState<{ type: null | 'testar' | 'editar' | 'configurar' | 'desativar', gateway?: Gateway }>({ type: null });
+  const [modal, setModal] = useState<{ type: null | 'testar' | 'editar' | 'configurar' | 'desativar' | 'configurar-geral', gateway?: Gateway }>({ type: null });
   const [form, setForm] = useState({ nome: '', tipo: '', taxa: '' });
   const [config, setConfig] = useState({ apiKey: '', secret: '', webhook: '' });
   const [testValue, setTestValue] = useState('');
@@ -50,6 +50,10 @@ export default function AdminGateways() {
     setConfig({ apiKey: '', secret: '', webhook: '' });
     setModal({ type: null });
   };
+
+  const handleConfigurarGateways = () => {
+    setModal({ type: 'configurar-geral' });
+  };
   const handleDesativar = () => {
     if (!modal.gateway) return;
     setGateways(gateways.map(g => g.id === modal.gateway!.id ? { ...g, status: 'Inativo' } : g));
@@ -58,9 +62,15 @@ export default function AdminGateways() {
 
   return (
     <div className="p-6 min-h-screen bg-[#09090b]">
-      <div className="flex items-center gap-3 mb-2">
-        <Server className="w-7 h-7 text-purple-400" />
-        <h1 className="text-3xl font-bold text-green-400">Gateways de Pagamento</h1>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <Server className="w-7 h-7 text-purple-400" />
+          <h1 className="text-3xl font-bold text-green-400">Gateways de Pagamento</h1>
+        </div>
+        <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white" onClick={handleConfigurarGateways}>
+          <Settings className="w-4 h-4 mr-2" />
+          Configurar Gateways
+        </Button>
       </div>
       <p className="text-gray-400 mb-6">Configure e gerencie seus gateways de pagamento</p>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
@@ -235,6 +245,60 @@ export default function AdminGateways() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
             <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={handleDesativar}>Desativar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Modal Configurar Gateways Geral */}
+      <Dialog open={modal.type === 'configurar-geral'} onOpenChange={() => setModal({ type: null })}>
+        <DialogContent className="bg-[#232a36] border border-purple-700 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="w-5 h-5 text-purple-400" />
+              Configuração Geral de Gateways
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Gateway Padrão</label>
+                <select className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" aria-label="Selecionar gateway padrão">
+                  <option>Selecionar gateway...</option>
+                  <option>Stripe</option>
+                  <option>PayPal</option>
+                  <option>Mercado Pago</option>
+                  <option>PagSeguro</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Moeda Padrão</label>
+                <select className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2" aria-label="Selecionar moeda padrão">
+                  <option>BRL (R$)</option>
+                  <option>USD ($)</option>
+                  <option>EUR (€)</option>
+                </select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Configurações Avançadas</label>
+              <div className="space-y-3">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-sm text-gray-300">Habilitar notificações de pagamento</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" className="accent-purple-500" />
+                  <span className="text-sm text-gray-300">Processar pagamentos automaticamente</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" className="accent-purple-500" defaultChecked />
+                  <span className="text-sm text-gray-300">Validar dados do cartão</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModal({ type: null })} className="bg-gray-700 text-white">Cancelar</Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white">Salvar Configurações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
