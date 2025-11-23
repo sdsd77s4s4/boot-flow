@@ -1230,8 +1230,8 @@ export default function AdminCobrancas() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                 {/* Classe de Serviço */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Classe de Serviço</label>
-                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                  <label htmlFor="edit-service-class" className="block text-gray-300 mb-1 font-medium">Classe de Serviço</label>
+                  <select id="edit-service-class" aria-label="Classe de serviço" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
                     <option value="">Selecione</option>
                     <option value="basico">Básico</option>
                     <option value="premium">Premium</option>
@@ -1239,16 +1239,16 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Plano */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Plano</label>
-                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                  <label htmlFor="edit-plan" className="block text-gray-300 mb-1 font-medium">Plano</label>
+                  <select id="edit-plan" aria-label="Plano do serviço" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>
                   </select>
                 </div>
                 {/* Status */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Status</label>
-                  <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                  <label htmlFor="edit-service-status" className="block text-gray-300 mb-1 font-medium">Status</label>
+                  <select id="edit-service-status" aria-label="Status do serviço" className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
                     <option value="ativo">Ativo</option>
                     <option value="inativo">Inativo</option>
                   </select>
@@ -1257,8 +1257,10 @@ export default function AdminCobrancas() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                 {/* Data de Renovação */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Data de Renovação</label>
+                  <label htmlFor="edit-renewalDate" className="block text-gray-300 mb-1 font-medium">Data de Renovação</label>
                   <input 
+                    id="edit-renewalDate"
+                    aria-label="Data de renovação"
                     type="date"
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                     value={edit.renewalDate}
@@ -1267,8 +1269,10 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Número de Dispositivos */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Número de Dispositivos</label>
+                  <label htmlFor="edit-devices" className="block text-gray-300 mb-1 font-medium">Número de Dispositivos</label>
                   <input 
+                    id="edit-devices"
+                    aria-label="Número de dispositivos"
                     type="number" 
                     min={1} 
                     className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
@@ -1278,7 +1282,7 @@ export default function AdminCobrancas() {
                 </div>
                 {/* Créditos */}
                 <div>
-                  <label className="block text-gray-300 mb-1 font-medium">Créditos</label>
+                  <label htmlFor="edit-credits" className="block text-gray-300 mb-1 font-medium">Créditos</label>
                   <div className="flex items-center gap-2">
                     <button 
                       type="button" 
@@ -1288,6 +1292,8 @@ export default function AdminCobrancas() {
                       -
                     </button>
                     <input 
+                      id="edit-credits"
+                      aria-label="Quantidade de créditos"
                       type="number" 
                       min={0} 
                       className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
