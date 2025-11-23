@@ -263,6 +263,8 @@ export default function AdminCobrancas() {
   const vencendo = cobrancasVirtuais.filter(c => c.status === 'Pendente').slice(0,2); // Exemplo
 
   const filtradas = cobrancasVirtuais.filter(c => {
+    // Não mostrar cobranças cujo e-mail corresponda ao usuário logado (admin da revenda)
+    if (user && c.email && user.email && c.email.toLowerCase() === user.email.toLowerCase()) return false;
     const buscaLower = busca.toLowerCase();
     const matchBusca = c.cliente.toLowerCase().includes(buscaLower) || c.email.toLowerCase().includes(buscaLower) || c.descricao.toLowerCase().includes(buscaLower);
     const matchStatus = !filtroStatus || c.status === filtroStatus;
