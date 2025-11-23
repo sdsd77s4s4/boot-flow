@@ -111,13 +111,16 @@ const AdminWhatsApp: React.FC = () => {
   const [isLoadingQR, setIsLoadingQR] = useState(false);
 
   // Gating dos cards: só mostra dados reais se pelo menos uma mensagem foi enviada (sent > 0)
-  const hasSentMessages = templates.some(tpl => (tpl.sent || 0) > 0);
-  const totalEnviados = hasSentMessages ? templates.reduce((acc, tpl) => acc + (tpl.sent || 0), 0) : 0;
-  const entregues = hasSentMessages ? templates.reduce((acc, tpl) => acc + Math.round((tpl.sent || 0) * (tpl.delivery || 0) / 100), 0) : 0;
+  // Cards só mostram dados reais se pelo menos uma mensagem foi enviada (sent > 0)
+  const hasSentMessages = templates.some(tpl => Number(tpl.sent) > 0);
+  const totalEnviados = hasSentMessages ? templates.reduce((acc, tpl) => acc + Number(tpl.sent || 0), 0) : 0;
+  const entregues = hasSentMessages ? templates.reduce((acc, tpl) => acc + Math.round(Number(tpl.sent || 0) * Number(tpl.delivery || 0) / 100), 0) : 0;
   // lidos e falhas: ajuste conforme sua fonte de dados, aqui ficam zerados
-  const lidos = 0;
-  const falhas = 0;
+  const lidos = hasSentMessages ? templates.reduce((acc, tpl) => acc + Number(tpl.lidos || 0), 0) : 0;
+  const falhas = hasSentMessages ? templates.reduce((acc, tpl) => acc + Number(tpl.falhas || 0), 0) : 0;
   const taxaEntrega = hasSentMessages && totalEnviados ? ((entregues / totalEnviados) * 100).toFixed(1) : '0.0';
+  // Se não há mensagens enviadas, todos os cards ficam zerados
+  const showValue = (value: number | string) => hasSentMessages ? value : 0;
 
   // Função para enviar mensagem via API Brasil
   const sendWhatsAppMessage = async (phoneNumber: string, message: string) => {
@@ -601,7 +604,7 @@ const AdminWhatsApp: React.FC = () => {
               <CardTitle className="text-sm text-gray-300">Total Enviados</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{totalEnviados}</div>
+              <div className="text-2xl font-bold text-white">{showValue(totalEnviados)}</div>
             </CardContent>
           </Card>
           <Card className="bg-[#23272f] border border-gray-700">
@@ -609,7 +612,7 @@ const AdminWhatsApp: React.FC = () => {
               <CardTitle className="text-sm text-gray-300">Entregues</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-400">{entregues}</div>
+              <div className="text-2xl font-bold text-green-400">{showValue(entregues)}</div>
             </CardContent>
           </Card>
           <Card className="bg-[#23272f] border border-gray-700">
@@ -617,7 +620,7 @@ const AdminWhatsApp: React.FC = () => {
               <CardTitle className="text-sm text-gray-300">Lidos</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-400">{lidos}</div>
+              <div className="text-2xl font-bold text-blue-400">{showValue(lidos)}</div>
             </CardContent>
           </Card>
           <Card className="bg-[#23272f] border border-gray-700">
@@ -625,7 +628,7 @@ const AdminWhatsApp: React.FC = () => {
               <CardTitle className="text-sm text-gray-300">Falhas</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-400">{falhas}</div>
+              <div className="text-2xl font-bold text-red-400">{showValue(falhas)}</div>
             </CardContent>
           </Card>
           <Card className="bg-[#23272f] border border-gray-700">
@@ -633,7 +636,7 @@ const AdminWhatsApp: React.FC = () => {
               <CardTitle className="text-sm text-gray-300">Taxa Entrega</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-400">{taxaEntrega}%</div>
+              <div className="text-2xl font-bold text-yellow-400">{hasSentMessages ? `${taxaEntrega}%` : '0%'}</div>
             </CardContent>
           </Card>
         </div>
