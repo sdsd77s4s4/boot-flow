@@ -78,17 +78,24 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+          .map(([theme, prefix]) => {
+            return `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+              .map(([key, itemConfig]) => {
+                const color =
+                  itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                  itemConfig.color
+                return color ? `  --color-${key}: ${color};` : null
+              })
+              .join("\n")}
+}
+`
+          })
+          .join("\n"),
+      }}
+    />
+  )
 }
 
 // Small helper to avoid inline style props by setting CSS variables on the element via ref.
@@ -135,13 +142,6 @@ function LegendColorSquare({ color }: { color?: string }) {
   }, [color])
 
   return <div ref={ref} className="h-2 w-2 shrink-0 rounded-[2px]" />
-}
-`
-          )
-          .join("\n"),
-      }}
-    />
-  )
 }
 
 const ChartTooltip = RechartsPrimitive.Tooltip
