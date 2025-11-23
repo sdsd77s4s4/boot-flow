@@ -85,10 +85,12 @@ const Profile = () => {
                       <>
                         <label className="absolute bottom-0 -right-2 bg-primary rounded-full p-2 cursor-pointer hover:bg-primary/90">
                           <Camera className="h-3 w-3 text-primary-foreground" />
+                          <span className="sr-only">Alterar imagem do perfil</span>
                           <input
                             type="file"
                             accept="image/*"
                             className="hidden"
+                            aria-label="Alterar imagem do perfil"
                             onChange={handleImageUpload}
                           />
                         </label>
