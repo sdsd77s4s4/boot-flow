@@ -1,4 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, type HTMLAttributes } from "react";
+
+type WidthBarProps = {
+  width: string;
+  className?: string;
+} & HTMLAttributes<HTMLDivElement>;
+
+function WidthBar({ width, className, ...rest }: WidthBarProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.style.width = width;
+  }, [width]);
+  return <div ref={ref} className={className} {...rest} />;
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -167,12 +180,9 @@ export default function AdminAnalytics() {
                     <span className="font-medium text-white">{activity.hour}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-32 bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(activity.users / 250) * 100}%` }}
-                      ></div>
-                    </div>
+                        <div className="w-32 bg-gray-700 rounded-full h-2">
+                          <WidthBar width={`${(activity.users / 250) * 100}%`} className="bg-blue-600 h-2 rounded-full" />
+                        </div>
                     <span className="text-sm text-gray-400 w-12 text-right">
                       {activity.users}
                     </span>
@@ -215,7 +225,7 @@ export default function AdminAnalytics() {
                 <span className="text-sm text-gray-400">Plano Básico</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    <WidthBar width="60%" className="bg-green-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-green-400">60%</span>
                 </div>
@@ -224,7 +234,7 @@ export default function AdminAnalytics() {
                 <span className="text-sm text-gray-400">Plano Pro</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '30%' }}></div>
+                    <WidthBar width="30%" className="bg-blue-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-blue-400">30%</span>
                 </div>
@@ -233,7 +243,7 @@ export default function AdminAnalytics() {
                 <span className="text-sm text-gray-400">Plano Enterprise</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-700 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '10%' }}></div>
+                    <WidthBar width="10%" className="bg-purple-600 h-2 rounded-full" />
                   </div>
                   <span className="text-sm font-medium text-purple-400">10%</span>
                 </div>
