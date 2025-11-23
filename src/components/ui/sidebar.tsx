@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import DynamicStyle from "@/components/ui/dynamic-style"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -24,7 +25,7 @@ const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
-const SHEET_MOBILE_STYLE = { "--sidebar-width": SIDEBAR_WIDTH_MOBILE } as React.CSSProperties;
+// mobile sheet width is applied via DynamicStyle when rendering mobile sheet
 
 type SidebarContext = {
   state: "expanded" | "collapsed"
@@ -228,10 +229,15 @@ const Sidebar = React.forwardRef<
             data-sidebar="sidebar"
             data-mobile="true"
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            style={SHEET_MOBILE_STYLE}
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <DynamicStyle
+              as="div"
+              styles={{ "--sidebar-width": SIDEBAR_WIDTH_MOBILE }}
+              className="flex h-full w-full flex-col"
+            >
+              {children}
+            </DynamicStyle>
           </SheetContent>
         </Sheet>
       )
