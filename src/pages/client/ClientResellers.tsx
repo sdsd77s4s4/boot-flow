@@ -443,8 +443,8 @@ export default function ClientResellers() {
             <div className="p-6 w-full flex flex-col">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">Adicionar um Revenda</h2>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white" onClick={() => setIsAddDialogOpen(false)}>
+                  <div className="flex items-center gap-2">
+                  <Button aria-label="Fechar" variant="ghost" size="sm" className="text-gray-400 hover:text-white" onClick={() => setIsAddDialogOpen(false)}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
