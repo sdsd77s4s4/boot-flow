@@ -1058,8 +1058,8 @@ const AdminDashboard = () => {
           <p className="text-gray-300 mb-4">Gerencie todos os seus clientes cadastrados</p>
           <div className="space-y-2">
             <div className="flex justify-between"><span className="text-sm text-gray-400">Total de Clientes:</span><span className="text-sm font-semibold text-white">{shouldShow ? (clientes?.length || 0).toLocaleString() : '0'}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Clientes Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeClients.toLocaleString()}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+{stats.monthlyGrowth}%</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Clientes Ativos:</span><span className="text-sm font-semibold text-white">{shouldShow ? stats.activeClients.toLocaleString() : '0'}</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">{shouldShow ? `+${stats.monthlyGrowth}%` : '+0%'}</span></div>
           </div>
         </CardContent>
       ),
@@ -1080,7 +1080,7 @@ const AdminDashboard = () => {
           <p className="text-gray-300 mb-4">Gerencie suas revendas e parceiros</p>
           <div className="space-y-2">
             <div className="flex justify-between"><span className="text-sm text-gray-400">Revendedores Ativos:</span><span className="text-sm font-semibold text-white">{stats.activeResellers}</span></div>
-            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">+8</span></div>
+            <div className="flex justify-between"><span className="text-sm text-gray-400">Novos este mês:</span><span className="text-sm font-semibold text-green-400">{shouldShow ? '+8' : '+0'}</span></div>
           </div>
         </CardContent>
       ),
