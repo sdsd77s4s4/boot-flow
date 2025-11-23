@@ -31,15 +31,18 @@ export const ThemeSwitcher = ({ size = 'md', className }: ThemeSwitcherProps) =>
     >
       <span className="relative flex h-5 w-5 items-center justify-center">
         <Sun
-          style={{ height: iconSize, width: iconSize }}
+          height={iconSize}
+          width={iconSize}
           className={`absolute text-amber-300 transition-opacity ${theme === 'light' ? 'opacity-100' : 'opacity-0'}`}
         />
         <Moon
-          style={{ height: iconSize, width: iconSize }}
+          height={iconSize}
+          width={iconSize}
           className={`absolute text-sky-300 transition-opacity ${theme === 'dark' ? 'opacity-100' : 'opacity-0'}`}
         />
         <Sun
-          style={{ height: iconSize, width: iconSize }}
+          height={iconSize}
+          width={iconSize}
           className={`absolute text-slate-400 transition-opacity ${theme === 'system' ? 'opacity-100' : 'opacity-0'}`}
         />
       </span>
