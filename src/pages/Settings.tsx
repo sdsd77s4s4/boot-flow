@@ -325,9 +325,9 @@ const SegurancaContent = ({ senha, setSenha, modal2FA, setModal2FA, modalExcluir
       <div className="mb-4">
         <span className="block text-gray-300 font-medium mb-1">Alterar Senha</span>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
-          <Input type="password" placeholder="Senha Atual" value={senha.atual} onChange={e => setSenha(s => ({ ...s, atual: e.target.value }))} />
-          <Input type="password" placeholder="Nova Senha" value={senha.nova} onChange={e => setSenha(s => ({ ...s, nova: e.target.value }))} />
-          <Input type="password" placeholder="Confirmar Nova Senha" value={senha.confirmar} onChange={e => setSenha(s => ({ ...s, confirmar: e.target.value }))} />
+          <Input type="password" placeholder="Senha Atual" aria-label="Senha atual" value={senha.atual} onChange={e => setSenha(s => ({ ...s, atual: e.target.value }))} />
+          <Input type="password" placeholder="Nova Senha" aria-label="Nova senha" value={senha.nova} onChange={e => setSenha(s => ({ ...s, nova: e.target.value }))} />
+          <Input type="password" placeholder="Confirmar Nova Senha" aria-label="Confirmar nova senha" value={senha.confirmar} onChange={e => setSenha(s => ({ ...s, confirmar: e.target.value }))} />
         </div>
         <Button className="bg-[#7e22ce] hover:bg-[#6d1bb7] text-white">Salvar Nova Senha</Button>
       </div>
