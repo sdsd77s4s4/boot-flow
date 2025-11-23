@@ -204,10 +204,12 @@ All colors MUST be HSL.
 }
 
 /* Scrollbar Customizada Moderna - Aplicada globalmente */
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(262 83% 58% / 0.6) hsl(var(--background));
+/* Firefox: apply only where supported (feature query avoids applying properties on browsers that don't support them) */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(262 83% 58% / 0.6) hsl(var(--background));
+  }
 }
 
 /* Webkit browsers (Chrome, Safari, Edge) */
