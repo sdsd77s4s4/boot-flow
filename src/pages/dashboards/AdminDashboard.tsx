@@ -255,6 +255,7 @@ const AdminDashboard = () => {
 
   // Calcular total de usuários diretamente dos dados atualizados (usando estados locais que são atualizados em tempo real)
   const totalUsersCount = useMemo(() => {
+    if (!showRealData) return 0;
     const count = (clientes?.length || 0) + (revendas?.length || 0);
     console.log('🔄 [AdminDashboard] Total de usuários calculado:', {
       clientes: clientes?.length || 0,
@@ -349,6 +350,7 @@ const AdminDashboard = () => {
 
   // Função para calcular clientes que expiram em 3 dias
   const clientesExpiramEm3Dias = useMemo(() => {
+    if (!showRealData) return 0;
     if (!clientes || clientes.length === 0) return 0;
     
     const hoje = new Date();
