@@ -464,6 +464,7 @@ export default function ClientResellers() {
                       Usuário <span className="text-red-500">*</span>
                     </Label>
                     <Input
+                      aria-label="Usuário do revendedor"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                       placeholder="Obrigatório"
                       value={newReseller.username}
@@ -489,6 +490,7 @@ export default function ClientResellers() {
                     <div className="flex gap-2">
                       <Input
                         type="password"
+                        aria-label="Senha do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white flex-1 placeholder-gray-400 focus:border-blue-500"
                         placeholder="Digite a senha"
                         value={newReseller.password}
@@ -522,6 +524,7 @@ export default function ClientResellers() {
                   <input
                     type="checkbox"
                     id="forcePasswordChange"
+                    aria-label="Forçar troca de senha"
                     className="rounded border-gray-600 bg-[#23272f] text-blue-500 focus:ring-blue-500"
                     checked={newReseller.force_password_change}
                     onChange={(e) => setNewReseller({...newReseller, force_password_change: e.target.checked})}
@@ -567,6 +570,7 @@ export default function ClientResellers() {
                       </Button>
                       <Input
                         type="number"
+                        aria-label="Créditos do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
                         placeholder="0"
                         value={newReseller.credits}
@@ -612,6 +616,7 @@ export default function ClientResellers() {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-white">Revenda Master</Label>
                     <Input
+                      aria-label="Nome da revenda master"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                       placeholder="Nome da revenda master"
                       value={newReseller.master_reseller}
@@ -624,10 +629,10 @@ export default function ClientResellers() {
                       Desativar login se não recarregar - em dias
                     </Label>
                     <div className="flex items-center gap-2">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
                         aria-label="Diminuir dias de desativação"
                         className="border-gray-600 text-gray-400 hover:text-white"
                         onClick={() => setNewReseller({...newReseller, disable_login_days: Math.max(0, newReseller.disable_login_days - 1)})}
@@ -635,19 +640,21 @@ export default function ClientResellers() {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                         </svg>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm" 
-                        aria-label="Aumentar dias de desativação"
-                        className="border-gray-600 text-gray-400 hover:text-white"
-                        onClick={() => setNewReseller({...newReseller, disable_login_days: newReseller.disable_login_days + 1})}
-                      >
+                      </Button>
+                      <Input
+                        type="number"
+                        aria-label="Dias para desativação do login"
+                        className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
+                        placeholder="0"
+                        value={newReseller.disable_login_days}
+                        onChange={(e) => setNewReseller({...newReseller, disable_login_days: parseInt(e.target.value) || 0})}
+                        min="0"
                       />
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        aria-label="Aumentar dias de desativação"
                         className="border-gray-600 text-gray-400 hover:text-white"
                         onClick={() => setNewReseller({...newReseller, disable_login_days: newReseller.disable_login_days + 1})}
                       >
@@ -665,6 +672,7 @@ export default function ClientResellers() {
                     <input
                       type="checkbox"
                       id="monthlyReseller"
+                      aria-label="Configuração de Revenda Mensalista"
                       className="rounded border-gray-600 bg-[#23272f] text-blue-500 focus:ring-blue-500"
                       checked={newReseller.monthly_reseller}
                       onChange={(e) => setNewReseller({...newReseller, monthly_reseller: e.target.checked})}
@@ -686,6 +694,7 @@ export default function ClientResellers() {
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-white">Nome</Label>
                       <Input
+                        aria-label="Nome completo do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                         placeholder="Nome completo"
                         value={newReseller.personal_name}
@@ -697,6 +706,7 @@ export default function ClientResellers() {
                       <Label className="text-sm font-medium text-white">E-mail</Label>
                       <Input
                         type="email"
+                        aria-label="Email do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                         placeholder="email@exemplo.com"
                         value={newReseller.email}
@@ -707,6 +717,7 @@ export default function ClientResellers() {
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-white">Telegram</Label>
                       <Input
+                        aria-label="Telegram do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                         placeholder="@usuario"
                         value={newReseller.telegram}
@@ -717,6 +728,7 @@ export default function ClientResellers() {
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-white">WhatsApp</Label>
                       <Input
+                        aria-label="WhatsApp do revendedor"
                         className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                         placeholder="55 11 99999 3333"
                         value={newReseller.whatsapp}
