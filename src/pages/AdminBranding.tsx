@@ -2177,11 +2177,7 @@ const AdminBranding: React.FC = () => {
                             <CardTitle className="text-white text-base mb-1">{dashboard.name}</CardTitle>
                             <p className="text-xs text-gray-400">Layout: {dashboard.layout}</p>
                           </div>
-                          <div 
-                            className="w-4 h-4 rounded-full border-2 border-white"
-                            // eslint-disable-next-line no-inline-styles
-                            style={{ backgroundColor: dashboard.color }}
-                          />
+                          <DynamicStyle styles={{ backgroundColor: dashboard.color }} className="w-4 h-4 rounded-full border-2 border-white" />
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
@@ -3171,20 +3167,13 @@ const AdminBranding: React.FC = () => {
                 </Button>
               </div>
             </div>
-            <div 
-              className="p-8"
-              // eslint-disable-next-line no-inline-styles
-              style={{
-                backgroundColor: viewingPage.backgroundColor,
-                color: viewingPage.textColor,
-              }}
-            >
+            <DynamicStyle className="p-8" styles={{ backgroundColor: viewingPage.backgroundColor, color: viewingPage.textColor }}>
               {viewingPage.showHeader && (
-                <header className="mb-8 pb-4 border-b" style={{ borderColor: viewingPage.primaryColor }}>
-                  {/* eslint-disable-next-line no-inline-styles */}
-                  <h1 className="text-4xl font-bold mb-2" style={{ color: viewingPage.primaryColor }}>
+                <DynamicStyle styles={{ borderColor: viewingPage.primaryColor }} className="mb-8 pb-4 border-b">
+                  <DynamicStyle styles={{ color: viewingPage.primaryColor }} className="text-4xl font-bold mb-2">
                     {viewingPage.title}
-                  </h1>
+                  </DynamicStyle>
+                </DynamicStyle>
                   {viewingPage.description && (
                     <p className="text-lg opacity-80">{viewingPage.description}</p>
                   )}
