@@ -77,8 +77,8 @@ export const AuthProvider = ({ children, navigate }: AuthProviderProps) => {
         safeNavigate('/admin');
         break;
       case 'reseller':
-        // Rota principal para revendedores (nome em português conforme tabela Supabase `revendas`)
-        safeNavigate('/revendas');
+        // Rota principal para revendedores: usar namespace /dashboard/revendas
+        safeNavigate('/dashboard/revendas');
         break;
       case 'client':
         safeNavigate('/dashboard/client');
