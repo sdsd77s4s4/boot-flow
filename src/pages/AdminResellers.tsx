@@ -523,10 +523,11 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
             {/* Copiar o conteúdo do formulário aqui */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-white">
+                <Label htmlFor="inline-username" className="text-sm font-medium text-white">
                   Usuário <span className="text-red-500">*</span>
                 </Label>
                 <Input
+                  id="inline-username"
                   className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                   placeholder="Obrigatório"
                   value={newReseller.username}
@@ -919,10 +920,11 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white">
+                    <Label htmlFor="modal-username" className="text-sm font-medium text-white">
                       Usuário <span className="text-red-500">*</span>
                     </Label>
                     <Input
+                      id="modal-username"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                       placeholder="Obrigatório"
                       value={newReseller.username}
@@ -942,11 +944,12 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white">
+                    <Label htmlFor="modal-password" className="text-sm font-medium text-white">
                       Senha <span className="text-red-500">*</span>
                     </Label>
                     <div className="flex gap-2">
                       <Input
+                        id="modal-password"
                         type="password"
                         className="bg-[#23272f] border-gray-600 text-white flex-1 placeholder-gray-400 focus:border-blue-500"
                         placeholder="Digite a senha"
@@ -992,11 +995,11 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white">
+                    <Label htmlFor="modal-permission" className="text-sm font-medium text-white">
                       Permissão <span className="text-red-500">*</span>
                     </Label>
                     <Select value={newReseller.permission} onValueChange={(value) => setNewReseller({...newReseller, permission: value})}>
-                      <SelectTrigger className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
+                      <SelectTrigger id="modal-permission" aria-label="Permissão" className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent className="bg-[#23272f] border-gray-600">
@@ -1008,7 +1011,7 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white">
+                    <Label htmlFor="modal-credits" className="text-sm font-medium text-white">
                       Créditos <span className="text-red-500">*</span>
                     </Label>
                     <div className="flex items-center gap-2">
@@ -1024,6 +1027,7 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                         </svg>
                       </Button>
                       <Input
+                        id="modal-credits"
                         type="number"
                         className="bg-[#23272f] border-gray-600 text-white text-center placeholder-gray-400 focus:border-blue-500"
                         placeholder="0"
@@ -1048,9 +1052,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white">Servidores (Opcional)</Label>
+                  <Label htmlFor="modal-servers" className="text-sm font-medium text-white">Servidores (Opcional)</Label>
                   <Select value={newReseller.servers} onValueChange={(value) => setNewReseller({...newReseller, servers: value})}>
-                    <SelectTrigger className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
+                    <SelectTrigger id="modal-servers" aria-label="Servidores (Opcional)" className="bg-[#23272f] border-gray-600 text-white focus:border-blue-500">
                       <SelectValue placeholder="Opcional" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#23272f] border-gray-600">
@@ -1067,8 +1071,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white">Revenda Master</Label>
+                    <Label htmlFor="modal-master-reseller" className="text-sm font-medium text-white">Revenda Master</Label>
                     <Input
+                      id="modal-master-reseller"
                       className="bg-[#23272f] border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                       placeholder="Nome da revenda master"
                       value={newReseller.master_reseller}
