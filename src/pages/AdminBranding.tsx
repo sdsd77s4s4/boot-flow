@@ -982,6 +982,7 @@ const AdminBranding: React.FC = () => {
                     <div className="flex gap-2">
                       <input
                         type="color"
+                        aria-label="Cor de Fundo"
                         value={pageForm.backgroundColor}
                         onChange={(e) => setPageForm({ ...pageForm, backgroundColor: e.target.value })}
                         className="w-12 h-10 rounded border border-gray-700"
@@ -998,6 +999,7 @@ const AdminBranding: React.FC = () => {
                     <div className="flex gap-2">
                       <input
                         type="color"
+                        aria-label="Cor do Texto"
                         value={pageForm.textColor}
                         onChange={(e) => setPageForm({ ...pageForm, textColor: e.target.value })}
                         className="w-12 h-10 rounded border border-gray-700"
@@ -1014,6 +1016,7 @@ const AdminBranding: React.FC = () => {
                     <div className="flex gap-2">
                       <input
                         type="color"
+                        aria-label="Cor Primária"
                         value={pageForm.primaryColor}
                         onChange={(e) => setPageForm({ ...pageForm, primaryColor: e.target.value })}
                         className="w-12 h-10 rounded border border-gray-700"
@@ -1171,6 +1174,7 @@ const AdminBranding: React.FC = () => {
               <div className="flex gap-2">
                 <input
                   type="color"
+                  aria-label="Selecionar cor"
                   value={config.color || pageForm.primaryColor}
                   onChange={(e) => updateConfig('color', e.target.value)}
                   className="w-12 h-10 rounded border border-gray-700"
@@ -1308,19 +1312,21 @@ const AdminBranding: React.FC = () => {
           <>
             <div className="space-y-2">
               <Label className="text-gray-300">Mostrar Crescimento</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
+                  aria-label="Exibir indicador de crescimento"
                   checked={config.showGrowth || false}
                   onChange={(e) => updateConfig('showGrowth', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Exibir indicador de crescimento</span>
-              </div>
+              </label>
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Período</Label>
               <select
+                aria-label="Selecionar período"
                 value={config.period || 'month'}
                 onChange={(e) => updateConfig('period', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
@@ -1339,27 +1345,29 @@ const AdminBranding: React.FC = () => {
           <>
             <div className="space-y-2">
               <Label className="text-gray-300">Mostrar Busca</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
+                  aria-label="Habilitar campo de busca"
                   checked={config.showSearch || false}
                   onChange={(e) => updateConfig('showSearch', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Habilitar campo de busca</span>
-              </div>
+              </label>
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Mostrar Paginação</Label>
-              <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
+                  aria-label="Habilitar paginação"
                   checked={config.showPagination || false}
                   onChange={(e) => updateConfig('showPagination', e.target.checked)}
                   className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">Habilitar paginação</span>
-              </div>
+              </label>
             </div>
             <div className="space-y-2">
               <Label className="text-gray-300">Itens por Página</Label>
@@ -1381,6 +1389,7 @@ const AdminBranding: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-gray-300">Tipo de Gráfico</Label>
               <select
+                aria-label="Selecionar tipo de gráfico"
                 value={config.type || 'line'}
                 onChange={(e) => updateConfig('type', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
@@ -1394,6 +1403,7 @@ const AdminBranding: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-gray-300">Fonte de Dados</Label>
               <select
+                aria-label="Selecionar fonte de dados"
                 value={config.dataSource || 'revenue'}
                 onChange={(e) => updateConfig('dataSource', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
@@ -1406,6 +1416,7 @@ const AdminBranding: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-gray-300">Período</Label>
               <select
+                aria-label="Selecionar período"
                 value={config.period || 'month'}
                 onChange={(e) => updateConfig('period', e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 text-white rounded px-3 py-2"
