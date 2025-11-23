@@ -336,18 +336,8 @@ const AdminBranding: React.FC = () => {
     };
 
     const Icon = widgetIcons[widgetName] || BarChart3;
-    const mockData = {
-      'Métricas': { value: '1.234', label: 'Total de Vendas', change: '+12%' },
-      'Gráficos': { value: 'R$ 45.678', label: 'Receita Mensal', change: '+8%' },
-      'Atividades Recentes': { value: '23', label: 'Atividades Hoje', change: '+5' },
-      'Notificações': { value: '7', label: 'Novas Notificações', change: 'Novas' },
-      'Tabelas': { value: '156', label: 'Registros', change: 'Atualizado' },
-      'Calendário': { value: '12', label: 'Eventos', change: 'Este Mês' },
-      'Mapas': { value: '8', label: 'Localizações', change: 'Ativas' },
-      'Relatórios': { value: '45', label: 'Relatórios', change: 'Disponíveis' },
-      'Análises': { value: '89%', label: 'Performance', change: '+3%' },
-    };
-
+    // mockData removido — widgets iniciam com valores padrões até que dados reais estejam disponíveis
+    const mockData: Record<string, any> = {};
     const data = mockData[widgetName as keyof typeof mockData] || { value: '0', label: widgetName, change: '' };
 
     return (
