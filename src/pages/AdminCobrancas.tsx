@@ -884,24 +884,28 @@ export default function AdminCobrancas() {
 
               {/* E-mail */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-email" className="block text-gray-300 mb-2 font-medium">
                   E-mail <span className="text-red-500">*</span>
                 </label>
                 <Input
+                  id="nova-email"
+                  aria-label="E-mail do cliente"
                   placeholder="exemplo@dominio.com"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.email}
                   onChange={e => setNova({ ...nova, email: e.target.value })}
                 />
               </div>
-              
+
 
               {/* Telefone */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-telefone" className="block text-gray-300 mb-2 font-medium">
                   Telefone
                 </label>
                 <Input 
+                  id="nova-telefone"
+                  aria-label="Telefone do cliente"
                   placeholder="(11) 99999-9999"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.telefone}
@@ -911,10 +915,12 @@ export default function AdminCobrancas() {
 
               {/* Descrição */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-descricao" className="block text-gray-300 mb-2 font-medium">
                   Descrição <span className="text-red-500">*</span>
                 </label>
                 <textarea 
+                  id="nova-descricao"
+                  aria-label="Descrição da cobrança"
                   placeholder="Descrição da cobrança"
                   className="w-full bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 rounded-lg px-3 py-2 min-h-[80px] resize-none"
                   value={nova.descricao}
@@ -924,10 +930,12 @@ export default function AdminCobrancas() {
 
               {/* Valor */}
               <div>
-                <label className="block text-gray-300 mb-2 font-medium">
+                <label htmlFor="nova-valor" className="block text-gray-300 mb-2 font-medium">
                   Valor <span className="text-red-500">*</span>
                 </label>
                 <Input 
+                  id="nova-valor"
+                  aria-label="Valor da cobrança"
                   placeholder="R$ 0,00"
                   className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.valor}
