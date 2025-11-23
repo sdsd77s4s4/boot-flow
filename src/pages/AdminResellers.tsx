@@ -1453,17 +1453,18 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-sm font-medium text-white">Usuário</Label>
+                  <Label htmlFor="edit-username" className="text-sm font-medium text-white">Usuário</Label>
                   <Input
+                    id="edit-username"
                     value={editingReseller.username}
                     onChange={(e) => setEditingReseller({...editingReseller, username: e.target.value})}
                     className="bg-[#23272f] border-gray-600 text-white"
                   />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-white">Permissão</Label>
+                  <Label htmlFor="edit-permission" className="text-sm font-medium text-white">Permissão</Label>
                   <Select value={editingReseller.permission} onValueChange={(value) => setEditingReseller({...editingReseller, permission: value as any})}>
-                    <SelectTrigger className="bg-[#23272f] border-gray-600 text-white">
+                    <SelectTrigger id="edit-permission" aria-label="Permissão" className="bg-[#23272f] border-gray-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#23272f] border-gray-600">
@@ -1474,8 +1475,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-white">Créditos</Label>
+                  <Label htmlFor="edit-credits" className="text-sm font-medium text-white">Créditos</Label>
                   <Input
+                    id="edit-credits"
                     type="number"
                     value={editingReseller.credits}
                     onChange={(e) => setEditingReseller({...editingReseller, credits: parseInt(e.target.value) || 0})}
@@ -1483,8 +1485,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                   />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-white">Nome</Label>
+                  <Label htmlFor="edit-name" className="text-sm font-medium text-white">Nome</Label>
                   <Input
+                    id="edit-name"
                     value={editingReseller.personal_name || ''}
                     onChange={(e) => setEditingReseller({...editingReseller, personal_name: e.target.value})}
                     className="bg-[#23272f] border-gray-600 text-white"
@@ -1492,8 +1495,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 </div>
               </div>
               <div>
-                <Label className="text-sm font-medium text-white">E-mail</Label>
+                <Label htmlFor="edit-email" className="text-sm font-medium text-white">E-mail</Label>
                 <Input
+                  id="edit-email"
                   type="email"
                   value={editingReseller.email || ''}
                   onChange={(e) => setEditingReseller({...editingReseller, email: e.target.value})}
@@ -1501,8 +1505,9 @@ export default function AdminResellers({ autoOpenForm = false }: { autoOpenForm?
                 />
               </div>
               <div>
-                <Label className="text-sm font-medium text-white">Observações</Label>
+                <Label htmlFor="edit-observations" className="text-sm font-medium text-white">Observações</Label>
                 <textarea
+                  id="edit-observations"
                   value={editingReseller.observations || ''}
                   onChange={(e) => setEditingReseller({...editingReseller, observations: e.target.value})}
                   className="w-full bg-[#23272f] border border-gray-600 text-white rounded-md px-3 py-2"
