@@ -1,5 +1,6 @@
 /* eslint-disable no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import DynamicStyle from '@/components/ui/dynamic-style';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Paintbrush, UploadCloud, X, Check, GripVertical, Plus, Edit, Trash2, Palette, Code, Sliders, Star, Eye, ArrowLeft, BarChart3, TrendingUp, Activity, Bell, Table, Calendar, Map, FileText, PieChart, Globe, ExternalLink, Copy, Link2, Layout, Move, Settings2, Type, Image, Video, List, Grid3x3, Columns, DollarSign, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -342,19 +343,16 @@ const AdminBranding: React.FC = () => {
     const data = mockData[widgetName as keyof typeof mockData] || { value: '0', label: widgetName, change: '' };
 
     return (
-      <Card 
-        key={index}
-        className="bg-[#181e29] border border-gray-700 hover:border-purple-500 transition-all"
-        // eslint-disable-next-line no-inline-styles
-        style={{ borderTopColor: viewingDashboard?.color }}
-      >
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              // eslint-disable-next-line no-inline-styles
-              <Icon className="w-5 h-5" style={{ color: viewingDashboard?.color }} />
-              <CardTitle className="text-white text-base">{widgetName}</CardTitle>
-            </div>
+      <DynamicStyle styles={{ borderTopColor: viewingDashboard?.color }} className="block" key={index}>
+        <Card className="bg-[#181e29] border border-gray-700 hover:border-purple-500 transition-all">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <DynamicStyle styles={{ color: viewingDashboard?.color }} as="span" className="inline-flex w-5 h-5">
+                  <Icon className="w-5 h-5" />
+                </DynamicStyle>
+                <CardTitle className="text-white text-base">{widgetName}</CardTitle>
+              </div>
             {viewingDashboard?.realtime && (
               <span className="text-xs px-2 py-1 bg-green-900/30 text-green-300 rounded animate-pulse">
                 Live
@@ -364,10 +362,9 @@ const AdminBranding: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            // eslint-disable-next-line no-inline-styles
-            <div className="text-3xl font-bold" style={{ color: viewingDashboard?.color }}>
+            <DynamicStyle styles={{ color: viewingDashboard?.color }} className="text-3xl font-bold">
               {data.value}
-            </div>
+            </DynamicStyle>
             <div className="text-sm text-gray-400">{data.label}</div>
             {data.change && (
               <div className="text-xs text-green-400 flex items-center gap-1">
@@ -596,16 +593,28 @@ const AdminBranding: React.FC = () => {
       isDragging,
     } = useSortable({ id: component.id });
 
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      opacity: isDragging ? 0.5 : 1,
+    const localRef = useRef<HTMLDivElement | null>(null);
+
+    const combinedRef = (el: HTMLDivElement | null) => {
+      localRef.current = el;
+      try { setNodeRef(el as any); } catch (e) { /* ignore */ }
     };
+
+    React.useEffect(() => {
+      const el = localRef.current;
+      if (!el) return;
+      try {
+        el.style.transform = CSS.Transform.toString(transform) || '';
+      } catch (_) {
+        el.style.transform = '';
+      }
+      if (transition) el.style.transition = transition as string;
+      el.style.opacity = isDragging ? '0.5' : '1';
+    }, [transform, transition, isDragging]);
 
     return (
       <div
-        ref={setNodeRef}
-        style={style}
+        ref={combinedRef}
         className={`relative group border-2 rounded-lg p-4 mb-3 cursor-pointer transition-all ${
           selectedComponent?.id === component.id
             ? 'border-blue-500 bg-blue-900/20'
