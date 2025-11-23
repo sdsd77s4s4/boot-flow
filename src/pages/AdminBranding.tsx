@@ -2672,13 +2672,16 @@ const AdminBranding: React.FC = () => {
                       setDashboardForm({ ...dashboardForm, widgets: newWidgets, order: newWidgets });
                     }}
                   >
-                    <input
-                      type="checkbox"
-                      checked={dashboardForm.widgets.includes(widget)}
-                      onChange={() => {}}
-                      className="accent-purple-500"
-                    />
-                    <span className="text-sm">{widget}</span>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={dashboardForm.widgets.includes(widget)}
+                        onChange={() => {}}
+                        aria-label={`Incluir widget ${widget}`}
+                        className="accent-purple-500"
+                      />
+                      <span className="text-sm">{widget}</span>
+                    </label>
                   </div>
                 ))}
               </div>
