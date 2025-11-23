@@ -677,7 +677,7 @@ export default function AdminCobrancas() {
         {/* Tabela de cobranças modernizada */}
         <Card className="bg-[#1f2937] border border-purple-700/40">
           <CardHeader>
-            <CardTitle className="text-white text-lg">Lista de Cobranças ({filtradas.length})</CardTitle>
+            <CardTitle className="text-white text-lg">Lista de Cobranças ({shouldShow ? filtradas.length : 0})</CardTitle>
           </CardHeader>
           <CardContent className="overflow-x-auto">
             <Table>
@@ -866,39 +866,45 @@ export default function AdminCobrancas() {
                 >
                   <option value="">Selecionar</option>
                   <optgroup label="Clientes">
-                    {clientes.map(user => (
-                      <option key={`cliente-${user.id}`} value={`cliente-${user.id}`}>{user.name} - {user.email}</option>
+                    {filtradas.map(c => (
+                      <TableRow key={c.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                              {shouldShow ? c.cliente.split(' ').map(n => n[0]).join('').slice(0,2) : '--'}
+                            </div>
+                            <div>
+                              <div className="font-semibold text-white">{shouldShow ? c.cliente : '—'}</div>
+                              <div className="text-xs text-gray-400">{shouldShow ? c.email : ''}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-gray-300">{shouldShow ? c.descricao : '—'}</TableCell>
+                        <TableCell className="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-bold text-white">{shouldShow ? `R$ ${c.valor.toFixed(2)}` : 'R$ 0.00'}</TableCell>
+                        <TableCell className="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-gray-300">{shouldShow ? c.vencimento : '-'}</TableCell>
+                        <TableCell>
+                          {shouldShow ? (
+                            <>
+                              {c.status === 'Vencida' && <Badge className="bg-red-700 text-red-200">Vencida</Badge>}
+                              {c.status === 'Pendente' && <Badge className="bg-yellow-700 text-yellow-200">Pendente</Badge>}
+                              {c.status === 'Paga' && <Badge className="bg-green-700 text-green-200">Paga</Badge>}
+                            </>
+                          ) : (
+                            <div className="text-xs text-gray-500">—</div>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-white text-xs sm:text-sm">{shouldShow ? c.tipo : '-'}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button size="icon" variant="ghost" onClick={() => setModalVisualizar(c)} disabled={!shouldShow}><Eye className="w-4 h-4 text-blue-400" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => openEditModal(c)} disabled={!shouldShow}><Edit className="w-4 h-4 text-yellow-400" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setModalWhats(c)} disabled={!shouldShow}><MessageSquare className="w-4 h-4 text-green-500" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setModalEmail(c)} disabled={!shouldShow}><Mail className="w-4 h-4 text-blue-500" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setModalExcluir(c)} disabled={!shouldShow}><Trash2 className="w-4 h-4 text-red-400" /></Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </optgroup>
-                  <optgroup label="Revendas">
-                    {revendas.map(rev => (
-                      <option key={`revenda-${rev.id}`} value={`revenda-${rev.id}`}>{rev.personal_name || rev.username} - {rev.email}</option>
-                    ))}
-                  </optgroup>
-                </select>
-              </div>
-
-              {/* Nome do Cliente */}
-              <div>
-                <label className="block text-gray-300 mb-2 font-medium">
-                  Nome do Cliente <span className="text-red-500">*</span>
-                </label>
-                <Input 
-                  placeholder="Nome completo do cliente"
-                  className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
-                  value={nova.nomeCliente}
-                  onChange={e => setNova({ ...nova, nomeCliente: e.target.value })}
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-gray-300 mb-2 font-medium">
-                  Email <span className="text-red-500">*</span>
-                </label>
-                <Input 
-                  placeholder="Email do cliente"
-                  className="bg-[#23272f] border border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
                   value={nova.email}
                   onChange={e => setNova({ ...nova, email: e.target.value })}
                 />
