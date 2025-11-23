@@ -97,19 +97,19 @@ const Documentacao = () => {
       id: "primeiros-passos",
       title: "Primeiros Passos",
       description: "Aprenda a configurar sua conta e começar a usar a plataforma",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" // Vídeo mockado - substituir depois
+      videoUrl: ""
     },
     {
       id: "configurando-whatsapp",
       title: "Configurando WhatsApp",
       description: "Guia completo para conectar e configurar o WhatsApp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" // Vídeo mockado - substituir depois
+      videoUrl: ""
     },
     {
       id: "criando-campanhas",
       title: "Criando Campanhas",
       description: "Como criar e gerenciar campanhas de marketing eficazes",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" // Vídeo mockado - substituir depois
+      videoUrl: ""
     }
   ];
 
