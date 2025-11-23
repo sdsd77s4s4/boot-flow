@@ -18,18 +18,10 @@ interface Gateway {
   ultimaTransacao: string;
 }
 
-const gatewaysMock: Gateway[] = [
-  { id: 1, nome: 'PIX', tipo: 'Pix', status: 'Ativo', configurado: true, taxa: '0.99%', volume: 'R$ 45.678,90', ultimaTransacao: '15/01/2025' },
-  { id: 2, nome: 'Stripe', tipo: 'Cartao', status: 'Ativo', configurado: true, taxa: '2.99% + R$ 0,30', volume: 'R$ 23.456,78', ultimaTransacao: '15/01/2025' },
-  { id: 3, nome: 'Mercado Pago', tipo: 'Cartao', status: 'Ativo', configurado: true, taxa: '1.99% + R$ 0,60', volume: 'R$ 67.890,12', ultimaTransacao: '15/01/2025' },
-  { id: 4, nome: 'Infinitepay', tipo: 'Cartao', status: 'Ativo', configurado: true, taxa: '2.49% + R$ 0,40', volume: 'R$ 34.567,89', ultimaTransacao: '15/01/2025' },
-  { id: 5, nome: 'OpenPix', tipo: 'Pix', status: 'Inativo', configurado: false, taxa: '0.89%', volume: 'R$ 0,00', ultimaTransacao: '-' },
-  { id: 6, nome: 'PicPay', tipo: 'Picpay', status: 'Ativo', configurado: true, taxa: '1.49% + R$ 0,50', volume: 'R$ 28.901,45', ultimaTransacao: '15/01/2025' },
-  { id: 7, nome: 'Asaas', tipo: 'Boleto', status: 'Ativo', configurado: true, taxa: '1.99% + R$ 2,00', volume: 'R$ 12.345,67', ultimaTransacao: '14/01/2025' },
-];
+// Gateways mock removidos — estado inicial vazio (valores reais devem vir do backend)
 
 export default function AdminGateways() {
-  const [gateways, setGateways] = useState<Gateway[]>(gatewaysMock);
+  const [gateways, setGateways] = useState<Gateway[]>([]);
   const [modal, setModal] = useState<{ type: null | 'testar' | 'editar' | 'configurar' | 'desativar', gateway?: Gateway }>({ type: null });
   const [form, setForm] = useState({ nome: '', tipo: '', taxa: '' });
   const [config, setConfig] = useState({ apiKey: '', secret: '', webhook: '' });

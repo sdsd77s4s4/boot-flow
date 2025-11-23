@@ -13,41 +13,7 @@ import { APIBrasilRealtimeSection } from '@/components/APIBrasilRealtimeSection'
 import { checkConnectionStatus, MOCK_CREDENTIALS } from '@/services/apiBrasilService';
 import { useNavigate } from "react-router-dom";
 
-const templatesMock = [
-  {
-    id: 1,
-    title: 'Confirmação de Agendamento',
-    status: 'Ativo',
-    tag: 'confirmação',
-    content: 'Olá {{nome}}, seu agendamento para {{servico}} foi confirmado para {{data}} às {{hora}}. Aguardamos você! 📅',
-    sent: 445,
-    delivery: 96.8,
-    variables: 3,
-    read: true
-  },
-  {
-    id: 2,
-    title: 'Lembrete de Agendamento',
-    status: 'Ativo',
-    tag: 'lembrete',
-    content: 'Oi {{nome}}! Lembrete: você tem um agendamento amanhã às {{hora}} para {{servico}}. Confirme sua presença! 📲',
-    sent: 389,
-    delivery: 94.2,
-    variables: 3,
-    read: true
-  },
-  {
-    id: 3,
-    title: 'Cancelamento de Agendamento',
-    status: 'Ativo',
-    tag: 'cancelamento',
-    content: 'Olá {{nome}}, seu agendamento para {{servico}} em {{data}} foi cancelado conforme solicitado. Para reagendar, entre em contato.',
-    sent: 67,
-    delivery: 95.8,
-    variables: 3,
-    read: false
-  },
-];
+// templates mock removido — inicializar vazio para usar dados reais
 
 const initialForm = { id: null, title: '', status: 'Ativo', tag: '', content: '', variables: 1 };
 
@@ -70,7 +36,7 @@ const ClientWhatsApp: React.FC = () => {
   });
 
   const [autoReply, setAutoReply] = useState(false);
-  const [templates, setTemplates] = useState(templatesMock.slice(0, MAX_TEMPLATES));
+  const [templates, setTemplates] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);

@@ -53,41 +53,7 @@ type HistoricoItem = {
 
 const MAX_TEMPLATES = 5; // Limite de templates para o plano Essencial
 
-const templatesMock: Template[] = [
-  { 
-    id: 1, 
-    nome: 'Confirmação de Agendamento', 
-    texto: 'Olá {nome}, seu agendamento para {servico} foi confirmado para {data} às {hora}. Aguardamos você!', 
-    variaveis: ['nome', 'servico', 'data', 'hora'], 
-    status: 'Ativo', 
-    envios: 1247, 
-    taxa: 98.5 
-  },
-  { 
-    id: 2, 
-    nome: 'Lembrete de Agendamento', 
-    texto: 'Oi {nome}! Lembrete: você tem um agendamento amanhã às {hora} para {servico}. Confirme sua presença!', 
-    variaveis: ['nome', 'servico', 'hora'], 
-    status: 'Ativo', 
-    envios: 892, 
-    taxa: 97.2 
-  },
-  { 
-    id: 3, 
-    nome: 'Cobrança Pendente', 
-    texto: 'Olá {nome}, você tem uma cobrança pendente de {valor} para {servico}. Pague via PIX: {pix}. Obrigado!', 
-    variaveis: ['nome', 'valor', 'servico', 'pix'], 
-    status: 'Ativo', 
-    envios: 445, 
-    taxa: 96.8 
-  },
-];
-
-const historicoMock: HistoricoItem[] = [
-  { id: 1, nome: 'Maria Silva', template: 'Confirmação de Agendamento', status: 'Entregue', data: '15/01/2025, 07:30' },
-  { id: 2, nome: 'João Santos', template: 'Lembrete de Agendamento', status: 'Lido', data: '15/01/2025, 06:15' },
-  { id: 3, nome: 'Ana Costa', template: 'Cobrança Pendente', status: 'Entregue', data: '15/01/2025, 05:45' },
-];
+// Mocks removidos: templates e histórico iniciam vazios até dados reais serem adicionados
 
 type FormData = {
   nome: string;
@@ -114,8 +80,8 @@ interface Cliente {
 
 export default function ClientNotifications() {
   const navigate = useNavigate();
-  const [templates, setTemplates] = useState<Template[]>(templatesMock.slice(0, MAX_TEMPLATES));
-  const [historico, setHistorico] = useState<HistoricoItem[]>(historicoMock);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [historico, setHistorico] = useState<HistoricoItem[]>([]);
   const [modal, setModal] = useState<{ type: null | 'novo' | 'editar' | 'enviar', template?: Template }>({ type: null });
   const [form, setForm] = useState<FormData>({ 
     nome: '', 

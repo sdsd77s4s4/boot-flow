@@ -8,21 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Slider } from '@/components/ui/slider';
 import { Play, Mic, UploadCloud, Plus, Volume2, CheckCircle2, Copy, Type } from 'lucide-react';
 
-const perfisMock = [
-  { id: 1, nome: 'Maria - Vendas', desc: 'Voz feminina, calorosa e profissional', genero: 'Feminina', tom: 'Profissional', uso: 1247, status: 'ativa' },
-  { id: 2, nome: 'João - Suporte', desc: 'Voz masculina, amigável e prestativa', genero: 'Masculina', tom: 'Amigável', uso: 856, status: 'ativa' },
-  { id: 3, nome: 'Ana - Corporativo', desc: 'Voz feminina, formal e clara', genero: 'Feminina', tom: 'Formal', uso: 432, status: 'ativa' },
-  { id: 4, nome: 'Pedro - Executivo', desc: 'Voz masculina, autoritativa e confiante', genero: 'Masculina', tom: 'Autoritativo', uso: 298, status: 'ativa' },
-  { id: 5, nome: 'Sofia - Educacional', desc: 'Voz feminina, paciente e didática', genero: 'Feminina', tom: 'Didática', uso: 567, status: 'ativa' },
-  { id: 6, nome: 'Carlos - Técnico', desc: 'Voz masculina, precisa e técnica', genero: 'Masculina', tom: 'Técnico', uso: 345, status: 'ativa' },
-  { id: 7, nome: 'Lúcia - Marketing', desc: 'Voz feminina, entusiasta e persuasiva', genero: 'Feminina', tom: 'Persuasiva', uso: 789, status: 'ativa' },
-];
-
-const transcricoesMock = [
-  { id: 1, nome: 'cliente_reclamacao_001.mp3', tempo: '2:34', status: 'processado', sentimento: 'negativo', texto: 'Olá, estou ligando porque meu pedido ainda não chegou...', resumo: 'Cliente reclama sobre atraso na entrega', data: '2 horas atrás' },
-  { id: 2, nome: 'feedback_positivo_002.mp3', tempo: '1:45', status: 'processando', sentimento: '', texto: '...', resumo: '', data: '15 min atrás' },
-  { id: 3, nome: 'duvida_produto_003.mp3', tempo: '3:12', status: 'processado', sentimento: 'neutro', texto: 'Gostaria de saber mais detalhes sobre o plano Pro...', resumo: 'Interessado no plano Pro, quer detalhes sobre IA', data: '1 hora atrás' },
-];
+// Mocks removidos — inicializar estados vazios para dados reais
 
 export default function ClientAI() {
   const [tab, setTab] = useState<'tts' | 'gravar' | 'clonar'>('tts');
@@ -31,8 +17,8 @@ export default function ClientAI() {
   const [velocidade, setVelocidade] = useState(1);
   const [tom, setTom] = useState(1);
   const [modal, setModal] = useState<{ type: null | 'upload' | 'novaVoz' | 'testarVoz' | 'detalhes' | 'editarVoz' | 'excluirVoz' | 'gravarVoz' | 'clonarVoz', data?: any }>({ type: null });
-  const [perfis, setPerfis] = useState(perfisMock);
-  const [transcricoes, setTranscricoes] = useState(transcricoesMock);
+  const [perfis, setPerfis] = useState<any[]>([]);
+  const [transcricoes, setTranscricoes] = useState<any[]>([]);
   const [novoPerfil, setNovoPerfil] = useState({ nome: '', genero: '', tom: '', status: 'ativa' });
   const [editPerfil, setEditPerfil] = useState({ nome: '', genero: '', tom: '', status: 'ativa' });
   const [loadingAudio, setLoadingAudio] = useState(false);
