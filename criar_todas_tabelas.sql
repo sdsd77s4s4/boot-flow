@@ -121,6 +121,44 @@ CREATE TRIGGER set_updated_at_cobrancas
   EXECUTE FUNCTION public.update_updated_at_column();
 
 -- ============================================
+-- 5.1 ADICIONAR OWNER UID + TRIGGER PARA POPULAR OWNER
+-- ============================================
+-- Coluna que armazena o auth.uid() do usuário/reseller que criou/é dono do registro
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS owner_uid UUID;
+ALTER TABLE public.resellers ADD COLUMN IF NOT EXISTS owner_uid UUID;
+ALTER TABLE public.cobrancas ADD COLUMN IF NOT EXISTS owner_uid UUID;
+
+-- Função que preenche owner_uid com auth.uid() quando não fornecido
+CREATE OR REPLACE FUNCTION public.set_owner_uid()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.owner_uid IS NULL THEN
+    NEW.owner_uid := auth.uid();
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Triggers para popular owner_uid ao inserir
+DROP TRIGGER IF EXISTS set_owner_users_owner ON public.users;
+CREATE TRIGGER set_owner_users_owner
+  BEFORE INSERT ON public.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.set_owner_uid();
+
+DROP TRIGGER IF EXISTS set_owner_resellers_owner ON public.resellers;
+CREATE TRIGGER set_owner_resellers_owner
+  BEFORE INSERT ON public.resellers
+  FOR EACH ROW
+  EXECUTE FUNCTION public.set_owner_uid();
+
+DROP TRIGGER IF EXISTS set_owner_cobrancas_owner ON public.cobrancas;
+CREATE TRIGGER set_owner_cobrancas_owner
+  BEFORE INSERT ON public.cobrancas
+  FOR EACH ROW
+  EXECUTE FUNCTION public.set_owner_uid();
+
+-- ============================================
 -- 6. CONFIGURAR RLS (Row Level Security)
 -- ============================================
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
@@ -135,22 +173,44 @@ DROP POLICY IF EXISTS "Users can insert all" ON public.users;
 DROP POLICY IF EXISTS "Users can update all" ON public.users;
 DROP POLICY IF EXISTS "Users can delete all" ON public.users;
 
-CREATE POLICY "Users can view all"
+-- Políticas mais restritas: somente o owner (auth.uid()), um admin via claim 'role' = 'admin',
+-- ou o `service_role` podem operar globalmente.
+CREATE POLICY "Users: select owner|admin|service"
   ON public.users FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Users can insert all"
+CREATE POLICY "Users: insert owner|service|admin"
   ON public.users FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Users can update all"
+CREATE POLICY "Users: update owner|admin|service"
   ON public.users FOR UPDATE
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  )
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Users can delete all"
+CREATE POLICY "Users: delete owner|admin|service"
   ON public.users FOR DELETE
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
 -- ============================================
 -- 8. POLÍTICAS RLS PARA resellers
@@ -160,28 +220,48 @@ DROP POLICY IF EXISTS "Resellers can insert all" ON public.resellers;
 DROP POLICY IF EXISTS "Resellers can update all" ON public.resellers;
 DROP POLICY IF EXISTS "Resellers can delete all" ON public.resellers;
 
-CREATE POLICY "Resellers can view all"
+CREATE POLICY "Resellers: select owner|admin|service"
   ON public.resellers FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Resellers can insert all"
+CREATE POLICY "Resellers: insert owner|service|admin"
   ON public.resellers FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
--- Permitir inserção por service role (usando checagem via auth.role())
+-- Permitir inserção explícita por service role (mantido para scripts/migrations)
 DROP POLICY IF EXISTS "Enable insert for service role resellers" ON public.resellers;
 CREATE POLICY "Enable insert for service role resellers"
   ON public.resellers FOR INSERT
   WITH CHECK (auth.role() = 'service_role');
 
-CREATE POLICY "Resellers can update all"
+CREATE POLICY "Resellers: update owner|admin|service"
   ON public.resellers FOR UPDATE
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  )
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Resellers can delete all"
+CREATE POLICY "Resellers: delete owner|admin|service"
   ON public.resellers FOR DELETE
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
 -- ============================================
 -- 9. POLÍTICAS RLS PARA cobrancas
@@ -191,22 +271,42 @@ DROP POLICY IF EXISTS "Cobrancas can insert all" ON public.cobrancas;
 DROP POLICY IF EXISTS "Cobrancas can update all" ON public.cobrancas;
 DROP POLICY IF EXISTS "Cobrancas can delete all" ON public.cobrancas;
 
-CREATE POLICY "Cobrancas can view all"
+CREATE POLICY "Cobrancas: select owner|admin|service"
   ON public.cobrancas FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Cobrancas can insert all"
+CREATE POLICY "Cobrancas: insert owner|service|admin"
   ON public.cobrancas FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Cobrancas can update all"
+CREATE POLICY "Cobrancas: update owner|admin|service"
   ON public.cobrancas FOR UPDATE
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  )
+  WITH CHECK (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
-CREATE POLICY "Cobrancas can delete all"
+CREATE POLICY "Cobrancas: delete owner|admin|service"
   ON public.cobrancas FOR DELETE
-  USING (auth.role() = 'authenticated');
+  USING (
+    auth.role() = 'service_role'
+    OR auth.uid() = owner_uid
+    OR (current_setting('request.jwt.claims', true)::json->>'role') = 'admin'
+  );
 
 -- ============================================
 -- FIM DO SCRIPT
