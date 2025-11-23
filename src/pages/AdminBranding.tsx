@@ -3168,7 +3168,6 @@ const AdminBranding: React.FC = () => {
               }}
             >
               {viewingPage.showHeader && (
-                {/* eslint-disable-next-line no-inline-styles */}
                 <header className="mb-8 pb-4 border-b" style={{ borderColor: viewingPage.primaryColor }}>
                   {/* eslint-disable-next-line no-inline-styles */}
                   <h1 className="text-4xl font-bold mb-2" style={{ color: viewingPage.primaryColor }}>
@@ -3306,7 +3305,6 @@ const AdminBranding: React.FC = () => {
                             const textSizes: any = { small: 'text-sm', medium: 'text-base', large: 'text-lg', xlarge: 'text-2xl' };
                             const textAligns: any = { left: 'text-left', center: 'text-center', right: 'text-right' };
                             return (
-                              {/* eslint-disable-next-line no-inline-styles */}
                               <div className={`${textSizes[config.size || 'medium']} ${textAligns[config.align || 'left']}`} style={{ color: viewingPage.textColor }}>
                                 {config.content || 'Digite seu texto aqui'}
                               </div>
@@ -3332,7 +3330,6 @@ const AdminBranding: React.FC = () => {
               )}
               
               {viewingPage.showFooter && (
-                {/* eslint-disable-next-line no-inline-styles */}
                 <footer className="mt-8 pt-4 border-t" style={{ borderColor: viewingPage.primaryColor }}>
                   <p className="text-sm opacity-60">© {new Date().getFullYear()} {brand.name || 'Sua Empresa'}</p>
                 </footer>
