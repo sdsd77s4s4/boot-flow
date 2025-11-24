@@ -68,7 +68,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import React from "react";
-import { useClientes } from "@/hooks/useClientes";
+import { useClientes, type Cliente } from "@/hooks/useClientes";
 import { RLSErrorBanner } from "@/components/RLSErrorBanner";
 import { useNavigate } from "react-router-dom";
 import { ArrowUp } from "lucide-react";
@@ -88,7 +88,25 @@ export default function ClientClients() {
     fetchClientes,
   } = useClientes();
 
-  const [newUser, setNewUser] = useState({
+  const [newUser, setNewUser] = useState<{
+    name: string;
+    email: string;
+    plan: string;
+    price: string;
+    status: string;
+    telegram: string;
+    observations: string;
+    expirationDate: string;
+    password: string;
+    bouquets: string;
+    realName: string;
+    whatsapp: string;
+    devices: number;
+    credits: number;
+    notes: string;
+    server: string;
+    m3u_url: string;
+  }>({
     name: "",
     email: "",
     plan: "",
@@ -99,28 +117,31 @@ export default function ClientClients() {
     expirationDate: "",
     password: "",
     bouquets: "",
-    realName: "", // Campo separado para o nome real
-    whatsapp: "", // Campo whatsapp
-    devices: 0, // Campo dispositivos
-    credits: 0, // Campo créditos
-    notes: "", // Campo anotações
-    server: "", // Campo servidor
-    m3u_url: "", // Campo URL M3U
+    realName: "",
+    whatsapp: "",
+    devices: 0,
+    credits: 0,
+    notes: "",
+    server: "",
+    m3u_url: "",
   });
 
   // Estados para a extração M3U
   const [m3uUrl, setM3uUrl] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
-  const [extractionResult, setExtractionResult] = useState<any>(null);
+  const [extractionResult, setExtractionResult] = useState<{
+    success: boolean;
+    message?: string;
+  } | null>(null);
   const [extractionError, setExtractionError] = useState("");
-  const [extractedUsers, setExtractedUsers] = useState<any[]>([]);
-  const [selectedExtractedUser, setSelectedExtractedUser] = useState<any>(null);
+  const [extractedUsers, setExtractedUsers] = useState<Cliente[]>([]);
+  const [selectedExtractedUser, setSelectedExtractedUser] = useState<Cliente | null>(null);
 
   // Estados para os modais de ação
-  const [editingUser, setEditingUser] = useState<any | null>(null);
-  const [viewingUser, setViewingUser] = useState<any | null>(null);
-  const [deletingUser, setDeletingUser] = useState<any | null>(null);
-  const [pagoUser, setPagoUser] = useState<any | null>(null);
+  const [editingUser, setEditingUser] = useState<Cliente | null>(null);
+  const [viewingUser, setViewingUser] = useState<Cliente | null>(null);
+  const [deletingUser, setDeletingUser] = useState<Cliente | null>(null);
+  const [pagoUser, setPagoUser] = useState<Cliente | null>(null);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
