@@ -2030,7 +2030,6 @@ export default function ClientClients() {
                         onChange={(e) => setEditingUser({ ...editingUser, server: e.target.value })}
                         placeholder="Digite o nome do servidor"
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                        title="Selecione o plano"
                         title="Digite o nome do servidor"
                       />
                     </div>
@@ -2038,9 +2037,12 @@ export default function ClientClients() {
                     <div className="col-span-1">
                       <label className="block text-gray-300 mb-1 font-medium">
                         Plano *
+                        <span className="sr-only" id="plan-label">Plano *</span>
                       </label>
                       <select
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        id="plan-select"
+                        aria-labelledby="plan-label"
                         value={editingUser.plan}
                         onChange={(e) =>
                           setEditingUser({
