@@ -2031,6 +2031,12 @@ export default function ClientClients() {
                         placeholder="Digite o nome do servidor"
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         title="Selecione o plano"
+                        value={newUser.plan}
+                        onChange={(e) =>
+                          setNewUser({ ...newUser, plan: e.target.value, price: "" })
+                        }
+                      >
+                        title="Selecione o plano"
                       />
                     </div>
                     {/* Plano */}
@@ -2384,8 +2390,8 @@ export default function ClientClients() {
                             devices: parseInt(e.target.value) || 0,
                           })
                         }
-                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-                          title="Número de dispositivos"
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        title="Número de dispositivos"
                         placeholder="Digite o número de dispositivos"
                       />
                     </div>
