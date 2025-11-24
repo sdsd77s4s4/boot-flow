@@ -138,7 +138,9 @@ export default function ClientClients() {
   const [selectedExtractedUser, setSelectedExtractedUser] = useState<Cliente | null>(null);
 
   // Estados para os modais de ação
-  const [editingUser, setEditingUser] = useState<Cliente | null>(null);
+  // Tipo estendido para o estado de edição, contendo campos camelCase usados somente no frontend
+  type EditingUser = Cliente & { realName?: string; expirationDate?: string; createdAt?: string };
+  const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
   const [viewingUser, setViewingUser] = useState<Cliente | null>(null);
   const [deletingUser, setDeletingUser] = useState<Cliente | null>(null);
   const [pagoUser, setPagoUser] = useState<Cliente | null>(null);
@@ -1750,7 +1752,9 @@ export default function ClientClients() {
                       </Label>
                       <p className="text-white font-medium flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        {viewingUser.createdAt}
+                        {viewingUser.created_at
+                          ? new Date(viewingUser.created_at).toLocaleDateString('pt-BR')
+                          : '-'}
                       </p>
                     </div>
                     {viewingUser.renewalDate && (
@@ -1823,7 +1827,7 @@ export default function ClientClients() {
 
                 {/* Dados Extras */}
                 {(viewingUser.password ||
-                  viewingUser.expirationDate ||
+                  viewingUser.expiration_date ||
                   viewingUser.bouquets) && (
                   <div className="bg-[#23272f] rounded-lg p-4">
                     <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -1839,13 +1843,13 @@ export default function ClientClients() {
                           </p>
                         </div>
                       )}
-                      {viewingUser.expirationDate && (
+                      {viewingUser.expiration_date && (
                         <div>
                           <Label className="text-gray-400 text-sm">
                             Data de Vencimento
                           </Label>
                           <p className="text-white font-medium">
-                            {viewingUser.expirationDate}
+                            {new Date(viewingUser.expiration_date).toLocaleDateString('pt-BR')}
                           </p>
                         </div>
                       )}
@@ -2178,10 +2182,10 @@ export default function ClientClients() {
                         Nome *
                       </label>
                       <input
-                        value={editingUser.realName || ""}
+                        value={editingUser.realName || editingUser.real_name || ""}
                         onChange={async (e) => {
                           const newName = e.target.value;
-                          setEditingUser({ ...editingUser, realName: newName });
+                          setEditingUser({ ...editingUser, realName: newName, real_name: newName });
                           if (editingUser && editingUser.id) {
                             // Salvar em tempo real no banco
                             await updateUser(editingUser.id, {
@@ -2737,8 +2741,8 @@ function VencimentoDatePickerEdit({
   editingUser,
   setEditingUser,
 }: {
-  editingUser: Cliente | null;
-  setEditingUser: (user: Cliente) => void;
+  editingUser: (Cliente & { expirationDate?: string; realName?: string }) | null;
+  setEditingUser: (user: Cliente & { expirationDate?: string; realName?: string }) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   // Função auxiliar para criar data local a partir de string YYYY-MM-DD
@@ -2750,7 +2754,9 @@ function VencimentoDatePickerEdit({
   const [date, setDate] = React.useState<Date | undefined>(
     editingUser?.expirationDate
       ? createLocalDate(editingUser.expirationDate)
-      : undefined
+      : editingUser?.expiration_date
+        ? createLocalDate(editingUser.expiration_date)
+        : undefined
   );
   const [time, setTime] = React.useState<string>("");
 
@@ -2758,10 +2764,12 @@ function VencimentoDatePickerEdit({
   React.useEffect(() => {
     if (editingUser?.expirationDate) {
       setDate(createLocalDate(editingUser.expirationDate));
+    } else if (editingUser?.expiration_date) {
+      setDate(createLocalDate(editingUser.expiration_date));
     } else {
       setDate(undefined);
     }
-  }, [editingUser?.expirationDate]);
+  }, [editingUser?.expirationDate, editingUser?.expiration_date]);
 
   function handleDateSelect(selected: Date | undefined) {
     setDate(selected);
@@ -2771,9 +2779,9 @@ function VencimentoDatePickerEdit({
       const month = String(selected.getMonth() + 1).padStart(2, '0');
       const day = String(selected.getDate()).padStart(2, '0');
       const localDate = `${year}-${month}-${day}`;
-      setEditingUser({ ...editingUser, expirationDate: localDate });
+      setEditingUser({ ...editingUser, expirationDate: localDate, expiration_date: localDate });
     } else if (editingUser) {
-      setEditingUser({ ...editingUser, expirationDate: "" });
+      setEditingUser({ ...editingUser, expirationDate: "", expiration_date: "" });
     }
     setOpen(false);
   }
