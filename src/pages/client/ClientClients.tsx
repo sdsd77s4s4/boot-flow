@@ -1128,6 +1128,7 @@ export default function ClientClients() {
                         </label>
                         <select
                           className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          title="Selecione o plano"
                           value={newUser.plan}
                           onChange={(e) =>
                             setNewUser({ ...newUser, plan: e.target.value, price: "" })
@@ -1149,6 +1150,7 @@ export default function ClientClients() {
                           </label>
                           <select
                             className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                            title="Selecione o preço"
                             value={newUser.price}
                             onChange={(e) =>
                               setNewUser({ ...newUser, price: e.target.value })
@@ -1198,6 +1200,7 @@ export default function ClientClients() {
                         </label>
                         <select
                           className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          title="Selecione o status"
                           value={newUser.status}
                           onChange={(e) =>
                             setNewUser({ ...newUser, status: e.target.value })
@@ -2027,6 +2030,7 @@ export default function ClientClients() {
                         onChange={(e) => setEditingUser({ ...editingUser, server: e.target.value })}
                         placeholder="Digite o nome do servidor"
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        title="Selecione o plano"
                       />
                     </div>
                     {/* Plano */}
@@ -2061,6 +2065,7 @@ export default function ClientClients() {
                         </label>
                         <select
                           className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          title="Selecione o preço"
                           value={editingUser.price}
                           onChange={(e) =>
                             setEditingUser({
@@ -2287,6 +2292,7 @@ export default function ClientClients() {
                         Classe de Serviço
                       </label>
                       <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                        title="Selecione a classe de serviço"
                         <option value="">Selecione</option>
                         <option value="basico">Básico</option>
                         <option value="premium">Premium</option>
@@ -2298,6 +2304,7 @@ export default function ClientClients() {
                         Plano
                       </label>
                       <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                        title="Selecione o plano"
                         <option value="mensal">Mensal</option>
                         <option value="anual">Anual</option>
                       </select>
@@ -2316,6 +2323,7 @@ export default function ClientClients() {
                           })
                         }
                         className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                        title="Selecione o status"
                       >
                         <option value="Ativo">Ativo</option>
                         <option value="Inativo">Inativo</option>
@@ -2370,7 +2378,9 @@ export default function ClientClients() {
                             devices: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          title="Número de dispositivos"
+                        placeholder="Digite o número de dispositivos"
                       />
                     </div>
                     {/* Créditos */}
@@ -2396,6 +2406,8 @@ export default function ClientClients() {
                             })
                           }
                           className="w-16 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+                          title="Créditos"
+                          placeholder="Digite os créditos"
                         />
                         <button
                           type="button"
@@ -2419,7 +2431,7 @@ export default function ClientClients() {
                     Informações Adicionais
                   </span>
                   <div className="flex items-center gap-2 mb-2">
-                    <input type="checkbox" className="accent-purple-600" />
+                    <input type="checkbox" className="accent-purple-600" title="Ativar notificações via WhatsApp" aria-label="Notificações via WhatsApp" />
                     <span className="text-gray-300">Notificações via WhatsApp</span>
                   </div>
                   <div>
@@ -2668,6 +2680,7 @@ function VencimentoDatePicker() {
             placeholder="Selecione a data"
             className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 cursor-pointer"
             onClick={() => setOpen(true)}
+            title="Selecione a data"
             aria-label="Data de vencimento"
             id="edit-expiration-date"
           />
@@ -2676,8 +2689,10 @@ function VencimentoDatePicker() {
             value={time}
             onChange={handleTimeChange}
             className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
+            title="Selecione o horário"
             aria-label="Horário de vencimento"
             id="edit-expiration-time"
+            placeholder="Selecione o horário"
           />
         </div>
       </PopoverTrigger>
