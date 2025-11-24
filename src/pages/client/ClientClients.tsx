@@ -2291,8 +2291,11 @@ export default function ClientClients() {
                       <label className="block text-gray-300 mb-1 font-medium">
                         Classe de Serviço
                       </label>
-                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                      <select 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         title="Selecione a classe de serviço"
+                        aria-label="Classe de serviço"
+                      >
                         <option value="">Selecione</option>
                         <option value="basico">Básico</option>
                         <option value="premium">Premium</option>
@@ -2303,8 +2306,11 @@ export default function ClientClients() {
                       <label className="block text-gray-300 mb-1 font-medium">
                         Plano
                       </label>
-                      <select className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2">
+                      <select 
+                        className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
                         title="Selecione o plano"
+                        aria-label="Plano"
+                      >
                         <option value="mensal">Mensal</option>
                         <option value="anual">Anual</option>
                       </select>
@@ -2432,10 +2438,15 @@ export default function ClientClients() {
                   </span>
                   <div className="flex items-center gap-2 mb-2">
                     <input type="checkbox" className="accent-purple-600" title="Ativar notificações via WhatsApp" aria-label="Notificações via WhatsApp" />
-                    <span className="text-gray-300">Notificações via WhatsApp</span>
-                  </div>
                   <div>
                     <label className="block text-gray-300 mb-1 font-medium">Anotações</label>
+                    <textarea 
+                      placeholder="Anotações..." 
+                      className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]"
+                      title="Anotações adicionais"
+                      aria-label="Anotações"
+                    />
+                  </div>
                     <textarea placeholder="Anotações..." className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 min-h-[60px]" />
                   </div>
                 </div>
@@ -2722,12 +2733,14 @@ function RenovacaoDatePicker() {
 
   function formatDate(d?: Date) {
     if (!d) return "";
-    return d.toLocaleDateString("pt-BR");
-  }
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+          readOnly
+          value={date ? formatDate(date) : ""}
+          placeholder="dd/mm/aaaa"
+          className="w-full bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2 cursor-pointer"
+          onClick={() => setOpen(true)}
+          title="Selecione a data de renovação"
+          aria-label="Data de renovação"
+        />
         <input
           readOnly
           value={date ? formatDate(date) : ""}
