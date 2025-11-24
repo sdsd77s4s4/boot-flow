@@ -2693,7 +2693,7 @@ function VencimentoDatePicker() {
             onClick={() => setOpen(true)}
             title="Selecione a data"
             aria-label="Data de vencimento"
-            id="edit-expiration-date"
+            id="edit-expiration-date-1"
           />
           <input
             type="time"
@@ -2702,9 +2702,8 @@ function VencimentoDatePicker() {
             placeholder="Selecione o horário"
             onChange={handleTimeChange}
             className="w-1/2 bg-[#23272f] border border-gray-700 text-white rounded px-3 py-2"
-            title="Selecione o horário"
             aria-label="Horário de vencimento"
-            id="edit-expiration-time"
+            id="edit-expiration-time-1"
             placeholder="Selecione o horário"
           />
         </div>
