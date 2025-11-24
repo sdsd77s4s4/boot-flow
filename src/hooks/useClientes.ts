@@ -131,16 +131,16 @@ export function useClientes() {
           console.log('✅ [useClientes] Clientes buscados:', data.length, 'para o admin:', user.id);
         }
         setClientes(data || []);
-      } catch (fetchError: any) {
+      } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
         // Ignorar erros de abort
-        if (fetchError.name === 'AbortError') {
+        if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
           console.log('🔄 [useClientes] Requisição abortada (nova requisição iniciada)');
           return;
         }
         throw fetchError;
       }
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(`Erro inesperado: ${errorMessage}`);
       console.error('Erro ao buscar clientes:', err);
@@ -237,10 +237,10 @@ export function useClientes() {
         });
         
         clearTimeout(timeoutId);
-      } catch (fetchError: any) {
+      } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
         
-        if (fetchError.name === 'AbortError') {
+        if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
           console.error('⏰ [useClientes] Timeout na inserção (15 segundos)');
           setError('Erro de conexão: A operação está demorando muito. Verifique sua conexão com a internet.');
           return false;
@@ -254,8 +254,8 @@ export function useClientes() {
       const responseText = await response.text();
       console.log('🔄 [useClientes] Resposta completa:', responseText);
       
-      let data;
-      let error: any = null;
+      let data: unknown;
+      let error: { code?: string; message?: string; details?: string } | null = null;
       
       try {
         data = responseText ? JSON.parse(responseText) : null;
@@ -271,10 +271,15 @@ export function useClientes() {
       }
       
       if (!response.ok || error) {
-        const errorObj = error || data || {
+        const fallbackError = {
           code: response.status.toString(),
           message: response.statusText || 'Erro desconhecido',
           details: responseText,
+        };
+        const errorObj = (error || data || fallbackError) as {
+          code?: string;
+          message?: string;
+          details?: string;
         };
         
         console.error('❌ [useClientes] Erro do Supabase:', errorObj);
@@ -307,7 +312,7 @@ export function useClientes() {
       }
       console.log('✅ [useClientes] Lista atualizada!');
       return true;
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('❌ [useClientes] Erro inesperado:', err);
       console.error('❌ [useClientes] Stack trace:', err instanceof Error ? err.stack : 'N/A');
@@ -394,10 +399,10 @@ export function useClientes() {
         });
         
         clearTimeout(timeoutId);
-      } catch (fetchError: any) {
+      } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
         
-        if (fetchError.name === 'AbortError') {
+        if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
           console.error('⏰ [useClientes] Timeout na atualização (15 segundos)');
           setError('Erro de conexão: A operação está demorando muito. Verifique sua conexão com a internet.');
           return false;
@@ -411,8 +416,8 @@ export function useClientes() {
       const responseText = await response.text();
       console.log('🔄 [useClientes] Resposta completa:', responseText);
       
-      let data;
-      let error: any = null;
+      let data: unknown;
+      let error: { code?: string; message?: string; details?: string } | null = null;
       
       try {
         data = responseText ? JSON.parse(responseText) : null;
@@ -428,10 +433,15 @@ export function useClientes() {
       }
       
       if (!response.ok || error) {
-        const errorObj = error || data || {
+        const fallbackError = {
           code: response.status.toString(),
           message: response.statusText || 'Erro desconhecido',
           details: responseText,
+        };
+        const errorObj = (error || data || fallbackError) as {
+          code?: string;
+          message?: string;
+          details?: string;
         };
         
         console.error('❌ [useClientes] Erro do Supabase:', errorObj);
@@ -497,7 +507,7 @@ export function useClientes() {
       }, 200);
       
       return true;
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('❌ [useClientes] Erro inesperado:', err);
       console.error('❌ [useClientes] Stack trace:', err instanceof Error ? err.stack : 'N/A');
@@ -586,7 +596,7 @@ export function useClientes() {
       setClientes(prevClientes => prevClientes.filter(cliente => cliente.id !== id));
       
       return true;
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(`Erro inesperado ao deletar cliente: ${errorMessage}`);
       console.error('❌ [useClientes] Erro ao deletar cliente:', err);
