@@ -169,7 +169,8 @@ const AdminDashboard = () => {
   // Estados para a extração M3U
   const [m3uUrl, setM3uUrl] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
-  const [extractionResult, setExtractionResult] = useState<any>(null);
+  // Use unknown for extraction result, or define a type if known
+  const [extractionResult, setExtractionResult] = useState<unknown>(null);
   const [extractionError, setExtractionError] = useState("");
   const [isAddingUser, setIsAddingUser] = useState(false);
 
@@ -182,8 +183,19 @@ const AdminDashboard = () => {
   const { revendas: revendasFromHook, fetchRevendas } = useRevendas();
   
   // Estados locais para os dados
-  const [clientes, setClientes] = useState<any[]>([]);
-  const [revendas, setRevendas] = useState<any[]>([]);
+  // Tipos explícitos para clientes e revendas
+  interface Cliente {
+    id: string;
+    admin_id?: string | null;
+    [key: string]: any;
+  }
+  interface Revenda {
+    id: string;
+    admin_id?: string | null;
+    [key: string]: any;
+  }
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [revendas, setRevendas] = useState<Revenda[]>([]);
   const [loadingClientes, setLoadingClientes] = useState(true);
   const [loadingRevendas, setLoadingRevendas] = useState(true);
   
@@ -197,26 +209,26 @@ const AdminDashboard = () => {
     // Filtrar por admin_id se houver admin logado (garantir que apenas dados do admin sejam exibidos)
     if (user?.id) {
       if (clientesToUse && Array.isArray(clientesToUse)) {
-        clientesToUse = clientesToUse.filter((cliente: any) => {
+        clientesToUse = clientesToUse.filter((cliente: Cliente) => {
           return cliente.admin_id === user.id || cliente.admin_id === null || cliente.admin_id === undefined;
-        }) as any[];
+        });
       }
       if (revendasToUse && Array.isArray(revendasToUse)) {
-        revendasToUse = revendasToUse.filter((revenda: any) => {
+        revendasToUse = revendasToUse.filter((revenda: Revenda) => {
           return revenda.admin_id === user.id || revenda.admin_id === null || revenda.admin_id === undefined;
-        }) as any[];
+        });
       }
       console.log('🔄 [AdminDashboard] Dados filtrados por admin_id:', user.id, 'Clientes:', clientesToUse?.length, 'Revendas:', revendasToUse?.length);
     }
     
     if (clientesToUse) {
-      setClientes(clientesToUse as any[]);
+      setClientes(clientesToUse as Cliente[]);
       setLoadingClientes(false);
     }
     
     if (revendasToUse) {
       console.log('✅ [AdminDashboard] Atualizando estado revendas com', revendasToUse.length, 'revendedores');
-      setRevendas(revendasToUse as any[]);
+      setRevendas(revendasToUse as Revenda[]);
       setLoadingRevendas(false);
     }
   }, [realtimeClientes, realtimeRevendas, clientesFromHook, revendasFromHook, user?.id]);
@@ -288,7 +300,8 @@ const AdminDashboard = () => {
   }, [clientesError, revendasError]);
   
   // Função para adicionar um novo cliente (usa o hook useClientes)
-  const addCliente = useCallback(async (clienteData: any) => {
+  // Use Record<string, unknown> for generic data
+  const addCliente = useCallback(async (clienteData: Record<string, unknown>) => {
     try {
       console.log('🔄 [AdminDashboard] addCliente wrapper chamado com:', clienteData);
       
@@ -305,15 +318,20 @@ const AdminDashboard = () => {
         console.error('Erro ao adicionar cliente - verifique o console para detalhes');
         return false;
       }
-    } catch (error: any) {
-      console.error('Erro no wrapper addCliente:', error);
-      toast.error(`Erro ao adicionar cliente: ${error?.message || 'Erro desconhecido'}`, { duration: 5000 });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Erro no wrapper addCliente:', error);
+        toast.error(`Erro ao adicionar cliente: ${error.message}`, { duration: 5000 });
+      } else {
+        console.error('Erro no wrapper addCliente:', error);
+        toast.error('Erro ao adicionar cliente: Erro desconhecido', { duration: 5000 });
+      }
       return false;
     }
   }, [addClienteHook]);
   
   // Função para adicionar um novo revendedor
-  const addRevenda = useCallback(async (revendaData: any) => {
+  const addRevenda = useCallback(async (revendaData: Record<string, unknown>) => {
     try {
       const { data, error } = await (supabase
         .from('revendas') as any)
@@ -900,16 +918,18 @@ const AdminDashboard = () => {
 
       // Atualizar dashboard
       setRefreshTrigger(prev => prev + 1);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [AdminDashboard] Erro ao adicionar usuário:", error);
-      
       // Cancelar timeout de segurança já que houve erro
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      
-      const errorMessage = error?.message || error || "Erro desconhecido ao adicionar usuário.";
-      
+      let errorMessage = "Erro desconhecido ao adicionar usuário.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
       // Mensagens específicas para diferentes tipos de erro
       if (errorMessage.includes("duplicate key value") || errorMessage.includes("unique constraint")) {
         alert("❌ Já existe um usuário com este e-mail!");
@@ -1264,7 +1284,13 @@ const AdminDashboard = () => {
   }, [revendas, stats.activeResellers]);
 
   // Componente SortableCard
-  function SortableCard({ id, content, body, onClick }: any) {
+  interface SortableCardProps {
+    id: string;
+    content: React.ReactNode;
+    body?: React.ReactNode;
+    onClick?: (e: React.MouseEvent) => void;
+  }
+  function SortableCard({ id, content, body, onClick }: SortableCardProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
     const elRef = useRef<HTMLElement | null>(null);
 
@@ -2026,7 +2052,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  // Use unknown for event, or define a type if using dnd-kit
+  const handleDragEnd = (event: unknown) => {
+    if (typeof event !== 'object' || event === null) return;
+    // Type assertion for dnd-kit event
+    const { active, over } = event as { active?: { id: string }, over?: { id: string } };
     const { active, over } = event;
     
     if (!active || !over) return;
