@@ -2730,8 +2730,8 @@ function VencimentoDatePickerEdit({
   editingUser,
   setEditingUser,
 }: {
-  editingUser: any | null;
-  setEditingUser: (user: any) => void;
+  editingUser: Cliente | null;
+  setEditingUser: (user: Cliente) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   // Função auxiliar para criar data local a partir de string YYYY-MM-DD
