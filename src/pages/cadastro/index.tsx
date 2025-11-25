@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { supabase } from "../../supabaseClient";
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
 
 const PLAN_TABLES = {
   Essencial: "essencial",
@@ -52,8 +54,9 @@ export default function Cadastro() {
       });
 
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.message || "Erro ao cadastrar");
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Erro ao cadastrar");
     } finally {
       setLoading(false);
     }
@@ -71,6 +74,8 @@ export default function Cadastro() {
             onChange={e => setForm({ ...form, nome: e.target.value })}
             required
             className="w-full border px-3 py-2 rounded"
+            title="Digite seu nome"
+            placeholder="Nome completo"
           />
         </div>
         <div>
@@ -81,6 +86,8 @@ export default function Cadastro() {
             onChange={e => setForm({ ...form, email: e.target.value })}
             required
             className="w-full border px-3 py-2 rounded"
+            title="Digite seu e-mail"
+            placeholder="E-mail"
           />
         </div>
         <div>
@@ -91,6 +98,8 @@ export default function Cadastro() {
             onChange={e => setForm({ ...form, whatsapp: e.target.value })}
             required
             className="w-full border px-3 py-2 rounded"
+            title="Digite seu WhatsApp"
+            placeholder="WhatsApp com DDD"
           />
         </div>
         <div>
@@ -99,6 +108,7 @@ export default function Cadastro() {
             value={form.plano}
             onChange={e => setForm({ ...form, plano: e.target.value })}
             className="w-full border px-3 py-2 rounded"
+            title="Selecione o plano"
           >
             <option>Essencial</option>
             <option>Profissional</option>
