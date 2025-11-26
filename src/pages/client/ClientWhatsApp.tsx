@@ -381,32 +381,21 @@ const ClientWhatsApp: React.FC = () => {
 
   // Carregar configurações salvas no localStorage ao iniciar
   React.useEffect(() => {
-    const savedConfig = localStorage.getItem('apiBrasilConfig');
+    const savedConfig = localStorage.getItem('evolutionConfig');
     if (savedConfig) {
       try {
-        const parsedConfig = JSON.parse(savedConfig);
-        setApiBrasilConfig(prev => ({
-          ...prev,
-          ...parsedConfig,
-          isLoading: false
-        }));
-        
-        if (parsedConfig.bearerToken && parsedConfig.profileId) {
-          testApiBrasilConnection();
-        }
+        const parsed = JSON.parse(savedConfig);
+        setEvolutionConfig(prev => ({ ...prev, ...parsed }));
       } catch (error) {
-        console.error('Erro ao carregar configurações:', error);
+        console.error('Erro ao carregar evolutionConfig:', error);
       }
     }
   }, []);
 
   // Salvar configurações quando houver alterações
   React.useEffect(() => {
-    if (apiBrasilConfig.bearerToken || apiBrasilConfig.profileId) {
-      const { isLoading, ...configToSave } = apiBrasilConfig;
-      localStorage.setItem('apiBrasilConfig', JSON.stringify(configToSave));
-    }
-  }, [apiBrasilConfig]);
+    localStorage.setItem('evolutionConfig', JSON.stringify(evolutionConfig));
+  }, [evolutionConfig]);
 
   // Abrir modal para novo template
   const handleNewTemplate = () => {
@@ -466,30 +455,20 @@ const ClientWhatsApp: React.FC = () => {
   // Efeito para verificar periodicamente o status da conexão
   useEffect(() => {
     const checkConnection = async () => {
-      if (!apiBrasilConfig.bearerToken || !apiBrasilConfig.profileId) return;
-      
+      const { baseUrl, apiKey, instanceName } = evolutionConfig;
+      if (!baseUrl || !apiKey || !instanceName) return;
       try {
-        const { success, data } = await checkConnectionStatus(
-          apiBrasilConfig.bearerToken, 
-          apiBrasilConfig.profileId
-        );
-        
-        if (success) {
-          const connected = data?.connected === true;
-          setIsConnected(connected);
-          setConnectionStatus(connected ? 'connected' : 'disconnected');
-          
-          setApiBrasilConfig(prev => ({
-            ...prev,
-            isConnected: connected,
-            isLoading: false,
-            isConfigured: true
-          }));
-        }
+        const res = await fetch(`${baseUrl.replace(/\/$/, '')}/instance/connectionState/${encodeURIComponent(instanceName)}`, {
+          headers: { apikey: apiKey },
+        });
+        const data = await res.json().catch(() => ({}));
+        const state: string = data?.state || data?.status || '';
+        const connected = /connected/i.test(state);
+        setIsConnected(connected);
+        setEvolutionStatus(connected ? 'connected' : /connecting|qr|pairing/i.test(state) ? 'connecting' : 'disconnected');
       } catch (error) {
-        console.error('Erro ao verificar conexão:', error);
         setIsConnected(false);
-        setConnectionStatus('disconnected');
+        setEvolutionStatus('disconnected');
       }
     };
 
@@ -497,7 +476,7 @@ const ClientWhatsApp: React.FC = () => {
     const interval = setInterval(checkConnection, 30000);
 
     return () => clearInterval(interval);
-  }, [apiBrasilConfig.bearerToken, apiBrasilConfig.profileId]);
+  }, [evolutionConfig.baseUrl, evolutionConfig.apiKey, evolutionConfig.instanceName]);
 
   return (
     <div className="p-6 min-h-screen bg-[#09090b] space-y-6">
@@ -595,17 +574,17 @@ const ClientWhatsApp: React.FC = () => {
                 WhatsApp {isConnected ? 'Conectado' : 'Desconectado'}
               </p>
               <p className="text-sm text-gray-400">
-                {connectionStatus === 'connected' ? 'Pronto para enviar mensagens' : 'Configure a integração para começar'}
+                {evolutionStatus === 'connected' ? 'Pronto para enviar mensagens' : 'Configure a integração para começar'}
               </p>
             </div>
             <Badge className={isConnected ? 'bg-green-700 text-green-200' : 'bg-red-700 text-red-200'}>
-              {connectionStatus}
+              {evolutionStatus}
             </Badge>
           </div>
         </CardContent>
       </Card>
 
-      {/* Modal de Configuração */}
+      {/* Modal de Configuração - Evolution API */}
       <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
         <DialogContent className="bg-[#1f2937] text-white max-w-4xl w-full p-0 rounded-xl shadow-xl border border-gray-700 flex flex-col max-h-[90vh] overflow-y-auto scrollbar-hide">
           <div className="p-6 w-full flex flex-col">
@@ -613,115 +592,148 @@ const ClientWhatsApp: React.FC = () => {
               <div>
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <MessageSquare className="w-6 h-6 text-green-500" />
-                  Configurar WhatsApp Business
+                  Configurar WhatsApp Business (Evolution API)
                 </h2>
-                <p className="text-gray-400 text-sm mt-1">Configure a integração com a API Brasil para enviar mensagens via WhatsApp</p>
+                <p className="text-gray-400 text-sm mt-1">Configure a integração com a Evolution API (Docker local)</p>
               </div>
             </div>
             
-            {/* Campos de Configuração da API */}
+            {/* Campos de Configuração da Evolution API */}
             <div className="space-y-6 mb-6">
               <div className="bg-[#23272f] border border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Credenciais da API Brasil</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Credenciais da Evolution API</h3>
                 
                 <div className="space-y-4">
-                  {/* Bearer Token */}
+                  {/* Evolution API URL */}
                   <div>
-                    <label className="block text-gray-300 mb-2 font-medium">
-                      Bearer Token <span className="text-red-500">*</span>
-                    </label>
+                    <label className="block text-gray-300 mb-2 font-medium">Evolution API URL</label>
+                    <Input
+                      type="text"
+                      placeholder="http://localhost:8080"
+                      className="bg-[#1f2937] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500"
+                      value={evolutionConfig.baseUrl}
+                      onChange={(e) => setEvolutionConfig(prev => ({ ...prev, baseUrl: e.target.value }))}
+                    />
+                  </div>
+
+                  {/* API Key */}
+                  <div>
+                    <label className="block text-gray-300 mb-2 font-medium">API Key</label>
                     <div className="relative">
                       <Input
-                        type={apiBrasilConfig.showToken ? 'text' : 'password'}
-                        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        type={showApiKey ? 'text' : 'password'}
+                        placeholder="Sua API Key"
                         className="bg-[#1f2937] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500 pr-10"
-                        value={apiBrasilConfig.bearerToken}
-                        onChange={(e) => setApiBrasilConfig(prev => ({ ...prev, bearerToken: e.target.value }))}
+                        value={evolutionConfig.apiKey}
+                        onChange={(e) => setEvolutionConfig(prev => ({ ...prev, apiKey: e.target.value }))}
                       />
                       <button
                         type="button"
-                        onClick={() => setApiBrasilConfig(prev => ({ ...prev, showToken: !prev.showToken }))}
+                        onClick={() => setShowApiKey(v => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                       >
-                        {apiBrasilConfig.showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Token de autenticação fornecido pela API Brasil. Você pode obtê-lo no painel da API Brasil.
-                    </p>
                   </div>
 
-                  {/* Profile ID */}
+                  {/* Instance Name */}
                   <div>
-                    <label className="block text-gray-300 mb-2 font-medium">
-                      Profile ID <span className="text-red-500">*</span>
-                    </label>
+                    <label className="block text-gray-300 mb-2 font-medium">Instance Name</label>
                     <Input
                       type="text"
-                      placeholder="profile-123456"
+                      placeholder="minha-instancia"
                       className="bg-[#1f2937] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500"
-                      value={apiBrasilConfig.profileId}
-                      onChange={(e) => setApiBrasilConfig(prev => ({ ...prev, profileId: e.target.value }))}
+                      value={evolutionConfig.instanceName}
+                      onChange={(e) => setEvolutionConfig(prev => ({ ...prev, instanceName: e.target.value }))}
                     />
-                    <p className="text-xs text-gray-400 mt-1">
-                      ID do perfil do WhatsApp Business na API Brasil. Você pode encontrá-lo no painel da API Brasil.
-                    </p>
+                  </div>
+
+                  {/* Número para teste */}
+                  <div>
+                    <label className="block text-gray-300 mb-2 font-medium">Número para teste</label>
+                    <Input
+                      type="text"
+                      placeholder="Telefone completo com DDI e DDD (e.g., 5511999999999)"
+                      className="bg-[#1f2937] border border-gray-600 text-white placeholder-gray-400 focus:border-green-500"
+                      value={evolutionConfig.testPhone}
+                      onChange={(e) => setEvolutionConfig(prev => ({ ...prev, testPhone: e.target.value }))}
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Seção de Conexão e QR Code */}
-              {apiBrasilConfig.bearerToken && apiBrasilConfig.profileId ? (
-                <APIBrasilRealtimeSection 
-                  apiToken={apiBrasilConfig.bearerToken}
-                  profileId={apiBrasilConfig.profileId}
-                  isConnected={isConnected}
-                  setIsConnected={setIsConnected}
-                  setConnectionStatus={setConnectionStatus}
-                  setQrCodeData={setQrCodeData}
-                  qrCodeData={qrCodeData}
-                  isLoadingQR={isLoadingQR}
-                  setIsLoadingQR={setIsLoadingQR}
-                />
-              ) : (
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
-                  <p className="text-orange-400 text-sm">
-                    Preencha o Bearer Token e o Profile ID acima para gerar o QR Code e conectar o WhatsApp.
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            {/* Botão de salvar configurações */}
-            <div className="flex justify-end gap-2 mt-6 pt-6 border-t border-gray-700">
-              <Button 
-                variant="outline"
-                onClick={() => setConfigModalOpen(false)}
-                className="border-gray-600 text-gray-400 hover:text-white"
-              >
-                Cancelar
-              </Button>
-              <Button 
-                onClick={() => {
-                  if (!apiBrasilConfig.bearerToken || !apiBrasilConfig.profileId) {
-                    toast.error('Preencha todos os campos obrigatórios');
-                    return;
-                  }
-                  
-                  setApiBrasilConfig(prev => ({
-                    ...prev,
-                    isConfigured: true,
-                    error: ''
-                  }));
-                  
-                  setConfigModalOpen(false);
-                  
-                  toast.success('Configurações salvas com sucesso!');
-                }}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                Salvar Configurações
-              </Button>
+              {/* Botões de ação */}
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    localStorage.setItem('evolutionConfig', JSON.stringify(evolutionConfig));
+                    toast.success('Configurações salvas');
+                  }}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  Salvar Configurações
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="border-gray-600 text-white hover:bg-gray-700"
+                  onClick={async () => {
+                    const { baseUrl, apiKey, instanceName } = evolutionConfig;
+                    if (!baseUrl || !apiKey || !instanceName) {
+                      toast.error('Preencha URL, API Key e Instance Name');
+                      return;
+                    }
+                    setEvolutionStatus('connecting');
+                    try {
+                      const createRes = await fetch(`${baseUrl.replace(/\/$/, '')}/instance/create`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', apikey: apiKey },
+                        body: JSON.stringify({ instanceName, integration: 'WHATSAPP-BAILEYS' }),
+                      });
+                      const createData = await createRes.json().catch(() => ({}));
+                      const base64 = createData?.qrcode?.base64;
+                      if (base64) {
+                        const html = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>QR Code - Evolution API</title></head><body style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#111;color:#eee\"><div style=\"text-align:center\"><h1>Escaneie o QR Code no WhatsApp</h1><img alt=\"QR Code\" src=\"data:image/png;base64,${base64}\" style=\"max-width:80vw;max-height:80vh;border:8px solid #333;border-radius:12px\"/><p style=\"margin-top:16px\">Instância: ${instanceName}</p></div></body></html>`;
+                        const blob = new Blob([html], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        window.open(url, '_blank');
+                      }
+                      const statusRes = await fetch(`${baseUrl.replace(/\/$/, '')}/instance/connectionState/${encodeURIComponent(instanceName)}`, {
+                        method: 'GET',
+                        headers: { apikey: apiKey },
+                      });
+                      const statusData = await statusRes.json().catch(() => ({}));
+                      const state: string = statusData?.state || statusData?.status || '';
+                      if (/connected/i.test(state)) {
+                        setEvolutionStatus('connected');
+                        setIsConnected(true);
+                        toast.success('Instância conectada');
+                      } else if (/connecting|qr|pairing/i.test(state)) {
+                        setEvolutionStatus('connecting');
+                        setIsConnected(false);
+                        toast.info('Instância em processo de conexão');
+                      } else {
+                        setEvolutionStatus('disconnected');
+                        setIsConnected(false);
+                        toast.warning('Instância desconectada');
+                      }
+                    } catch (err: any) {
+                      setEvolutionStatus('disconnected');
+                      setIsConnected(false);
+                      toast.error(`Erro ao testar conexão: ${err?.message || 'desconhecido'}`);
+                    }
+                  }}
+                >
+                  Testar Conexão
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="border-gray-600 text-gray-400 hover:text-white"
+                  onClick={() => setConfigModalOpen(false)}
+                >
+                  Fechar Modal
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
