@@ -9,8 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { CheckCircle, MessageSquare, Clock, FileText, Zap, Settings, Trash2, Edit, Plus, Eye, EyeOff, Download, Upload, Users, Loader2, Shield, Activity, ArrowUp } from 'lucide-react';
-import { APIBrasilRealtimeSection } from '@/components/APIBrasilRealtimeSection';
-import { checkConnectionStatus, MOCK_CREDENTIALS } from '@/services/apiBrasilService';
+// Integração Evolution API substituirá qualquer configuração antiga
 import { useNavigate } from "react-router-dom";
 
 // templates mock removido — inicializar vazio para usar dados reais
