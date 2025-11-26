@@ -22,6 +22,15 @@ type ConnectionStatus = 'connected' | 'disconnected' | 'connecting';
 
 const ClientWhatsApp: React.FC = () => {
   const navigate = useNavigate();
+  // Configuração Evolution API (Docker local)
+  const [evolutionConfig, setEvolutionConfig] = useState({
+    baseUrl: 'http://localhost:8080',
+    apiKey: '',
+    instanceName: '',
+    testPhone: '',
+  });
+  const [evolutionStatus, setEvolutionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
+  const [showApiKey, setShowApiKey] = useState(false);
   // Estados para a API Brasil
   const [apiBrasilConfig, setApiBrasilConfig] = useState({
     bearerToken: '',
